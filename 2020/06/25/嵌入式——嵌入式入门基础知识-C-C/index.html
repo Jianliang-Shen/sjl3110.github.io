@@ -1,0 +1,1521 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>嵌入式软件基础知识-C/C++ - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-25 19:13" pubdate>
+      2020年6月25日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      16.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      180
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">嵌入式软件基础知识-C/C++</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>关于C/C++重点知识点汇总。</p>
+<span id="more"></span>
+<p>参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/kuweicai/article/details/82779648">C/C++常见面试知识点总结附面试真题—-20190407更新</a></p>
+<ul>
+<li><a href="#cc%E5%86%85%E5%AD%98%E6%9C%89%E5%93%AA%E5%87%A0%E7%A7%8D%E7%B1%BB%E5%9E%8B">C/C++内存有哪几种类型？</a></li>
+<li><a href="#%E5%A0%86%E5%92%8C%E6%A0%88%E7%9A%84%E5%8C%BA%E5%88%AB">堆和栈的区别？</a></li>
+<li><a href="#%E5%A0%86%E5%92%8C%E8%87%AA%E7%94%B1%E5%AD%98%E5%82%A8%E5%8C%BA%E7%9A%84%E5%8C%BA%E5%88%AB">堆和自由存储区的区别？</a></li>
+<li><a href="#%E7%A8%8B%E5%BA%8F%E7%BC%96%E8%AF%91%E7%9A%84%E8%BF%87%E7%A8%8B">程序编译的过程？</a></li>
+<li><a href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%86%85%E9%83%A8%E5%A6%82%E4%BD%95%E5%AD%98%E5%82%A8%E8%B4%9F%E6%95%B0%E5%92%8C%E6%B5%AE%E7%82%B9%E6%95%B0">计算机内部如何存储负数和浮点数？</a></li>
+<li><a href="#%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E7%9A%84%E8%BF%87%E7%A8%8B">函数调用的过程？</a></li>
+<li><a href="#%E5%B7%A6%E5%80%BC%E5%92%8C%E5%8F%B3%E5%80%BC">左值和右值</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E9%9D%A2%E5%AF%B9%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E5%92%8C%E6%8C%87%E9%92%88%E8%B6%8A%E7%95%8C%E4%BD%A0%E6%9C%89%E5%93%AA%E4%BA%9B%E6%96%B9%E6%B3%95%E4%BD%A0%E9%80%9A%E5%B8%B8%E9%87%87%E7%94%A8%E5%93%AA%E4%BA%9B%E6%96%B9%E6%B3%95%E6%9D%A5%E9%81%BF%E5%85%8D%E5%92%8C%E5%87%8F%E5%B0%91%E8%BF%99%E7%B1%BB%E9%94%99%E8%AF%AF">什么是内存泄漏？面对内存泄漏和指针越界，你有哪些方法？你通常采用哪些方法来避免和减少这类错误？</a></li>
+<li><a href="#c%E5%92%8Cc%E7%9A%84%E5%8C%BA%E5%88%AB">C和C++的区别？</a></li>
+<li><a href="#int-fun-%E5%92%8C-int-funvoid%E7%9A%84%E5%8C%BA%E5%88%AB">int fun() 和 int fun(void)的区别?</a></li>
+<li><a href="#const-%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8%E9%80%94">const 有什么用途</a></li>
+<li><a href="#%E5%9C%A8c%E4%B8%AD%E7%94%A8const%E8%83%BD%E5%AE%9A%E4%B9%89%E7%9C%9F%E6%AD%A3%E6%84%8F%E4%B9%89%E4%B8%8A%E7%9A%84%E5%B8%B8%E9%87%8F%E5%90%97c%E4%B8%AD%E7%9A%84const%E5%91%A2">在C中用const能定义真正意义上的常量吗？C++中的const呢？</a></li>
+<li><a href="#%E5%AE%8F%E5%92%8C%E5%86%85%E8%81%94inline%E5%87%BD%E6%95%B0%E7%9A%84%E6%AF%94%E8%BE%83">宏和内联（inline）函数的比较？</a></li>
+<li><a href="#c%E4%B8%AD%E6%9C%89%E4%BA%86malloc--free--%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81-new--delete">C++中有了malloc / free , 为什么还需要 new / delete？</a></li>
+<li><a href="#c%E5%92%8Cc%E4%B8%AD%E7%9A%84%E5%BC%BA%E5%88%B6%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">C和C++中的强制类型转换？</a></li>
+<li><a href="#static%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8%E9%80%94">static有什么用途</a></li>
+<li><a href="#%E7%B1%BB%E7%9A%84%E9%9D%99%E6%80%81%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F%E5%92%8C%E9%9D%99%E6%80%81%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0%E5%90%84%E6%9C%89%E5%93%AA%E4%BA%9B%E7%89%B9%E6%80%A7">类的静态成员变量和静态成员函数各有哪些特性？</a></li>
+<li><a href="#%E5%9C%A8c%E7%A8%8B%E5%BA%8F%E4%B8%AD%E8%B0%83%E7%94%A8%E8%A2%ABc%E7%BC%96%E8%AF%91%E5%99%A8%E7%BC%96%E8%AF%91%E5%90%8E%E7%9A%84%E5%87%BD%E6%95%B0%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%8A%A0externc">在C++程序中调用被C编译器编译后的函数，为什么要加extern“C”?</a></li>
+<li><a href="#%E5%A4%B4%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84ifndefdefineendif%E6%98%AF%E5%B9%B2%E4%BB%80%E4%B9%88%E7%94%A8%E7%9A%84-%E8%AF%A5%E7%94%A8%E6%B3%95%E5%92%8Cprogram-once%E7%9A%84%E5%8C%BA%E5%88%AB">头文件中的ifndef/define/endif是干什么用的? 该用法和program once的区别？</a></li>
+<li><a href="#%E5%BD%93i%E6%98%AF%E4%B8%80%E4%B8%AA%E6%95%B4%E6%95%B0%E7%9A%84%E6%97%B6%E5%80%99i%E5%92%8Ci%E9%82%A3%E4%B8%AA%E6%9B%B4%E5%BF%AB%E4%B8%80%E7%82%B9i%E5%92%8Ci%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88">当i是一个整数的时候++i和i++那个更快一点？i++和++i的区别是什么？</a></li>
+<li><a href="#%E6%8C%87%E9%92%88%E5%92%8C%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB">指针和引用的区别？</a></li>
+<li><a href="#%E5%BC%95%E7%94%A8%E5%8D%A0%E7%94%A8%E5%86%85%E5%AD%98%E7%A9%BA%E9%97%B4%E5%90%97">引用占用内存空间吗？</a></li>
+<li><a href="#%E4%B8%89%E7%9B%AE%E8%BF%90%E7%AE%97%E7%AC%A6">三目运算符</a></li>
+<li><a href="#%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84%E5%92%8C%E6%95%B0%E7%BB%84%E6%8C%87%E9%92%88%E7%9A%84%E5%8C%BA%E5%88%AB">指针数组和数组指针的区别</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1oop%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%84%8F%E4%B9%89">什么是面向对象（OOP）？面向对象的意义？</a></li>
+<li><a href="#%E8%A7%A3%E9%87%8A%E4%B8%8B%E5%B0%81%E8%A3%85%E7%BB%A7%E6%89%BF%E5%92%8C%E5%A4%9A%E6%80%81">解释下封装、继承和多态？</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E7%94%9F%E6%88%90%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%97%A0%E5%8F%82%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E7%94%9F%E6%88%90%E9%BB%98%E8%AE%A4%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E4%BB%80%E4%B9%88%E6%98%AF%E6%B7%B1%E6%8B%B7%E8%B4%9D%E4%BB%80%E4%B9%88%E6%98%AF%E6%B5%85%E6%8B%B7%E8%B4%9D%E9%BB%98%E8%AE%A4%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E6%98%AF%E5%93%AA%E7%A7%8D%E6%8B%B7%E8%B4%9D%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E7%94%A8%E6%B7%B1%E6%8B%B7%E8%B4%9D">什么时候生成默认构造函数（无参构造函数）？什么时候生成默认拷贝构造函数？什么是深拷贝？什么是浅拷贝？默认拷贝构造函数是哪种拷贝？什么时候用深拷贝？</a></li>
+<li><a href="#%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%92%8C%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F">构造函数和析构函数的执行顺序？</a></li>
+<li><a href="#c%E7%9A%84%E7%BC%96%E8%AF%91%E7%8E%AF%E5%A2%83">C++的编译环境</a></li>
+<li><a href="#%E8%AF%B4%E4%B8%80%E4%B8%8Bstatic%E5%85%B3%E9%94%AE%E5%AD%97%E7%9A%84%E4%BD%9C%E7%94%A8">说一下static关键字的作用？</a></li>
+<li><a href="#%E8%AF%B4%E4%B8%80%E4%B8%8Bconst%E5%85%B3%E9%94%AE%E5%AD%97%E7%9A%84%E4%BD%9C%E7%94%A8">说一下const关键字的作用？</a></li>
+<li><a href="#%E8%AF%B7%E8%AF%B4%E4%B8%80%E4%B8%8Bextern%E5%85%B3%E9%94%AE%E5%AD%97%E7%9A%84%E4%BD%9C%E7%94%A8">请说一下extern关键字的作用？</a></li>
+<li><a href="#%E8%AF%B4%E4%B8%80%E4%B8%8Bc%E5%92%8Cc%E7%9A%84%E5%8C%BA%E5%88%AB">说一下C++和C的区别</a></li>
+<li><a href="#%E8%AF%B4%E4%B8%80%E8%AF%B4-c-%E4%B8%AD%E5%9B%9B%E7%A7%8D%E5%BC%BA%E8%BD%AC%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">说一说 c++ 中四种强转类型转换。</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E4%BD%BF%E7%94%A8-c-%E7%9A%84%E5%BC%BA%E5%88%B6%E8%BD%AC%E6%8D%A2">为什么不使用 C 的强制转换？</a></li>
+<li><a href="#%E8%AF%B7%E8%AF%B4%E4%B8%80%E4%B8%8Bcc%E4%B8%AD%E6%8C%87%E9%92%88%E5%92%8C%E5%BC%95%E7%94%A8%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%85%B6%E5%8C%BA%E5%88%AB">请说一下C/C++中指针和引用概念及其区别？</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AF%B4%E4%B8%80%E4%B8%8B%E4%BD%A0%E7%90%86%E8%A7%A3%E7%9A%84-c-%E4%B8%AD%E7%9A%84%E5%9B%9B%E4%B8%AA%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88">请你说一下你理解的 c++ 中的四个智能指针。</a></li>
+<li><a href="#%E8%AF%B7%E5%9B%9E%E7%AD%94%E4%B8%80%E4%B8%8B%E6%95%B0%E7%BB%84%E5%92%8C%E6%8C%87%E9%92%88%E7%9A%84%E5%8C%BA%E5%88%AB">请回答一下数组和指针的区别。</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E5%9B%9E%E7%AD%94%E4%B8%80%E4%B8%8B%E9%87%8E%E6%8C%87%E9%92%88%E6%98%AF%E4%BB%80%E4%B9%88">请你回答一下野指针是什么？</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E5%9B%9E%E7%AD%94%E4%B8%80%E4%B8%8B%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E6%9C%89%E6%B2%A1%E6%9C%89%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2%E7%9A%84%E6%83%85%E5%86%B5">请你回答一下智能指针有没有内存泄露的情况</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E8%AF%B4%E4%B8%80%E4%B8%8B%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E7%9A%84%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3">请你来说一下智能指针的内存泄漏如何解决</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E5%9B%9E%E7%AD%94%E4%B8%80%E4%B8%8B%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%E5%BF%85%E9%A1%BB%E6%98%AF%E8%99%9A%E5%87%BD%E6%95%B0%E4%B8%BA%E4%BB%80%E4%B9%88-c-%E9%BB%98%E8%AE%A4%E7%9A%84%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%E4%B8%8D%E6%98%AF%E8%99%9A%E5%87%BD%E6%95%B0%E8%80%83%E7%82%B9-%E8%99%9A%E5%87%BD%E6%95%B0-%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0">请你回答一下为什么析构函数必须是虚函数？为什么 C++ 默认的析构函数不是虚函数（考点: 虚函数 析构函数）</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E8%AF%B4%E4%B8%80%E4%B8%8B%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88">请你来说一下函数指针</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E8%AF%B4%E4%B8%80%E4%B8%8B-fork-%E5%87%BD%E6%95%B0">请你来说一下 fork 函数</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E8%AF%B4%E4%B8%80%E4%B8%8Bc%E4%B8%AD%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%E7%9A%84%E4%BD%9C%E7%94%A8">请你来说一下C++中析构函数的作用</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E8%AF%B4%E4%B8%80%E4%B8%8B%E9%9D%99%E6%80%81%E5%87%BD%E6%95%B0%E5%92%8C%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E5%8C%BA%E5%88%AB">请你来说一下静态函数和虚函数的区别</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E8%AF%B4%E4%B8%80%E8%AF%B4%E9%87%8D%E8%BD%BD%E5%92%8C%E8%A6%86%E7%9B%96">请你来说一说重载和覆盖。</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AF%B4%E4%B8%80%E8%AF%B4-strcpy-%E5%92%8C-%E5%92%8C-strlen">请你说一说 strcpy 和 和 strlen。</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E5%9B%9E%E7%AD%94%E4%B8%80%E4%B8%8Bi-%E5%92%8C-i">请你来回答一下++i 和 i++。</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AF%B4%E4%B8%80%E8%AF%B4%E4%BD%A0%E7%90%86%E8%A7%A3%E7%9A%84%E8%99%9A%E5%87%BD%E6%95%B0%E5%92%8C%E5%A4%9A%E6%80%81">请你说一说你理解的虚函数和多态。</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E8%AF%B4%E4%B8%80%E8%AF%B4i-%E5%92%8C-i-%E7%9A%84%E5%AE%9E%E7%8E%B0">请你来说一说++i 和 i++ 的实现。</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E5%86%99%E4%B8%AA%E5%87%BD%E6%95%B0%E5%9C%A8main%E5%87%BD%E6%95%B0%E6%89%A7%E8%A1%8C%E5%89%8D%E5%85%88%E8%BF%90%E8%A1%8C">请你来写个函数在main函数执行前先运行。</a></li>
+<li><a href="#%E4%BB%A5%E4%B8%8B%E5%9B%9B%E8%A1%8C%E4%BB%A3%E7%A0%81%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88">以下四行代码的区别是什么？</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E8%AF%B4%E4%B8%80%E4%B8%8Bc%E9%87%8C%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9A%E4%B9%89%E5%B8%B8%E9%87%8F%E7%9A%84%E5%B8%B8%E9%87%8F%E5%AD%98%E6%94%BE%E5%9C%A8%E5%86%85%E5%AD%98%E7%9A%84%E5%93%AA%E4%B8%AA%E4%BD%8D%E7%BD%AE">请你来说一下C++里是怎么定义常量的？常量存放在内存的哪个位置？</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E8%AF%B4%E4%B8%80%E8%AF%B4%E9%9A%90%E5%BC%8F%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">请你来说一说隐式类型转换。</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E8%AF%B4%E4%B8%80%E8%AF%B4-c%E5%87%BD%E6%95%B0%E6%A0%88%E7%A9%BA%E9%97%B4%E7%9A%84%E6%9C%80%E5%A4%A7%E5%80%BC">请你来说一说 C++函数栈空间的最大值</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E8%AF%B4%E4%B8%80%E8%AF%B4-extern-c">请你来说一说 extern “C”</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E5%9B%9E%E7%AD%94%E4%B8%80%E4%B8%8B-newdelete%E4%B8%8E-%E4%B8%8E-mallocfree-%E7%9A%84%E5%8C%BA%E5%88%AB">请你回答一下 new/delete与 与 malloc/free 的区别。</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AF%B4%E8%AF%B4%E4%BD%A0%E4%BA%86%E8%A7%A3%E7%9A%84rtti">请你说说你了解的RTTI</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AF%B4%E8%AF%B4%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8%E5%85%B7%E4%BD%93%E6%98%AF%E6%80%8E%E6%A0%B7%E5%AE%9E%E7%8E%B0%E8%BF%90%E8%A1%8C%E6%97%B6%E5%A4%9A%E6%80%81%E7%9A%84">请你说说虚函数表具体是怎样实现运行时多态的?</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AF%B4%E8%AF%B4-c-%E8%AF%AD%E8%A8%80%E4%B8%AD%E6%98%AF%E6%80%8E%E4%B9%88%E8%BF%9B%E8%A1%8C%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E7%9A%84">请你说说 C 语言中是怎么进行函数调用的？</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AF%B4%E8%AF%B4c%E8%AF%AD%E8%A8%80%E5%8F%82%E6%95%B0%E5%8E%8B%E6%A0%88%E9%A1%BA%E5%BA%8F">请你说说C语言参数压栈顺序？</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AF%B4%E8%AF%B4c%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E8%BF%94%E5%9B%9E%E5%80%BC">请你说说C++如何处理返回值？</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E5%9B%9E%E7%AD%94%E4%B8%80%E4%B8%8Bc%E4%B8%AD%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%9A%84%E5%BD%A2%E5%8F%82%E8%83%BD%E5%90%A6%E8%BF%9B%E8%A1%8C%E5%80%BC%E4%BC%A0%E9%80%92">请你回答一下C++中拷贝构造函数的形参能否进行值传递？</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E5%9B%9E%E7%AD%94%E4%B8%80%E4%B8%8Bmalloc%E4%B8%8Enew%E7%9A%84%E5%8C%BA%E5%88%AB">请你回答一下malloc与new的区别。</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AF%B4%E4%B8%80%E8%AF%B4select">请你说一说select。</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AF%B4%E8%AF%B4-forkwaitexec-%E5%87%BD%E6%95%B0">请你说说 fork，wait，exec 函数。</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E8%AF%B4%E4%B8%80%E4%B8%8Bmap%E5%92%8Cset%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%E5%88%86%E5%88%AB%E5%8F%88%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84">请你来说一下map和set有什么区别，分别又是怎么实现的？</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8Bstl%E7%9A%84allocator%E7%A9%BA%E9%97%B4%E9%85%8D%E7%BD%AE%E5%99%A8">请你来介绍一下STL的allocator（空间配置器）</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AE%B2%E8%AE%B2-stl-%E6%9C%89%E4%BB%80%E4%B9%88%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90%E4%BB%96%E4%BB%AC%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84">请你讲讲 STL 有什么基本组成？他们之间的关系是怎样的？</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AF%B4%E4%B8%80%E8%AF%B4stl%E4%B8%ADmap%E6%95%B0%E6%8D%AE%E7%9A%84%E5%AD%98%E6%94%BE%E5%BD%A2%E5%BC%8F">请你说一说STL中map数据的存放形式。</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AF%B4%E8%AF%B4stl%E4%B8%ADmap%E4%B8%8Eunordered_map">请你说说STL中map与unordered_map</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E8%AF%B4%E4%B8%80%E8%AF%B4vector%E5%92%8Clist%E7%9A%84%E5%8C%BA%E5%88%AB%E5%BA%94%E7%94%A8%E8%B6%8A%E8%AF%A6%E7%BB%86%E8%B6%8A%E5%A5%BD">请你说一说vector和list的区别、应用，越详细越好</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E8%AF%B4%E4%B8%80%E4%B8%8B%E4%B8%80%E4%B8%AA-c-%E6%BA%90%E6%96%87%E4%BB%B6%E4%BB%8E%E6%96%87%E6%9C%AC%E5%88%B0%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6%E7%BB%8F%E5%8E%86%E7%9A%84%E8%BF%87%E7%A8%8B">请你来说一下一个 C++ 源文件从文本到可执行文件经历的过程？</a></li>
+<li><a href="#%E8%AF%B7%E4%BD%A0%E6%9D%A5%E5%9B%9E%E7%AD%94%E4%B8%80%E4%B8%8Binclude%E5%A4%B4%E6%96%87%E4%BB%B6%E7%9A%84%E9%A1%BA%E5%BA%8F%E4%BB%A5%E5%8F%8A%E5%8F%8C%E5%BC%95%E5%8F%B7-%E5%92%8C%E5%B0%96%E6%8B%AC%E5%8F%B7--%E7%9A%84%E5%8C%BA%E5%88%AB">请你来回答一下include头文件的顺序以及双引号” “和尖括号&lt; &gt; 的区别。</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%BA%A2%E9%BB%91%E6%A0%91">什么是红黑树？</a></li>
+</ul>
+<hr>
+<h2><span id="cc内存有哪几种类型">C/C++内存有哪几种类型？</span></h2><ul>
+<li>堆(malloc)</li>
+<li>栈(如局部变量、函数参数)</li>
+<li>程序代码区（存放二进制代码）</li>
+<li>全局/静态存储区（全局变量、static变量）和常量存储区（常量）。此外，C++中有自由存储区（new）一说。</li>
+<li>全局变量、static变量会初始化为零，而堆和栈上的变量是随机的，不确定的。</li>
+</ul>
+<hr>
+<h2><span id="堆和栈的区别">堆和栈的区别？</span></h2><ul>
+<li>堆存放动态分配的对象——即那些在程序运行时分配的对象，比如局部变量，其生存期由程序控制；</li>
+<li>栈用来保存定义在函数内的非static对象，仅在其定义的程序块运行时才存在；</li>
+<li>静态内存用来保存static对象，类static数据成员以及定义在任何函数外部的变量，static对象在使用之前分配，程序结束时销毁；</li>
+<li>栈和静态内存的对象由编译器自动创建和销毁。</li>
+</ul>
+<hr>
+<h2><span id="堆和自由存储区的区别">堆和自由存储区的区别？</span></h2><ul>
+<li>总的来说，堆是C语言和操作系统的术语，是操作系统维护的一块动态分配内存；自由存储是C++中通过new与delete动态分配和释放对象的抽象概念。他们并不是完全一样。</li>
+<li>从技术上来说，堆（heap）是C语言和操作系统的术语。堆是操作系统所维护的一块特殊内存，它提供了动态分配的功能，当运行程序调用malloc()时就会从中分配，稍后调用free可把内存交还。</li>
+<li>而自由存储是C++中通过new和delete动态分配和释放对象的抽象概念，通过new来申请的内存区域可称为自由存储区。基本上，所有的C++编译器默认使用堆来实现自由存储，也即是缺省的全局运算符new和delete也许会按照malloc和free的方式来被实现，这时藉由new运算符分配的对象，说它在堆上也对，说它在自由存储区上也正确。</li>
+</ul>
+<hr>
+<h2><span id="程序编译的过程">程序编译的过程？</span></h2><ul>
+<li>程序编译的过程中就是将用户的文本形式的源代码(c/c++)转化成计算机可以直接执行的机器代码的过程。主要经过四个过程：预处理、编译、汇编和链接。具体示例如下。</li>
+<li>一个hello.c的c语言程序如下。<ul>
+<li>预处理阶段：hello.c–&gt;hello.i</li>
+<li>编译阶段：hello.i–&gt;hello.s</li>
+<li>汇编阶段：hello.s–&gt;hello.o</li>
+<li>链接阶段：hello.o–&gt;hello</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2><span id="计算机内部如何存储负数和浮点数">计算机内部如何存储负数和浮点数？</span></h2><ul>
+<li>负数比较容易，就是通过一个标志位和补码来表示。</li>
+<li>对于浮点类型的数据采用单精度类型（float）和双精度类型(double)来存储，float数据占用32bit,double数据占用64bit,我们在声明一个变量float f= 2.25f的时候，是如何分配内存的呢？如果胡乱分配，那世界岂不是乱套了么，其实不论是float还是double在存储方式上都是遵从IEEE的规范的，float遵从的是IEEE R32.24 ,而double 遵从的是R64.53。更多可以参考浮点数表示。</li>
+<li>无论是单精度还是双精度在存储中都分为三个部分：<ul>
+<li>符号位(Sign) : 0代表正，1代表为负</li>
+<li>指数位（Exponent）:用于存储科学计数法中的指数数据，并且采用移位存储</li>
+<li>尾数部分（Mantissa）：尾数部分</li>
+</ul>
+</li>
+</ul>
+<p>其中float的存储方式如下图所示:<br><img src="/img/post_pics/c/c_1.png"><br>而双精度的存储方式如下图:<br><img src="/img/post_pics/c/c_2.png"></p>
+<hr>
+<h2><span id="函数调用的过程">函数调用的过程？</span></h2><p>如下结构的代码，</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+  ...
+  d = <span class="hljs-built_in">fun</span>(a, b, c);
+  cout&lt;&lt;d&lt;&lt;endl;
+  ...
+  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+<p>调用fun()的过程大致如下：</p>
+<ul>
+<li>main()========<ul>
+<li>参数拷贝（压栈），注意顺序是从右到左，即c-b-a；</li>
+<li>保存d = fun(a, b, c)的下一条指令，即cout&lt;&lt;d&lt;&lt;endl（实际上是这条语句对应的汇编指令的起始位置）;</li>
+<li>跳转到fun()函数，注意，到目前为止，这些都是在main()中进行的；</li>
+</ul>
+</li>
+<li>fun()=====<ul>
+<li>移动ebp、esp形成新的栈帧结构;</li>
+<li>压栈（push）形成临时变量并执行相关操作;</li>
+<li>return一个值;</li>
+<li>出栈（pop）;</li>
+<li>恢复main函数的栈帧结构;</li>
+<li>返回main函数;</li>
+</ul>
+</li>
+<li>main()========</li>
+</ul>
+<hr>
+<h2><span id="左值和右值">左值和右值</span></h2><ul>
+<li>不是很严谨的来说，左值指的是既能够出现在等号左边也能出现在等号右边的变量(或表达式)；右值指的则是只能出现在等号右边的变量(或表达式)。</li>
+<li>举例来说我们定义的变量 a 就是一个左值，而malloc返回的就是一个右值。或者左值就是在程序中能够寻址的东西，右值就是一个具体的真实的值或者对象，没法取到它的地址的东西(不完全准确)，因此没法对右值进行赋值，但是右值并非是不可修改的，比如自己定义的class, 可以通过它的成员函数来修改右值。</li>
+</ul>
+<hr>
+<h2><span id="什么是内存泄漏面对内存泄漏和指针越界你有哪些方法你通常采用哪些方法来避免和减少这类错误">什么是内存泄漏？面对内存泄漏和指针越界，你有哪些方法？你通常采用哪些方法来避免和减少这类错误？</span></h2><p>用动态存储分配函数动态开辟的空间，在使用完毕后未释放，结果导致一直占据该内存单元即为内存泄露。</p>
+<ul>
+<li>使用的时候要记得指针的长度.</li>
+<li>malloc的时候得确定在那里free.</li>
+<li>对指针赋值的时候应该注意被赋值指针需要不需要释放.</li>
+<li>动态分配内存的指针最好不要再次赋值.</li>
+<li>在C++中应该优先考虑使用智能指针.</li>
+</ul>
+<hr>
+<h2><span id="c和c的区别">C和C++的区别？</span></h2><ul>
+<li>C++是C的超集;</li>
+<li>C是一个结构化语言，它的重点在于算法和数据结构。C程序的设计首要考虑的是如何通过一个过程，对输入（或环境条件）进行运算处理得到输出（或实现过程（事务）控制），而对于C++，首要考虑的是如何构造一个对象模型，让这个模型能够契合与之对应的问题域，这样就可以通过获取对象的状态信息得到输出或实现过程（事务）控制。</li>
+</ul>
+<hr>
+<h2><span id="int-fun-和-int-funvoid的区别">int fun() 和 int fun(void)的区别?</span></h2><ul>
+<li>这里考察的是c中的默认类型机制。在c中，int fun() 会解读为返回值为int(即使前面没有int，也是如此，但是在c++中如果没有返回类型将报错)，输入类型和个数没有限制， 而int fun(void)则限制输入类型为一个void。</li>
+<li>在c++下，这两种情况都会解读为返回int类型，输入void类型。</li>
+</ul>
+<hr>
+<h2><span id="const-有什么用途">const 有什么用途</span></h2><ul>
+<li>定义只读变量，或者常量（只读变量和常量的区别参考下面一条）;</li>
+<li>修饰函数的参数和函数的返回值;</li>
+<li>修饰函数的定义体，这里的函数为类的成员函数，被const修饰的成员函数代表不能修改成员变量的值，因此const成员函数只能调用const成员函数；</li>
+<li>只读对象。只读对象只能调用const成员函数。</li>
+</ul>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Screen</span> &#123;</span>
+<span class="hljs-keyword">public</span>:
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> cha； <span class="hljs-comment">//const成员变量</span>
+<span class="hljs-function"><span class="hljs-keyword">char</span> <span class="hljs-title">get</span><span class="hljs-params">()</span> <span class="hljs-keyword">const</span></span>; <span class="hljs-comment">//const成员函数</span>
+&#125;;
+
+<span class="hljs-keyword">const</span> Screen screen； <span class="hljs-comment">//只读对象</span></code></pre></div>
+<hr>
+<h2><span id="在c中用const能定义真正意义上的常量吗c中的const呢">在C中用const能定义真正意义上的常量吗？C++中的const呢？</span></h2><p>不能。c中的const仅仅是从编译层来限定，不允许对const 变量进行赋值操作，在运行期是无效的，所以并非是真正的常量（比如通过指针对const变量是可以修改值的），但是c++中是有区别的，c++在编译时会把const常量加入符号表，以后（仍然在编译期）遇到这个变量会从符号表中查找，所以在C++中是不可能修改到const变量的。</p>
+<ul>
+<li>c中的局部const常量存储在栈空间，全局const常量存在只读存储区，所以全局const常量也是无法修改的，它是一个只读变量。</li>
+<li>这里需要说明的是，常量并非仅仅是不可修改，而是相对于变量，它的值在编译期已经决定，而不是在运行时决定。</li>
+<li>c++中的const 和宏定义是有区别的，宏是在预编译期直接进行文本替换，而const发生在编译期，是可以进行类型检查和作用域检查的。</li>
+<li><strong>c语言中只有enum可以实现真正的常量。</strong></li>
+<li>c++中只有用字面量初始化的const常量会被加入符号表，而变量初始化的const常量依然只是只读变量。</li>
+<li>c++中const成员为只读变量，可以通过指针修改const成员的值，另外const成员变量只能在初始化列表中进行初始化。</li>
+</ul>
+<p>下面我们通过代码来看看区别。同样一段代码，在c编译器下，打印结果为*pa = 4， 4；在c++编译下打印的结果为 *pa = 4， 8</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> a = <span class="hljs-number">8</span>;
+    <span class="hljs-keyword">int</span> *pa = (<span class="hljs-keyword">int</span> *)&amp;a;
+    *pa = <span class="hljs-number">4</span>;
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;*pa = %d, a = %d&quot;</span>, *pa, a);
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+<p>另外值得一说的是，由于c++中const常量的值在编译期就已经决定，下面的做法是OK的，但是c中是编译通不过的。</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> a = <span class="hljs-number">8</span>;
+    <span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> b = <span class="hljs-number">2</span>;
+    <span class="hljs-keyword">int</span> array[a+b] = &#123;<span class="hljs-number">0</span>&#125;;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
+<hr>
+<h2><span id="宏和内联inline函数的比较">宏和内联（inline）函数的比较？</span></h2><ul>
+<li>首先宏是C中引入的一种预处理功能；</li>
+<li>内联（inline）函数是C++中引用的一个新的关键字；C++中推荐使用内联函数来替代宏代码片段；</li>
+<li>内联函数将函数体直接扩展到调用内联函数的地方，这样减少了参数压栈，跳转，返回等过程；</li>
+<li>由于内联发生在编译阶段，所以内联相较宏，是有参数检查和返回值检查的，因此使用起来更为安全；</li>
+<li>需要注意的是， inline会向编译期提出内联请求，但是是否内联由编译期决定（当然可以通过设置编译器，强制使用内联）；</li>
+<li>由于内联是一种优化方式，在某些情况下，即使没有显示的声明内联，比如定义在class内部的方法，编译器也可能将其作为内联函数。</li>
+<li>内联函数不能过于复杂，最初C++限定不能有任何形式的循环，不能有过多的条件判断，不能对函数进行取地址操作等，但是现在的编译器几乎没有什么限制，基本都可以实现内联。</li>
+</ul>
+<hr>
+<h2><span id="c中有了malloc-free-为什么还需要-new-delete">C++中有了malloc / free , 为什么还需要 new / delete？</span></h2><ul>
+<li>malloc与free是C++/C语言的标准库函数，new/delete是C++的运算符。它们都可用于申请动态内存和释放内存。</li>
+<li>对于非内部数据类型的对象而言，光用maloc/free无法满足动态对象的要求。对象在创建的同时要自动执行构造函数，对象在消亡之前要自动执行析构函数。</li>
+<li>由于malloc/free是库函数而不是运算符，不在编译器控制权限之内，不能够把执行构造函数和析构函数的任务强加于malloc/free。因此C++语言需要一个能完成动态内存分配和初始化工作的运算符new，以一个能完成清理与释放内存工作的运算符delete。注意new/delete不是库函数。最后补充一点体外话，new 在申请内存的时候就可以初始化（如下代码）， 而malloc是不允许的。另外，由于malloc是库函数，需要相应的库支持，因此某些简易的平台可能不支持，但是new就没有这个问题了，因为new是C++语言所自带的运算符。<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-keyword">int</span> *p = <span class="hljs-keyword">new</span> <span class="hljs-built_in"><span class="hljs-keyword">int</span></span>(<span class="hljs-number">1</span>);</code></pre></div></li>
+<li>特别的，在C++中，如下的代码，用new创建一个对象(new 会触发构造函数， delete会触发析构函数)，但是malloc仅仅申请了一个空间，所以在C++中引入new和delete来支持面向对象。<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;cstdlib&gt;</span></span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Test</span></span>
+<span class="hljs-class">&#123;</span>
+    ...
+&#125;
+
+Test* pn = <span class="hljs-keyword">new</span> Test;
+Test* pm = (Test*)<span class="hljs-built_in">malloc</span>(<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(Test));</code></pre></div></li>
+</ul>
+<hr>
+<h2><span id="c和c中的强制类型转换">C和C++中的强制类型转换？</span></h2><p>C中是直接在变量或者表达式前面加上（小括号括起来的）目标类型来进行转换，一招走天下，操作简单，但是由于太过直接，缺少检查，因此容易发生编译检查不到错误，而人工检查又及其难以发现的情况；而C++中引入了下面四种转换：</p>
+<ul>
+<li>static_cast<ul>
+<li>用于基本类型间的转换</li>
+<li>不能用于基本类型指针间的转换</li>
+<li>用于有继承关系类对象间的转换和类指针间的转换</li>
+</ul>
+</li>
+<li>dynamic_cast<ul>
+<li>用于有继承关系的类指针间的转换</li>
+<li>用于有交叉关系的类指针间的转换</li>
+<li>具有类型检查的功能</li>
+<li>需要虚函数的支持</li>
+</ul>
+</li>
+<li>reinterpret_cast<ul>
+<li>用于指针间的类型转换</li>
+<li>用于整数和指针间的类型转换</li>
+</ul>
+</li>
+<li>const_cast<ul>
+<li>用于去掉变量的const属性</li>
+<li>转换的目标类型必须是指针或者引用</li>
+</ul>
+</li>
+</ul>
+<p>在C++中，普通类型可以通过类型转换构造函数转换为类类型，那么类可以转换为普通类型吗？答案是肯定的。但是在工程应用中一般不用类型转换函数，因为无法抑制隐式的调用类型转换函数（类型转换构造函数可以通过explicit来抑制其被隐式的调用），而隐式调用经常是bug的来源。实际工程中替代的方式是定义一个普通函数，通过显式的调用来达到类型转换的目的。</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">test</span>&#123;</span>
+    <span class="hljs-keyword">int</span> m_value;
+    ...
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function"><span class="hljs-keyword">operator</span> <span class="hljs-title">int</span><span class="hljs-params">()</span>  <span class="hljs-comment">//类型转换函数</span></span>
+<span class="hljs-function">    </span>&#123;
+        <span class="hljs-keyword">return</span> m_value;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">toInt</span><span class="hljs-params">()</span> <span class="hljs-comment">//显示调用普通函数来实现类型转换</span></span>
+<span class="hljs-function">    </span>&#123;
+        <span class="hljs-keyword">return</span> m_value
+    &#125;
+&#125;；
+
+<span class="hljs-keyword">int</span> <span class="hljs-built_in">main</span>()
+&#123;
+    ...
+    test <span class="hljs-built_in">a</span>(<span class="hljs-number">5</span>);
+    <span class="hljs-keyword">int</span> i = a;
+    ...
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+<hr>
+<h2><span id="static有什么用途">static有什么用途</span></h2><ul>
+<li>静态（局部/全局）变量</li>
+<li>静态函数</li>
+<li>类的静态数据成员</li>
+<li>类的静态成员函数</li>
+</ul>
+<hr>
+<h2><span id="类的静态成员变量和静态成员函数各有哪些特性">类的静态成员变量和静态成员函数各有哪些特性？</span></h2><ul>
+<li>静态成员变量<ul>
+<li>静态成员变量需要在类内声明（加static），在类外初始化（不能加static），如下例所示；</li>
+<li>静态成员变量在类外单独分配存储空间，位于全局数据区，因此静态成员变量的生命周期不依赖于类的某个对象，而是所有类的对象共享静态成员变量；</li>
+<li>可以通过对象名直接访问公有静态成员变量；</li>
+<li>可以通过类名直接调用公有静态成员变量，即不需要通过对象，这一点是普通成员变量所不具备的。</li>
+</ul>
+</li>
+</ul>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">example</span>&#123;</span>
+<span class="hljs-keyword">private</span>:
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> m_int; <span class="hljs-comment">//static成员变量</span>
+&#125;;
+
+<span class="hljs-keyword">int</span> example::m_int = <span class="hljs-number">0</span>; <span class="hljs-comment">//没有static</span>
+
+cout&lt;&lt;example::m_int; <span class="hljs-comment">//可以直接通过类名调用静态成员变量</span></code></pre></div>
+<ul>
+<li>静态成员函数<ul>
+<li>静态成员函数是类所共享的；</li>
+<li>静态成员函数可以访问静态成员变量，但是不能直接访问普通成员变量（需要通过对象来访问）；需要注意的是普通成员函数既可以访问普通成员变量，也可以访问静态成员变量；</li>
+<li>可以通过对象名直接访问公有静态成员函数；</li>
+<li>可以通过类名直接调用公有静态成员函数，即不需要通过对象，这一点是普通成员函数所不具备的。</li>
+</ul>
+</li>
+</ul>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">example</span>&#123;</span>
+<span class="hljs-keyword">private</span>:
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> m_int_s; <span class="hljs-comment">//static成员变量</span>
+<span class="hljs-keyword">int</span> m_int;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getI</span><span class="hljs-params">()</span> <span class="hljs-comment">//静态成员函数在普通成员函数前加static即可</span></span>
+<span class="hljs-function"></span>&#123;
+  <span class="hljs-keyword">return</span> m_int_s; <span class="hljs-comment">//如果返回m_int则报错，但是可以return d.m_int是合法的</span>
+&#125;
+&#125;;
+
+cout&lt;&lt;example::<span class="hljs-built_in">getI</span>(); <span class="hljs-comment">//可以直接通过类名调用静态成员变量</span></code></pre></div>
+<hr>
+<h2><span id="在c程序中调用被c编译器编译后的函数为什么要加externc">在C++程序中调用被C编译器编译后的函数，为什么要加extern“C”?</span></h2><p>C++语言支持函数重载，C语言不支持函数重载，函数被C++编译器编译后在库中的名字与C语言的不同，假设某个函数原型为：</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">foo</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x, <span class="hljs-keyword">int</span> y)</span></span>;</code></pre></div>
+<p>该函数被C编译器编译后在库中的名字为 _foo, 而C++编译器则会产生像: _foo_int_int 之类的名字。为了解决此类名字匹配的问题，C++提供了C链接交换指定符号 extern “C”。</p>
+<hr>
+<h2><span id="头文件中的ifndefdefineendif是干什么用的-该用法和program-once的区别">头文件中的ifndef/define/endif是干什么用的? 该用法和program once的区别？</span></h2><p>相同点:它们的作用是防止头文件被重复包含。<br>不同点:</p>
+<ul>
+<li>ifndef 由语言本身提供支持，但是program once一般由编译器提供支持，也就是说，有可能出现编译器不支持的情况(主要是比较老的编译器)。</li>
+<li>通常运行速度上 ifndef 一般慢于program once，特别是在大型项目上，区别会比较明显，所以越来越多的编译器开始支持program once。</li>
+<li>fndef 作用于某一段被包含（define 和 endif 之间）的代码， 而 program once 则是针对包含该语句的文件， 这也是为什么 program once 速度更快的原因。</li>
+<li>如果用 ifndef 包含某一段宏定义，当这个宏名字出现“撞车”时，可能会出现这个宏在程序中提示宏未定义的情况（在编写大型程序时特性需要注意，因为有很多程序员在同时写代码）。相反由于program once 针对整个文件， 因此它不存在宏名字“撞车”的情况， 但是如果某个头文件被多次拷贝，program once 无法保证不被多次包含，因为program once 是从物理上判断是不是同一个头文件，而不是从内容上。</li>
+</ul>
+<hr>
+<h2><span id="当i是一个整数的时候i和i那个更快一点i和i的区别是什么">当i是一个整数的时候++i和i++那个更快一点？i++和++i的区别是什么？</span></h2><p>答：理论上++i更快，实际与编译器优化有关，通常几乎无差别。</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-comment">//i++实现代码为：</span>
+<span class="hljs-keyword">int</span> <span class="hljs-keyword">operator</span>++(<span class="hljs-keyword">int</span>)
+&#123;
+    <span class="hljs-keyword">int</span> temp = *<span class="hljs-keyword">this</span>;
+    ++*<span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">return</span> temp;
+&#125;<span class="hljs-comment">//返回一个int型的对象本身</span>
+
+<span class="hljs-comment">// ++i实现代码为：</span>
+<span class="hljs-keyword">int</span>&amp; <span class="hljs-keyword">operator</span>++()
+&#123;
+    *<span class="hljs-keyword">this</span> += <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">return</span> *<span class="hljs-keyword">this</span>;
+&#125;<span class="hljs-comment">//返回一个int型的对象引用</span></code></pre></div>
+<p>i++和++i的考点比较多，简单来说，就是i++返回的是i的值，而++i返回的是i+1的值。也就是++i是一个确定的值，是一个可修改的左值，如下使用：</p>
+<div class="hljs"><pre><code class="hljs cpp">cout &lt;&lt; ++(++(++i)) &lt;&lt; endl;
+cout &lt;&lt; ++ ++i &lt;&lt; endl;</code></pre></div>
+<p>可以不停的嵌套++i。这里有很多的经典笔试题，一起来观摩下：</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>;
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d,%d\n&quot;</span>, ++i, ++i);    <span class="hljs-comment">//3,3</span>
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d,%d\n&quot;</span>, ++i, i++);    <span class="hljs-comment">//5,3</span>
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d,%d\n&quot;</span>, i++, i++);    <span class="hljs-comment">//6,5</span>
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d,%d\n&quot;</span>, i++, ++i);    <span class="hljs-comment">//8,9</span>
+    <span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;pause&quot;</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+<p>首先是函数的参数入栈顺序从右向左入栈的，计算顺序也是从右往左计算的，不过都是计算完以后再进行的压栈操作：</p>
+<ul>
+<li>对于第1个printf，首先执行++i，返回值是i，这时i的值是2，再次执行++i，返回值是i，得到i=3，将i压入栈中，此时i为3，也就是压入3，3；</li>
+<li>对于第2个printf，首先执行i++，返回值是原来的i，也就是3，再执行++i，返回值是i，依次将3，5压入栈中得到输出结果</li>
+<li>对于第3个printf，首先执行i++，返回值是5，再执行i++返回值是6，依次将5，6压入栈中得到输出结果</li>
+<li>对于第4个printf，首先执行++i，返回i，此时i为8，再执行i++，返回值是8，此时i为9，依次将i，8也就是9，8压入栈中，得到输出结果。</li>
+</ul>
+<p>上面的分析也是基于VS搞的，不过准确来说函数多个参数的计算顺序是未定义的(the order of evaluation of function arguments are undefined)。笔试题目的运行结果随不同的编译器而异。</p>
+<hr>
+<h2><span id="指针和引用的区别">指针和引用的区别？</span></h2><p>相同点：</p>
+<ul>
+<li>都是地址的概念；</li>
+<li>都是“指向”一块内存。指针指向一块内存，它的内容是所指内存的地址；而引用则是某块内存的别名；</li>
+<li>引用在内部实现其实是借助指针来实现的，一些场合下引用可以替代指针，比如作为函数形参。</li>
+</ul>
+<p>不同点：</p>
+<ul>
+<li>指针是一个实体，而引用(看起来，这点很重要)仅是个别名；</li>
+<li>引用只能在定义时被初始化一次，之后不可变；指针可变；引用“从一而终”，指针可以“见异思迁”；</li>
+<li>引用不能为空，指针可以为空；</li>
+<li>“sizeof 引用”得到的是所指向的变量(对象)的大小，而“sizeof 指针”得到的是指针本身的大小；</li>
+<li>指针和引用的自增(++)运算意义不一样；</li>
+<li>引用是类型安全的，而指针不是 (引用比指针多了类型检查)</li>
+<li>引用具有更好的可读性和实用性。</li>
+</ul>
+<hr>
+<h2><span id="引用占用内存空间吗">引用占用内存空间吗？</span></h2><p>如下代码中对引用取地址，其实是取的引用所对应的内存空间的地址。这个现象让人觉得引用好像并非一个实体。但是引用是占用内存空间的，而且其占用的内存和指针一样，因为引用的内部实现就是通过指针来完成的。<br>比如 Type&amp; name； &lt;===&gt; Type* const name。</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+        <span class="hljs-keyword">int</span> a = <span class="hljs-number">8</span>;
+        <span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> &amp;b = a;
+        <span class="hljs-keyword">int</span> *p = &amp;a;
+        *p = <span class="hljs-number">0</span>;
+        cout&lt;&lt;a; <span class="hljs-comment">//output 0</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+<hr>
+<h2><span id="三目运算符">三目运算符</span></h2><p>在C中三目运算符(? :)的结果仅仅可以作为右值，比如如下的做法在C编译器下是会报错的，但是C++中却是可以是通过的。这个进步就是通过引用来实现的，因为下面的三目运算符的返回结果是一个引用，然后对引用进行赋值是允许的。</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+        <span class="hljs-keyword">int</span> a = <span class="hljs-number">8</span>;
+        <span class="hljs-keyword">int</span> b = <span class="hljs-number">6</span>;
+        (a&gt;b ? a : b) = <span class="hljs-number">88</span>;
+        cout&lt;&lt;a; <span class="hljs-comment">//output 88</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+<hr>
+<h2><span id="指针数组和数组指针的区别">指针数组和数组指针的区别</span></h2><ul>
+<li>数组指针，是指向数组的指针，而指针数组则是指该数组的元素均为指针。</li>
+<li>数组指针，是指向数组的指针，其本质为指针，形式如下。如<code>int (*p)[10]</code>，p即为指向数组的指针，()优先级高，首先说明p是一个指针，指向一个整型的一维数组，这个一维数组的长度是n，也可以说是p的步长。也就是说执行p+1时，p要跨过n个整型数据的长度。数组指针是指向数组首元素的地址的指针，其本质为指针，可以看成是二级指针。<div class="hljs"><pre><code class="hljs cpp">类型名 (*数组标识符)[数组长度]</code></pre></div>
+指针数组，在C语言和C++中，数组元素全为指针的数组称为指针数组，其中一维指针数组的定义形式如下。指针数组中每一个元素均为指针，其本质为数组。如<code>int *p[n]</code>， <code>[]</code>优先级高，先与p结合成为一个数组，再由<code>int*</code>说明这是一个整型指针数组，它有n个指针类型的数组元素。这里执行p+1时，则p指向下一个数组元素，这样赋值是错误的：p=a；因为p是个不可知的表示，只存在p[0]、p[1]、p[2]…p[n-1],而且它们分别是指针变量可以用来存放变量地址。但可以这样<code> *p=a</code>; 这里<code>*p</code>表示指针数组第一个元素的值，a的首地址的值。<div class="hljs"><pre><code class="hljs cpp">类型名 *数组标识符[数组长度]</code></pre></div></li>
+</ul>
+<hr>
+<h2><span id="什么是面向对象oop面向对象的意义">什么是面向对象（OOP）？面向对象的意义？</span></h2><ul>
+<li>Object Oriented Programming, 面向对象是一种对现实世界理解和抽象的方法、思想，通过将需求要素转化为对象进行问题处理的一种思想。其核心思想是数据抽象、继承和动态绑定（多态）。</li>
+<li>面向对象的意义在于：将日常生活中习惯的思维方式引入程序设计中；将需求中的概念直观的映射到解决方案中；以模块为中心构建可复用的软件系统；提高软件产品的可维护性和可扩展性。</li>
+</ul>
+<hr>
+<h2><span id="解释下封装-继承和多态">解释下封装、继承和多态？</span></h2><ul>
+<li>封装：<br>封装是实现面向对象程序设计的第一步，封装就是将数据或函数等集合在一个个的单元中（我们称之为类）。封装的意义在于保护或者防止代码（数据）被我们无意中破坏。</li>
+<li>继承：<br>继承主要实现重用代码，节省开发时间。<br>子类可以继承父类的一些东西。<ul>
+<li>公有继承(public)<br>公有继承的特点是基类的公有成员和保护成员作为派生类的成员时，它们都保持原有的状态，而基类的私有成员仍然是私有的，不能被这个派生类的子类所访问。</li>
+<li>私有继承(private)<br>私有继承的特点是基类的公有成员和保护成员都作为派生类的私有成员，并且不能被这个派生类的子类所访问。</li>
+<li>保护继承(protected)<br>保护继承的特点是基类的所有公有成员和保护成员都成为派生类的保护成员，并且只能被它的派生类成员函数或友元访问，基类的私有成员仍然是私有的。</li>
+</ul>
+</li>
+<li>多态</li>
+</ul>
+<hr>
+<h2><span id="什么时候生成默认构造函数无参构造函数什么时候生成默认拷贝构造函数什么是深拷贝什么是浅拷贝默认拷贝构造函数是哪种拷贝什么时候用深拷贝">什么时候生成默认构造函数（无参构造函数）？什么时候生成默认拷贝构造函数？什么是深拷贝？什么是浅拷贝？默认拷贝构造函数是哪种拷贝？什么时候用深拷贝？</span></h2><ul>
+<li>没有任何构造函数时，编译器会自动生成默认构造函数，也就是无参构造函数；当类没有拷贝构造函数时，会生成默认拷贝构造函数。</li>
+<li>深拷贝是指拷贝后对象的逻辑状态相同，而浅拷贝是指拷贝后对象的物理状态相同；默认拷贝构造函数属于浅拷贝。</li>
+<li>当系统中有成员指代了系统中的资源时，需要深拷贝。比如指向了动态内存空间，打开了外存中的文件或者使用了系统中的网络接口等。如果不进行深拷贝，比如动态内存空间，可能会出现多次被释放的问题。是否需要定义拷贝构造函数的原则是，是类是否有成员调用了系统资源，如果定义拷贝构造函数，一定是定义深拷贝，否则没有意义。</li>
+</ul>
+<hr>
+<h2><span id="构造函数和析构函数的执行顺序">构造函数和析构函数的执行顺序？</span></h2><p>构造函数</p>
+<ul>
+<li>首先调用父类的构造函数；</li>
+<li>调用成员变量的构造函数；</li>
+<li>调用类自身的构造函数。<br>析构函数<br>对于栈对象或者全局对象，调用顺序与构造函数的调用顺序刚好相反，也即后构造的先析构。对于堆对象，析构顺序与delete的顺序相关。</li>
+</ul>
+<hr>
+<h2><span id="c的编译环境">C++的编译环境</span></h2><p>如下图所示，C++的编译环境由如下几部分构成：C++标准库、C语言兼容库、编译器扩展库及编译模块。<br><img src="/img/post_pics/c/c_3.png"></p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span>  <span class="hljs-comment">//C++标准库，不带&quot;.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;string.h&gt;</span>  <span class="hljs-comment">//C语言兼容库，由编译器厂商提供</span></span></code></pre></div>
+<p>值得注意的是，C语言兼容库功能上跟C++标准库中的C语言子库相同，它的存中主要为了兼容C语言编译器，也就是说如果一个文件只包含C语言兼容库（不包含C++标准库），那么它在C语言编译器中依然可以编译通过。</p>
+<hr>
+<h2><span id="说一下static关键字的作用">说一下static关键字的作用？</span></h2><ul>
+<li>全局静态变量<ul>
+<li>在全局变量前加上关键字 static，全局变量就定义成一个全局静态变量。</li>
+<li>内存中位置：静态存储区，在整个程序运行期间一直存在。</li>
+<li>初始化：未经初始化的全局静态变量会被自动初始化为0（自动对象的值是任意的，除非他被显式初始化）；</li>
+<li>作用域：全局静态变量在声明他的文件之外是不可见的，准确地说是从定义之处开始，到文件结尾。</li>
+</ul>
+</li>
+<li>局部静态变量<ul>
+<li>在局部变量之前加上关键字static，局部变量就成为一个局部静态变量。</li>
+<li>内存中的位置：静态存储区</li>
+<li>初始化：未经初始化的局部静态变量会被自动初始化为0（自动对象的值是任意的，除非他被显式初始化）；</li>
+<li>作用域：作用域仍为局部作用域，当定义它的函数或者语句块结束的时候，作用域结束。但是当局部静态变量离开作用域后，并没有销毁，而是仍然驻留在内存当中，只不过我们不能再对它进行访问，直到该函数再次被调用，并且值不变；</li>
+</ul>
+</li>
+<li>静态函数<ul>
+<li>在函数返回类型前加static，函数就定义为静态函数。函数的定义和声明在默认情况下都是extern的，但静态函数只是在声明他的文件当中可见，不能被其他文件所用。</li>
+<li>函数的实现使用static修饰，那么这个函数只可在本cpp内使用，不会同其他cpp中的同名函数引起冲突；</li>
+<li>注意：不要在头文件中声明static的全局函数，不要在cpp内声明非static的全局函数，如果你要在多个cpp中复用该函数，就把它的声明提到头文件里去，否则cpp内部声明需加上static修饰；</li>
+</ul>
+</li>
+<li>类的静态成员<ul>
+<li>在类中，静态成员可以实现多个对象之间的数据共享，并且使用静态数据成员还不会破坏隐藏的原则，即保证了安全性。因此，静态成员是类的所有对象中共享的成员，而不是某个对象的成员。对多个对象来说，静态数据成员只存储一处，供所有对象共用。</li>
+</ul>
+</li>
+<li>类的静态函数<ul>
+<li>静态成员函数和静态数据成员一样，它们都属于类的静态成员，它们都不是对象成员。因此，对静态成员的引用不需要用对象名。</li>
+</ul>
+</li>
+</ul>
+<p>在静态成员函数的实现中不能直接引用类中说明的非静态成员，可以引用类中说明的静态成员（这点非常重要）。如果静态成员函数中要引用非静态成员时，可通过对象来引用。<br>从中可看出，调用静态成员函数使用如下格式：&lt;类名&gt;::&lt;静态成员函数名&gt;(&lt;参数表&gt;);<br>简洁回答：（推荐）</p>
+<ul>
+<li>加了static 关键字的全局变量只能在本文件中使用。</li>
+<li>例如在 a.c 中定义了<code>static int a=10</code>;那么在 b.c 中用extern int a 是拿不到 a 的值得，a 的作用域只在 a.c 中。</li>
+<li>static定义的静态局部变量分配在数据段上，普通的局部变量分配在栈上，会因为函数栈帧的释放而被释放掉。</li>
+<li>对一个类中成员变量和成员函数来说，加了 static 关键字，则此变量/函数就没有了 this 指针了，必须通过类名才能访问</li>
+</ul>
+<hr>
+<h2><span id="说一下const关键字的作用">说一下const关键字的作用？</span></h2><p><img src="/img/post_pics/c/c_4.png"></p>
+<hr>
+<h2><span id="请说一下extern关键字的作用">请说一下extern关键字的作用？</span></h2><ul>
+<li>extern修饰变量的声明。举例来说，如果文件a.c需要引用b.c中变量int v，就可以在a.c中声明extern int v，然后就可以引用变量v。这里需要注意的是，被引用的变量v的链接属性必须是外链接（external）的，也就是说a.c要引用到v，不只是取决于在a.c中声明extern int v，还取决于变量v本身是能够被引用到的。这涉及到c语言的另外一个话题－－变量的作用域。能够被其他模块以extern修饰符引用到的变量通常是全局变量。还有很重要的一点是，extern int v可以放在a.c中的任何地方，比如你可以在a.c中的函数fun定义的开头处声明extern int v，然后就可以引用到变量v了，只不过这样只能在函数fun作用域中引用v罢了，这还是变量作用域的问题。对于这一点来说，很多人使用的时候都心存顾虑。好像extern声明只能用于文件作用域似的。</li>
+<li>extern修饰函数声明。从本质上来讲，变量和函数没有区别。函数名是指向函数二进制块开头处的指针。如果文件a.c需要引用b.c中的函数，比如在b.c中原型是int fun(int mu)，那么就可以在a.c中声明extern int fun（int mu），然后就能使用fun来做任何事情。就像变量的声明一样，extern int fun（int mu）可以放在a.c中任何地方，而不一定非要放在a.c的文件作用域的范围中。对其他模块中函数的引用，最常用的方法是包含这些函数声明的头文件。</li>
+<li>此外，extern修饰符可用于指示C或者C++函数的调用规范。比如在C++中调用C库函数，就需要在C++程序中用extern “C”声明要引用的函数。这是给链接器用的，告诉链接器在链接的时候用C函数规范来链接。主要原因是C++和C程序编译完成后在目标代码中命名规则不同。</li>
+</ul>
+<hr>
+<h2><span id="说一下c和c的区别">说一下C++和C的区别</span></h2><ul>
+<li>设计思想上<ul>
+<li>C++是面向对象的语言，而C是面向过程的结构化编程语言。</li>
+</ul>
+</li>
+<li>语法上<ul>
+<li>C++具有重载、继承和多态三种特性。</li>
+<li>C++相比C，增加多许多类型安全的功能，比如强制类型转换。</li>
+<li>C++支持范式编程，比如模板类、函数模板等。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2><span id="说一说-c-中四种强转类型转换">说一说 c++ 中四种强转类型转换。</span></h2><p>C++中四种类型转换是：static_cast、dynamic_cast、const_cast、reinterpret_cast。</p>
+<ul>
+<li>const_cast<ul>
+<li>一般用于指针转换。</li>
+<li>可以将 const 指针转为非 const 指针。</li>
+<li>可以将const引用转换为非const引用。</li>
+</ul>
+</li>
+<li>static_cast<ul>
+<li>用于各种隐式转换，转换之前，要先将类型转换为void<em>，再转换成其他类型，比如非 const 转 const，void</em>转指针等, static_cast 能用于多态向上转化，如果向下转能成功但是不安全，结果未知，因为没有动态类型检查；</li>
+</ul>
+</li>
+<li>dynamic_cast<ul>
+<li>用于动态类型转换。只能用于含有虚函数的类，用于类层次间的向上和向下转化。只能转指针或引用。向下转化时，如果是非法的对于指针返回 NULL，对于引用抛异常。</li>
+<li>向上转换：指的是子类向基类的转换</li>
+<li>向下转换：指的是基类向子类的转换</li>
+<li>它通过判断在执行到该语句的时候变量的运行时类型和要转换的类型是否相同来判断是否能够进行向下转换。</li>
+</ul>
+</li>
+<li>reinterpret_cast<ul>
+<li>几乎什么都可以转，比如将 int 转指针，可能会出问题，尽量少用；</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2><span id="为什么不使用-c-的强制转换">为什么不使用 C 的强制转换？</span></h2><p>C的强制转换表面上看起来功能强大什么都能转，但是转化不够明确，不能进行错误检查，容易出错。</p>
+<hr>
+<h2><span id="请说一下cc中指针和引用概念及其区别">请说一下C/C++中指针和引用概念及其区别？</span></h2><ul>
+<li>引用<ul>
+<li>引用就是 C++对 C语言的重要扩充。引用就是某一变量的一个别名，对引用的操作与对变量直接操作完全一样。</li>
+<li>引用的声明方法：类型标识符 &amp;引用名=目标变量名；</li>
+<li>引用引入了对象的一个同义词。定义引用的表示方法与定义指针相似，只是用&amp;代替了*。</li>
+<li>引用使用注意事项：<ul>
+<li>引用必须被初始化；</li>
+<li>引用不能改变绑定的对象；</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>指针<ul>
+<li>指针利用地址，它的值直接指向存在电脑存储器中另一个地方的值。由于通过地址能找到所需的变量单元，可以说，地址指向该变量单元。因此，将地址形象化的称为“指针”。意思是通过它能找到以它为地址的内存单元。</li>
+<li>指针使用注意事项：<ul>
+<li>初始化时要置空；</li>
+<li>使用时要考虑指向对象边界问题；</li>
+<li>不能对未初始化的指针取值或赋值；</li>
+<li>释放时要置空；</li>
+<li>如果返回动态分配内存或对象，必须使用指针；</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>区别：</p>
+<ul>
+<li>指针是一个实体，需要分配内存空间。引用只是变量的别名，不需要分配内存空间；</li>
+<li>使用 sizeof 看一个指针的大小是 4，而引用则是被引用对象的大小；</li>
+<li>指针可以被初始化为 NULL，而引用必须被初始化且必须是一个已有对象的引用；</li>
+<li>作为参数传递时，指针需要被解引用才可以对对象进行操作，而直接对引用的修改都会改变引用所指向的对象；</li>
+<li>指针在使用中可以指向其它对象，但是引用只能是一个对象的引用，不能被改变；</li>
+<li>指针可以有多级指针（**p），而引用至多一级；</li>
+<li>指针和引用使用自增运算符的意义不一样；（指针是指向下一个空间，引用时引用的变量值加1）</li>
+<li>如果返回动态内存分配的对象或者内存，必须使用指针，引用可能引起内存泄露。</li>
+</ul>
+<hr>
+<h2><span id="请你说一下你理解的-c-中的四个智能指针">请你说一下你理解的 c++ 中的四个智能指针。</span></h2><ul>
+<li>C++里面的四个智能指针: auto_ptr、shared_ptr、weak_ptr、unique_ptr（其中后三个是 c++11 支持，第一个已经被 11 弃用）</li>
+</ul>
+<hr>
+<h2><span id="请回答一下数组和指针的区别">请回答一下数组和指针的区别。</span></h2><p>指针和数组的主要区别如下：<br><img src="/img/post_pics/c/c_5.png"></p>
+<hr>
+<h2><span id="请你回答一下野指针是什么">请你回答一下野指针是什么？</span></h2><p>野指针就是指向一个已释放的内存或者无访问权限的内存区域的指针。</p>
+<hr>
+<h2><span id="请你回答一下智能指针有没有内存泄露的情况">请你回答一下智能指针有没有内存泄露的情况</span></h2><p>当两个对象相互使用一个 shared_ptr 成员变量指向对方，会造成循环引用，使引用计数失效，从而导致内存泄漏。</p>
+<hr>
+<h2><span id="请你来说一下智能指针的内存泄漏如何解决">请你来说一下智能指针的内存泄漏如何解决</span></h2><p>为了解决循环引用导致的内存泄漏，引入了 weak_ptr 弱指针，weak_ptr 的构造函数不会修改引用计数的值，从而不会对对象的内存进行管理，其类似一个普通指针，但不指向引用计数的共享内存，但是其可以检测到所管理的对象是否已经被释放，从而避免非法访问。</p>
+<hr>
+<h2><span id="请你回答一下为什么析构函数必须是虚函数为什么-c-默认的析构函数不是虚函数考点-虚函数-析构函数">请你回答一下为什么析构函数必须是虚函数？为什么 C++ 默认的析构函数不是虚函数（考点: 虚函数 析构函数）</span></h2><ul>
+<li>一般将基类的析构函数设置为虚函数，当我们new一个子类对象，并用基类指针指向子类对象时，避免释放基类指针后，而未释放子类对象的空间，防止内存泄漏。</li>
+<li>首先，默认的析构函数所在的类一般不会被其他类继承，而且虚函数需要额外的虚函数表和虚表指针，会占用额外的内存。所以默认构造函数不是虚函数。</li>
+</ul>
+<hr>
+<h2><span id="请你来说一下函数指针">请你来说一下函数指针</span></h2><ul>
+<li>定义：函数指针是一个指向函数首地址的指针变量。<br>C在编译时，每一个函数都有一个人口地址，函数指针指向的就是这个人口地址。有了函数指针，可以通过指针来调用函数。就向指针数组一样。</li>
+<li>用途：<br>调用函数和做函数的参数，比如回调函数。</li>
+<li>示例：<div class="hljs"><pre><code class="hljs CPP"><span class="hljs-function"><span class="hljs-keyword">char</span>* <span class="hljs-title">fun</span><span class="hljs-params">(<span class="hljs-keyword">char</span> * p)</span> </span>&#123;…&#125;;  <span class="hljs-comment">// 普通函数 fun</span>
+<span class="hljs-keyword">char</span>* (*pf)(<span class="hljs-keyword">char</span> * p);     <span class="hljs-comment">// 函数指针 pf</span>
+pf = fun; <span class="hljs-comment">// 函数指针 pf 指向函数 fun</span>
+<span class="hljs-built_in">pf</span>(p);    <span class="hljs-comment">// 通过函数指针 pf 调用函数 fun</span></code></pre></div></li>
+</ul>
+<hr>
+<h2><span id="请你来说一下-fork-函数">请你来说一下 fork 函数</span></h2><p>fork：创建一个和当前进程映像一样的进程可以通过 fork( )系统调用；<br>相关头文件：</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/types.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span></code></pre></div>
+<ul>
+<li>函数原型： pid_t fork(void);</li>
+<li>成功调用 fork( )会创建一个新的进程，它几乎与调用 fork( )的进程一模一样，这两个进程都会继续运行。<br>返回值：<ul>
+<li>在子进程中，成功的 fork( )调用会返回 0。</li>
+<li>在父进程中 fork( )返回子进程的 pid。</li>
+<li>如果出现错误，fork( )返回一个负值。</li>
+</ul>
+</li>
+<li>最常见的 fork( )用法是创建一个新的进程，然后使用 exec( )载入二进制映像，替换当前进程的映像。这种情况下，派生（fork）了新的进程，而这个子进程会执行一个新的二进制可执行文件的映像。这种“派生加执行”的方式是很常见的。</li>
+<li>在早期的 Unix 系统中，创建进程比较原始。当调用 fork 时，内核会把所有的内部数据结构复制一份，复制进程的页表项，然后把父进程的地址空间中的内容逐页的复制到子进程的地址空间中。但从内核角度来说，逐页的复制方式是十分耗时的。现代的 Unix 系统采取了更多的优化，例如 Linux，采用了写时复制的方法，而不是对父进程空间进程整体复制。</li>
+</ul>
+<hr>
+<h2><span id="请你来说一下c中析构函数的作用">请你来说一下C++中析构函数的作用</span></h2><ul>
+<li>析构函数与构造函数对应，当对象结束其生命周期，如对象所在的函数已调用完毕时，系统会自动执行析构函数，释放动态开辟的内存空间，防止内存泄漏。</li>
+<li>注： 类调用析构函数顺序：1）子类本身的析构函数；2）对象成员析构函数；3）基类析构函数。</li>
+</ul>
+<hr>
+<h2><span id="请你来说一下静态函数和虚函数的区别">请你来说一下静态函数和虚函数的区别</span></h2><p>静态函数在编译的时候就已经确定运行时机（即编译时确定函数的入口地址），虚函数在运行的时候动态绑定。虚函数因为用了虚函数表机制，调用的时候会增加一次内存开销。</p>
+<hr>
+<h2><span id="请你来说一说重载和覆盖">请你来说一说重载和覆盖。</span></h2><ul>
+<li>重载：其是对于一个类而言的，在类中，两个函数的函数名相同，参数列表不同（参数类型或个数），返回值无要求。</li>
+<li>覆盖：前提是子类继承父类，在父类中，有一个虚函数，然后在子类中重新定义了这个函数，这就构成了覆盖。</li>
+</ul>
+<p>补充：</p>
+<ul>
+<li>隐藏：前提也是子类继承父类，分为两种情况。<ul>
+<li>父类函数和子类函数名相同，但是参数不同，这时父类同名函数有无virtual修饰，都构成隐藏，即子类指针调用同名函数，调用的是子类的函数，父类函数被隐藏。</li>
+<li>父类函数和子类函数名相同，参数也相同，且父类同名函数无virtual修饰。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2><span id="请你说一说-strcpy-和-和-strlen">请你说一说 strcpy 和 和 strlen。</span></h2><ul>
+<li>strcpy 是字符串拷贝函数，原型：<code>char *strcpy(char* dest, const char *src);</code></li>
+<li>从src逐字节拷贝到dest，直到遇到’\0’结束，因为没有指定长度，可能会导致拷贝越界，造成缓冲区溢出漏洞，安全版本是 strncpy 函数。</li>
+<li>strlen 函数是计算字符串长度的函数，返回从开始到’\0’之间的字符个数。</li>
+</ul>
+<hr>
+<h2><span id="请你来回答一下i-和-i">请你来回答一下++i 和 i++。</span></h2><p>++i先自增1，再返回，i++先返回i，再自增1。</p>
+<hr>
+<h2><span id="请你说一说你理解的虚函数和多态">请你说一说你理解的虚函数和多态。</span></h2><ul>
+<li>多态的实现主要分为静态多态和动态多态，静态多态主要是重载，在编译的时候就已经确定，静态绑定；动态多态是用虚</li>
+<li>函数机制实现的，在运行期间动态绑定。</li>
+<li>举个栗子：一个父类类型的指针指向一个子类对象时候，使用父类的指针去调用子类中重写了的父类中的虚函数的时候，会调用子类重写过后的函数，在父类中声明为加了 virtual关键字的函数，在子类中重写时候不需要加 virtual 也是虚函数。</li>
+<li>虚函数的实现：在有虚函数的类中，类的最开始部分是一个虚函数表的指针，这个指针指向一个虚函数表，表中放了虚函数的地址，实际的虚函数在代码段(.text)中。当子类继承了父类的时候也会继承其虚函数表，当子类重写父类中虚函数时候，会将其继承到的虚函数表中的地址替换为重新写的函数地址。使用了虚函数，会增加访问内存开销，降低效率。</li>
+</ul>
+<hr>
+<h2><span id="请你来说一说i-和-i-的实现">请你来说一说++i 和 i++ 的实现。</span></h2><ul>
+<li>++i 的实现</li>
+</ul>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-keyword">int</span> &amp; <span class="hljs-keyword">int</span>::<span class="hljs-keyword">operator</span>++()
+&#123;
+  *<span class="hljs-keyword">this</span> += <span class="hljs-number">1</span>;
+  <span class="hljs-keyword">return</span> *<span class="hljs-keyword">this</span>;
+&#125;</code></pre></div>
+<ul>
+<li>i++的实现</li>
+</ul>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> <span class="hljs-title">int::operator</span><span class="hljs-params">(<span class="hljs-keyword">int</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+  <span class="hljs-keyword">int</span> oldvalue = *<span class="hljs-keyword">this</span>;
+  ++(*<span class="hljs-keyword">this</span>);
+  <span class="hljs-keyword">return</span> oldvalue;
+&#125;</code></pre></div>
+
+<hr>
+<h2><span id="请你来写个函数在main函数执行前先运行">请你来写个函数在main函数执行前先运行。</span></h2><p>编译器：VC++6.0<br>语言：C<br>代码：</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;main\n&quot;</span>);
+  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">before_main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;before_main\n&quot;</span>);
+  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+<span class="hljs-function"><span class="hljs-keyword">typedef</span> <span class="hljs-keyword">int</span> <span class="hljs-title">func</span><span class="hljs-params">()</span></span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">pragma</span> data_seg(<span class="hljs-meta-string">&quot;.CRT$XIU&quot;</span>)<span class="hljs-comment">//用#pragma data_seg建立一个新的数据段并定义共享数据</span></span>
+<span class="hljs-keyword">static</span> func * before[] = &#123; before_main &#125;; <span class="hljs-comment">//定义一个函数数组，数组放的是函数的入口地址</span></code></pre></div>
+<p>编译器：VC++6.0<br>语言：C++<br>代码：</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">before_main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+ cout&lt;&lt;<span class="hljs-string">&quot;before_main() called&quot;</span>&lt;&lt;endl;
+ <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+
+<span class="hljs-keyword">int</span> g_Value = <span class="hljs-built_in">before_main</span>();
+
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+ cout&lt;&lt;<span class="hljs-string">&quot;main() called&quot;</span>&lt;&lt;endl;
+ <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+<hr>
+<h2><span id="以下四行代码的区别是什么">以下四行代码的区别是什么？</span></h2><div class="hljs"><pre><code class="hljs cpp"><span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> * arr =<span class="hljs-string">&quot;123&quot;</span>;
+<span class="hljs-keyword">char</span> * brr = <span class="hljs-string">&quot;123&quot;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> crr[] =<span class="hljs-string">&quot;123&quot;</span>;
+<span class="hljs-keyword">char</span> drr[] = <span class="hljs-string">&quot;123&quot;</span>;
+
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> * arr = <span class="hljs-string">&quot;123&quot;</span>;
+<span class="hljs-comment">//字符串 123 保存在常量区，const 本来是修饰 arr 指向的值不能通过 arr 去修改，但是字符串&quot;123&quot;在常量区，本来就不能改变，所以加不加 const 效果都一样。</span>
+<span class="hljs-keyword">char</span> * brr = <span class="hljs-string">&quot;123&quot;</span>;
+<span class="hljs-comment">//字符串 123 保存在常量区，这个 arr 指针指向的是同一个位置，同样不能通过 brr 去修改&quot;123&quot;的值。</span>
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> crr[] = <span class="hljs-string">&quot;123&quot;</span>;
+<span class="hljs-comment">//这里 123 本来是在栈上的，但是编译器可能会做某些优化，将其放到常量区。</span>
+<span class="hljs-keyword">char</span> drr[] = <span class="hljs-string">&quot;123&quot;</span>;
+<span class="hljs-comment">//字符串 123 保存在栈区，可以通过 drr 去修改。</span></code></pre></div>
+<hr>
+<h2><span id="请你来说一下c里是怎么定义常量的常量存放在内存的哪个位置">请你来说一下C++里是怎么定义常量的？常量存放在内存的哪个位置？</span></h2><ul>
+<li>常量在 C++里的定义就是一个const 加上对象类型，常量定义必须初始化。</li>
+<li>对于局部对象，常量存放在栈区。</li>
+<li>对于全局对象，编译期一般不分配内存，常量存放在全局/静态存储区。</li>
+<li>对于字面值常量，比如字符串，存放在常量存储区。</li>
+</ul>
+<hr>
+<h2><span id="请你来说一说隐式类型转换">请你来说一说隐式类型转换。</span></h2><p>首先，对于内置类型，低精度的变量给高精度变量赋值会发生隐式类型转换，低精度类型会转化为高精度类型。其次，对于只存在单个参数的构造函数的对象构造来说，函数调用可以直接使用该参数传入，编译器会自动调用其构造函数生成临时对象。</p>
+<hr>
+<h2><span id="请你来说一说-c函数栈空间的最大值">请你来说一说 C++函数栈空间的最大值</span></h2><p>Windows 默认是 2 M，不过可以调整。<br>Linux 默认是 8M，不过可以调整。</p>
+<hr>
+<h2><span id="请你来说一说-extern-c">请你来说一说 extern “C”</span></h2><p>C++调用 C函数需要 extern C，因为 C 语言没有函数重载。</p>
+<hr>
+<h2><span id="请你回答一下-newdelete与-与-mallocfree-的区别">请你回答一下 new/delete与 与 malloc/free 的区别。</span></h2><p>首先，new/delete 是 C++的关键字，而 malloc/free 是 C语言的库函数，后者使用必须指明申请内存空间的大小，对于类类型的对象，后者不会调用构造函数和析构函数。<br><img src="/img/post_pics/c/c_6.png"></p>
+<hr>
+<h2><span id="请你说说你了解的rtti">请你说说你了解的RTTI</span></h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_34337265/article/details/86392595">RTTI (Run Time Type Identification)</a> 指的是运行时类型识别。程序能够使用基类的指针或引来检查这些指针或引用所指的对象的实际派生类型。<br>RTTI提供了两个非常有用的操作符：typeid 和 dynamic_cast。</p>
+<ul>
+<li>typeid操作符：返回指针和引用所指的实际类型，返回类型为 type_info。<br>关于 typeid 的注意事项：<ul>
+<li>typeid 返回一个 type_info 的对象引用。</li>
+<li>如果想通过基类的指针指向派生类的数据类型，基类就必须要带有虚函数，否则，在使用typeid 时，就只能返回定义时所使用的数据类型。</li>
+<li>typeid 只能获取对象的实际类型，即便这个类含有虚函数，也只能判断当前对象是基类还是派生类，而不能判断当前指针是基类还是派生类。</li>
+</ul>
+</li>
+<li>dynamic_cast操作符：将基类类型的指针或引用安全地转换为其派生类类型的指针或引用。<br>关于 dynamic_cast 的注意事项：<ul>
+<li>只能应用与指针和引用的转换，即只能转化为某一个类型的指针或某一个类型的引用，而不能是某类型本身。</li>
+<li>要转化的类型中必须包含虚函数，如果没有虚函数，转换就会失败。</li>
+<li>如果转换成功，返回子类的地址，如果转换失败，返回NULL。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2><span id="请你说说虚函数表具体是怎样实现运行时多态的">请你说说虚函数表具体是怎样实现运行时多态的?</span></h2><p>对于存在虚函数的基类的对象，基类对象的头部存放指向虚函数表的指针，子类若重写基类的虚函数，对应虚函数表中，该函数的地址会被重写的子类函数的地址替换。</p>
+<hr>
+<h2><span id="请你说说-c-语言中是怎么进行函数调用的">请你说说 C 语言中是怎么进行函数调用的？</span></h2><p>每一个函数调用都会分配函数栈，在栈内进行函数执行过程。调用前，先把返回地址压栈，然后把当前函数的堆栈指针（ESP）压栈。</p>
+<hr>
+<h2><span id="请你说说c语言参数压栈顺序">请你说说C语言参数压栈顺序？</span></h2><p>根据参数列表从右向左依次压栈。</p>
+<hr>
+<h2><span id="请你说说c如何处理返回值">请你说说C++如何处理返回值？</span></h2><p>生成一个临时变量，把它的引用作为函数参数传入函数内。</p>
+<hr>
+<h2><span id="请你回答一下c中拷贝构造函数的形参能否进行值传递">请你回答一下C++中拷贝构造函数的形参能否进行值传递？</span></h2><p>不能。如果是值传递的话，调用拷贝构造函数时，首先将实参传给形参，这样又会调用拷贝构造函数，如此，会造成无限递归调用拷贝构造函数。</p>
+<hr>
+<h2><span id="请你回答一下malloc与new的区别">请你回答一下malloc与new的区别。</span></h2><p>malloc：本身是一个函数，需要知道申请内存的大小，返回的指针需要强转。<br>new：本身不是函数，是一个关键字，不用指定申请内存大小，动态开辟空间，返回指针不用强转。</p>
+<hr>
+<h2><span id="请你说一说select">请你说一说select。</span></h2><ul>
+<li>函数原型：int select ( int maxfdp1, fd_set *readset, fd_set *writeset, fd_set *exceptset, const struct timeval *timeout )</li>
+<li>select在使用前，先将需要监控的描述符对应的 bit 位置 1，然后将其传给 select,当有任何一个事件发生时，select 将会返回所有的描述符，需要在应用程序自己遍历去检查哪个描述符上有事件发生，效率很低，并且其不断在内核态和用户态进行描述符的拷贝，开销很大。</li>
+<li>补充：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/Anker/archive/2013/08/14/3258674.html">select总结</a></li>
+</ul>
+<hr>
+<h2><span id="请你说说-forkwaitexec-函数">请你说说 fork，wait，exec 函数。</span></h2><p>父进程产生子进程使用fork拷贝出来一个父进程的副本，此时只拷贝了父进程的页表，两个进程都读同一块内存，当有进程写的时候使用写实拷贝机制分配内存，exec 函数可以加载一个 elf 文件去替换父进程，从此父进程和子进程就可以运行不同的程序了。fork 从父进程返回子进程的 pid，从子进程返回 0，调用了 wait 的父进程将会发生阻塞，直到有子进程状态改变,执行成功返回 0，错误返回-1。exec 执行成功则子进程从新的程序开始运行，无返回值，执行失败返回-1。</p>
+<hr>
+<h2><span id="请你来说一下map和set有什么区别分别又是怎么实现的">请你来说一下map和set有什么区别，分别又是怎么实现的？</span></h2><p>实现机制：map 和 set 都是 C++的关联容器，其底层实现都是红黑树（RB-Tree）。由于 map 和 set 所开放的各种操作接口，RB-tree 也都提供了，所以几乎所有的 map 和 set 的操作行为，都只是转调 RB-tree 的操作行为。<br>map和set区别在于：</p>
+<ul>
+<li>map 中的元素是 key-value（关键字—值）对：关键字起到索引的作用，值则表示与索引相关联的数据；set 与之相对就是关键字的简单集合，set 中每个元素只包含一个关键字key。</li>
+<li>set 的迭代器是 const 的，不允许修改元素的值；map 允许修改 value，但不允许修改 key。其原因是因为map 和 set 是根据关键字排序来保证其有序性的。<ul>
+<li>对于set，如果允许修改 key 的话，那么首先需要删除该键，然后调节平衡，再插入修改后的键值，调节平衡，如此一来，严重破坏了 map 和 set 的结构，导致 iterator 失效，不知道应该指向改变前的位置，还是指向改变后的位置。所以 STL 中将 set 的迭代器设置成 const，不允许修改迭代器的值；</li>
+<li>对于map，map 的迭代器则不允许修改 key 值，允许修改 value 值。</li>
+</ul>
+</li>
+<li>map 支持下标操作，set 不支持下标操作。map 可以用 key 做下标，map 的下标运算符[ ]将关键码作为下标去执行查找，如果关键码不存在，则插入一个具有该关键码和 mapped_type 类型默认值的元素至 map 中，因此下标运算符[ ]在 map 应用中需要慎用，const_map 不能用，只希望确定某一个关键值是否存在而不希望插入元素时也不应该使用，mapped_type 类型没有默认值也不应该使用。如果 find 能解决需要，尽可能用 find。</li>
+</ul>
+<hr>
+<h2><span id="请你来介绍一下stl的allocator空间配置器">请你来介绍一下STL的allocator（空间配置器）</span></h2><ul>
+<li>STL的空间配置器用于封装STL容器在内存管理上的底层细节。在 C++中，其内存配置和释放如下：</li>
+<li>new运算分两个阶段：<ul>
+<li>调用 operator new 配置内存;</li>
+<li>调用对象构造函数构造对象内容</li>
+</ul>
+</li>
+<li>delete运算分两个阶段：<ul>
+<li>调用对象析构函数；</li>
+<li>调用operator delete 释放内存</li>
+</ul>
+</li>
+</ul>
+<p>为了精密分工，STL allocator 将两个阶段操作区分开来：</p>
+<ul>
+<li>内存配置由alloc::allocate()函数负责，内存释放由alloc::deallocate()函数负责；</li>
+<li>对象构造由::construct()函数负责，对象析构由::destroy()函数负责。</li>
+<li>同时为了提升内存管理的效率，减少申请小内存造成的内存碎片问题，SGI STL 采用了两级空间配置器。</li>
+<li>当分配的空间大小超过 128B 时，会使用第一级空间配置器；</li>
+<li>当分配的空间大小小于 128B 时，将使用第二级空间配置器。</li>
+<li>第一级空间配置器直接使用 malloc()、realloc()、free()函数进行内存空间的分配和释放，而第二级空间配置器采用了内存池技术，通过空闲链表来管理内存。</li>
+</ul>
+<hr>
+<h2><span id="请你讲讲-stl-有什么基本组成他们之间的关系是怎样的">请你讲讲 STL 有什么基本组成？他们之间的关系是怎样的？</span></h2><ul>
+<li>STL 主要由：以下六部分组成：<ul>
+<li>容器</li>
+<li>迭代器</li>
+<li>仿函数</li>
+<li>算法</li>
+<li>分配器</li>
+<li>配接器</li>
+</ul>
+</li>
+<li>他们之间的关系：<ul>
+<li>分配器：给容器分配存储空间。</li>
+<li>算法：通过迭代器获取容器中的内容。</li>
+<li>仿函数：可以协助算法完成各种操作。</li>
+<li>配接器：用来套接适配仿函数。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2><span id="请你说一说stl中map数据的存放形式">请你说一说STL中map数据的存放形式。</span></h2><p>对于map，数据以红黑树形式存放。<br>补充：<br>对于unordered_map，数据以哈希表形式存放。</p>
+<hr>
+<h2><span id="请你说说stl中map与unordered_map">请你说说STL中map与unordered_map</span></h2><ul>
+<li>Map映射，map 的所有元素都是pair，同时拥有键值（key）和实值（value）。pair 的第一元素被视为键值，第二元素被视为实值。所有元素都会根据元素的键值自动被排序。不允许键值重复。<ul>
+<li>底层实现：红黑树</li>
+<li>适用场景：有序键值对不重复映射</li>
+</ul>
+</li>
+<li>Multimap<ul>
+<li>多重映射。multimap 的所有元素都是 pair，同时拥有实值（value）和键值（key）。pair 的第一元素被视为键值，第二元素被视为实值。所有元素都会根据元素的键值自动被排序。允许键值重复。</li>
+<li>底层实现：红黑树</li>
+<li>适用场景：有序键值对可重复映射</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2><span id="请你说一说vector和list的区别-应用越详细越好">请你说一说vector和list的区别、应用，越详细越好</span></h2><ul>
+<li>概念：<ul>
+<li>Vector<ul>
+<li>连续存储的容器，动态数组，在堆上分配空间。</li>
+<li>底层实现：数组</li>
+<li>两倍容量增长：</li>
+<li>vector 增加（插入）新元素时，如果未超过当时的容量，则还有剩余空间，那么直接添加到最后（插入指定位置），然后调整迭代器。如果没有剩余空间了，则会重新配置原有元素个数的两倍空间，然后将原空间元素通过复制的方式初始化新空间，再向新空间增加元素，最后析构并释放原空间，之前的迭代器会失效。</li>
+<li>性能<ul>
+<li>访问：O(1)</li>
+<li>插入：在最后插入（空间够）：很快</li>
+<li>在最后插入（空间不够）：需要内存申请和释放，以及对之前数据进行拷贝。</li>
+<li>在中间插入（空间够）：内存拷贝</li>
+<li>在中间插入（空间不够）：需要内存申请和释放，以及对之前数据进行拷贝。</li>
+<li>删除：在最后删除：很快</li>
+<li>在中间删除：内存拷贝</li>
+</ul>
+</li>
+<li>适用场景：经常随机访问，且不经常对非尾节点进行插入删除。</li>
+</ul>
+</li>
+<li>List<ul>
+<li>动态链表，在堆上分配空间，每插入一个元数都会分配空间，每删除一个元素都会释放空间。</li>
+<li>底层：双向链表</li>
+<li>性能<ul>
+<li>访问：随机访问性能很差，只能快速访问头尾节点。</li>
+<li>插入：很快，一般是常数开销</li>
+<li>删除：很快，一般是常数开销</li>
+</ul>
+</li>
+<li>适用场景：经常插入删除大量数据</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>区别：<ul>
+<li>vector 底层实现是数组；list是双向链表。</li>
+<li>vector 支持随机访问，list不支持。</li>
+<li>vector 是顺序内存，list不是。</li>
+<li>vector 在中间节点进行插入删除会导致内存拷贝，list不会。</li>
+<li>vector 一次性分配好内存，不够时才进行2倍扩容；list每次插入新节点都会进行内存申请。</li>
+<li>vector 随机访问性能好，插入删除性能差；list 随机访问性能差，插入删除性能好。</li>
+</ul>
+</li>
+<li>应用<ul>
+<li>vector 拥有一段连续的内存空间，因此支持随机访问，如果需要高效的随即访问，而不在乎插入和删除的效率，使用 vector。</li>
+<li>list 拥有一段不连续的内存空间，如果需要高效的插入和删除，而不关心随机访问，则应使用 list。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2><span id="请你来说一下一个-c-源文件从文本到可执行文件经历的过程">请你来说一下一个 C++ 源文件从文本到可执行文件经历的过程？</span></h2><p>对于C++源文件，从文本到可执行文件一般需要四个过程：</p>
+<ul>
+<li>预处理阶段：对源代码文件中文件包含关系（头文件）、预编译语句（宏定义）进行分析和替换，生成预编译文件。<br>相关命令：gcc -E man.c -o main.i</li>
+<li>编译阶段：将经过预处理后的预编译文件转换成特定汇编代码，生成汇编文件。<br>相关命令：gcc -S man.i -o main.s</li>
+<li>汇编阶段：将编译阶段生成的汇编文件转化成机器码，生成可重定位目标文件。<br>相关命令：gcc -c man.s -o main.o</li>
+<li>链接阶段：将多个目标文件及所需要的库连接成最终的可执行目标文件。<br>相关命令：gcc man.o -o main</li>
+</ul>
+<hr>
+<h2><span id="请你来回答一下include头文件的顺序以及双引号-和尖括号lt-gt-的区别">请你来回答一下include头文件的顺序以及双引号” “和尖括号&lt; &gt; 的区别。</span></h2><p>对于使用双引号包含的头文件，查找头文件路径的顺序为：</p>
+<ul>
+<li>当前头文件目录→编译器设置的头文件目录→系统变量指定的头文件路径</li>
+</ul>
+<p>对于使用尖括号包含的头文件，查找头文件的路径顺序为：</p>
+<ul>
+<li>编译器设置的头文件路径→系统变量指定的头文件路径</li>
+</ul>
+<hr>
+<h2><span id="什么是红黑树">什么是红黑树？</span></h2>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/linux/">linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/C-C/">C/C++</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/26/%E5%B5%8C%E5%85%A5%E5%BC%8F%E2%80%94%E2%80%94%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%BD%AF%E4%BB%B6%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86-Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%92%8C%E9%A9%B1%E5%8A%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">嵌入式软件基础知识-Linux操作系统和驱动</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/23/%E5%B5%8C%E5%85%A5%E5%BC%8F%E2%80%94%E2%80%94%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+                        <span class="hidden-mobile">计算机网络</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Jianliang Shen</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2023</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "嵌入式软件基础知识-C/C++&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>

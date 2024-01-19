@@ -1,0 +1,1184 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>快速了解zephyr - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2023-06-25 21:52" pubdate>
+      2023年6月25日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.9k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      55
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">快速了解zephyr</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>zephyr是一个强大的嵌入式跨平台开源操作系统，有丰富的模块和完善的文档。</p>
+<span id="more"></span>
+
+<p>本篇旨在挑选文档重点内容和代码演示。为后续的开发提供基础。</p>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
+<li><a href="#%E7%BC%96%E8%AF%91%E5%92%8C%E8%BF%90%E8%A1%8C">编译和运行</a><ul>
+<li><a href="#%E4%BD%BF%E7%94%A8kconfig%E5%85%B3%E9%97%AD%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9">使用Kconfig关闭编译选项</a></li>
+<li><a href="#musca_s1%E5%BC%80%E5%8F%91%E6%9D%BF">musca_s1开发板</a></li>
+<li><a href="#nucleo%E5%BC%80%E5%8F%91%E6%9D%BF">Nucleo开发板</a></li>
+</ul>
+</li>
+<li><a href="#%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91">应用开发</a><ul>
+<li><a href="#%E6%A6%82%E8%BF%B0">概述</a></li>
+<li><a href="#%E8%B0%83%E8%AF%95">调试</a><ul>
+<li><a href="#%E4%BD%BF%E7%94%A8%E5%B7%A5%E5%85%B7%E8%BF%9E%E6%8E%A5%E8%B0%83%E8%AF%95%E7%A1%AC%E4%BB%B6%E6%9D%BF">使用工具连接调试硬件板</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#api">API</a></li>
+<li><a href="#%E5%86%85%E6%A0%B8%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91">内核系统开发</a><ul>
+<li><a href="#%E7%82%B9%E7%81%AF">点灯</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91">线程开发</a><ul>
+<li><a href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">生命周期</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81">线程状态</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E7%89%B9%E6%80%A7">线程特性</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B">创建线程</a></li>
+</ul>
+</li>
+<li><a href="#%E8%B0%83%E5%BA%A6">调度</a></li>
+<li><a href="#cpu-idle">CPU idle</a></li>
+<li><a href="#%E7%B3%BB%E7%BB%9F%E7%BA%BF%E7%A8%8B">系统线程</a></li>
+<li><a href="#%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97">工作队列</a></li>
+<li><a href="#%E4%B8%AD%E6%96%AD">中断</a></li>
+<li><a href="#%E5%85%B6%E4%BB%96%E5%86%85%E6%A0%B8%E5%8A%9F%E8%83%BD">其他内核功能</a></li>
+</ul>
+</li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93">数据传输</a></li>
+</ul>
+<h2><span id="安装">安装</span></h2><p>参考<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/develop/getting_started/index.html">zephyr安装指南</a></p>
+<h2><span id="编译和运行">编译和运行</span></h2><p>参考west使用指南：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/develop/west/build-flash-debug.html">Building, Flashing and Debugging</a><ul>
+<li>嵌入CMAKE：<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/develop/west/build-flash-debug.html#permanent-cmake-arguments">Permanent CMake Arguments</a></li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/develop/west/built-in.html">Built-in commands</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/develop/west/sign.html">Signing Binaries</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/develop/west/without-west.html">Using Zephyr without west</a></li>
+</ul>
+<p>以qemu an521为例</p>
+<div class="hljs"><pre><code class="hljs bash">west update
+west build -p auto -b mps2_an521_ns -t run samples/hello_world</code></pre></div>
+
+<p>选项<code>run</code>表示编译后自动运行，参考west usage，输出</p>
+<div class="hljs"><pre><code class="hljs bash">[INF] Beginning TF-M provisioning
+[WRN] TFM_DUMMY_PROVISIONING is not suitable <span class="hljs-keyword">for</span> production! This device is NOT SECURE
+[Sec Thread] Secure image initializing!
+Booting TF-M a8313be08
+Creating an empty ITS flash layout.
+Creating an empty PS flash layout.
+[INF][Crypto] Provisioning entropy seed... complete.
+*** Booting Zephyr OS build zephyr-v3.3.0-1195-g9a759025d912 ***
+Hello World! mps2_an521_ns</code></pre></div>
+
+<p>显然，这里打开了默认的trusted firmware-M</p>
+<h3><span id="使用kconfig关闭编译选项">使用Kconfig关闭编译选项</span></h3><p>参考：<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/build/kconfig/index.html">Configuration System (Kconfig)</a></p>
+<p>命令：</p>
+<div class="hljs"><pre><code class="hljs bash">west build -p auto -b mps2_an521_ns samples/hello_world -t menuconfig</code></pre></div>
+
+<p>为了编译不含TF-M的版本，选择打开<code>boards/arm/mps2_an521/Kconfig.defconfig</code>看到：</p>
+<div class="hljs"><pre><code class="hljs python">config BOARD
+	default <span class="hljs-string">&quot;mps2_an521_ns&quot;</span> <span class="hljs-keyword">if</span> TRUSTED_EXECUTION_NONSECURE
+	default <span class="hljs-string">&quot;mps2_an521_remote&quot;</span> <span class="hljs-keyword">if</span> BOARD_MPS2_AN521_CPU1
+	default <span class="hljs-string">&quot;mps2_an521&quot;</span>
+
+<span class="hljs-comment"># By default, if we build for a Non-Secure version of the board,</span>
+<span class="hljs-comment"># force building with TF-M as the Secure Execution Environment.</span>
+config BUILD_WITH_TFM
+	default y <span class="hljs-keyword">if</span> TRUSTED_EXECUTION_NONSECURE</code></pre></div>
+<p>运行</p>
+<div class="hljs"><pre><code class="hljs bash">west build -p auto -b mps2_an521 samples/hello_world -t run</code></pre></div>
+<p>打开menuconfig看到<br><img src="/img/post_pics/os/menuconfig_zephyr.png"><br>此时输出为：</p>
+<div class="hljs"><pre><code class="hljs asciidoc"><span class="hljs-bullet">*** </span>Booting Zephyr OS build zephyr-v3.3.0-1195-g9a759025d912 <span class="hljs-strong">***</span>
+Hello World! mps2_an521</code></pre></div>
+
+<h3><span id="musca_s1开发板">musca_s1开发板</span></h3><p><img src="/img/post_pics/os/v2m_musca_s1.jpg"><br>板载资源可以在<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/boards/arm/v2m_musca_s1/doc/index.html">Musca S1</a>找到，下载镜像，直接拷贝到存储区</p>
+<div class="hljs"><pre><code class="hljs awk">west build -p auto -b v2m_musca_s1 samples/hello_world
+cp build<span class="hljs-regexp">/zephyr/</span>zephyr.hex <span class="hljs-regexp">/Volumes/</span>MUSCA_S
+minicom -D <span class="hljs-regexp">/dev/</span>tty.usbmodem11302
+
+output:
+Musca-S1 Dual Firmware Version <span class="hljs-number">1.9</span>
+*** Booting Zephyr OS build zephyr-v3.<span class="hljs-number">3.0</span>-<span class="hljs-number">1195</span>-g9a759025d912 ***
+Hello World! musca_s1</code></pre></div>
+
+<h3><span id="nucleo开发板">Nucleo开发板</span></h3><p><img src="/img/post_pics/os/nucleo_l552ze_q.jpg"><br>板载资源参考：<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/boards/arm/nucleo_l552ze_q/doc/nucleol552ze_q.html">ST Nucleo L552ZE Q</a>，因为mac下载pyocd太慢装不了该板子的pack，选择runner openocd来下载镜像。编译时打开：</p>
+<div class="hljs"><pre><code class="hljs awk">brew install openocd
+west build -b nucleo_l552ze_q_ns samples<span class="hljs-regexp">/tfm_integration/</span>tfm_ipc -- -DBOARD_FLASH_RUNNER=openocd
+.<span class="hljs-regexp">/build/</span>tfm/regression.sh  <span class="hljs-comment">#在下载不包含tfm的镜像时，需要额外跑一次恢复为normal模式</span>
+west flash</code></pre></div>
+
+<p>打开串口：</p>
+<div class="hljs"><pre><code class="hljs tap">[WRN] This device was provisioned with dummy keys. This device is NOT SECURE
+[Sec Thread] Secure image initializing!
+Booting TF-M 79a6115d3
+*** Booting Zephyr OS build zephyr-v3.4.0-483-g6050a10f8b29 ***
+TF-M IPC on nucleo_l552ze_q
+The version of the PSA Framework API is 257.
+The PSA Crypto service minor version is 1.
+Generating<span class="hljs-number"> 256 </span>bytes of random data:
+11<span class="hljs-number"> 50 </span>AA DA<span class="hljs-number"> 03 </span>54 2E DB 0F B5 D3<span class="hljs-number"> 79 </span>EA BD C9<span class="hljs-number"> 97 </span>
+8C F1<span class="hljs-number"> 73 </span>AB 3C DF 5E B2 FB C0<span class="hljs-number"> 24 </span>1E<span class="hljs-number"> 34 </span>32<span class="hljs-number"> 02 </span>A2 
+B1<span class="hljs-number"> 17 </span>CD CF DE<span class="hljs-number"> 25 </span>E9 F2 B0<span class="hljs-number"> 72 </span>82<span class="hljs-number"> 42 </span>58<span class="hljs-number"> 77 </span>63 A7 
+B0<span class="hljs-number"> 30 </span>5D<span class="hljs-number"> 84 </span>BF EA F4 6F D1 A3 6D 7A<span class="hljs-number"> 23 </span>27 EF<span class="hljs-number"> 82 </span>
+9C<span class="hljs-number"> 25 </span>59 9B<span class="hljs-number"> 31 </span>43 9B 5A E5 FA F6<span class="hljs-number"> 76 </span>DE B2 0A<span class="hljs-number"> 38 </span>
+2B<span class="hljs-number"> 65 </span>C1<span class="hljs-number"> 45 </span>53<span class="hljs-number"> 61 </span>27 7C<span class="hljs-number"> 32 </span>AC 7A<span class="hljs-number"> 51 </span>42<span class="hljs-number"> 54 </span>BD<span class="hljs-number"> 92 </span>
+F9 8A CF 5B<span class="hljs-number"> 64 </span>FE B6<span class="hljs-number"> 41 </span>EB EC<span class="hljs-number"> 08 </span>CC 1E 8C<span class="hljs-number"> 46 </span>2A 
+A7<span class="hljs-number"> 16 </span>6F A2 FE 4A<span class="hljs-number"> 66 </span>B4 D3<span class="hljs-number"> 23 </span>EF F9 6B 4A<span class="hljs-number"> 40 </span>84 
+75 CE F8 AB 5F<span class="hljs-number"> 61 </span>52 C9<span class="hljs-number"> 00 </span>7B<span class="hljs-number"> 10 </span>9E CB CB D5<span class="hljs-number"> 70 </span>
+35 1B E9<span class="hljs-number"> 95 </span>C7<span class="hljs-number"> 71 </span>F8<span class="hljs-number"> 66 </span>58 7B 7D 2A EB FF C1 2B 
+9A<span class="hljs-number"> 75 </span>CD<span class="hljs-number"> 34 </span>39 8B<span class="hljs-number"> 19 </span>D1<span class="hljs-number"> 98 </span>24 3A<span class="hljs-number"> 82 </span>61<span class="hljs-number"> 78 </span>60 E1 
+88 7C 6D A6 FE 4C AE<span class="hljs-number"> 27 </span>EF<span class="hljs-number"> 24 </span>1F DD<span class="hljs-number"> 05 </span>1A AF<span class="hljs-number"> 04 </span>
+44<span class="hljs-number"> 70 </span>5D 5E<span class="hljs-number"> 13 </span>A1 DE C6<span class="hljs-number"> 10 </span>4C<span class="hljs-number"> 15 </span>13 CD DE EE E5 
+29<span class="hljs-number"> 81 </span>C9 D3 9F 5E 7C<span class="hljs-number"> 03 </span>33 E7 F1<span class="hljs-number"> 86 </span>C1<span class="hljs-number"> 57 </span>2D<span class="hljs-number"> 48 </span>
+F7<span class="hljs-number"> 78 </span>83 C0<span class="hljs-number"> 39 </span>B1 D3 ED<span class="hljs-number"> 07 </span>EA FD A0 B0<span class="hljs-number"> 10 </span>FE 8C 
+C0<span class="hljs-number"> 17 </span>F4<span class="hljs-number"> 74 </span>96<span class="hljs-number"> 67 </span>D8<span class="hljs-number"> 29 </span>C4 1B<span class="hljs-number"> 47 </span>9F C3<span class="hljs-number"> 69 </span>06 0E</code></pre></div>
+
+
+
+
+
+<h2><span id="应用开发">应用开发</span></h2><h3><span id="概述">概述</span></h3><p>应用既可以在zephyrproject/zephyr里面创建编译，也可以在外部建立prj文件夹，项目文件中应当包含：</p>
+<div class="hljs"><pre><code class="hljs stylus">&lt;app&gt;
+├── CMakeLists<span class="hljs-selector-class">.txt</span>
+├── app<span class="hljs-selector-class">.overlay</span>
+├── prj<span class="hljs-selector-class">.conf</span>
+└── <span class="hljs-attribute">src</span>
+    └── <span class="hljs-selector-tag">main</span>.c</code></pre></div>
+<p>以<code>samples/hello_world</code>为例：</p>
+<ul>
+<li>cmake文件，环境中一定要设置<code>ZEPHYR_BASE</code></li>
+<li>设备树文件</li>
+<li>Kconfig配置文件，defconfig</li>
+<li>C/C++源文件</li>
+</ul>
+<h3><span id="调试">调试</span></h3><p>Zephyr运行qemu的命令是：</p>
+<div class="hljs"><pre><code class="hljs livescript">qemu-system-arm -cpu cortex-m33 <span class="hljs-string">\</span>
+                -machine mps2-an521 <span class="hljs-string">\</span>
+                -nographic -m <span class="hljs-number">16</span> -vga none -net none <span class="hljs-string">\</span>
+                -pidfile qemu.pid <span class="hljs-string">\</span>
+                -chardev stdio,id=con,mux=<span class="hljs-literal">on</span> <span class="hljs-string">\</span>
+                -serial chardev:con <span class="hljs-string">\</span>
+                -mon chardev=con,mode=readline <span class="hljs-string">\</span>
+                -icount shift=<span class="hljs-number">6</span>,align=<span class="hljs-literal">off</span>,sleep=<span class="hljs-literal">off</span> <span class="hljs-string">\</span>
+                -rtc clock=vm -chardev pty,id=hostS0 <span class="hljs-string">\</span>
+                -serial chardev:hostS0 <span class="hljs-string">\</span>
+                -kernel build/zephyr/zephyr.elf</code></pre></div>
+<p>加上<code>-s</code>，（<code>-gdb tcp::1234</code>的缩写）打开gdbserver，默认端口为：1234。也可以运行</p>
+<div class="hljs"><pre><code class="hljs css">west build -<span class="hljs-selector-tag">p</span> <span class="hljs-attribute">auto</span> -<span class="hljs-selector-tag">b</span> mps2_an521 . -t debugserver_qemu</code></pre></div>
+<p>运行gdb命令：</p>
+<div class="hljs"><pre><code class="hljs awk">arm-zephyr-eabi-gdb build<span class="hljs-regexp">/zephyr/</span>zephyr.elf
+(gdb) target remote localhost:<span class="hljs-number">1234</span>
+(gdb) dir ZEPHYR_BASE</code></pre></div>
+<h4><span id="使用工具连接调试硬件板">使用工具连接调试硬件板</span></h4><p>参考：<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/develop/flash_debug/host-tools.html#j-link-debug-host-tools">Flash &amp; Debug Host Tools</a></p>
+<h2><span id="api">API</span></h2><p>汇总：<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/develop/api/overview.html">API Overview</a><br>使用说明：<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/develop/api/design_guidelines.html">API Guildlines</a></p>
+<h2><span id="内核系统开发">内核系统开发</span></h2><h3><span id="点灯">点灯</span></h3><p>以musca-s1为例，在其设备树文件boards/arm/v2m_musca_s1/v2m_musca_s1.dts中：</p>
+<div class="hljs"><pre><code class="hljs dts"><span class="hljs-class">aliases </span>&#123;
+	led0 = <span class="hljs-variable">&amp;red_led</span>;
+	led1 = <span class="hljs-variable">&amp;green_led</span>;
+&#125;;
+
+<span class="hljs-class">leds </span>&#123;
+	compatible = <span class="hljs-string">&quot;gpio-leds&quot;</span>;
+<span class="hljs-symbol">	red_led:</span> <span class="hljs-class">led_0 </span>&#123;
+		gpios = <span class="hljs-params">&lt;<span class="hljs-variable">&amp;gpio</span> <span class="hljs-number">2</span> <span class="hljs-number">0</span>&gt;</span>;
+		label = <span class="hljs-string">&quot;User LED1&quot;</span>;
+	&#125;;
+<span class="hljs-symbol">	green_led:</span> <span class="hljs-class">led_1 </span>&#123;
+		gpios = <span class="hljs-params">&lt;<span class="hljs-variable">&amp;gpio</span> <span class="hljs-number">3</span> <span class="hljs-number">0</span>&gt;</span>;
+		label = <span class="hljs-string">&quot;User LED2&quot;</span>;
+	&#125;;
+&#125;;</code></pre></div>
+<p>使用led0和led1，用两个线程进行闪烁，调用的是toggle接口，使用fifo和输出线程通信，打印log，配置如下：</p>
+<div class="hljs"><pre><code class="hljs py">CONFIG_PRINTK=y
+CONFIG_HEAP_MEM_POOL_SIZE=<span class="hljs-number">256</span>
+CONFIG_ASSERT=y
+CONFIG_GPIO=y</code></pre></div>
+
+<p>代码如下:</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">/*</span>
+<span class="hljs-comment"> * Copyright (c) 2016 Intel Corporation</span>
+<span class="hljs-comment"> *</span>
+<span class="hljs-comment"> * SPDX-License-Identifier: Apache-2.0</span>
+<span class="hljs-comment"> */</span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;zephyr/kernel.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;zephyr/device.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;zephyr/drivers/gpio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;zephyr/sys/printk.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;zephyr/sys/__assert.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string.h&gt;</span></span>
+
+<span class="hljs-comment">/* 1000 msec = 1 sec */</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SLEEP_TIME_MS 1000</span>
+
+<span class="hljs-comment">/* size of stack area used by each thread */</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> STACKSIZE 1024</span>
+
+<span class="hljs-comment">/* scheduling priority used by each thread */</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> PRIORITY 7</span>
+
+<span class="hljs-comment">/* The devicetree node identifier for the &quot;led0&quot; alias. */</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> LED0_NODE DT_ALIAS(led0)</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> LED1_NODE DT_ALIAS(led1)</span>
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment"> * A build error on this line means your board is unsupported.</span>
+<span class="hljs-comment"> * See the sample documentation for information on how to fix this.</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">gpio_dt_spec</span> <span class="hljs-title">led0</span> =</span> GPIO_DT_SPEC_GET(LED0_NODE, gpios);
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">gpio_dt_spec</span> <span class="hljs-title">led1</span> =</span> GPIO_DT_SPEC_GET(LED1_NODE, gpios);
+
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">printk_data_t</span></span>
+<span class="hljs-class">&#123;</span>
+	<span class="hljs-keyword">void</span> *fifo_reserved; <span class="hljs-comment">/* 1st word reserved for use by fifo */</span>
+	<span class="hljs-keyword">uint32_t</span> led;
+	<span class="hljs-keyword">uint32_t</span> cnt;
+&#125;;
+
+K_FIFO_DEFINE(printk_fifo);
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">blink</span><span class="hljs-params">(<span class="hljs-keyword">const</span> struct gpio_dt_spec *led, <span class="hljs-keyword">uint32_t</span> sleep_ms, <span class="hljs-keyword">uint32_t</span> id)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">int</span> ret, cnt = <span class="hljs-number">0</span>;
+
+	<span class="hljs-keyword">if</span> (!gpio_is_ready_dt(led))
+	&#123;
+		<span class="hljs-keyword">return</span>;
+	&#125;
+
+	ret = gpio_pin_configure_dt(led, GPIO_OUTPUT_ACTIVE);
+	<span class="hljs-keyword">if</span> (ret &lt; <span class="hljs-number">0</span>)
+	&#123;
+		<span class="hljs-keyword">return</span>;
+	&#125;
+
+	<span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)
+	&#123;
+
+		ret = gpio_pin_toggle_dt(led);
+
+		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">printk_data_t</span> <span class="hljs-title">tx_data</span> =</span> &#123;.led = id, .cnt = cnt&#125;;
+		<span class="hljs-keyword">size_t</span> size = <span class="hljs-keyword">sizeof</span>(struct <span class="hljs-keyword">printk_data_t</span>);
+
+		<span class="hljs-keyword">char</span> *mem_ptr = k_malloc(size);
+		__ASSERT_NO_MSG(mem_ptr != <span class="hljs-number">0</span>);
+
+		<span class="hljs-built_in">memcpy</span>(mem_ptr, &amp;tx_data, size);
+
+		k_fifo_put(&amp;printk_fifo, mem_ptr);
+
+		k_msleep(sleep_ms);
+		cnt++;
+	&#125;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">blink0</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+	blink(&amp;led0, SLEEP_TIME_MS, <span class="hljs-number">0</span>);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">blink1</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+	blink(&amp;led1, SLEEP_TIME_MS, <span class="hljs-number">1</span>);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">uart_out</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)
+	&#123;
+		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">printk_data_t</span> *<span class="hljs-title">rx_data</span> =</span> k_fifo_get(&amp;printk_fifo,
+												   K_FOREVER);
+		printk(<span class="hljs-string">&quot;Toggled led%d; counter=%d\n&quot;</span>,
+			   rx_data-&gt;led, rx_data-&gt;cnt);
+		k_free(rx_data);
+	&#125;
+&#125;
+
+K_THREAD_DEFINE(blink0_id, STACKSIZE, blink0, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>,	PRIORITY, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+K_THREAD_DEFINE(blink1_id, STACKSIZE, blink1, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>,	PRIORITY, <span class="hljs-number">0</span>, SLEEP_TIME_MS);
+K_THREAD_DEFINE(uart_out_id, STACKSIZE, uart_out, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, PRIORITY, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);</code></pre></div>
+
+<h3><span id="线程开发">线程开发</span></h3><h4><span id="生命周期">生命周期</span></h4><ul>
+<li>线程创建</li>
+<li>线程终止，termination，入口函数执行返回，线程终止<ul>
+<li>通过k_thread_join()睡眠当前线程，等待其他线程执行结束</li>
+</ul>
+</li>
+<li>线程中止，aborting，调用k_thread_abort()</li>
+<li>线程挂起，suspension，调用k_thread_suspend()</li>
+</ul>
+<h4><span id="线程状态">线程状态</span></h4><p>zephyr的线程状态：<img src="/img/post_pics/os/thread_states.svg"></p>
+<h4><span id="线程特性">线程特性</span></h4><p>线程有以下重要特性：</p>
+<ul>
+<li>堆栈区域<ul>
+<li>内核堆栈</li>
+<li>线程堆栈</li>
+</ul>
+</li>
+<li>线程控制块</li>
+<li>线程入口函数，及三个参数</li>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#thread-priorities">线程优先级</a><ul>
+<li>越小优先级越高，可以为负数</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#configuration-options">线程配置选项</a><ul>
+<li>如<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#c.K_USER">K_USER</a>和<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#c.K_INHERIT_PERMS">K_INHERIT_PERMS</a></li>
+</ul>
+</li>
+<li>启动延时</li>
+<li>执行模式</li>
+</ul>
+<p>其他特性</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#thread-custom-data">自定义数据</a></li>
+<li>用户线程，<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kconfig.html#CONFIG_USERSPACE">CONFIG_USERSPACE</a>，用户线程需要系统调度获取权限，参考<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/usermode/index.html#usermode-api">用户模式</a></li>
+</ul>
+<h4><span id="创建线程">创建线程</span></h4><p>参考<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#spawning-a-thread">Spawning a Thread</a></p>
+<p>除了上述的<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#c.K_THREAD_DEFINE">K_THREAD_DEFINE</a>创建以外，还可以使用<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#c.k_thread_create">k_thread_create</a>建立一个新的线程。</p>
+<div class="hljs"><pre><code class="hljs c">K_THREAD_STACK_DEFINE(bk_stack0, STACKSIZE);
+K_THREAD_STACK_DEFINE(bk_stack1, STACKSIZE);
+K_THREAD_STACK_DEFINE(ptk_stack, STACKSIZE);
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">k_thread</span> <span class="hljs-title">bk0</span>, <span class="hljs-title">bk1</span>, <span class="hljs-title">ptk</span>;</span>
+	<span class="hljs-keyword">k_timeout_t</span> delay = K_MSEC(SLEEP_TIME_MS);
+
+	k_thread_create(&amp;bk0, bk_stack0, K_THREAD_STACK_SIZEOF(bk_stack0),
+					(<span class="hljs-keyword">k_thread_entry_t</span>)blink0, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, PRIORITY, <span class="hljs-number">0</span>, K_NO_WAIT);
+
+	k_thread_create(&amp;bk1, bk_stack1, K_THREAD_STACK_SIZEOF(bk_stack1),
+					(<span class="hljs-keyword">k_thread_entry_t</span>)blink1, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, PRIORITY, <span class="hljs-number">0</span>, delay);
+
+	k_thread_create(&amp;ptk, ptk_stack, K_THREAD_STACK_SIZEOF(ptk_stack),
+					(<span class="hljs-keyword">k_thread_entry_t</span>)uart_out, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, PRIORITY, <span class="hljs-number">0</span>, K_NO_WAIT);
+&#125;</code></pre></div>
+
+<h3><span id="调度">调度</span></h3><p>参考<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/scheduling/index.html#">schduling</a></p>
+<p>支持以下三种：</p>
+<ul>
+<li>Simple linked-list ready queue (CONFIG_SCHED_DUMB)</li>
+<li>Red/black tree ready queue (CONFIG_SCHED_SCALABLE)</li>
+<li>Traditional multi-queue ready queue (CONFIG_SCHED_MULTIQ)</li>
+</ul>
+<p><img src="/img/post_pics/os/cooperative.svg"><br>其他相关：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/scheduling/index.html#preemptive-time-slicing">抢占式线程</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/scheduling/index.html#scheduler-locking">调度锁</a>，只执行当前线程</li>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/scheduling/index.html#thread-sleeping">睡眠和唤醒</a>，释放cpu</li>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/scheduling/index.html#busy-waiting">忙等待</a>，不释放cpu</li>
+</ul>
+<p>要点：</p>
+<ul>
+<li>将普通线程用于设备驱动程序和其他性能关键型工作。</li>
+<li>使用普通线程实现相互排除，而无需内核对象（如互斥）。</li>
+<li>使用抢占式线程优先考虑时间敏感的处理，而不是时间敏感度较低的处理。</li>
+</ul>
+<h3><span id="cpu-idle">CPU idle</span></h3><p>使CPU闲置会导致内核暂停所有操作，直到事件（通常是中断）唤醒CPU。在一般系统中，空闲线程负责这个事情。然而，在一些受约束的系统中，另一个线程可能会承担这一职责。使CPU闲置很简单：调用k_cpu_idle() API。CPU将停止执行指令，直到事件发生。最有可能的是，该函数将在循环中调用。请注意，在某些架构中，返回时，k_cpu_idle()无条件取消屏蔽中断。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-keyword">static</span> k_sem my_sem;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">my_isr</span><span class="hljs-params">(<span class="hljs-keyword">void</span> *unused)</span></span>
+<span class="hljs-function"></span>&#123;
+    k_sem_give(&amp;my_sem);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+    k_sem_init(&amp;my_sem, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>);
+
+    <span class="hljs-comment">/* wait for semaphore from ISR, then do related work */</span>
+
+    <span class="hljs-keyword">for</span> (;;) &#123;
+
+        <span class="hljs-comment">/* wait for ISR to trigger work to perform */</span>
+        <span class="hljs-keyword">if</span> (k_sem_take(&amp;my_sem, K_NO_WAIT) == <span class="hljs-number">0</span>) &#123;
+
+            <span class="hljs-comment">/* ... do processing */</span>
+
+        &#125;
+
+        <span class="hljs-comment">/* put CPU to sleep to save power */</span>
+        k_cpu_idle();
+    &#125;
+&#125;</code></pre></div>
+
+<p>当线程除了空闲CPU等待事件外，还必须做一些实际工作时，请使用k_cpu_atomic_idle()。见下面的例子。</p>
+<p>仅当线程仅负责空转CPU时，即不进行任何实际工作时，才使用k_cpu_idle()。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-keyword">static</span> k_sem my_sem;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">my_isr</span><span class="hljs-params">(<span class="hljs-keyword">void</span> *unused)</span></span>
+<span class="hljs-function"></span>&#123;
+    k_sem_give(&amp;my_sem);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+    k_sem_init(&amp;my_sem, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>);
+
+    <span class="hljs-keyword">for</span> (;;) &#123;
+
+        <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> key = irq_lock();
+
+        <span class="hljs-comment">/*</span>
+<span class="hljs-comment">         * Wait for semaphore from ISR; if acquired, do related work, then</span>
+<span class="hljs-comment">         * go to next loop iteration (the semaphore might have been given</span>
+<span class="hljs-comment">         * again); else, make the CPU idle.</span>
+<span class="hljs-comment">         */</span>
+
+        <span class="hljs-keyword">if</span> (k_sem_take(&amp;my_sem, K_NO_WAIT) == <span class="hljs-number">0</span>) &#123;
+
+            irq_unlock(key);
+
+            <span class="hljs-comment">/* ... do processing */</span>
+
+
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            <span class="hljs-comment">/* put CPU to sleep to save power */</span>
+            k_cpu_atomic_idle(key);
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+
+<h3><span id="系统线程">系统线程</span></h3><p>包括main线程和idle线程：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-comment">/* initialize a semaphore */</span>
+    ...
+
+    <span class="hljs-comment">/* register an ISR that gives the semaphore */</span>
+    ...
+
+    <span class="hljs-comment">/* monitor the semaphore forever */</span>
+    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) &#123;
+        <span class="hljs-comment">/* wait for the semaphore to be given by the ISR */</span>
+        ...
+        <span class="hljs-comment">/* do whatever processing is now needed */</span>
+        ...
+    &#125;
+&#125;</code></pre></div>
+
+<h3><span id="工作队列">工作队列</span></h3><p>工作队列是一个内核对象，它使用专用线程以先入先出的方式处理工作项。每个工作项都通过调用工作项指定的函数进行处理。工作队列通常由ISR或高优先级线程使用，将非紧急处理卸载到低优先级线程，因此它不会影响时间敏感的处理。可以定义任意数量的工作队列（仅受可用RAM的限制）。每个工作队列都由其内存地址引用。参考：<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/threads/workqueue.html#workqueue-threads">workqueue-threads</a></p>
+<h3><span id="中断">中断</span></h3><p>中断服务例程（ISR）是一种响应硬件或软件中断异步执行的函数。ISR通常抢占当前线程的执行，允许以非常低的开销进行响应。线程执行只有在所有ISR工作完成后才会恢复。参考：<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/interrupts.html#interrupts">interrupt service routine</a></p>
+<p>多级中断处理：</p>
+<div class="hljs"><pre><code class="hljs bash">          9             2   0
+    _ _ _ _ _ _ _ _ _ _ _ _ _         (LEVEL 1)
+  5       |         A   |
+_ _ _ _ _ _ _         _ _ _ _ _ _ _   (LEVEL 2)
+  |   C                       B
+_ _ _ _ _ _ _                         (LEVEL 3)
+        D</code></pre></div>
+<p>这里显示了三个中断级别。</p>
+<ul>
+<li>‘-‘表示中断行，从0开始编号（最右侧）。</li>
+<li>1级有12条中断线，两条线（2和9）连接到嵌套控制器，4号线有一个设备“A”。</li>
+<li>其中一个2级控制器的中断线5连接到3级嵌套控制器和3号线上的一个设备“C”。</li>
+<li>另一个2级控制器没有嵌套控制器，但在2号线上有一个设备“B”。</li>
+<li>3级控制器的2号线有一个设备“D”。</li>
+</ul>
+<p>2级及以上控制器的编号都+1，于是有：</p>
+<div class="hljs"><pre><code class="hljs apache"><span class="hljs-attribute">A</span> -&gt; <span class="hljs-number">0</span>x<span class="hljs-number">00000004</span>
+<span class="hljs-attribute">B</span> -&gt; <span class="hljs-number">0</span>x<span class="hljs-number">00000302</span> (<span class="hljs-number">2</span>-&gt;<span class="hljs-number">2</span>)
+<span class="hljs-attribute">C</span> -&gt; <span class="hljs-number">0</span>x<span class="hljs-number">00000409</span> (<span class="hljs-number">3</span>-&gt;<span class="hljs-number">9</span>)
+<span class="hljs-attribute">D</span> -&gt; <span class="hljs-number">0</span>x<span class="hljs-number">00030609</span> (<span class="hljs-number">2</span>-&gt;<span class="hljs-number">5</span>-&gt;<span class="hljs-number">9</span>)</code></pre></div>
+
+<h3><span id="其他内核功能">其他内核功能</span></h3><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/polling.html">轮训API</a>，轮询API的主要函数是k_poll()它在概念上与POSIX poll()函数非常相似，只是它在内核对象上运行，而不是在文件描述符上运行。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/synchronization/semaphores.html">信号量</a>，实现线程的互斥（多线程对资源的访问）或同步。<ul>
+<li>semaphore是使用k_sem类型的变量定义的。然后，它必须通过调用k_sem_init()进行初始化。</li>
+<li>或者，可以通过调用K_SEM_DEFINE在编译时定义和初始化信号量。</li>
+<li>通过调用k_sem_give()给出信号量。</li>
+<li>通过调用k_sem_take()来获取信号量</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/synchronization/mutexes.html">互斥锁</a>，互斥锁允许多个线程通过确保相互排斥地访问资源来安全地共享相关的硬件或软件资源。<ul>
+<li>互斥体是使用k_mutex类型的变量定义的。</li>
+<li>然后必须通过调用k_mutex_init()来初始化它。</li>
+<li>或者，可以通过调用K_MUTEX_DEFINE在编译时定义和初始化互斥体。</li>
+<li>互斥体通过调用k_mutex_lock()来锁定。通过调用k_mutex_unlock()来解锁互斥体。</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/synchronization/condvar.html">条件变量</a>，使线程能够等到特定条件发生。<ul>
+<li>线程可以通过调用k_condvar_wait()来等待条件。</li>
+<li>条件变量通过为一个线程调用k_condvar_signal()或为多个线程调用k_condvar_broadcast()来发出信号。</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/synchronization/events.html">事件</a>，一个或多个线程可以等待事件对象，直到所需的事件集交付到事件对象。当新事件交付到事件对象时，所有等待条件已满足的线程都会同时准备就绪。<ul>
+<li>使用k_event类型的变量定义事件对象。然后必须通过callkk_event_init()进行初始化。</li>
+<li>或者，可以通过调用K_EVENT_DEFINE在编译时定义和初始化事件对象。</li>
+<li>事件对象中的事件是通过调用k_event_set()来设置的。</li>
+<li>通过调用k_event_post()将事件发布到事件对象。</li>
+<li>线程通过调用k_event_wait()来等待事件。</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/smp/smp.html">多核对称多处理</a>，在多处理器架构上，Zephyr支持使用运行Zephyr应用程序代码的多个物理CPU。这种支持是“对称的”，因为默认情况下没有特定的CPU被特别处理。任何处理器都能够运行任何Zephyr线程，并支持访问所有标准的Zephyr API。<ul>
+<li>SMP系统提供了一个更受约束的k_spin_lock()原语，它不仅像irq_lock()所做的那样在本地屏蔽中断，而且还在返回调用者之前原子地验证共享锁变量已被修改，如果需要等待另一个CPU退出锁，则在检查上“旋转”。k_spin_lock()和k_spin_unlock()的默认Zephyr实现建立在预先存在的atomic_层（本身通常使用编译器本质实现）之上，尽管出于性能原因，架构存在定义自己的设施。</li>
+<li>IRQ锁和自旋锁之间的一个重要区别是，早期的API是自然递归的：锁是全局的，因此在关键部分内获取嵌套锁是合法的。Spinlocks是可分离的：您可以为单独的子系统或数据结构拥有许多锁，防止CPU在单个全局资源上竞争。但这意味着旋转锁不能递归使用。持有特定锁的代码不得试图重新获取它，否则它将陷入僵局（然而，嵌套不同的自旋锁是完全合法的）。验证层可用于检测和报告此类错误。</li>
+</ul>
+</li>
+</ul>
+<h2><span id="数据传输">数据传输</span></h2><p>下面汇总所有的数据传输方式，参考<a target="_blank" rel="noopener" href="https://docs.zephyrproject.org/latest/kernel/services/index.html#data-passing">Data passing</a></p>
+<table>
+<thead>
+<tr>
+<th>Object</th>
+<th>Bidirectional?</th>
+<th>Data structure</th>
+<th>Data item size</th>
+<th>Data Alignment</th>
+<th>ISRs can receive?</th>
+<th>ISRs can send?</th>
+<th>Overrun handling</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FIFO</td>
+<td>No</td>
+<td>Queue</td>
+<td>Arbitrary [1]</td>
+<td>4 B [2]</td>
+<td>Yes [3]</td>
+<td>Yes</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>LIFO</td>
+<td>No</td>
+<td>Queue</td>
+<td>Arbitrary [1]</td>
+<td>4 B [2]</td>
+<td>Yes [3]</td>
+<td>Yes</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Stack</td>
+<td>No</td>
+<td>Array</td>
+<td>Word</td>
+<td>Word</td>
+<td>Yes [3]</td>
+<td>Yes</td>
+<td>Undefined behavior</td>
+</tr>
+<tr>
+<td>Message queue</td>
+<td>No</td>
+<td>Ring buffer</td>
+<td>Power of two</td>
+<td>Power of two</td>
+<td>Yes [3]</td>
+<td>Yes</td>
+<td>Pend thread or return -errno</td>
+</tr>
+<tr>
+<td>Mailbox</td>
+<td>Yes</td>
+<td>Queue</td>
+<td>Arbitrary [1]</td>
+<td>Arbitrary</td>
+<td>No</td>
+<td>No</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>Pipe</td>
+<td>No</td>
+<td>Ring buffer [4]</td>
+<td>Arbitrary</td>
+<td>Arbitrary</td>
+<td>Yes [5]</td>
+<td>Yes [5]</td>
+<td>Pend thread or return -errno</td>
+</tr>
+</tbody></table>
+<p>[1] Callers allocate space for queue overhead in the data elements themselves.<br>[2] Objects added with k_fifo_alloc_put() and k_lifo_alloc_put() do not have alignment constraints, but use temporary memory from the calling thread’s resource pool.<br>[3] ISRs can receive only when passing K_NO_WAIT as the timeout argument.<br>[4] Optional.<br>[5] ISRS can send and/or receive only when passing K_NO_WAIT as the timeout argument.<br>[6] Data item size must be a multiple of the data alignment.</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a>
+                    
+                      <a class="hover-with-bg" href="/tags/arm/">arm</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/10/%E8%BD%AF%E4%BB%B6%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8qemu%E6%9D%A5debug/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">VScode+Qemu调试TF-M</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/06/24/AIOT%E2%80%94%E2%80%94openCV-ncnn/">
+                        <span class="hidden-mobile">MacOS安装ncnn和OpenCV</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Jianliang Shen</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2023</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "快速了解zephyr&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>

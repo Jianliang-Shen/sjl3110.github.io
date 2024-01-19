@@ -1,0 +1,1032 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>STM32 Free RTOS实战 - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-09-03 09:10" pubdate>
+      2020年9月3日 上午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      33
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">STM32 Free RTOS实战</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>使用的平台：秉火STM32 Cortex-M3内核开发板，Free RTOS v8.2.3。</p>
+<span id="more"></span>
+<h2><span id="多任务流水灯">多任务流水灯</span></h2><div class="hljs"><pre><code class="hljs bash">.
+├── Doc
+│   └── readme.txt
+├── FreeRTOS      //OS依赖目录
+│   ├── inc
+│   │   ├── croutine.h
+│   │   ├── ...   //头文件
+│   └── src
+│       ├── croutine.c
+│       ├── ...   //源码文件
+├── Libraries     //库文件
+├── Project       //工程文件
+└── User
+    ├── led
+    │   ├── bsp_led.c
+    │   └── bsp_led.h
+    ├── main.c    //源码
+    ├── stm32f10x_conf.h
+    ├── stm32f10x_it.c
+    └── stm32f10x_it.h</code></pre></div>
+<p>创建多任务：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span> <span class="hljs-params">( <span class="hljs-keyword">void</span> )</span></span>
+<span class="hljs-function"></span>&#123;	
+	xTaskCreate( vTaskStart, <span class="hljs-string">&quot;Task Start&quot;</span>, <span class="hljs-number">512</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-number">1</span>, <span class="hljs-literal">NULL</span> );
+    vTaskStartScheduler();
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">vTaskStart</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span></span>
+<span class="hljs-function"></span>&#123;
+	LED_Init ();
+
+	xTaskCreate( vTaskLed1, <span class="hljs-string">&quot;Task Led1&quot;</span>, <span class="hljs-number">512</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-number">1</span>, <span class="hljs-literal">NULL</span> );
+	xTaskCreate( vTaskLed2, <span class="hljs-string">&quot;Task Led2&quot;</span>, <span class="hljs-number">512</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-number">1</span>, <span class="hljs-literal">NULL</span> );
+	xTaskCreate( vTaskLed3, <span class="hljs-string">&quot;Task Led3&quot;</span>, <span class="hljs-number">512</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-number">1</span>, <span class="hljs-literal">NULL</span> );
+
+	vTaskDelete( <span class="hljs-literal">NULL</span> );	
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">vTaskLed1</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)
+	&#123;
+		macLED1_ON ();			 
+		vTaskDelay( <span class="hljs-number">1000</span> );
+		macLED1_OFF ();	
+		vTaskDelay( <span class="hljs-number">1000</span> );
+	&#125;
+&#125;</code></pre></div>
+<p>上面依次对应主函数创建一个任务并开始调度，任务中又新建了三个任务，每个任务负责一个灯的开启和关闭。</p>
+<h2><span id="任务管理-挂起与恢复">任务管理-挂起与恢复</span></h2><div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskLed1</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span> <span class="hljs-comment">//LED闪烁任务，循环执行</span></span>
+<span class="hljs-function"></span>&#123;
+	TickType_t xLastWakeTime;	
+	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)                                                    
+	&#123;
+		macLED1_ON ();			                                     
+		vTaskDelayUntil(&amp;xLastWakeTime, <span class="hljs-number">200</span> / portTICK_RATE_MS); 
+		macLED1_OFF ();		                                       	
+		vTaskDelayUntil(&amp;xLastWakeTime, <span class="hljs-number">200</span> / portTICK_RATE_MS);
+	&#125;
+	
+&#125;
+
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskKey</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span>   <span class="hljs-comment">//按键控制挂起或恢复任务</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">uint8_t</span> ucKey1Press = <span class="hljs-number">0</span>, ucKey2Press = <span class="hljs-number">0</span>;	
+	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)
+	&#123;
+		<span class="hljs-keyword">if</span>( Key_Scan ( macKEY1_GPIO_PORT, macKEY1_GPIO_PIN, <span class="hljs-number">1</span>, &amp; ucKey1Press ) )      <span class="hljs-comment">//KEY1按下，任务挂起</span>
+		&#123;			
+			vTaskSuspend( xHandleTaskLed1 );                                           
+		&#125;
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>( Key_Scan ( macKEY2_GPIO_PORT, macKEY2_GPIO_PIN, <span class="hljs-number">1</span>, &amp; ucKey2Press )) <span class="hljs-comment">//KEY2按下，任务恢复</span>
+		&#123;		
+			vTaskResume( xHandleTaskLed1 );                                          
+		&#125;
+		vTaskDelay( <span class="hljs-number">20</span> / portTICK_RATE_MS );                                         
+	&#125;
+&#125;</code></pre></div>
+<p>现象：开机闪烁，按下按键1将停止，按下按键2恢复。</p>
+<h2><span id="消息队列">消息队列</span></h2><div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">/************************************ 创建队列 *********************************/</span>
+<span class="hljs-keyword">static</span> xQueueHandle xQueue;
+
+<span class="hljs-comment">/********************************** 任务函数声明 *******************************/</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskStart</span>  <span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskSender</span> <span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskReceive</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span></span>;
+
+<span class="hljs-comment">/********************************** 任务函数定义 *******************************/</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskStart</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span>                            <span class="hljs-comment">//起始任务</span></span>
+<span class="hljs-function"></span>&#123;
+	LED_Init ();	     <span class="hljs-comment">//初始化LED</span>
+	USARTx_Config ();   <span class="hljs-comment">//初始化串口</span>
+	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Test Queue&quot;</span>);
+
+	<span class="hljs-comment">/* 创建消息队列 */</span>
+	xQueue = xQueueCreate(<span class="hljs-number">5</span>, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">uint32_t</span>) );
+	<span class="hljs-keyword">if</span>(xQueue != <span class="hljs-literal">NULL</span>)                                                      <span class="hljs-comment">//创建成功则创建另外两个任务</span>
+	&#123;
+		<span class="hljs-comment">/* 创建发送1和发送2任务 */</span>
+		xTaskCreate( vTaskSender, <span class="hljs-string">&quot;Task Sender1&quot;</span>, <span class="hljs-number">512</span>, ( <span class="hljs-keyword">void</span> *)<span class="hljs-number">100</span>, <span class="hljs-number">1</span>, <span class="hljs-literal">NULL</span>);  <span class="hljs-comment">//传递的参数为向队列中添加的参数</span>
+		xTaskCreate( vTaskSender, <span class="hljs-string">&quot;Task Sender2&quot;</span>, <span class="hljs-number">512</span>, ( <span class="hljs-keyword">void</span> *)<span class="hljs-number">200</span>, <span class="hljs-number">1</span>, <span class="hljs-literal">NULL</span>);
+		
+		<span class="hljs-comment">/* 创建接收任务 */</span>
+		xTaskCreate( vTaskReceive, <span class="hljs-string">&quot;Task Receiver&quot;</span>, <span class="hljs-number">512</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-number">2</span>, <span class="hljs-literal">NULL</span> );
+	&#125;	
+	<span class="hljs-keyword">else</span>                                                                      <span class="hljs-comment">//创建失败</span>
+	&#123;
+		<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);
+	&#125;
+	vTaskDelete( <span class="hljs-literal">NULL</span> );                                                      <span class="hljs-comment">//删除</span>
+&#125;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskSender</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">uint32_t</span> lValueToSend;
+	portBASE_TYPE xStatus;
+
+	lValueToSend = ( <span class="hljs-keyword">uint32_t</span> ) pvParameters;                  <span class="hljs-comment">//获取参数（地址传递）</span>
+	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)
+	&#123;
+		xStatus = xQueueSendToBack( xQueue, &amp;lValueToSend, <span class="hljs-number">0</span> );  <span class="hljs-comment">//阻塞写入队列	</span>
+		<span class="hljs-keyword">if</span>( xStatus != pdPASS )                                  
+		&#123;
+		  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;数据不能发送到数据队列\r\n&quot;</span>);
+		&#125;	
+		taskYIELD();                                             <span class="hljs-comment">//放弃时间片，让出CPU</span>
+	&#125;
+&#125;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskReceive</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">uint32_t</span> lReceivedValue;
+	portBASE_TYPE xStatus;
+
+	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)
+	&#123;
+		xStatus = xQueueReceive( xQueue, &amp;lReceivedValue, portMAX_DELAY );<span class="hljs-comment">//阻塞读取</span>
+		<span class="hljs-keyword">if</span>(xStatus==pdPASS)                                           
+		&#123;
+			<span class="hljs-built_in">printf</span>( <span class="hljs-string">&quot;接收的数据是： %d\r\n&quot;</span>, lReceivedValue );               
+		&#125;
+		<span class="hljs-keyword">else</span>                                                            
+		&#123;
+			<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;没有接收的消息.\r\n&quot;</span>);
+		&#125;
+	&#125;
+&#125;
+<span class="hljs-comment">/************************************* 主函数 **********************************/</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span> <span class="hljs-params">( <span class="hljs-keyword">void</span> )</span></span>
+<span class="hljs-function"></span>&#123;	
+	xTaskCreate( vTaskStart, <span class="hljs-string">&quot;Task Start&quot;</span>, <span class="hljs-number">512</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-number">1</span>, <span class="hljs-literal">NULL</span> );       
+	vTaskStartScheduler(); 
+&#125;</code></pre></div>
+<p>输出结果：<br><img src="/img/post_pics/os/queue.PNG"></p>
+<h2><span id="二值信号量同步数据读写">二值信号量–同步数据读写</span></h2><div class="hljs"><pre><code class="hljs c"><span class="hljs-keyword">static</span> SemaphoreHandle_t  xSemaphore = <span class="hljs-literal">NULL</span>;
+xSemaphore = xSemaphoreCreateBinary();
+<span class="hljs-comment">//发送信号量</span>
+xSemaphoreGive( xSemaphore );
+<span class="hljs-comment">//接收信号量</span>
+xSemaphoreTake( xSemaphore, portMAX_DELAY );</code></pre></div>
+<h2><span id="计数信号量">计数信号量</span></h2><div class="hljs"><pre><code class="hljs c">xSemaphore = xSemaphoreCreateCounting(<span class="hljs-number">5</span>, <span class="hljs-number">5</span>);  <span class="hljs-comment">//总共5个停车位，目前有5个可用（计数初值为5）</span>
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskKey1</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span> </span>
+<span class="hljs-function"></span>&#123;
+	BaseType_t xResult;
+	<span class="hljs-keyword">uint8_t</span> ucKey1Press = <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)
+	&#123;
+		<span class="hljs-keyword">if</span>( Key_Scan ( macKEY1_GPIO_PORT, macKEY1_GPIO_PIN, <span class="hljs-number">1</span>, &amp; ucKey1Press ) ) 
+		&#123;
+            xResult = xSemaphoreTake( xSemaphore,<span class="hljs-number">0</span>);    <span class="hljs-comment">//接收信号量，信号值减1                  </span>
+            taskENTER_CRITICAL();
+            <span class="hljs-keyword">if</span> ( xResult == pdPASS )                      
+                <span class="hljs-built_in">printf</span> ( <span class="hljs-string">&quot;\r\nKEY1被单击：成功申请到停车位。\r\n&quot;</span> );
+            <span class="hljs-keyword">else</span>
+                <span class="hljs-built_in">printf</span> ( <span class="hljs-string">&quot;\r\nKEY1被单击：不好意思，现在停车场已满！\r\n&quot;</span> );
+            taskEXIT_CRITICAL();
+		&#125;
+		vTaskDelay( <span class="hljs-number">20</span> / portTICK_RATE_MS );  
+	&#125;
+	
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskKey2</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span> </span>
+<span class="hljs-function"></span>&#123;
+	BaseType_t xResult;
+	<span class="hljs-keyword">uint8_t</span> ucKey2Press = <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)
+	&#123;
+		<span class="hljs-keyword">if</span>( Key_Scan ( macKEY2_GPIO_PORT, macKEY2_GPIO_PIN, <span class="hljs-number">1</span>, &amp; ucKey2Press ) ) 
+		&#123;
+			xResult = xSemaphoreGive( xSemaphore );    <span class="hljs-comment">//发送信号量，信号值加1</span>
+			taskENTER_CRITICAL();
+			<span class="hljs-keyword">if</span> ( xResult == pdPASS ) 
+				<span class="hljs-built_in">printf</span> ( <span class="hljs-string">&quot;\r\nKEY2被单击：释放1个停车位。\r\n&quot;</span> );	
+		    <span class="hljs-keyword">else</span>
+			    <span class="hljs-built_in">printf</span> ( <span class="hljs-string">&quot;\r\nKEY2被单击：但已无车位可以释放！\r\n&quot;</span> );
+			taskEXIT_CRITICAL();
+		&#125;
+		vTaskDelay( <span class="hljs-number">20</span> / portTICK_RATE_MS );  	
+	&#125;
+&#125;</code></pre></div>
+
+<p>运行结果：</p>
+<div class="hljs"><pre><code class="hljs bash">计数信号量模拟停车场管理测试
+KEY1被单击：成功申请到停车位。
+KEY1被单击：成功申请到停车位。
+KEY1被单击：成功申请到停车位。
+KEY1被单击：成功申请到停车位。
+KEY1被单击：成功申请到停车位。
+KEY1被单击：不好意思，现在停车场已满！
+KEY2被单击：释放1个停车位。
+KEY2被单击：释放1个停车位。
+KEY2被单击：释放1个停车位。
+KEY2被单击：释放1个停车位。
+KEY2被单击：释放1个停车位。
+KEY2被单击：但已无车位可以释放！</code></pre></div>
+
+<h2><span id="互斥量同步数据读写">互斥量–同步数据读写</span></h2><div class="hljs"><pre><code class="hljs c"><span class="hljs-keyword">static</span> SemaphoreHandle_t  xSemaphore = <span class="hljs-literal">NULL</span>;
+xSemaphore = xSemaphoreCreateMutex();
+<span class="hljs-comment">//发送信号量</span>
+xSemaphoreGive( xSemaphore );
+<span class="hljs-comment">//接收信号量</span>
+xSemaphoreTake( xSemaphore, portMAX_DELAY );</code></pre></div>
+
+<h2><span id="事件标志组按键组合">事件标志组–按键组合</span></h2><div class="hljs"><pre><code class="hljs c"><span class="hljs-keyword">static</span> EventGroupHandle_t xCreatedEventGroup = <span class="hljs-literal">NULL</span>;
+xCreatedEventGroup = xEventGroupCreate();  <span class="hljs-comment">//创建互斥信号量</span>
+
+<span class="hljs-comment">//KEY1按下置位松开清零</span>
+xEventGroupSetBits(xCreatedEventGroup, <span class="hljs-number">0x01</span>);   <span class="hljs-comment">//bit0置位</span>
+xEventGroupClearBits(xCreatedEventGroup, <span class="hljs-number">0x01</span>); <span class="hljs-comment">//bit0清零</span>
+
+<span class="hljs-comment">//KEY2按下置位松开清零</span>
+xEventGroupSetBits(xCreatedEventGroup, <span class="hljs-number">0x02</span>);   <span class="hljs-comment">//bit1置位</span>
+xEventGroupClearBits(xCreatedEventGroup, <span class="hljs-number">0x02</span>); <span class="hljs-comment">//bit1清零</span>
+
+xEventGroupWaitBits(xCreatedEventGroup,                              <span class="hljs-comment">//事件标志组对象</span>
+				    <span class="hljs-number">0x03</span>,                                            <span class="hljs-comment">//等待bit0和bit1</span>
+					pdTRUE,                                          <span class="hljs-comment">//事件发生后两位清零</span>
+					pdTRUE,                                          <span class="hljs-comment">//等待两位均置位</span>
+					portMAX_DELAY); 	                             <span class="hljs-comment">//无期限等待</span>
+<span class="hljs-comment">//上面函数执行后，点亮LED3</span></code></pre></div>
+<p>运行现象：KEY1红灯，KEY2绿灯，KEY3蓝灯，按下KEY1或者KEY2红灯或者绿灯亮，同时按下后红灯、绿灯、蓝灯均亮起，松开后只剩下蓝灯。</p>
+<h2><span id="软件定时器">软件定时器</span></h2><div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">/********************************** 内核对象句柄 *******************************/</span>
+<span class="hljs-keyword">static</span> TimerHandle_t xTimers[<span class="hljs-number">3</span>] = &#123;<span class="hljs-literal">NULL</span>&#125;;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTimerCallback</span><span class="hljs-params">( xTimerHandle pxTimer )</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">uint32_t</span> ulTimerID;	
+	ulTimerID = (<span class="hljs-keyword">uint32_t</span>) pvTimerGetTimerID( pxTimer );                   <span class="hljs-comment">//获取软件定时器的ID</span>
+	<span class="hljs-keyword">switch</span> ( ulTimerID )
+	&#123;
+		<span class="hljs-keyword">case</span> <span class="hljs-number">0</span>:
+			macLED1_TOGGLE ();                                             <span class="hljs-comment">//切换LED1的亮灭状态</span>
+			<span class="hljs-keyword">break</span>;
+		<span class="hljs-keyword">case</span> <span class="hljs-number">1</span>:
+			macLED2_TOGGLE ();                                             <span class="hljs-comment">//切换LED1的亮灭状态</span>
+			<span class="hljs-keyword">break</span>;
+		<span class="hljs-keyword">case</span> <span class="hljs-number">2</span>:
+			macLED3_TOGGLE ();                                             <span class="hljs-comment">//切换LED1的亮灭状态</span>
+			<span class="hljs-keyword">break</span>;	
+    <span class="hljs-keyword">default</span>:
+        <span class="hljs-keyword">break</span>;			
+	&#125;	
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskTmr</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span>                                <span class="hljs-comment">//Led3任务</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">uint8_t</span> i;
+	<span class="hljs-keyword">for</span>( i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">3</span>; i++ )
+	&#123;
+	<span class="hljs-comment">/* 创建软件定时器 */</span>
+	xTimers[i] = xTimerCreate(<span class="hljs-string">&quot;Timer&quot;</span>,                                      <span class="hljs-comment">//命名定时器</span>
+                                (i+<span class="hljs-number">1</span>)*<span class="hljs-number">1000</span>/portTICK_RATE_MS,                <span class="hljs-comment">//定时的滴答数</span>
+                                pdTRUE,                                     <span class="hljs-comment">//周期性</span>
+                                (<span class="hljs-keyword">void</span> * <span class="hljs-keyword">const</span>)i,                            <span class="hljs-comment">//定时器ID</span>
+                                vTimerCallback);                            <span class="hljs-comment">//回调函数</span>
+	&#125;
+	<span class="hljs-keyword">for</span>( i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">3</span>; i++ )
+	&#123;
+        <span class="hljs-comment">/* 启动软件定时器 */</span>								 
+        xTimerStart(xTimers[i],                                             <span class="hljs-comment">//软件定时器的句柄</span>
+                    portMAX_DELAY);									        <span class="hljs-comment">//如果无法立即启动的堵塞滴答数</span>
+	&#125;  	
+	vTaskDelete( <span class="hljs-literal">NULL</span> );                                                    <span class="hljs-comment">//删除定时器任务自身	</span>
+&#125;</code></pre></div>
+<h2><span id="多内核对象测试">多内核对象测试</span></h2><p>使用内核对象集合进行统一处理，具体实现方式在创建队列、互斥等对象后，将对象放入集合并在一个任务中统一处理：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">/********************************** 内核对象句柄 *******************************/</span>
+<span class="hljs-keyword">static</span> SemaphoreHandle_t xSemaphore = <span class="hljs-literal">NULL</span>;
+<span class="hljs-keyword">static</span> xQueueHandle      xQueue1    = <span class="hljs-literal">NULL</span>;
+<span class="hljs-keyword">static</span> xQueueHandle      xQueue2    = <span class="hljs-literal">NULL</span>;
+<span class="hljs-keyword">static</span> xQueueSetHandle   xQueueSet  = <span class="hljs-literal">NULL</span>;
+<span class="hljs-comment">/********************************** 任务函数定义 *******************************/</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskStart</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span>                       <span class="hljs-comment">//起始任务</span></span>
+<span class="hljs-function"></span>&#123;
+    ......
+	<span class="hljs-comment">/* 创建二值信号量 */</span>
+	xSemaphore = xSemaphoreCreateBinary();                                    <span class="hljs-comment">//按键信号量</span>
+
+	<span class="hljs-comment">/* 创建两个消息队列 */</span>
+	xQueue1 = xQueueCreate( <span class="hljs-number">10</span>, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">uint32_t</span>) );	                          <span class="hljs-comment">//消息队列1</span>
+	xQueue2 = xQueueCreate( <span class="hljs-number">10</span>, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">uint32_t</span>) );                           <span class="hljs-comment">//消息队列2</span>
+
+	<span class="hljs-comment">/* 创建一个内核对象集合 */</span>
+	xQueueSet = xQueueCreateSet( <span class="hljs-number">1</span> );                                       
+
+	
+	<span class="hljs-comment">/* 添加内核对象到对象集合 xQueueSet */</span>
+    xQueueAddToSet(xSemaphore, xQueueSet);
+	xQueueAddToSet(xQueue1,    xQueueSet);
+	xQueueAddToSet(xQueue2,    xQueueSet);
+
+    ......	
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskPend</span><span class="hljs-params">(<span class="hljs-keyword">void</span> *pvParameters)</span></span>
+<span class="hljs-function"></span>&#123;
+	QueueSetMemberHandle_t xActivatedMember;
+	<span class="hljs-keyword">uint32_t</span> ulQueueMsgValue;
+	<span class="hljs-keyword">uint8_t</span>  ucQueueMsgValue;
+
+	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)
+	&#123;
+	    <span class="hljs-comment">/* 等待多个内核对象 */</span>
+		xActivatedMember = xQueueSelectFromSet(xQueueSet, portMAX_DELAY);
+
+		<span class="hljs-comment">/* 判断接收哪个内核对象 */</span>
+		<span class="hljs-keyword">if</span>(xActivatedMember == xQueue1)                                    <span class="hljs-comment">//如果接收到的对象是xQueue1</span>
+		&#123;
+		    <span class="hljs-comment">/* 接收xQueue1的消息 */</span>
+			xQueueReceive(xActivatedMember, &amp;ulQueueMsgValue, <span class="hljs-number">0</span>);
+			<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;接收到消息队列1接收到消息内容为 %d\r\n&quot;</span>, ulQueueMsgValue);
+		&#125;
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(xActivatedMember == xQueue2)                               <span class="hljs-comment">//如果接收到的对象是xQueue2</span>
+		&#123;
+		    <span class="hljs-comment">/* 接收xQueue2的消息 */</span>
+			xQueueReceive(xActivatedMember, &amp;ucQueueMsgValue, <span class="hljs-number">0</span>);
+			<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;接收到消息队列2接收到消息内容为 %d\r\n&quot;</span>, ucQueueMsgValue);  
+		&#125;
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(xActivatedMember == xSemaphore)                             <span class="hljs-comment">//如果接收到的对象是xSemaphore</span>
+		&#123;
+			<span class="hljs-comment">/* 接收信号量 */</span>	
+			<span class="hljs-keyword">if</span>( xSemaphoreTake(xActivatedMember, <span class="hljs-number">0</span>) == pdPASS )
+			macLED1_TOGGLE();                                               <span class="hljs-comment">//反转LED1的亮灭状态              </span>
+		&#125;
+	&#125;
+&#125;</code></pre></div>
+<h2><span id="任务间通信ipc">任务间通信–IPC</span></h2><div class="hljs"><pre><code class="hljs c">
+<span class="hljs-comment">/************************************ 任务句柄 *********************************/</span>
+<span class="hljs-keyword">static</span> TaskHandle_t xHandleTaskWait = <span class="hljs-literal">NULL</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskWait</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span>     <span class="hljs-comment">//定义接收任务消息任务</span></span>
+<span class="hljs-function"></span>&#123;
+	BaseType_t xResult;
+	<span class="hljs-keyword">uint32_t</span>   ulNotifiedValue;
+	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)                                                  
+	&#123;
+		xResult = xTaskNotifyWait(<span class="hljs-number">0x00000000</span>,         <span class="hljs-comment">//函数执行前保留任务消息数据的所有位</span>
+                                    <span class="hljs-number">0xFFFFFFFF</span>,       <span class="hljs-comment">//函数执行后清除任务消息数据的所有位</span>
+                                    &amp;ulNotifiedValue, <span class="hljs-comment">//接收任务消息数据</span>
+                                    portMAX_DELAY);   <span class="hljs-comment">//等到有任务消息到来为止	</span>
+		<span class="hljs-keyword">if</span>(xResult == pdPASS)
+		&#123;
+			<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;接收到的任务消息数据为： %d\r\n&quot;</span>, ulNotifiedValue);
+		&#125;
+		<span class="hljs-keyword">else</span>
+		&#123;
+			macLED1_TOGGLE();                         <span class="hljs-comment">//反转LED1的亮灭状态</span>
+		&#125;		
+	&#125;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskPost</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span>     <span class="hljs-comment">//定义发送任务消息任务</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">uint32_t</span> ucCount = <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)
+	&#123;
+		 <span class="hljs-comment">/* 发送任务消息 */</span>
+		xTaskNotify(xHandleTaskWait,                 <span class="hljs-comment">//目标任务的任务句柄</span>
+					ucCount++,                       <span class="hljs-comment">//任务消息数据</span>
+      		        eSetValueWithOverwrite);         <span class="hljs-comment">//如果目标任务没有及时接收，上次的数据会被覆盖</span>
+		vTaskDelay( <span class="hljs-number">2000</span> / portTICK_RATE_MS );       <span class="hljs-comment">//每2s发送一次任务消息</span>
+	&#125;
+&#125;</code></pre></div>
+<p>运行现象：</p>
+<div class="hljs"><pre><code class="hljs bash">任务消息测试
+接收到的任务消息数据为： 0
+接收到的任务消息数据为： 1
+接收到的任务消息数据为： 2
+接收到的任务消息数据为： 3
+接收到的任务消息数据为： 4
+接收到的任务消息数据为： 5
+接收到的任务消息数据为： 6
+......</code></pre></div>
+<h2><span id="任务间通信中断">任务间通信–中断</span></h2><p>通过按键中断获取信息，主要将发送放入中断处理函数当中：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<span class="hljs-comment">  * @brief  EXTI 中断服务函数</span>
+<span class="hljs-comment">  * @param  无</span>
+<span class="hljs-comment">  * @retval 无</span>
+<span class="hljs-comment">  */</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">macEXTI_INT_FUNCTION</span> <span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">static</span> portBASE_TYPE xHigherPriorityTaskWoken;
+	<span class="hljs-keyword">static</span> <span class="hljs-keyword">uint32_t</span> ucCount = <span class="hljs-number">0</span>;
+
+	<span class="hljs-keyword">if</span>(EXTI_GetITStatus(macEXTI_LINE) != RESET)           <span class="hljs-comment">//确保是否产生了EXTI Line中断</span>
+	&#123;
+		<span class="hljs-comment">/* 发送任务消息 */</span>
+		xTaskNotifyFromISR(xHandleTaskWait,               <span class="hljs-comment">//目标任务的任务句柄</span>
+							ucCount++,                    <span class="hljs-comment">//任务消息数据</span>
+							eSetValueWithoutOverwrite,    <span class="hljs-comment">//如果目标任务没有及时接收，上次的数据会被覆盖	</span>
+							&amp;xHigherPriorityTaskWoken);   <span class="hljs-comment">//返回目标任务的优先级是否高于当前运行任务	</span>
+
+		EXTI_ClearITPendingBit(macEXTI_LINE);             <span class="hljs-comment">//清除中断标志位	</span>
+	&#125;
+	portYIELD_FROM_ISR( xHigherPriorityTaskWoken );       <span class="hljs-comment">//切换到更高优先级的任务</span>
+&#125;</code></pre></div>
+<h2><span id="内存管理">内存管理</span></h2><div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">/********************************** 任务函数定义 *******************************/</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">vTaskStart</span><span class="hljs-params">( <span class="hljs-keyword">void</span> * pvParameters )</span>                       <span class="hljs-comment">//定义起始任务函数</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">char</span> * pMallocMem;
+	<span class="hljs-comment">/* 初始化 */</span>
+	LED_Init ();	        <span class="hljs-comment">//初始化 LED</span>
+	Key_Initial ();         <span class="hljs-comment">//初始化按键</span>
+	USARTx_Config ();       <span class="hljs-comment">//初始化 USART1</span>
+	<span class="hljs-built_in">printf</span> ( <span class="hljs-string">&quot;\r\n内存管理测试\r\n&quot;</span> );
+
+	<span class="hljs-comment">/* 测试动态申请和释放内存块 */</span>
+	pMallocMem = (<span class="hljs-keyword">char</span> *)pvPortMalloc(<span class="hljs-number">50</span>);                             <span class="hljs-comment">//申请动态内存块</span>
+	<span class="hljs-built_in">printf</span>( <span class="hljs-string">&quot;%s\r\n&quot;</span>, ( <span class="hljs-keyword">char</span> * ) pvParameters );                       <span class="hljs-comment">//打印任务函数参数	</span>
+	<span class="hljs-built_in">strcpy</span>( pMallocMem, pvParameters );                                <span class="hljs-comment">//拷贝任务函数参数到动态内存块</span>
+	<span class="hljs-built_in">printf</span>( <span class="hljs-string">&quot;%s\r\n&quot;</span>, pMallocMem );                                    <span class="hljs-comment">//打印动态内存块里的字符串</span>
+	vPortFree(pMallocMem);                                             <span class="hljs-comment">//如果动态内存块不再使用，应该释放它</span>
+	
+	vTaskDelete( <span class="hljs-literal">NULL</span> );                                               <span class="hljs-comment">//删除起始任务自身</span>
+	
+	
+&#125;</code></pre></div>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/RTOS/">RTOS</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/09/05/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94STM32-RT-Thread-OS%E5%AE%9E%E6%88%98/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">STM32 RT-Thread OS实战</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/09/02/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E5%B8%B8%E8%A7%81%E5%AE%9E%E6%97%B6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">
+                        <span class="hidden-mobile">实时操作系统分类、特点及实现原理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Jianliang Shen</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2023</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "STM32 Free RTOS实战&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>

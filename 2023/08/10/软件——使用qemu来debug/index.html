@@ -1,0 +1,684 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>VScode+Qemu调试TF-M - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2023-08-10 10:59" pubdate>
+      2023年8月10日 上午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      517 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      10
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">VScode+Qemu调试TF-M</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>There is an easy way to debug TF-M when using VScode, not DS5. It can be implemented in Ubuntu/MacOS(M silicon) environments.</p>
+<span id="more"></span>
+
+<h2><span id="download">Download</span></h2><p>Some key dependencies:</p>
+<div class="hljs"><pre><code class="hljs bash"><span class="hljs-comment"># install mac gnuarm: click the package to install</span>
+wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-mac.pkg?rev=b382d51ec8d34c3fa421cf57ce97f146&amp;<span class="hljs-built_in">hash</span>=E3B897C8DA0E3E56C151F397C004104F00AE2EB8
+<span class="hljs-comment"># export PATH=&#x27;/Applications/ARM/bin&#x27;:$&#123;PATH&#125;</span>
+ 
+<span class="hljs-comment"># install qemu</span>
+brew install qemu <span class="hljs-comment"># MacOS</span>
+sudo apt-get install qemu-system <span class="hljs-comment"># Ubuntu</span></code></pre></div>
+
+<h2><span id="build-and-run-qemu">Build and run qemu</span></h2><p>Set commands in <strong>.zshrc</strong>:</p>
+<div class="hljs"><pre><code class="hljs bash">WORK_PATH=&lt;your own tfm opath&gt;
+CMAKE_BUILD_PATH=<span class="hljs-string">&quot;<span class="hljs-variable">$WORK_PATH</span>/cmake_build&quot;</span>
+ 
+<span class="hljs-built_in">alias</span> run-qemu-an521=<span class="hljs-string">&quot;qemu-system-arm -cpu cortex-m33 \</span>
+<span class="hljs-string">                        -machine mps2-an521 \</span>
+<span class="hljs-string">                        -nographic -m 16 -vga none -net none \</span>
+<span class="hljs-string">                        -chardev stdio,id=con,mux=on \</span>
+<span class="hljs-string">                        -serial chardev:con \</span>
+<span class="hljs-string">                        -mon chardev=con,mode=readline \</span>
+<span class="hljs-string">                        -icount shift=6,align=off,sleep=off \</span>
+<span class="hljs-string">                        -rtc clock=vm -chardev pty,id=hostS0 \</span>
+<span class="hljs-string">                        -serial chardev:hostS0 \</span>
+<span class="hljs-string">                        -kernel <span class="hljs-variable">$CMAKE_BUILD_PATH</span>/bin/bl2.elf \</span>
+<span class="hljs-string">                        -device loader,file=<span class="hljs-variable">$CMAKE_BUILD_PATH</span>/bin/tfm_s_ns_signed.bin,addr=0x10080000&quot;</span>
+ 
+<span class="hljs-built_in">alias</span> debug-qemu-an521=<span class="hljs-string">&quot;qemu-system-arm -cpu cortex-m33 \</span>
+<span class="hljs-string">                        -machine mps2-an521 \</span>
+<span class="hljs-string">                        -nographic -m 16 -vga none -net none \</span>
+<span class="hljs-string">                        -chardev stdio,id=con,mux=on \</span>
+<span class="hljs-string">                        -serial chardev:con \</span>
+<span class="hljs-string">                        -mon chardev=con,mode=readline \</span>
+<span class="hljs-string">                        -icount shift=6,align=off,sleep=off \</span>
+<span class="hljs-string">                        -rtc clock=vm -chardev pty,id=hostS0 \</span>
+<span class="hljs-string">                        -serial chardev:hostS0 \</span>
+<span class="hljs-string">                        -kernel <span class="hljs-variable">$CMAKE_BUILD_PATH</span>/bin/bl2.elf \</span>
+<span class="hljs-string">                        -device loader,file=<span class="hljs-variable">$CMAKE_BUILD_PATH</span>/bin/tfm_s_ns_signed.bin,addr=0x10080000 \</span>
+<span class="hljs-string">                        -s -S&quot;</span> <span class="hljs-comment"># -s, tcp gdbsever, localhost:1234; -S, listen the gdb</span></code></pre></div>
+<blockquote>
+<p>Note: <strong>CMAKE_BUILD_TYPE</strong> shall be <strong>Debug</strong>.<br>Run <strong>run-qemu-an521</strong> to get the build log.</p>
+</blockquote>
+<h2><span id="debug">Debug</span></h2><ol>
+<li>Install the extension Cortex Debug in VScode.</li>
+</ol>
+<p><img src="/img/post_pics/TF-M/vscode_debug1.png"></p>
+<ol start="2">
+<li>Set launch.json file, in the left debug extension, you can see ‘create a new launch.json file’, then choose ‘Cortex Debug’. Copy the below JSON configs to override it.</li>
+</ol>
+<p><img src="/img/post_pics/TF-M/vscode_debug2.png"></p>
+<div class="hljs"><pre><code class="hljs json">&#123;
+    <span class="hljs-attr">&quot;version&quot;</span>: <span class="hljs-string">&quot;0.2.0&quot;</span>,
+    <span class="hljs-attr">&quot;configurations&quot;</span>: [
+        &#123;
+            <span class="hljs-attr">&quot;name&quot;</span>: <span class="hljs-string">&quot;Cortex Debug&quot;</span>,
+            <span class="hljs-attr">&quot;request&quot;</span>: <span class="hljs-string">&quot;launch&quot;</span>,
+            <span class="hljs-attr">&quot;type&quot;</span>: <span class="hljs-string">&quot;cortex-debug&quot;</span>,
+            <span class="hljs-attr">&quot;runToEntryPoint&quot;</span>: <span class="hljs-string">&quot;main&quot;</span>,
+            <span class="hljs-attr">&quot;cwd&quot;</span>: <span class="hljs-string">&quot;$&#123;workspaceFolder&#125;&quot;</span>,
+            <span class="hljs-attr">&quot;servertype&quot;</span>: <span class="hljs-string">&quot;external&quot;</span>,                                      <span class="hljs-comment">// Debug from server, loaclhost 1234</span>
+            <span class="hljs-attr">&quot;gdbPath&quot;</span>: <span class="hljs-string">&quot;/Applications/ARM/bin/arm-none-eabi-gdb&quot;</span>,          <span class="hljs-comment">// Path of gdb</span>
+            <span class="hljs-attr">&quot;gdbTarget&quot;</span>: <span class="hljs-string">&quot;localhost:1234&quot;</span>,
+            <span class="hljs-attr">&quot;showDevDebugOutput&quot;</span>: <span class="hljs-string">&quot;raw&quot;</span>,
+            <span class="hljs-attr">&quot;symbolFiles&quot;</span>: [
+                &#123;
+                    <span class="hljs-attr">&quot;file&quot;</span>: <span class="hljs-string">&quot;$&#123;workspaceFolder&#125;/cmake_build/bin/tfm_ns.elf&quot;</span>,
+                &#125;,
+            ]
+        &#125;
+    ]
+&#125;</code></pre></div>
+
+<ol start="3">
+<li><p>Run <strong>debug-qemu-an521</strong> to start the kernel.</p>
+</li>
+<li><p>Start debugging. Click the start button in debug extension.</p>
+<ol>
+<li>Set the breakpoint to the left of the code line, anywhere of any file in the editor.</li>
+<li>Click continue to run to the breakpoint.</li>
+<li>Right-click the code and find <strong>Open Disassembly View</strong>. Then you can see the asm code and PC. You can also set a breakpoint in asm file.</li>
+<li>Open the terminal and switch to the <strong>Memory</strong> window to see the RAM.</li>
+<li>The local, global variables and registers are shown in <strong>VARIABLES</strong> in debug extensions. Click <strong>0x</strong> to show hex format data.</li>
+<li><strong>CALL STACK</strong> shows the calling routine of functions.</li>
+</ol>
+</li>
+</ol>
+<p><img src="/img/post_pics/index_img/vscode_debug.png"></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%BD%AF%E4%BB%B6/">软件</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/TF-M/">TF-M</a>
+                    
+                      <a class="hover-with-bg" href="/tags/qemu/">qemu</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/10/%E8%BD%AF%E4%BB%B6%E2%80%94%E2%80%94%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">快速搭建工作环境</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/06/25/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94zephyr/">
+                        <span class="hidden-mobile">快速了解zephyr</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Jianliang Shen</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2023</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "VScode+Qemu调试TF-M&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>

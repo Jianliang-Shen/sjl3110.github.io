@@ -1,0 +1,1005 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>Mbedtls学习--平台安全架构库函数接口 - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2021-06-10 13:50" pubdate>
+      2021年6月10日 下午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      32
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">Mbedtls学习--平台安全架构库函数接口</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <h1><span id="平台安全架构">平台安全架构</span></h1><p>PSA，全称Platform Secure Architecture，平台安全架构，是ARM公司在物联网安全领域联合众多芯片厂商推出的一个重要的软件实现架构，主要内容包括：</p>
+<span id="more"></span>
+
+<ol>
+<li>威胁模型</li>
+<li> 安全分析</li>
+<li> 硬件和固件架构规范</li>
+<li> 开源固件参考实现</li>
+<li>独立评估和认证计划–PSA Certified</li>
+</ol>
+<p>TF-M是PSA的一种实现方式，主要基于ARM Cortex-M系列的芯片，除此之外还有TF-A等。<a target="_blank" rel="noopener" href="https://tls.mbed.org/">Mbedtls</a>也是ARM维护的基于ARM平台的开源嵌入式加密库，现已是<a target="_blank" rel="noopener" href="https://www.trustedfirmware.org/">trust-frimware</a>的一部分，除了基本的各类加解密算法及安全工具箱的实现，为方便嵌入式开发人员快速编写符合PSA规范的代码，mbedtls提供了各类安全工具的调用接口。源代码见mbdetls/library/psa_crypto.c文件。</p>
+<h1><span id="mbedtls-psa库">Mbedtls PSA库</span></h1><h2><span id="key-management">Key management</span></h2><p>PSA支持对称和非对称密钥，实现基础是Mbedtls提供的各类密码箱工具。在导入key的时候需要注意key的type（类型）、usage（用途）和alg（算法）等属性，决定了密文或者签名的长度和解密的数据是否正确。Key在使用时，程序会检查key的policy的合法性，因此key的管理非常重要。主要的key管理函数如下：</p>
+<ul>
+<li>设置和检查key的用途</li>
+</ul>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">psa_set_key_usage_flags</span><span class="hljs-params">(<span class="hljs-keyword">psa_key_attributes_t</span> *attributes,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">psa_key_usage_t</span> usage_flags)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">psa_key_usage_t</span> <span class="hljs-title">psa_get_key_usage_flags</span><span class="hljs-params">(</span></span>
+<span class="hljs-params"><span class="hljs-function">    <span class="hljs-keyword">const</span> <span class="hljs-keyword">psa_key_attributes_t</span> *attributes)</span></span>;</code></pre></div>
+<ul>
+<li>设置和检查key的算法</li>
+</ul>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">psa_set_key_algorithm</span><span class="hljs-params">(<span class="hljs-keyword">psa_key_attributes_t</span> *attributes,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                  <span class="hljs-keyword">psa_algorithm_t</span> alg)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">psa_algorithm_t</span> <span class="hljs-title">psa_get_key_algorithm</span><span class="hljs-params">(</span></span>
+<span class="hljs-params"><span class="hljs-function">    <span class="hljs-keyword">const</span> <span class="hljs-keyword">psa_key_attributes_t</span> *attributes)</span></span>;</code></pre></div>
+<ul>
+<li>设置和检查key的类型</li>
+</ul>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">psa_set_key_type</span><span class="hljs-params">(<span class="hljs-keyword">psa_key_attributes_t</span> *attributes,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">psa_key_type_t</span> type)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">psa_key_type_t</span> <span class="hljs-title">psa_get_key_type</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">psa_key_attributes_t</span> *attributes)</span></span>;</code></pre></div>
+<ul>
+<li>获取key的属性</li>
+</ul>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_get_key_attributes</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">psa_key_attributes_t</span> *attributes)</span></span>;</code></pre></div>
+<ul>
+<li>删除key</li>
+</ul>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_destroy_key</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key)</span></span>;</code></pre></div>
+<ul>
+<li>导入导出key，注意<code>psa_export_public_key</code>函数只能是非对称密钥类型。</li>
+</ul>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_import_key</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">psa_key_attributes_t</span> *attributes,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *data,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">size_t</span> data_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">mbedtls_svc_key_id_t</span> *key)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_export_key</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">uint8_t</span> *data,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">size_t</span> data_size,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">size_t</span> *data_length)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_export_public_key</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                   <span class="hljs-keyword">uint8_t</span> *data,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                   <span class="hljs-keyword">size_t</span> data_size,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                   <span class="hljs-keyword">size_t</span> *data_length)</span></span>;</code></pre></div>
+<p>导入key后，常用来使用的参数是<code>mbedtls_svc_key_id_t *key</code>，即<code>psa_key_id_t *key</code>，在TF-M中又被命名为<code>psa_key_handle_t *key</code>，这是一个重要的参数，而<code>psa_key_attributes_t *attributes</code>则是指key的属性，内容如下：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">psa_client_key_attributes_s</span> <span class="hljs-title">psa_key_attributes_t</span>;</span>
+
+<span class="hljs-comment">/* This is the client view of the `key_attributes` structure. Only</span>
+<span class="hljs-comment"> * fields which need to be set by the PSA crypto client are present.</span>
+<span class="hljs-comment"> * The PSA crypto service will maintain a different version of the</span>
+<span class="hljs-comment"> * data structure internally. */</span>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">psa_client_key_attributes_s</span></span>
+<span class="hljs-class">&#123;</span>
+    <span class="hljs-keyword">uint16_t</span> type;
+    <span class="hljs-keyword">uint16_t</span> bits;
+    <span class="hljs-keyword">uint32_t</span> lifetime;
+    <span class="hljs-keyword">psa_key_id_t</span> id;
+    <span class="hljs-keyword">uint32_t</span> usage;
+    <span class="hljs-keyword">uint32_t</span> alg;
+&#125;;</code></pre></div>
+<h2><span id="message-digests">Message digests</span></h2><p>消息摘要，主要计算消息的单向散列函数值，计算hash的函数和Mbedtls类似，<code>psa_hash_operation_t *operation</code>需要先设置使用的算法，算法必须保证<code>PSA_ALG_IS_HASH(alg)</code>为真。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_hash_setup</span><span class="hljs-params">(<span class="hljs-keyword">psa_hash_operation_t</span> *operation,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">psa_algorithm_t</span> alg)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_hash_update</span><span class="hljs-params">(<span class="hljs-keyword">psa_hash_operation_t</span> *operation,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *input,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">size_t</span> input_length)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_hash_finish</span><span class="hljs-params">(<span class="hljs-keyword">psa_hash_operation_t</span> *operation,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">uint8_t</span> *hash,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">size_t</span> hash_size,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">size_t</span> *hash_length)</span></span>;</code></pre></div>
+<p>PSA提供了一个更简单的Hash计算接口，适合轻量化的计算，使用时需要注意确保hash的长度<code>hash_size</code>应当大于算法输出的长度（根据<code>PSA_HASH_LENGTH(alg)</code>计算）。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_hash_compute</span><span class="hljs-params">(<span class="hljs-keyword">psa_algorithm_t</span> alg,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *input,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">size_t</span> input_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">uint8_t</span> *hash,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">size_t</span> hash_size,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">size_t</span> *hash_length)</span></span>;</code></pre></div>
+<h2><span id="mac">MAC</span></h2><p>消息认证码（Message authentication codes），用于认证消息，计算的输入为消息和消息发送者持有的密钥（对称密钥），计算和验证消息认证码，计算MAC的函数与Mbedtls类似，可以多次调用update函数计算长消息的MAC，<code>psa_mac_operation_t *operation</code>包含计算消息验证码用的算法和key的信息。<br>此处key的usage属性必须为<code>PSA_KEY_USAGE_SIGN_MESSAGE | PSA_KEY_USAGE_VERIFY_MESSAGE</code>，算法必须保证<code>PSA_ALG_IS_MAC(alg)</code>为真。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_mac_sign_setup</span><span class="hljs-params">(<span class="hljs-keyword">psa_mac_operation_t</span> *operation,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">psa_algorithm_t</span> alg)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_mac_verify_setup</span><span class="hljs-params">(<span class="hljs-keyword">psa_mac_operation_t</span> *operation,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                  <span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                  <span class="hljs-keyword">psa_algorithm_t</span> alg)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_mac_update</span><span class="hljs-params">(<span class="hljs-keyword">psa_mac_operation_t</span> *operation,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *input,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">size_t</span> input_length)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_mac_sign_finish</span><span class="hljs-params">(<span class="hljs-keyword">psa_mac_operation_t</span> *operation,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                 <span class="hljs-keyword">uint8_t</span> *mac,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                 <span class="hljs-keyword">size_t</span> mac_size,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                 <span class="hljs-keyword">size_t</span> *mac_length)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_mac_verify_finish</span><span class="hljs-params">(<span class="hljs-keyword">psa_mac_operation_t</span> *operation,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                   <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *mac,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                   <span class="hljs-keyword">size_t</span> mac_length)</span></span>;</code></pre></div>
+<p>同样PSA提供了简短消息情况下的接口：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_mac_compute</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">psa_algorithm_t</span> alg,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *input,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">size_t</span> input_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">uint8_t</span> *mac,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">size_t</span> mac_size,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">size_t</span> *mac_length)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_mac_verify</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">psa_algorithm_t</span> alg,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *input,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">size_t</span> input_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *mac,</span></span>
+<span class="hljs-params"><span class="hljs-function">                            <span class="hljs-keyword">size_t</span> mac_length)</span></span>;</code></pre></div>
+<h2><span id="asymmetric-cryptography">Asymmetric cryptography</span></h2><p>非对称加解密和签名认证的接口。</p>
+<h3><span id="非对称加解密">非对称加解密</span></h3><p>使用公钥加密，私钥解密，支持RSA、ECC等算法，key的usage为<code>PSA_KEY_USAGE_ENCRYPT | PSA_KEY_USAGE_DECRYPT</code>。参数salt（盐）在算法不需要的时候填<code>NULL</code>。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_asymmetric_encrypt</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">psa_algorithm_t</span> alg,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *input,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">size_t</span> input_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *salt,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">size_t</span> salt_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">uint8_t</span> *output,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">size_t</span> output_size,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">size_t</span> *output_length)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_asymmetric_decrypt</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">psa_algorithm_t</span> alg,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *input,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">size_t</span> input_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *salt,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">size_t</span> salt_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">uint8_t</span> *output,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">size_t</span> output_size,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                    <span class="hljs-keyword">size_t</span> *output_length)</span></span>;</code></pre></div>
+
+<h3><span id="签名和验证">签名和验证</span></h3><p>通常采用对消息的单向散列值使用私钥进行签名，而消息接收者验证签名的步骤如下：</p>
+<ul>
+<li>对消息进行单向散列值计算</li>
+<li>用公钥对签名进行解密</li>
+<li>比对解密后的散列值和计算的散列值时否相同</li>
+</ul>
+<p>上述过程是<code>psa_verify_hash</code>函数的执行过程。因此接口定义如下：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_sign_hash</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                           <span class="hljs-keyword">psa_algorithm_t</span> alg,</span></span>
+<span class="hljs-params"><span class="hljs-function">                           <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *hash,</span></span>
+<span class="hljs-params"><span class="hljs-function">                           <span class="hljs-keyword">size_t</span> hash_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                           <span class="hljs-keyword">uint8_t</span> *signature,</span></span>
+<span class="hljs-params"><span class="hljs-function">                           <span class="hljs-keyword">size_t</span> signature_size,</span></span>
+<span class="hljs-params"><span class="hljs-function">                           <span class="hljs-keyword">size_t</span> *signature_length)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_verify_hash</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">psa_algorithm_t</span> alg,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *hash,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">size_t</span> hash_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *signature,</span></span>
+<span class="hljs-params"><span class="hljs-function">                             <span class="hljs-keyword">size_t</span> signature_length)</span></span>;</code></pre></div>
+<p>使用时key的usage为<code>PSA_KEY_USAGE_SIGN_HASH | PSA_KEY_USAGE_VERIFY_HASH</code>，key的type必须是非对称密钥类型，算法需要和计算单向散列值的函数（例如<code>psa_hash_compute</code>）使用的算法保持一致。</p>
+<h2><span id="symmetric-cryptography">Symmetric cryptography</span></h2><p>对称加解密的接口。key的usage为<code>PSA_KEY_USAGE_ENCRYPT | PSA_KEY_USAGE_DECRYPT</code>,算法必须满足<code>PSA_ALG_IS_CIPHER(alg)</code>为真。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_cipher_encrypt</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">psa_algorithm_t</span> alg,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *input,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">size_t</span> input_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">uint8_t</span> *output,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">size_t</span> output_size,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">size_t</span> *output_length)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_cipher_decrypt</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">psa_algorithm_t</span> alg,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *input,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">size_t</span> input_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">uint8_t</span> *output,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">size_t</span> output_size,</span></span>
+<span class="hljs-params"><span class="hljs-function">                                <span class="hljs-keyword">size_t</span> *output_length)</span></span>;</code></pre></div>
+<p>上面的接口使用的是随机初始化向量IV，通过下列一组函数可以使用特定的初始化向量：</p>
+<div class="hljs"><pre><code class="hljs c">psa_cipher_encrypt_setup
+psa_cipher_decrypt_setup
+psa_cipher_generate_iv
+psa_cipher_set_iv
+psa_cipher_update
+psa_cipher_finish</code></pre></div>
+
+<h2><span id="aead">AEAD</span></h2><p>Authenticated Encryption with Associated Data (<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_35324057/article/details/106035773?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_title-0&spm=1001.2101.3001.4242">AEAD</a>)，对称密码和消息认证码，是一种同时具备保密性，完整性和可认证性的加密形式。key的usage为<code>PSA_KEY_USAGE_DECRYPT | PSA_KEY_USAGE_ENCRYPT</code>，算法需要保证<code>PSA_ALG_IS_AEAD(alg)</code>为真。nonce可以是随机数或初始化向量，additional_data用来认证，不放在消息中加密。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_aead_encrypt</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">psa_algorithm_t</span> alg,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *nonce,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">size_t</span> nonce_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *additional_data,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">size_t</span> additional_data_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *plaintext,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">size_t</span> plaintext_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">uint8_t</span> *ciphertext,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">size_t</span> ciphertext_size,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">size_t</span> *ciphertext_length)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">psa_status_t</span> <span class="hljs-title">psa_aead_decrypt</span><span class="hljs-params">(<span class="hljs-keyword">mbedtls_svc_key_id_t</span> key,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">psa_algorithm_t</span> alg,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *nonce,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">size_t</span> nonce_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *additional_data,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">size_t</span> additional_data_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *ciphertext,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">size_t</span> ciphertext_length,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">uint8_t</span> *plaintext,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">size_t</span> plaintext_size,</span></span>
+<span class="hljs-params"><span class="hljs-function">                              <span class="hljs-keyword">size_t</span> *plaintext_length)</span></span>;</code></pre></div>
+<p>这里支持的算法包括：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> PSA_ALG_CCM                             ((psa_algorithm_t)0x05500100)</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> PSA_ALG_GCM                             ((psa_algorithm_t)0x05500200)</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> PSA_ALG_CHACHA20_POLY1305               ((psa_algorithm_t)0x05100500)</span></code></pre></div>
+<h1><span id="示例代码">示例代码</span></h1><h2><span id="签名认证">签名认证</span></h2><h3><span id="导入ecc非对称密钥">导入ECC非对称密钥</span></h3><div class="hljs"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> ECC_P256_PUBLIC_KEY_SIZE PSA_KEY_EXPORT_ECC_PUBLIC_KEY_MAX_SIZE(256)</span>
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">uint8_t</span> attestation_public_key[ECC_P256_PUBLIC_KEY_SIZE]; <span class="hljs-comment">/* 65bytes */</span>
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">size_t</span> attestation_public_key_len = <span class="hljs-number">0</span>;
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">psa_key_handle_t</span> public_key_handle = <span class="hljs-number">0</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">load_key_pair</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">psa_key_attributes_t</span> key_attributes = psa_key_attributes_init();
+    <span class="hljs-keyword">psa_key_handle_t</span> key_handle = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">psa_ecc_family_t</span> psa_curve;
+    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ecc_key_t</span> <span class="hljs-title">attest_key</span> =</span> &#123;<span class="hljs-number">0</span>&#125;;
+    <span class="hljs-keyword">uint8_t</span> key_buf[<span class="hljs-number">3</span> * PSA_BITS_TO_BYTES(<span class="hljs-number">256</span>)]; <span class="hljs-comment">/* priv + x_coord + y_coord */</span>
+    <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">tfm_plat_err_t</span> <span class="hljs-title">plat_res</span>;</span>
+    <span class="hljs-keyword">psa_key_usage_t</span> usage = PSA_KEY_USAGE_SIGN_HASH | PSA_KEY_USAGE_VERIFY_HASH;
+
+    tfm_plat_get_initial_attest_key(key_buf, <span class="hljs-keyword">sizeof</span>(key_buf),
+                                    &amp;attest_key, &amp;psa_curve);
+
+    <span class="hljs-comment">/* Setup the key policy for private key */</span>
+    psa_set_key_usage_flags(&amp;key_attributes, usage);
+    psa_set_key_algorithm(&amp;key_attributes, PSA_ALG_ECDSA(PSA_ALG_SHA_256));
+    psa_set_key_type(&amp;key_attributes, PSA_KEY_TYPE_ECC_KEY_PAIR(psa_curve));
+
+    <span class="hljs-comment">/* Register private key to Crypto service */</span>
+    <span class="hljs-keyword">int32_t</span> crypto_result = psa_import_key(&amp;key_attributes,
+                                           attest_key.priv_key,
+                                           attest_key.priv_key_size,
+                                           &amp;key_handle);
+
+    crypto_result = psa_export_public_key(key_handle, attestation_public_key,
+                                          ECC_P256_PUBLIC_KEY_SIZE,
+                                          &amp;attestation_public_key_len);
+
+    public_key_handle = key_handle;
+&#125;</code></pre></div>
+<h3><span id="计算签名">计算签名</span></h3><div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">spm_server_sign_certificate</span><span class="hljs-params">(<span class="hljs-keyword">psa_msg_t</span> *msg)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">uint8_t</span> server_msg[<span class="hljs-number">16</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+    <span class="hljs-keyword">uint8_t</span> server_msg_hash[<span class="hljs-number">32</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+    <span class="hljs-keyword">size_t</span> hash_length = <span class="hljs-number">0</span>;
+
+    <span class="hljs-keyword">uint8_t</span> signature[<span class="hljs-number">64</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+    <span class="hljs-keyword">size_t</span> signature_length = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+
+    <span class="hljs-comment">/* read data */</span>
+    <span class="hljs-keyword">uint8_t</span> msg_length = psa_read(msg-&gt;handle, <span class="hljs-number">0</span>,
+                                  server_msg, <span class="hljs-keyword">sizeof</span>(server_msg));
+
+    <span class="hljs-comment">/* calculate hash */</span>
+    <span class="hljs-keyword">int32_t</span> crypto_result = psa_hash_compute(PSA_ALG_SHA_256,
+                                             server_msg,
+                                             msg_length,
+                                             server_msg_hash,
+                                             <span class="hljs-keyword">sizeof</span>(server_msg_hash),
+                                             &amp;hash_length);
+
+    <span class="hljs-comment">/* calculate signature */</span>
+    crypto_result = psa_asymmetric_sign(public_key_handle,
+                                        PSA_ALG_ECDSA(PSA_ALG_SHA_256),
+                                        server_msg_hash,
+                                        hash_length,
+                                        signature,
+                                        <span class="hljs-keyword">sizeof</span>(signature),
+                                        &amp;signature_length);
+
+    psa_write(msg-&gt;handle, <span class="hljs-number">0</span>, signature, signature_length);
+    psa_write(msg-&gt;handle, <span class="hljs-number">1</span>, &amp;crypto_result, <span class="hljs-keyword">sizeof</span>(crypto_result));
+
+    <span class="hljs-keyword">return</span> crypto_result;
+&#125;</code></pre></div>
+<h3><span id="验证签名">验证签名</span></h3><div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">spm_client_verify_certificate</span><span class="hljs-params">(<span class="hljs-keyword">psa_msg_t</span> *msg)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">uint8_t</span> server_msg[<span class="hljs-number">16</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+    <span class="hljs-keyword">uint8_t</span> server_msg_hash[<span class="hljs-number">32</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+    <span class="hljs-keyword">size_t</span> hash_length = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int32_t</span> verify_ret = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">uint8_t</span> signature[<span class="hljs-number">64</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+
+    <span class="hljs-comment">/* read data */</span>
+    <span class="hljs-keyword">uint8_t</span> msg_length = psa_read(msg-&gt;handle, <span class="hljs-number">0</span>,
+                                  server_msg, <span class="hljs-keyword">sizeof</span>(server_msg));
+    <span class="hljs-keyword">size_t</span> signature_length = psa_read(msg-&gt;handle, <span class="hljs-number">1</span>,
+                                       signature, <span class="hljs-keyword">sizeof</span>(signature));
+
+    <span class="hljs-comment">/* calculate hash */</span>
+    <span class="hljs-keyword">int32_t</span> crypto_result = psa_hash_compute(PSA_ALG_SHA_256,
+                                             server_msg,
+                                             msg_length,
+                                             server_msg_hash,
+                                             <span class="hljs-keyword">sizeof</span>(server_msg_hash),
+                                             &amp;hash_length);
+
+    <span class="hljs-comment">/* verify signature */</span>
+    verify_ret = psa_asymmetric_verify(public_key_handle,
+                                       PSA_ALG_ECDSA(PSA_ALG_SHA_256),
+                                       server_msg_hash,
+                                       hash_length,
+                                       signature,
+                                       signature_length);
+
+    psa_write(msg-&gt;handle, <span class="hljs-number">0</span>, &amp;verify_ret, <span class="hljs-keyword">sizeof</span>(verify_ret));
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
+<h2><span id="aead加密解密">AEAD加密解密</span></h2><h3><span id="导入对称密钥">导入对称密钥</span></h3><div class="hljs"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MAX_KEY_NUM 2</span>
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">psa_key_handle_t</span> symmetric_key_handle[MAX_KEY_NUM] = &#123;<span class="hljs-number">0</span>&#125;;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int32_t</span> <span class="hljs-title">load_symmetric_key</span><span class="hljs-params">(<span class="hljs-keyword">int8_t</span> key_index)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">if</span> (key_index &gt; MAX_KEY_NUM || key_index &lt; <span class="hljs-number">0</span>)
+    &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+    <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> key_buf[] = <span class="hljs-string">&quot;This is AES key&quot;</span>;
+    <span class="hljs-keyword">psa_key_attributes_t</span> key_attributes = psa_key_attributes_init();
+    <span class="hljs-keyword">psa_key_handle_t</span> key_handle = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">psa_key_usage_t</span> usage = PSA_KEY_USAGE_ENCRYPT | PSA_KEY_USAGE_DECRYPT;
+
+    psa_set_key_usage_flags(&amp;key_attributes, usage);
+    psa_set_key_type(&amp;key_attributes, PSA_KEY_TYPE_AES);
+    psa_set_key_algorithm(&amp;key_attributes, PSA_ALG_CCM);
+
+    <span class="hljs-keyword">int32_t</span> crypto_result = psa_import_key(&amp;key_attributes, key_buf,
+                                           <span class="hljs-keyword">sizeof</span>(key_buf), &amp;key_handle);
+
+    symmetric_key_handle[key_index] = key_handle;
+&#125;</code></pre></div>
+<h3><span id="消息加密">消息加密</span></h3><div class="hljs"><pre><code class="hljs c"><span class="hljs-keyword">const</span> <span class="hljs-keyword">size_t</span> nonce_length = <span class="hljs-number">12</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> nonce[] = <span class="hljs-string">&quot;01234567890&quot;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> associated_data[] = <span class="hljs-string">&quot;This is associated data&quot;</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">spm_client_encrypt_data</span><span class="hljs-params">(<span class="hljs-keyword">psa_msg_t</span> *msg)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">int8_t</span> key_index = <span class="hljs-number">-1</span>;
+    <span class="hljs-keyword">uint8_t</span> plaintext[<span class="hljs-number">16</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+    <span class="hljs-keyword">size_t</span> plaintext_len = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">uint8_t</span> ciphertext[<span class="hljs-number">32</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+    <span class="hljs-keyword">size_t</span> ciphertext_len = <span class="hljs-number">0</span>;
+
+    <span class="hljs-comment">/* read data */</span>
+    <span class="hljs-keyword">int32_t</span> result = psa_read(msg-&gt;handle, <span class="hljs-number">0</span>, &amp;key_index, <span class="hljs-keyword">sizeof</span>(key_index));
+    plaintext_len = psa_read(msg-&gt;handle, <span class="hljs-number">1</span>, plaintext, <span class="hljs-keyword">sizeof</span>(plaintext));
+
+    <span class="hljs-comment">/* encrypt data by key */</span>
+    result = psa_aead_encrypt(symmetric_key_handle[key_index],
+                              PSA_ALG_CCM,
+                              nonce,
+                              nonce_length,
+                              associated_data,
+                              <span class="hljs-keyword">sizeof</span>(associated_data),
+                              plaintext,
+                              plaintext_len,
+                              ciphertext,
+                              <span class="hljs-keyword">sizeof</span>(ciphertext),
+                              &amp;ciphertext_len);
+
+    psa_write(msg-&gt;handle, <span class="hljs-number">0</span>, ciphertext, ciphertext_len);
+    psa_write(msg-&gt;handle, <span class="hljs-number">1</span>, &amp;result, <span class="hljs-keyword">sizeof</span>(result));
+
+    <span class="hljs-keyword">return</span> result;
+&#125;</code></pre></div>
+<h3><span id="消息解密">消息解密</span></h3><div class="hljs"><pre><code class="hljs c"><span class="hljs-keyword">const</span> <span class="hljs-keyword">size_t</span> nonce_length = <span class="hljs-number">12</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> nonce[] = <span class="hljs-string">&quot;01234567890&quot;</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> associated_data[] = <span class="hljs-string">&quot;This is associated data&quot;</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">spm_client_decrypt_data</span><span class="hljs-params">(<span class="hljs-keyword">psa_msg_t</span> *msg)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">int8_t</span> key_index = <span class="hljs-number">-1</span>;
+    <span class="hljs-keyword">uint8_t</span> ciphertext[<span class="hljs-number">32</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+    <span class="hljs-keyword">size_t</span> ciphertext_len = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">uint8_t</span> decrypttext[<span class="hljs-number">16</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+    <span class="hljs-keyword">size_t</span> decrypttext_len = <span class="hljs-number">0</span>;
+
+    <span class="hljs-comment">/* read data */</span>
+    <span class="hljs-keyword">int32_t</span> result = psa_read(msg-&gt;handle, <span class="hljs-number">0</span>, &amp;key_index, <span class="hljs-keyword">sizeof</span>(key_index));
+    ciphertext_len = psa_read(msg-&gt;handle, <span class="hljs-number">1</span>, ciphertext, <span class="hljs-keyword">sizeof</span>(ciphertext));
+
+    <span class="hljs-comment">/* decrypt data by key */</span>
+    result = psa_aead_decrypt(symmetric_key_handle[key_index],
+                              PSA_ALG_CCM,
+                              nonce,
+                              nonce_length,
+                              associated_data,
+                              <span class="hljs-keyword">sizeof</span>(associated_data),
+                              ciphertext,
+                              ciphertext_len,
+                              decrypttext,
+                              <span class="hljs-keyword">sizeof</span>(decrypttext),
+                              &amp;decrypttext_len);
+
+    psa_write(msg-&gt;handle, <span class="hljs-number">0</span>, decrypttext, decrypttext_len);
+    psa_write(msg-&gt;handle, <span class="hljs-number">1</span>, &amp;result, <span class="hljs-keyword">sizeof</span>(result));
+
+    <span class="hljs-keyword">return</span> result;
+&#125;</code></pre></div>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+                    
+                      <a class="hover-with-bg" href="/tags/mbedtls/">mbedtls</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/06/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94mbedtls%E5%AD%A6%E4%B9%A0-%E6%B6%88%E6%81%AF%E8%AE%A4%E8%AF%81%E7%A0%81/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Mbedtls学习--消息认证码</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/06/02/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94mbedtls%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/">
+                        <span class="hidden-mobile">Mbedtls学习--对称加密算法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Jianliang Shen</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2023</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Mbedtls学习--平台安全架构库函数接口&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>

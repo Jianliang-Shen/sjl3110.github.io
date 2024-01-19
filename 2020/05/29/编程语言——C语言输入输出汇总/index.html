@@ -1,0 +1,1086 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>C语言输入输出汇总 - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-05-29 18:45" pubdate>
+      2020年5月29日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      44
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">C语言输入输出汇总</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>刷题时经常遇到C语言的输入问题，包括一行读入数字、字符串、十六进制数等等，本文将对此进行一一分类编写.</p>
+<span id="more"></span>   
+<div class="hljs"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;ctype.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;malloc.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string.h&gt;</span></span>
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">get_data</span><span class="hljs-params">(<span class="hljs-keyword">int</span> *nums)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">long</span> <span class="hljs-title">StrToHex</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *data)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">judgeHexStr</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *data)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> <span class="hljs-title">simple_strtoul</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *cp, <span class="hljs-keyword">char</span> **endp, <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> base)</span></span>;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">    1 . 常规输入整行，$ My name is shenjianliang</span>
+<span class="hljs-comment">    My name is shenjianliang</span>
+<span class="hljs-comment">*/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> 0</span>
+    <span class="hljs-keyword">char</span> strline[<span class="hljs-number">100</span>] = &#123;<span class="hljs-string">&#x27;\0&#x27;</span>&#125;;
+    gets(strline);
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;input : %s\n&quot;</span>, strline);
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">    2 . 按空格隔开输入，使用scanf和二维数组,假设单词长度不超过20，总数不超过100</span>
+<span class="hljs-comment">    My name is shenjianliang</span>
+<span class="hljs-comment">*/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> 0</span>
+    <span class="hljs-comment">//按 Enter 后程序输出并退出</span>
+    <span class="hljs-keyword">char</span> input[<span class="hljs-number">100</span>][<span class="hljs-number">20</span>];
+    <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%s&quot;</span>, &amp;input[count++]) &gt; <span class="hljs-number">0</span>) &#123;
+        <span class="hljs-keyword">if</span> (getchar() == <span class="hljs-string">&#x27;\n&#x27;</span>)  <span class="hljs-comment">//判断是否检测到 Enter</span>
+            <span class="hljs-keyword">break</span>;
+    &#125;
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;input[%d] = \t %s\n&quot;</span>, i, input[i]);
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">    3 . 按行输入，使用双指针，假设单词长度不超过20，总数不超过100</span>
+<span class="hljs-comment">    My</span>
+<span class="hljs-comment">    name</span>
+<span class="hljs-comment">    is</span>
+<span class="hljs-comment">    shenjianliang</span>
+<span class="hljs-comment">*/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> 0</span>
+    <span class="hljs-comment">//按 Enter</span>
+    <span class="hljs-comment">//退出循环无法实现，此类题目一般靠有多少个输入或者最后一行等于end判断结束</span>
+    <span class="hljs-keyword">char</span> strline[<span class="hljs-number">100</span>][<span class="hljs-number">20</span>];
+    <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+    <span class="hljs-comment">//	int N;</span>
+    <span class="hljs-comment">//	scanf (&quot;%d\n&quot;,&amp;N);</span>
+    <span class="hljs-comment">//	for (i = 0;i&lt; N;i++)&#123;</span>
+    <span class="hljs-comment">//		gets(strline[i]);</span>
+    <span class="hljs-comment">//		printf (&quot;strline[%d] = \t%s\n&quot;,i,strline[i]);</span>
+    <span class="hljs-comment">//	&#125;</span>
+    <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span> (gets(strline[count++]) != <span class="hljs-literal">NULL</span>) &#123;
+        <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strcmp</span>(strline[count - <span class="hljs-number">1</span>], <span class="hljs-string">&quot;end&quot;</span>)) &#123;
+            <span class="hljs-keyword">break</span>;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;strline[%d] = \t %s\n&quot;</span>, i, strline[i]);
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">    4 . 按逗号隔开输入（最难），使用双指针，条件同上</span>
+<span class="hljs-comment">    etgerwty,,,rtyer,,,rteyerty,</span>
+<span class="hljs-comment">    count  = 3</span>
+<span class="hljs-comment">    input[0] =       etgerwty</span>
+<span class="hljs-comment">    input[1] =       rtyer</span>
+<span class="hljs-comment">    input[2] =       rteyerty</span>
+<span class="hljs-comment">*/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> 0</span>
+    <span class="hljs-keyword">char</span> input[<span class="hljs-number">20</span>][<span class="hljs-number">100</span>];  <span class="hljs-comment">//使用二维数组</span>
+    <span class="hljs-keyword">char</span> str[<span class="hljs-number">1000</span>];
+    <span class="hljs-keyword">char</span> *ptr;
+    <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+    gets(str);
+    <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+    ptr = strtok(str, <span class="hljs-string">&quot;,&quot;</span>);
+    <span class="hljs-keyword">while</span> (ptr != <span class="hljs-literal">NULL</span>) &#123;
+        <span class="hljs-comment">// count ++;</span>
+        <span class="hljs-built_in">strcpy</span>(input[count++], ptr);
+        ptr = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);
+    &#125;
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;count  = %d\n&quot;</span>, count);
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;input[%d] = \t %s\n&quot;</span>, i, input[i]);
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> 0</span>
+    <span class="hljs-keyword">char</span> **input, **temp;  <span class="hljs-comment">//使用双指针 ,效果不好，不便于输出</span>
+    input = (<span class="hljs-keyword">char</span> **)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">char</span> **) * <span class="hljs-number">100</span>);  <span class="hljs-comment">//声明100个字符串组成的数组</span>
+    temp = input;                                    <span class="hljs-comment">//存放开始的地址</span>
+    <span class="hljs-keyword">char</span> str[<span class="hljs-number">1000</span>];
+
+    gets(str);
+
+    <span class="hljs-comment">//*input  = (char *) malloc (sizeof(char *)*20 );//第一个字符串数组分配空间</span>
+    <span class="hljs-comment">//不分配也可以</span>
+    *input = strtok(str, <span class="hljs-string">&quot;,&quot;</span>);
+    <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span> (*input != <span class="hljs-literal">NULL</span>) &#123;
+        count++;
+        *input++;
+        <span class="hljs-comment">//*input = (char *) malloc (sizeof(char *)*20 );	 // 不分配也可以</span>
+        *input = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);
+    &#125;
+    input = temp;  <span class="hljs-comment">//恢复指针初始位置</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;input[%d] = \t %s\n&quot;</span>, i, input[i]);  <span class="hljs-comment">//以二维数组的形式打印输出</span>
+    &#125;
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">    5 . 数字输入，空格隔开</span>
+<span class="hljs-comment">    12 23 445 345 12342435</span>
+<span class="hljs-comment">*/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> 0</span>
+    <span class="hljs-comment">//按 Enter 后程序输出并退出</span>
+    <span class="hljs-keyword">int</span> input[<span class="hljs-number">100</span>];
+    <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d&quot;</span>, &amp;input[count++]) != EOF) &#123;
+        <span class="hljs-keyword">if</span> (getchar() == <span class="hljs-string">&#x27;\n&#x27;</span>)  <span class="hljs-comment">//判断是否检测到 Enter</span>
+            <span class="hljs-keyword">break</span>;
+    &#125;
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;count  = %d \n&quot;</span>, count);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;input[%d] = \t %d\n&quot;</span>, i, input[i]);
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">    6 . 数字输入，逗号隔开</span>
+<span class="hljs-comment">    Example 1:</span>
+<span class="hljs-comment">        452345,  645 6345,63776 ,37657, 214545          ,526</span>
+<span class="hljs-comment">        count  = 6</span>
+<span class="hljs-comment">        input[0] =       452345</span>
+<span class="hljs-comment">        input[1] =       645</span>
+<span class="hljs-comment">        input[2] =       63776</span>
+<span class="hljs-comment">        input[3] =       37657</span>
+<span class="hljs-comment">        input[4] =       214545</span>
+<span class="hljs-comment">        input[5] =       526</span>
+<span class="hljs-comment">    Example 2:</span>
+<span class="hljs-comment">        2344,  ,  ,3545,,365</span>
+<span class="hljs-comment">        count  = 5</span>
+<span class="hljs-comment">        input[0] =       2344</span>
+<span class="hljs-comment">        input[1] =       0</span>
+<span class="hljs-comment">        input[2] =       0</span>
+<span class="hljs-comment">        input[3] =       3545</span>
+<span class="hljs-comment">        input[4] =       365</span>
+<span class="hljs-comment">*/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> 0</span>
+
+    <span class="hljs-keyword">int</span> num_input[<span class="hljs-number">20</span>];
+    <span class="hljs-keyword">char</span> str[<span class="hljs-number">1000</span>];
+    <span class="hljs-keyword">char</span> *ptr;
+    <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+    gets(str);
+    ptr = strtok(str, <span class="hljs-string">&quot;,&quot;</span>);
+    <span class="hljs-keyword">while</span> (ptr != <span class="hljs-literal">NULL</span>) &#123;
+        num_input[count++] = atoi(ptr);
+        ptr = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);
+    &#125;
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;count  = %d\n&quot;</span>, count);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;input[%d] = \t %d\n&quot;</span>, i, num_input[i]);
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">    7 . 多组输入，数据总量不相同</span>
+<span class="hljs-comment">        N 组数据</span>
+<span class="hljs-comment">        1,2,3,4				//伤害值数组，不定长</span>
+<span class="hljs-comment">        20,30,15			//怪物生命值，不定长</span>
+<span class="hljs-comment">        5,6,7,8				//不同箭的数量，与伤害值种类对应</span>
+<span class="hljs-comment">        // 下面是第二组数据</span>
+<span class="hljs-comment">        4,2,3,4,7,8,9		//伤害值数组，不定长</span>
+<span class="hljs-comment">        50,30,15,234,44		//怪物生命值，不定长</span>
+<span class="hljs-comment">        5,6,7,8,66,77,88	//不同箭的数量，与伤害值种类对应</span>
+<span class="hljs-comment">        // 下面是第三组数据</span>
+<span class="hljs-comment">        1,2,3,4,45			//伤害值数组，不定长</span>
+<span class="hljs-comment">        20,60,11			//怪物生命值，不定长</span>
+<span class="hljs-comment">        5,6,7,8,34			//不同箭的数量，与伤害值种类对应</span>
+<span class="hljs-comment">*/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> 0</span>
+    <span class="hljs-keyword">int</span> N = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> *damage, *health, *arrow_count;
+    <span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d\n&quot;</span>, &amp;N);
+    <span class="hljs-keyword">int</span> damage_length = <span class="hljs-number">0</span>, health_length = <span class="hljs-number">0</span>, arrow_count_length = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; N; i++) &#123;
+        damage = (<span class="hljs-keyword">int</span> *)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">int</span>) * <span class="hljs-number">20</span>);
+        health = (<span class="hljs-keyword">int</span> *)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">int</span>) * <span class="hljs-number">20</span>);
+        arrow_count = (<span class="hljs-keyword">int</span> *)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">int</span>) * <span class="hljs-number">20</span>);
+
+        damage_length = get_data(damage);
+        health_length = get_data(health);
+        arrow_count_length = get_data(arrow_count);
+
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;=============== start print =================\n&quot;</span>);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; damage_length; j++) &#123;
+            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;damage[%d] = %d\n&quot;</span>, j, damage[j]);
+        &#125;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; health_length; j++) &#123;
+            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;health[%d] = %d\n&quot;</span>, j, health[j]);
+        &#125;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; arrow_count_length; j++) &#123;
+            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;arrow_count[%d] = %d\n&quot;</span>, j, arrow_count[j]);
+        &#125;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;================ end print =================\n&quot;</span>);
+
+        <span class="hljs-built_in">free</span>(damage);
+        <span class="hljs-built_in">free</span>(health);
+        <span class="hljs-built_in">free</span>(arrow_count);
+    &#125;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> 1</span>
+    <span class="hljs-keyword">int</span> N = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> damage[<span class="hljs-number">20</span>], health[<span class="hljs-number">20</span>], arrow_count[<span class="hljs-number">20</span>];
+    <span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d\n&quot;</span>, &amp;N);
+    <span class="hljs-keyword">int</span> damage_length = <span class="hljs-number">0</span>, health_length = <span class="hljs-number">0</span>, arrow_count_length = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; N; i++) &#123;
+        damage_length = get_data(damage);
+        health_length = get_data(health);
+        arrow_count_length = get_data(arrow_count);
+
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;=============== start print =================\n&quot;</span>);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; damage_length; j++) &#123;
+            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;damage[%d] = %d\n&quot;</span>, j, damage[j]);
+        &#125;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; health_length; j++) &#123;
+            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;health[%d] = %d\n&quot;</span>, j, health[j]);
+        &#125;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; arrow_count_length; j++) &#123;
+            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;arrow_count[%d] = %d\n&quot;</span>, j, arrow_count[j]);
+        &#125;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;================ end print =================\n&quot;</span>);
+    &#125;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">    8 . 读入十六进制字符串，空格隔开</span>
+<span class="hljs-comment">    0x123 0xaaaa 100 0x01111 00x10 0x101 101 x xx 10ac      x01</span>
+<span class="hljs-comment">    a[0]            H: 0x123                O: 291</span>
+<span class="hljs-comment">    a[1]            H: 0xaaaa               O: 43690</span>
+<span class="hljs-comment">    a[2]            H: 0x100                O: 256</span>
+<span class="hljs-comment">    a[3]            H: 0x1111               O: 4369</span>
+<span class="hljs-comment">    a[4]            H: 0x0                  O: 0     //00x101为0 和   0x10 = 16</span>
+<span class="hljs-comment">    a[5]            H: 0x10                 O: 16</span>
+<span class="hljs-comment">    a[6]            H: 0x101                O: 257</span>
+<span class="hljs-comment">    a[7]            H: 0x101                O: 257  //x 和 xx不计入</span>
+<span class="hljs-comment">    a[8]            H: 0x0                  O: 0</span>
+<span class="hljs-comment">    //由于有x和xx,10ac和x01无法输入</span>
+<span class="hljs-comment">*/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> 0</span>
+    <span class="hljs-keyword">long</span> a[<span class="hljs-number">20</span>];
+    <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%lx&quot;</span>, &amp;a[count++])) &#123;
+        <span class="hljs-keyword">if</span> (getchar() == <span class="hljs-string">&#x27;\n&#x27;</span>) <span class="hljs-keyword">break</span>;
+    &#125;
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;a[%d]\t\tH: 0x%lx\t\tO: %ld\n&quot;</span>, i, a[i], a[i]);
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">    9 . 读入十六进制字符串，逗号隔开，判断后使用字符串格式输出</span>
+<span class="hljs-comment">    0xaabb,0x1234,0xffff,0x10000000</span>
+<span class="hljs-comment">    a[0] =   0xaabb</span>
+<span class="hljs-comment">    a[1] =   0x1234</span>
+<span class="hljs-comment">    a[2] =   0xffff</span>
+<span class="hljs-comment">    a[3] =   0x10000000</span>
+<span class="hljs-comment">*/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> 0</span>
+    <span class="hljs-keyword">char</span> a[<span class="hljs-number">20</span>][<span class="hljs-number">100</span>];  <span class="hljs-comment">//使用二维数组</span>
+    <span class="hljs-keyword">char</span> str[<span class="hljs-number">1000</span>];
+    <span class="hljs-keyword">char</span> *ptr;
+    <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+    gets(str);
+    <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+    ptr = strtok(str, <span class="hljs-string">&quot;,&quot;</span>);
+    <span class="hljs-keyword">while</span> (ptr != <span class="hljs-literal">NULL</span>) &#123;
+        <span class="hljs-keyword">if</span> (judgeHexStr(ptr) == <span class="hljs-number">0</span>) &#123;  <span class="hljs-comment">//判断格式</span>
+            <span class="hljs-built_in">strcpy</span>(a[count++], ptr);
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            ptr = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);
+            <span class="hljs-keyword">continue</span>;
+        &#125;
+
+        ptr = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);
+    &#125;
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;a[%d] = \t %s\n&quot;</span>, i, a[i]);
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">    10 . 读入十六进制字符串，逗号隔开，使用十六进制和十进制格式输出</span>
+<span class="hljs-comment">    0x123,0xaaaa,100,0x01111,00x10,0x101,101,x,xx,10ac,    ,x01</span>
+<span class="hljs-comment">    output[0]               H: 0x123                O: 291</span>
+<span class="hljs-comment">    output[1]               H: 0xaaaa               O: 43690</span>
+<span class="hljs-comment">    output[2]               H: 0x100                O: 256</span>
+<span class="hljs-comment">    output[3]               H: 0x1111               O: 4369</span>
+<span class="hljs-comment">    output[4]               H: 0x101                O: 257</span>
+<span class="hljs-comment">    output[5]               H: 0x101                O: 257</span>
+<span class="hljs-comment">    output[6]               H: 0x10ac               O: 4268</span>
+<span class="hljs-comment">*/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> 0</span>
+    <span class="hljs-keyword">char</span> str[<span class="hljs-number">1000</span>];
+    <span class="hljs-keyword">long</span> output[<span class="hljs-number">20</span>];
+    <span class="hljs-keyword">char</span> *ptr;
+    <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>;
+    gets(str);
+    <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>;
+    ptr = strtok(str, <span class="hljs-string">&quot;,&quot;</span>);
+    <span class="hljs-keyword">while</span> (ptr != <span class="hljs-literal">NULL</span>) &#123;
+        output[count] = StrToHex(ptr);
+        ptr = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);
+        <span class="hljs-keyword">if</span> (output[count] == <span class="hljs-number">-1</span>) &#123;
+            <span class="hljs-keyword">continue</span>;  <span class="hljs-comment">//不是标准十六进制字符串则舍弃</span>
+        &#125;
+        count++;
+    &#125;
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;output[%d]\t\tH: 0x%lx\t\tO: %ld\n&quot;</span>, i, output[i], output[i]);
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">        11 . 进制转换</span>
+<span class="hljs-comment">        0xaa 111 98 aa 64 0Xaa 100fg   //非法字符自动截断</span>
+<span class="hljs-comment">        (16)     a = 170        (10)     a = 170        (8)      a = 170</span>
+<span class="hljs-comment">        (16)     a = 273        (10)     a = 111        (8)      a = 73</span>
+<span class="hljs-comment">        (16)     a = 152        (10)     a = 98 		(8)      a = 0</span>
+<span class="hljs-comment">        (16)     a = 170        (10)     a = 0  		(8)      a = 0</span>
+<span class="hljs-comment">        (16)     a = 100        (10)     a = 64 		(8)      a = 52</span>
+<span class="hljs-comment">        (16)     a = 170        (10)     a = 170        (8)      a = 170</span>
+<span class="hljs-comment">        (16)     a = 4111       (10)     a = 100        (8)      a = 64</span>
+<span class="hljs-comment">*/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> 0</span>
+    <span class="hljs-comment">// char *a;</span>
+    <span class="hljs-comment">// a = (char *)malloc (sizeof(char) * 20);</span>
+    <span class="hljs-keyword">char</span> a[<span class="hljs-number">20</span>];
+    <span class="hljs-keyword">char</span> **endp;
+    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%s&quot;</span>, a) != EOF) &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;(16)\t a = %ld\t&quot;</span>, simple_strtoul(a, <span class="hljs-literal">NULL</span>, <span class="hljs-number">16</span>));
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;(10)\t a = %ld\t&quot;</span>, simple_strtoul(a, <span class="hljs-literal">NULL</span>, <span class="hljs-number">10</span>));
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;(8)\t a = %ld\n&quot;</span>, simple_strtoul(a, <span class="hljs-literal">NULL</span>, <span class="hljs-number">8</span>));
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">get_data</span><span class="hljs-params">(<span class="hljs-keyword">int</span> *nums)</span> </span>&#123;
+    <span class="hljs-keyword">int</span> count = <span class="hljs-number">0</span>, data = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">char</span> str[<span class="hljs-number">1000</span>];
+    gets(str);
+    <span class="hljs-keyword">char</span> *ptr;
+    ptr = strtok(str, <span class="hljs-string">&quot;,&quot;</span>);
+    <span class="hljs-keyword">while</span> (ptr != <span class="hljs-literal">NULL</span>) &#123;
+        nums[count++] = atoi(ptr);
+        ptr = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);
+    &#125;
+    <span class="hljs-keyword">return</span> count;
+&#125;
+
+<span class="hljs-comment">//将十六进制字符串转换为整数（long）</span>
+<span class="hljs-function"><span class="hljs-keyword">long</span> <span class="hljs-title">StrToHex</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *data)</span> </span>&#123;
+    <span class="hljs-comment">//使用自己写的函数00x不可以识别</span>
+    <span class="hljs-keyword">if</span> (judgeHexStr(data) != <span class="hljs-number">0</span>) &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+    <span class="hljs-keyword">long</span> ret = <span class="hljs-number">0</span>, s = <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">int</span> length = <span class="hljs-built_in">strlen</span>(data);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) &#123;
+        <span class="hljs-keyword">if</span> ((<span class="hljs-string">&#x27;0&#x27;</span> &lt;= data[i]) &amp;&amp; (data[i] &lt;= <span class="hljs-string">&#x27;9&#x27;</span>)) &#123;
+            s = <span class="hljs-number">1</span>;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; length - i - <span class="hljs-number">1</span>; j++) &#123;
+                s = s * <span class="hljs-number">16</span>;
+            &#125;
+            ret += ((<span class="hljs-keyword">int</span>)(data[i] - <span class="hljs-string">&#x27;0&#x27;</span>)) * s;
+        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ((<span class="hljs-string">&#x27;a&#x27;</span> &lt;= data[i]) &amp;&amp; (data[i] &lt;= <span class="hljs-string">&#x27;f&#x27;</span>)) &#123;
+            s = <span class="hljs-number">1</span>;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; length - i - <span class="hljs-number">1</span>; j++) &#123;
+                s = s * <span class="hljs-number">16</span>;
+            &#125;
+            ret += ((<span class="hljs-keyword">int</span>)(data[i] - <span class="hljs-string">&#x27;a&#x27;</span> + <span class="hljs-number">10</span>)) * s;
+        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ((<span class="hljs-string">&#x27;A&#x27;</span> &lt;= data[i]) &amp;&amp; (data[i] &lt;= <span class="hljs-string">&#x27;F&#x27;</span>)) &#123;
+            s = <span class="hljs-number">1</span>;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; length - i - <span class="hljs-number">1</span>; j++) &#123;
+                s = s * <span class="hljs-number">16</span>;
+            &#125;
+            ret += ((<span class="hljs-keyword">int</span>)(data[i] - <span class="hljs-string">&#x27;A&#x27;</span> + <span class="hljs-number">10</span>)) * s;
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            <span class="hljs-keyword">continue</span>;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">return</span> ret;
+&#125;
+<span class="hljs-comment">//判断是否为标准 0xaA12 或者 0XaA12 或者 aA12 格式</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">judgeHexStr</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *data)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (data == <span class="hljs-literal">NULL</span>) &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+    <span class="hljs-keyword">int</span> length = <span class="hljs-built_in">strlen</span>(data);
+    <span class="hljs-keyword">if</span> (length == <span class="hljs-number">0</span>) &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (length &gt;= <span class="hljs-number">1</span>) &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; length; i++) &#123;
+            <span class="hljs-keyword">if</span> ((data[i] == <span class="hljs-string">&#x27;x&#x27;</span>) || (data[i] == <span class="hljs-string">&#x27;X&#x27;</span>)) &#123;
+                <span class="hljs-comment">// if (i == 0)</span>
+                <span class="hljs-comment">// &#123;</span>
+                <span class="hljs-comment">// 	return -1;</span>
+                <span class="hljs-comment">// &#125;</span>
+                <span class="hljs-keyword">if</span> (i != <span class="hljs-number">1</span>)  <span class="hljs-comment">//改为判断第二位是否为x</span>
+                &#123;
+                    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+                &#125;
+                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; i; j++) &#123;
+                    <span class="hljs-keyword">if</span> (data[j] != <span class="hljs-string">&#x27;0&#x27;</span>) &#123;
+                        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+                    &#125;
+                &#125;
+            &#125; <span class="hljs-keyword">else</span> &#123;
+                <span class="hljs-comment">// if (((&#x27;a&#x27; &lt;= data[i]) &amp;&amp; (data[i] &lt;= &#x27;f&#x27;)) ||</span>
+                <span class="hljs-comment">//     ((&#x27;A&#x27; &lt;= data[i]) &amp;&amp; (data[i] &lt;= &#x27;F&#x27;)) ||</span>
+                <span class="hljs-comment">//     ((&#x27;0&#x27; &lt;= data[i]) &amp;&amp; (data[i] &lt;= &#x27;9&#x27;))) &#123;</span>
+                <span class="hljs-comment">//等同于isxdigit(data[i]</span>
+                <span class="hljs-keyword">if</span> (<span class="hljs-built_in">isxdigit</span>(data[i])) &#123;
+                    <span class="hljs-keyword">continue</span>;
+                &#125; <span class="hljs-keyword">else</span> &#123;
+                    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+<span class="hljs-comment">//进制转换</span>
+<span class="hljs-comment">//如果输入为 0xff 或者 0Xff 格式，则默认转化为16进制</span>
+<span class="hljs-comment">//如果输入有 8~9，则转化为十进制和十六进制</span>
+<span class="hljs-comment">//如果输入为 a~f，则只能转为十六进制</span>
+<span class="hljs-comment">//输入遇到非法字符则自动截断</span>
+<span class="hljs-function"><span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> <span class="hljs-title">simple_strtoul</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *cp, <span class="hljs-keyword">char</span> **endp, <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> base)</span> </span>&#123;
+    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> result = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> value;
+
+    <span class="hljs-keyword">if</span> (*cp == <span class="hljs-string">&#x27;0&#x27;</span>) &#123;
+        cp++;
+        <span class="hljs-keyword">if</span> ((*cp == <span class="hljs-string">&#x27;x&#x27;</span> || *cp == <span class="hljs-string">&#x27;X&#x27;</span>) &amp;&amp;
+            <span class="hljs-built_in">isxdigit</span>(cp[<span class="hljs-number">1</span>])) &#123;  <span class="hljs-comment">//判断是否 0x 开头，0x 开头则为十六进制数</span>
+            base = <span class="hljs-number">16</span>;
+            cp++;
+        &#125;
+        <span class="hljs-keyword">if</span> (!base) &#123;  <span class="hljs-comment">//如果不是 0x 开头，base = 8</span>
+            base = <span class="hljs-number">8</span>;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">if</span> (!base) &#123;
+        base = <span class="hljs-number">10</span>;
+    &#125;
+    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">isxdigit</span>(*cp) &amp;&amp;  <span class="hljs-comment">// cp在的值0~f范围内，否则跳出循环</span>
+           (value = <span class="hljs-built_in">isdigit</span>(*cp) ? *cp - <span class="hljs-string">&#x27;0&#x27;</span>  <span class="hljs-comment">//如果cp的值在0~9</span>
+                                 : (<span class="hljs-built_in">islower</span>(*cp) ? <span class="hljs-built_in">toupper</span>(*cp) : *cp) - <span class="hljs-string">&#x27;A&#x27;</span> +
+                                       <span class="hljs-number">10</span>) &lt; base) &#123;  <span class="hljs-comment">//或者变为大写-&#x27;A&#x27;+10</span>
+        result = result * base + value;  <span class="hljs-comment">//从左往右，数值 x base +最低位的值</span>
+        cp++;
+    &#125;
+    <span class="hljs-keyword">if</span> (endp) &#123;
+        *endp = (<span class="hljs-keyword">char</span> *)cp;  <span class="hljs-comment">//捕获最低位地址</span>
+    &#125;
+    <span class="hljs-keyword">return</span> result;
+&#125;</code></pre></div>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/C-C/">C/C++</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/05/30/%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E6%A0%91%E4%B8%8E%E4%BA%8C%E5%8F%89%E6%A0%91/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">C语言数据结构--树与二叉树</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/05/25/%E5%B5%8C%E5%85%A5%E5%BC%8F%E2%80%94%E2%80%94AM437%20U-boot%E4%BF%AE%E6%94%B9/">
+                        <span class="hidden-mobile">AM437 U-Boot-2014修改</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Jianliang Shen</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2023</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "C语言输入输出汇总&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>

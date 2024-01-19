@@ -1,0 +1,1324 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>SQLite3 BLOB增删改查编写 - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-20 17:59" pubdate>
+      2020年6月20日 下午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      58
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">SQLite3 BLOB增删改查编写</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>SQLite 是一个软件库，实现了自给自足的、无服务器的、零配置的、事务性的SQL数据库引擎。SQLite是在世界上最广泛部署的SQL数据库引擎。SQLite源代码不受版权限制。</p>
+<span id="more"></span>  
+<ul>
+<li><a href="#sqlite3%E5%AE%89%E8%A3%85%E5%8F%8A%E9%85%8D%E7%BD%AE">SQLite3安装及配置</a></li>
+<li><a href="#sqlite3%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">SQLite3常用命令</a></li>
+<li><a href="#csqlite3%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C">C/SQLite3基本操作</a></li>
+<li><a href="#sqlite3-blob%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F">SQLite3 BLOB数据格式</a></li>
+</ul>
+<h2><span id="sqlite3安装及配置">SQLite3安装及配置</span></h2><p>在Ubuntu中，使用下面命令可以快速安装上手SQLite3：</p>
+<div class="hljs"><pre><code class="hljs bash">sudo apt-get install sqlite3
+sudo apt-get install libsqlite3-dev</code></pre></div>
+<p>在编译嵌入式Linux执行程序时，如果文件系统不支持SQLite命令，则需要找到交叉编译工具或者厂商提供的库文件，同时在项目文件和目标文件系统中添加链接。<br>SQLite3可视化工具：<a target="_blank" rel="noopener" href="https://sqlitestudio.pl/">下载</a></p>
+<h2><span id="sqlite3常用命令">SQLite3常用命令</span></h2><p>参考<a target="_blank" rel="noopener" href="https://www.runoob.com/sqlite/sqlite-commands.html">菜鸟教程 SQLite命令</a></p>
+<h2><span id="csqlite3基本操作">C/SQLite3基本操作</span></h2><p>参考<a target="_blank" rel="noopener" href="https://www.runoob.com/sqlite/sqlite-c-cpp.html">SQLite - C/C++</a></p>
+<h2><span id="sqlite3-blob数据格式">SQLite3 BLOB数据格式</span></h2><p>BLOB是一种根据输入自定的数据格式，允许一次存储大量数据，与TEXT格式相比，更加SQLite3会对TEXT进行转换，而不会对BLOB数据格式有任何修改。因此BLOB适用于数据帧存储。<br>例如要建立一个历史遥测的数据库：</p>
+<div class="hljs"><pre><code class="hljs bash">id          time_stamp  data
+----------  ----------  ------------
+1           14569       825400668368
+2           14569       277172517040
+3           14570       143753724361</code></pre></div>
+<p>我们定义一个消息结构体：</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-comment">/* Massege record in the database*/</span>
+<span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span>
+<span class="hljs-class">&#123;</span>
+    <span class="hljs-keyword">int</span> id;                            <span class="hljs-comment">//column id;</span>
+    <span class="hljs-keyword">uint64_t</span> time_stamp;               <span class="hljs-comment">//column time_stamp</span>
+    <span class="hljs-keyword">uint8_t</span> buf[MAX_DATA_BUFFER_SIZE]; <span class="hljs-comment">//buf in column blob</span>
+    <span class="hljs-keyword">int</span> buf_len;                       <span class="hljs-comment">//length of buf in blob</span>
+&#125; db_data;</code></pre></div>
+<p>使用下面sqldev.c中的函数可以完成增删改查的操作：</p>
+<ol>
+<li>插入新的记录<br> <code>db_add_data(db, &quot;delayed_tlm&quot;, msg);</code><br> 如果记录已经有则会覆盖，如果超出ID允许的最大值，则会从1开始重新写入</li>
+<li>根据ID删除记录<br> <code>db_delete_blob_by_id(db, &quot;delayed_tlm&quot;, id)</code></li>
+<li>查找ID的记录是否存在<br><code>db_judge_id_exist(db, &quot;delayed_tlm&quot;, id);</code></li>
+<li>查找最新记录的ID和时间<br> <code>db_get_max_time_stamp_id() and then call db_get_blob_by_id() to get the data</code></li>
+<li>根据ID和时间查找记录<br> <code>db_get_blob_by_id() or db_get_blob_by_ts()</code></li>
+<li>修改某条记录的BLOB值<br> <code>db_write_blob_by_id()</code> 不会更改时间的值<br> <code>db_add_data()</code> 会刷新这条记录的所有变量</li>
+</ol>
+<details>
+<summary>sqldev.h</summary>  
+  
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-comment">/************************************************************************************</span>
+<span class="hljs-comment">*	Copyright (C), 2011-2021, Micro-Satellite Research Center, Zhejiang University</span>
+<span class="hljs-comment">*************************************************************************************</span>
+<span class="hljs-comment">*	File Name:     sqldev.h</span>
+<span class="hljs-comment">*	Project:       Sqlite3 API definition for ZHX CES</span>
+<span class="hljs-comment">*	Group:         CES</span>
+<span class="hljs-comment">*	Author:        Jianliang Shen</span>
+<span class="hljs-comment">*	Creation Date: June-19-2020</span>
+<span class="hljs-comment">*	Description:</span>
+<span class="hljs-comment">SQLite3 function and val definition</span>
+<span class="hljs-comment">*	Revision:</span>
+<span class="hljs-comment">June-18-2020 : Create</span>
+<span class="hljs-comment">June-19-2020 : Release 0.10</span>
+<span class="hljs-comment">*************************************************************************************/</span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">ifndef</span> __SQLDEV_H__</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> __SQLDEV_H__</span>
+<span class="hljs-comment">/************************************************************************************</span>
+<span class="hljs-comment">dataTele.db--</span>
+<span class="hljs-comment">            |          |-id</span>
+<span class="hljs-comment">            |--rt_tlm--|-time_stamp</span>
+<span class="hljs-comment">            |          |-data</span>
+<span class="hljs-comment">            |               |-id</span>
+<span class="hljs-comment">            |--delayed_tlm--|-time_stamp</span>
+<span class="hljs-comment">            |               |-data</span>
+<span class="hljs-comment">            |       |-id</span>
+<span class="hljs-comment">            |--tlc--|-time_stamp</span>
+<span class="hljs-comment">            |       |-data</span>
+<span class="hljs-comment"></span>
+<span class="hljs-comment">e.g. select * from delayed_tlm:</span>
+<span class="hljs-comment">id          time_stamp  data</span>
+<span class="hljs-comment">----------  ----------  ------------</span>
+<span class="hljs-comment">1           14569       825400668368</span>
+<span class="hljs-comment">2           14569       277172517040</span>
+<span class="hljs-comment">3           14570       143753724361</span>
+<span class="hljs-comment">...</span>
+<span class="hljs-comment"> ************************************************************************************/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&quot;am57xx.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&quot;sqlite3.h&quot;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MAX_DATA_BUFFER_SIZE 1024 <span class="hljs-comment">//MAX buf size in blob</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MAX_ID 30                 <span class="hljs-comment">//MAX msg record numbers in the databse</span></span>
+<span class="hljs-comment">/* Massege record in the database*/</span>
+<span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span>
+<span class="hljs-class">&#123;</span>
+    <span class="hljs-keyword">int</span> id;                            <span class="hljs-comment">//column id;</span>
+    <span class="hljs-keyword">uint64_t</span> time_stamp;               <span class="hljs-comment">//column time_stamp</span>
+    <span class="hljs-keyword">uint8_t</span> buf[MAX_DATA_BUFFER_SIZE]; <span class="hljs-comment">//buf in column blob</span>
+    <span class="hljs-keyword">int</span> buf_len;                       <span class="hljs-comment">//length of buf in blob</span>
+&#125; db_data;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> DATABASE_PATH <span class="hljs-meta-string">&quot;dataTele.db&quot;</span>     <span class="hljs-comment">//database path</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> TABLE_RT_TLM <span class="hljs-meta-string">&quot;rt_tlm&quot;</span>           <span class="hljs-comment">//real time telemetry</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> TABLE_DELAYED_TLM <span class="hljs-meta-string">&quot;delayed_tlm&quot;</span> <span class="hljs-comment">//delayed telemetry</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> TABLE_TLC <span class="hljs-meta-string">&quot;tlc&quot;</span>                 <span class="hljs-comment">//telecontrol</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> DEBUG_SWITCH 0                  <span class="hljs-comment">//switch to debug</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> TABLE_NOT_EXIST 1               <span class="hljs-comment">//whether the tables exist</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> COL_ID 1</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> COL_TS 2</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> COL_DATA 3</span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SQL_CREATE_TABLE <span class="hljs-meta-string">&quot;CREATE TABLE IF NOT EXISTS %s(id INTEGER PRIMARY KEY, time_stamp BIGINT, data BLOB);&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SQL_INSERT_DATA <span class="hljs-meta-string">&quot;REPLACE INTO %s(id, time_stamp, data) VALUES(?, ?, ?)&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SQL_QUIERY_TIME_STAMP_BY_ID <span class="hljs-meta-string">&quot;SELECT id,time_stamp FROM %s WHERE ID = %d&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SQL_QUIERY_BY_ID <span class="hljs-meta-string">&quot;SELECT rowid, * FROM %s WHERE id = ?&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SQL_QUIERY_BY_TIME_STAMP <span class="hljs-meta-string">&quot;SELECT rowid, * FROM %s WHERE time_stamp = ?&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SQL_QUIERY_ID_BY_MAX_TIME_STAMP <span class="hljs-meta-string">&quot;SELECT id,time_stamp FROM %s &quot;</span> \</span>
+<span class="hljs-meta">                                        <span class="hljs-meta-string">&quot;WHERE time_stamp=(SELECT MAX(time_stamp) FROM %s)&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SQL_DELETE_BY_ID <span class="hljs-meta-string">&quot;DELETE from %s where ID= %d; &quot;</span></span>
+
+<span class="hljs-function">sqlite3 *<span class="hljs-title">db_open</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *filename)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">db_close</span><span class="hljs-params">(sqlite3 *db)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_blob_read</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, <span class="hljs-keyword">int</span> rowid, <span class="hljs-keyword">void</span> *data_buf, <span class="hljs-keyword">int</span> buf_len)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_add_data</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, db_data *msg)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_get_blob_by_id</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, db_data *msg)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_get_blob_by_ts</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, db_data *msg)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_get_max_time_stamp_id</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, <span class="hljs-keyword">uint64_t</span> *time_stamp)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_get_time_stamp_by_id</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, <span class="hljs-keyword">int</span> id, <span class="hljs-keyword">uint64_t</span> *time_stamp)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_judge_id_exist</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, <span class="hljs-keyword">int</span> id)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_write_blob_by_id</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, <span class="hljs-keyword">int</span> id, <span class="hljs-keyword">uint8_t</span> *data, <span class="hljs-keyword">int</span> len)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">delete_blob_by_id</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, <span class="hljs-keyword">int</span> id)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">show_msg</span><span class="hljs-params">(db_data *msg)</span></span>;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span></code></pre></div>
+</details>  
+  
+
+
+<details>
+<summary>sqldev.c</summary>  
+  
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-comment">/************************************************************************************</span>
+<span class="hljs-comment">*	Copyright (C), 2011-2021, Micro-Satellite Research Center, Zhejiang University</span>
+<span class="hljs-comment">*************************************************************************************</span>
+<span class="hljs-comment">*	File Name:     sqldev.c</span>
+<span class="hljs-comment">*	Project:       Sqlite3 API support for ZHX CES</span>
+<span class="hljs-comment">*	Group:         CES</span>
+<span class="hljs-comment">*	Author:        Jianliang Shen</span>
+<span class="hljs-comment">*	Creation Date: June-19-2020</span>
+<span class="hljs-comment">*	Description:</span>
+<span class="hljs-comment">SQLite3 Add/Delete/Search/Change</span>
+<span class="hljs-comment">Assume there is a pointer to the sqlite3 file named *db which has a table called </span>
+<span class="hljs-comment">delayed_tlm. The database struct can be find in sqldev.h</span>
+<span class="hljs-comment">1. When you want to add a msg into the table:</span>
+<span class="hljs-comment">    e.g. db_add_data(db, &quot;delayed_tlm&quot;, msg);</span>
+<span class="hljs-comment">    NOTE that this function will update the whole msg if the msg has been established!</span>
+<span class="hljs-comment">2. When you want to delete a msg in the table by id:</span>
+<span class="hljs-comment">    e.g. db_delete_blob_by_id(db, &quot;delayed_tlm&quot;, id)</span>
+<span class="hljs-comment">3. When you want to check if msg of id exist:</span>
+<span class="hljs-comment">    e.g. db_judge_id_exist(db, &quot;delayed_tlm&quot;, id);</span>
+<span class="hljs-comment">4. When you want to get the newst msg:</span>
+<span class="hljs-comment">    e.g. db_get_max_time_stamp_id() and then call db_get_blob_by_id() to get the data</span>
+<span class="hljs-comment">5. When you want to search and read data from the table:</span>
+<span class="hljs-comment">    e.g. db_get_blob_by_id() or db_get_blob_by_ts()</span>
+<span class="hljs-comment">6. When you want to change msg in the table:</span>
+<span class="hljs-comment">    e.g. db_write_blob_by_id() CAN ONLY used if the msg has been established.</span>
+<span class="hljs-comment">                               NOTE that the time_stamp will NOT be changed. </span>
+<span class="hljs-comment">         db_add_data()         NOTE that this function will update the whole msg if </span>
+<span class="hljs-comment">                               the msg has been established!</span>
+<span class="hljs-comment">*	Revision:</span>
+<span class="hljs-comment">June-18-2020 : Create</span>
+<span class="hljs-comment">June-19-2020 : Release 0.10</span>
+<span class="hljs-comment">*************************************************************************************/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&quot;base/devices/sqldev.h&quot;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&quot;global.h&quot;</span></span>
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-comment">// \brief: This function is used to open databse in filepath ,if the database does NOT exist, it will create a new one and initialize new tables.</span>
+<span class="hljs-comment">// \param: char *filepath</span>
+<span class="hljs-comment">// \return: sqlite3 *db: sqlite3 poniter to the database</span>
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-function">sqlite3 *<span class="hljs-title">db_open</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *filepath)</span></span>
+<span class="hljs-function"></span>&#123;
+    sqlite3 *db;
+    <span class="hljs-keyword">int</span> rc, rm, rd;
+    <span class="hljs-keyword">char</span> cmd[<span class="hljs-number">1000</span>];
+
+    rc = <span class="hljs-built_in">sqlite3_open</span>(filepath, &amp;db);
+    <span class="hljs-keyword">if</span> (rc)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Can&#x27;t open database: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-built_in">sqlite3_close</span>(db);
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+    &#125;
+    <span class="hljs-comment">//initialize the table TABLE_TLC and TABLE_RT_TLM and TABLE_DELAYED_TLM in database if databse doesn&#x27;t exist.</span>
+    <span class="hljs-comment">//the cmd is formatted to create table, here create three tables</span>
+    <span class="hljs-built_in">sprintf</span>(cmd, SQL_CREATE_TABLE, TABLE_TLC);
+    rc = <span class="hljs-built_in">sqlite3_exec</span>(db, cmd, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+
+    <span class="hljs-built_in">sprintf</span>(cmd, SQL_CREATE_TABLE, TABLE_RT_TLM);
+    rm = <span class="hljs-built_in">sqlite3_exec</span>(db, cmd, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+
+    <span class="hljs-built_in">sprintf</span>(cmd, SQL_CREATE_TABLE, TABLE_DELAYED_TLM);
+    rd = <span class="hljs-built_in">sqlite3_exec</span>(db, cmd, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK || rm != SQLITE_OK || rd != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">sqlite3_close</span>(db);
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+    &#125;
+    <span class="hljs-keyword">return</span> db;
+&#125;
+
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-comment">// \brief: This function is used to close databse in filepath.</span>
+<span class="hljs-comment">// \param: sqlite3 *db: sqlite3 pointer to be closed.</span>
+<span class="hljs-comment">// \return: NULL</span>
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">db_close</span><span class="hljs-params">(sqlite3 *db)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-built_in">sqlite3_close</span>(db);
+&#125;
+
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-comment">// \brief: This function is used to read blob data from appointed table to data_buf. The &quot;buf_len&quot; will update to the actual data length in blob.</span>
+<span class="hljs-comment">// \param: sqlite3 *db     : sqlite3 pointer.</span>
+<span class="hljs-comment">// \param: char *tab_name  : which table to read blob.</span>
+<span class="hljs-comment">// \param: int rowid       : SELECT zColumn FROM zDb.zTable WHERE [rowid] = iRow.</span>
+<span class="hljs-comment">// \param: void *data_buf  : buf to store blob data.</span>
+<span class="hljs-comment">// \param: int buf_len     : if you don&#x27;t know the blob_length, you should set MAXSIZE</span>
+<span class="hljs-comment">// \return: length of blob length.</span>
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_blob_read</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, <span class="hljs-keyword">int</span> rowid, <span class="hljs-keyword">void</span> *data_buf, <span class="hljs-keyword">int</span> buf_len)</span></span>
+<span class="hljs-function"></span>&#123;
+    sqlite3_blob *blob = <span class="hljs-literal">NULL</span>;
+    <span class="hljs-keyword">int</span> blob_length = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> rc = <span class="hljs-number">-1</span>;
+
+    rc = <span class="hljs-built_in">sqlite3_blob_open</span>(db, <span class="hljs-string">&quot;main&quot;</span>, tab_name, <span class="hljs-string">&quot;data&quot;</span>, rowid, <span class="hljs-number">0</span>, &amp;blob);
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Failed to open BLOB: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    blob_length = <span class="hljs-built_in">sqlite3_blob_bytes</span>(blob);
+    <span class="hljs-keyword">if</span> (blob_length &gt; buf_len)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Invalid buffer length\n&quot;</span>);
+        <span class="hljs-built_in">sqlite3_blob_close</span>(blob);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    rc = <span class="hljs-built_in">sqlite3_blob_read</span>(blob, data_buf, blob_length, <span class="hljs-number">0</span>);
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Failed to read BLOB: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-built_in">sqlite3_blob_close</span>(blob);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    <span class="hljs-built_in">sqlite3_blob_close</span>(blob);
+    <span class="hljs-keyword">return</span> blob_length;
+&#125;
+
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-comment">// \brief: This function is used to add massege into appointed table in database. <span class="hljs-doctag">NOTE:</span> If the msg has been established, it will update the msg.</span>
+<span class="hljs-comment">// \param: sqlite3 *db     : sqlite3 pointer.</span>
+<span class="hljs-comment">// \param: char *tab_name  : which table to add massege.</span>
+<span class="hljs-comment">// \param: db_data *msg    : msg pointer.</span>
+<span class="hljs-comment">// \return: 0 if success. -1 if failed.</span>
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_add_data</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, db_data *msg)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-built_in">CHECK_POINTER</span>(msg);
+
+    sqlite3_stmt *stmt = <span class="hljs-literal">NULL</span>;
+    <span class="hljs-keyword">char</span> cmd[<span class="hljs-number">1000</span>];
+    <span class="hljs-keyword">int</span> rc = <span class="hljs-number">-1</span>;
+
+    <span class="hljs-keyword">if</span> (msg-&gt;id == <span class="hljs-number">-1</span>)
+    &#123;
+        msg-&gt;id = (<span class="hljs-keyword">int</span>)<span class="hljs-built_in">sqlite3_last_insert_rowid</span>(db) + <span class="hljs-number">1</span>;
+    &#125;
+    <span class="hljs-keyword">if</span> (msg-&gt;id &gt; MAX_ID) <span class="hljs-comment">//LOOP write</span>
+    &#123;
+        msg-&gt;id = <span class="hljs-number">1</span>;
+    &#125;
+
+    <span class="hljs-built_in">sprintf</span>(cmd, SQL_INSERT_DATA, tab_name);
+    rc = <span class="hljs-built_in">sqlite3_prepare_v2</span>(db, cmd, <span class="hljs-number">-1</span>, &amp;stmt, <span class="hljs-literal">NULL</span>); <span class="hljs-comment">//get Prepared Statement Object</span>
+
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Prepare failed: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    rc = <span class="hljs-built_in">sqlite3_bind_int</span>(stmt, COL_ID, msg-&gt;id); <span class="hljs-comment">//add id</span>
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Bind failed: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    rc = <span class="hljs-built_in">sqlite3_bind_int64</span>(stmt, COL_TS, msg-&gt;time_stamp); <span class="hljs-comment">//add time_stamp</span>
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Bind failed: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    rc = <span class="hljs-built_in">sqlite3_bind_blob</span>(stmt, COL_DATA, msg-&gt;buf, msg-&gt;buf_len, SQLITE_STATIC); <span class="hljs-comment">//add blob</span>
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Bind failed: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    rc = <span class="hljs-built_in">sqlite3_step</span>(stmt);
+    <span class="hljs-keyword">if</span> (rc != SQLITE_DONE)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Step failed: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+    <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-comment">// \brief: This function is used to read blob data by id. <span class="hljs-doctag">NOTE:</span> If the id doesn&#x27;t exist, the msg-&gt;buf_len = 0.</span>
+<span class="hljs-comment">// \param: sqlite3 *db     : sqlite3 pointer.</span>
+<span class="hljs-comment">// \param: char *tab_name  : which table to search.</span>
+<span class="hljs-comment">// \param: db_data *msg    : msg pointer.</span>
+<span class="hljs-comment">// \return: msg-&gt;buf_len if success. -1 or 0 if failed.</span>
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_get_blob_by_id</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, db_data *msg)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-built_in">CHECK_POINTER</span>(msg);
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">db_judge_id_exist</span>(db, tab_name, msg-&gt;id) &lt; <span class="hljs-number">0</span>) <span class="hljs-comment">//id NOT EXISTS</span>
+    &#123;
+        msg-&gt;buf_len = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    &#125;
+    sqlite3_stmt *stmt = <span class="hljs-literal">NULL</span>;
+    sqlite_int64 rowid = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> rc = <span class="hljs-number">-1</span>;
+    <span class="hljs-keyword">char</span> cmd[<span class="hljs-number">1000</span>];
+    <span class="hljs-built_in">sprintf</span>(cmd, SQL_QUIERY_BY_ID, tab_name);
+
+    rc = <span class="hljs-built_in">sqlite3_prepare_v2</span>(db, cmd, <span class="hljs-number">-1</span>, &amp;stmt, <span class="hljs-number">0</span>); <span class="hljs-comment">//get Prepared Statement Object</span>
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Prepare failed: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    rc = <span class="hljs-built_in">sqlite3_bind_int</span>(stmt, COL_ID, msg-&gt;id); <span class="hljs-comment">//bind Prepared Statement Object</span>
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Bind failed: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    rc = <span class="hljs-built_in">sqlite3_step</span>(stmt);
+    <span class="hljs-keyword">if</span> (rc == SQLITE_ROW)
+    &#123;
+        rowid = <span class="hljs-built_in">sqlite3_column_int64</span>(stmt, <span class="hljs-number">0</span>); <span class="hljs-comment">//get rowid</span>
+    &#125;
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (rc == SQLITE_DONE)
+    &#123;
+        <span class="hljs-built_in">sqlite3_finalize</span>(stmt); <span class="hljs-comment">//NO data</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    &#125;
+    <span class="hljs-keyword">else</span>
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Step error: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+
+    <span class="hljs-comment">/*read blob in Prepared Statement Object */</span>
+    msg-&gt;buf_len = <span class="hljs-built_in">db_blob_read</span>(db, tab_name, rowid, msg-&gt;buf, msg-&gt;buf_len);
+    <span class="hljs-keyword">return</span> msg-&gt;buf_len;
+&#125;
+
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-comment">// \brief: This function is used to read blob data by TS.</span>
+<span class="hljs-comment">// \param: sqlite3 *db     : sqlite3 pointer.</span>
+<span class="hljs-comment">// \param: char *tab_name  : which table to search.</span>
+<span class="hljs-comment">// \param: db_data *msg    : msg pointer.</span>
+<span class="hljs-comment">// \return: msg-&gt;buf_len if success. -1 or 0 if failed.</span>
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_get_blob_by_ts</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, db_data *msg)</span></span>
+<span class="hljs-function"></span>&#123;
+    sqlite3_stmt *stmt = <span class="hljs-literal">NULL</span>;
+    sqlite_int64 rowid = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> rc = <span class="hljs-number">-1</span>;
+    <span class="hljs-keyword">char</span> cmd[<span class="hljs-number">1000</span>];
+
+    <span class="hljs-built_in">sprintf</span>(cmd, SQL_QUIERY_BY_TIME_STAMP, tab_name);
+    rc = <span class="hljs-built_in">sqlite3_prepare_v2</span>(db, cmd, <span class="hljs-number">-1</span>, &amp;stmt, <span class="hljs-number">0</span>); <span class="hljs-comment">//get Prepared Statement Object</span>
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Prepare failed: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    rc = <span class="hljs-built_in">sqlite3_bind_int64</span>(stmt, <span class="hljs-number">1</span>, msg-&gt;time_stamp); <span class="hljs-comment">//bind Prepared Statement Object</span>
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Bind failed: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    rc = <span class="hljs-built_in">sqlite3_step</span>(stmt);
+    <span class="hljs-keyword">if</span> (rc == SQLITE_ROW)
+    &#123;
+        rowid = <span class="hljs-built_in">sqlite3_column_int64</span>(stmt, <span class="hljs-number">0</span>); <span class="hljs-comment">//get rowid</span>
+    &#125;
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (rc == SQLITE_DONE)
+    &#123;
+        <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    &#125;
+    <span class="hljs-keyword">else</span>
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Step error: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+
+    <span class="hljs-comment">/*read blob in Prepared Statement Object */</span>
+    msg-&gt;buf_len = <span class="hljs-built_in">db_blob_read</span>(db, tab_name, rowid, msg-&gt;buf, msg-&gt;buf_len);
+    <span class="hljs-keyword">return</span> msg-&gt;buf_len;
+&#125;
+
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-comment">// \brief: This function is used to get the newst msg.</span>
+<span class="hljs-comment">// \param: sqlite3 *db          : sqlite3 pointer.</span>
+<span class="hljs-comment">// \param: char *tab_name       : which table to search.</span>
+<span class="hljs-comment">// \param: uint64_t *time_stamp : time_stamp pointer.</span>
+<span class="hljs-comment">// \return: id if success. -1 or 0 if failed.</span>
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_get_max_time_stamp_id</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, <span class="hljs-keyword">uint64_t</span> *time_stamp)</span></span>
+<span class="hljs-function"></span>&#123;
+    sqlite3_stmt *stmt = <span class="hljs-literal">NULL</span>;
+    <span class="hljs-keyword">int</span> id = <span class="hljs-number">-1</span>;
+    <span class="hljs-keyword">int</span> rc = <span class="hljs-number">-1</span>;
+    <span class="hljs-keyword">char</span> cmd[<span class="hljs-number">1000</span>];
+
+    <span class="hljs-built_in">sprintf</span>(cmd, SQL_QUIERY_ID_BY_MAX_TIME_STAMP, tab_name, tab_name);
+    rc = <span class="hljs-built_in">sqlite3_prepare_v2</span>(db, cmd, <span class="hljs-number">-1</span>, &amp;stmt, <span class="hljs-number">0</span>); <span class="hljs-comment">//get Prepared Statement Object</span>
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Prepare failed: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    rc = <span class="hljs-built_in">sqlite3_step</span>(stmt);
+    <span class="hljs-keyword">if</span> (rc == SQLITE_ROW)
+    &#123;
+        id = <span class="hljs-built_in">sqlite3_column_int</span>(stmt, <span class="hljs-number">0</span>);
+        <span class="hljs-keyword">if</span> (time_stamp)
+        &#123;
+            *time_stamp = <span class="hljs-built_in">sqlite3_column_int64</span>(stmt, <span class="hljs-number">1</span>); <span class="hljs-comment">//get time_stamp</span>
+        &#125;
+    &#125;
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (rc == SQLITE_DONE)
+    &#123;
+        id = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">if</span> (time_stamp)
+        &#123;
+            *time_stamp = <span class="hljs-number">0</span>;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">else</span>
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Step error: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+
+    <span class="hljs-keyword">return</span> id;
+&#125;
+
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-comment">// \brief: This function is used to get time_stamp by id.</span>
+<span class="hljs-comment">// \param: sqlite3 *db          : sqlite3 pointer.</span>
+<span class="hljs-comment">// \param: char *tab_name       : which table to add massege.</span>
+<span class="hljs-comment">// \param: int id               : which id</span>
+<span class="hljs-comment">// \param: uint64_t *time_stamp : pointer to time_stamp</span>
+<span class="hljs-comment">// \return: 0 if success. -1 if failed.</span>
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_get_time_stamp_by_id</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, <span class="hljs-keyword">int</span> id, <span class="hljs-keyword">uint64_t</span> *time_stamp)</span></span>
+<span class="hljs-function"></span>&#123;
+    sqlite3_stmt *stmt = <span class="hljs-literal">NULL</span>;
+    <span class="hljs-keyword">int</span> rc = <span class="hljs-number">-1</span>;
+    <span class="hljs-keyword">char</span> cmd[<span class="hljs-number">1000</span>];
+    <span class="hljs-built_in">sprintf</span>(cmd, SQL_QUIERY_TIME_STAMP_BY_ID, tab_name, id);
+
+    rc = <span class="hljs-built_in">sqlite3_prepare_v2</span>(db, cmd, <span class="hljs-number">-1</span>, &amp;stmt, <span class="hljs-number">0</span>);
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Prepare failed: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    rc = <span class="hljs-built_in">sqlite3_step</span>(stmt);
+    <span class="hljs-keyword">if</span> (rc == SQLITE_ROW)
+    &#123;
+        id = <span class="hljs-built_in">sqlite3_column_int</span>(stmt, <span class="hljs-number">0</span>);
+        <span class="hljs-keyword">if</span> (time_stamp)
+        &#123;
+            *time_stamp = <span class="hljs-built_in">sqlite3_column_int64</span>(stmt, <span class="hljs-number">1</span>);
+        &#125;
+    &#125;
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (rc == SQLITE_DONE)
+    &#123;
+        id = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">if</span> (time_stamp)
+        &#123;
+            *time_stamp = <span class="hljs-number">0</span>;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">else</span>
+    &#123;
+        <span class="hljs-built_in">dbg</span>(<span class="hljs-string">&quot;Step error: %s\n&quot;</span>, <span class="hljs-built_in">sqlite3_errmsg</span>(db));
+        <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+    <span class="hljs-built_in">sqlite3_finalize</span>(stmt);
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-comment">// \brief: This function is used to judge the id whether exist.</span>
+<span class="hljs-comment">// \param: sqlite3 *db     : sqlite3 pointer.</span>
+<span class="hljs-comment">// \param: char *tab_name  : which table to search.</span>
+<span class="hljs-comment">// \param: int id          : id</span>
+<span class="hljs-comment">// \return: 0 if exist. -1 if NOT exist.</span>
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_judge_id_exist</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, <span class="hljs-keyword">int</span> id)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">uint64_t</span> time_stamp;
+    <span class="hljs-built_in">db_get_time_stamp_by_id</span>(db, tab_name, id, &amp;time_stamp);
+    <span class="hljs-keyword">return</span> time_stamp &gt; <span class="hljs-number">0</span> ? <span class="hljs-number">0</span> : <span class="hljs-number">-1</span>;
+&#125;
+
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-comment">// \brief: This function is used to write blob data by id. <span class="hljs-doctag">NOTE:</span> the time_stamp will not change.</span>
+<span class="hljs-comment">// \param: sqlite3 *db     : sqlite3 pointer.</span>
+<span class="hljs-comment">// \param: char *tab_name  : which table to add massege.</span>
+<span class="hljs-comment">// \param: int id          : id</span>
+<span class="hljs-comment">// \param: uint8_t *data   : data</span>
+<span class="hljs-comment">// \param: int len         : data len</span>
+<span class="hljs-comment">// \return: 0 if success. -1 if msg doesn&#x27;t exist.</span>
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">db_write_blob_by_id</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, <span class="hljs-keyword">int</span> id, <span class="hljs-keyword">uint8_t</span> *data, <span class="hljs-keyword">int</span> len)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">db_judge_id_exist</span>(db, tab_name, id) &lt; <span class="hljs-number">0</span>)
+    &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+
+    sqlite3_stmt *stmt = <span class="hljs-literal">NULL</span>;
+    <span class="hljs-keyword">char</span> cmd[<span class="hljs-number">1000</span>];
+    <span class="hljs-keyword">int</span> rc = <span class="hljs-number">-1</span>;
+
+    <span class="hljs-keyword">uint64_t</span> tmp_time_stamp; <span class="hljs-comment">//get the old time_stamp</span>
+    <span class="hljs-built_in">db_get_time_stamp_by_id</span>(db, tab_name, id, &amp;tmp_time_stamp);
+    db_data *msg = (db_data *)<span class="hljs-built_in">malloc</span>(<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(db_data));
+
+    msg-&gt;id = id;
+    msg-&gt;time_stamp = tmp_time_stamp;
+    msg-&gt;buf_len = len;
+    <span class="hljs-built_in">memcpy</span>(msg-&gt;buf, data, msg-&gt;buf_len);
+    <span class="hljs-built_in">db_add_data</span>(db, tab_name, msg); <span class="hljs-comment">//update the blob</span>
+    <span class="hljs-built_in">free</span>(msg);
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;
+
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-comment">// \brief: This function is used to delete msg by id.</span>
+<span class="hljs-comment">// \param: sqlite3 *db     : sqlite3 pointer.</span>
+<span class="hljs-comment">// \param: char *tab_name  : which table to delete.</span>
+<span class="hljs-comment">// \param: int id          : msg id</span>
+<span class="hljs-comment">// \return: 0 if success. -1 if failed.</span>
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">delete_blob_by_id</span><span class="hljs-params">(sqlite3 *db, <span class="hljs-keyword">char</span> *tab_name, <span class="hljs-keyword">int</span> id)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">db_judge_id_exist</span>(db, tab_name, id) &lt; <span class="hljs-number">0</span>)
+    &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    &#125;
+    <span class="hljs-keyword">char</span> *zErrMsg = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> rc;
+    <span class="hljs-keyword">char</span> cmd[<span class="hljs-number">1000</span>];
+
+    <span class="hljs-comment">/* Create merged SQL statement */</span>
+    <span class="hljs-built_in">sprintf</span>(cmd, SQL_DELETE_BY_ID, tab_name, id);
+    <span class="hljs-comment">/* Execute SQL statement */</span>
+    rc = <span class="hljs-built_in">sqlite3_exec</span>(db, cmd, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, &amp;zErrMsg);
+    <span class="hljs-keyword">if</span> (rc != SQLITE_OK)
+    &#123;
+        <span class="hljs-built_in">fprintf</span>(stderr, <span class="hljs-string">&quot;SQL error: %s\n&quot;</span>, zErrMsg);
+        <span class="hljs-built_in">sqlite3_free</span>(zErrMsg);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    &#125;
+    <span class="hljs-keyword">else</span>
+    &#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    &#125;
+&#125;
+
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-comment">// \brief: This function is used to show blob in msg.</span>
+<span class="hljs-comment">// \param: db_data *msg: msg pointer.</span>
+<span class="hljs-comment">// \return: NULL</span>
+<span class="hljs-comment">// ----------------------------------------</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">show_msg</span><span class="hljs-params">(db_data *msg)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;blob = \n&quot;</span>);
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt; msg-&gt;buf_len + <span class="hljs-number">1</span>; i++)
+    &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;0x%02x &quot;</span>, msg-&gt;buf[i - <span class="hljs-number">1</span>]);
+        <span class="hljs-keyword">if</span> (i % <span class="hljs-number">32</span> == <span class="hljs-number">0</span>)
+        &#123;
+            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n&quot;</span>);
+        &#125;
+    &#125;
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n&quot;</span>);
+&#125;</code></pre></div>
+</details>  
+  
+
+<details>
+<summary>test.c</summary>  
+  
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sql_test</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+    sqlite3 *db = <span class="hljs-built_in">db_open</span>(DATABASE_PATH);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> TABLE_NOT_EXIST</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt;= MAX_ID; i++)
+    &#123;
+        <span class="hljs-built_in">delete_blob_by_id</span>(db, TABLE_DELAYED_TLM, i);
+    &#125;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> TABLE_NOT_EXIST</span>
+    <span class="hljs-keyword">time_t</span> seed = <span class="hljs-built_in">time</span>(<span class="hljs-literal">NULL</span>);
+    <span class="hljs-built_in">srand</span>(seed);
+    db_data *msg = (db_data *)<span class="hljs-built_in">malloc</span>(<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(db_data));
+    msg-&gt;id = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">uint8_t</span> data[<span class="hljs-number">256</span>];
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">50</span>; i++)
+    &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">256</span>; i++)
+        &#123;
+            data[i] = (<span class="hljs-keyword">uint8_t</span>)(<span class="hljs-built_in">rand</span>() % <span class="hljs-number">10</span> + <span class="hljs-number">48</span>);
+        &#125;
+        msg-&gt;id++;
+        msg-&gt;time_stamp = <span class="hljs-built_in">time</span>(<span class="hljs-literal">NULL</span>);
+        msg-&gt;buf_len = <span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(data);
+        <span class="hljs-built_in">memcpy</span>(msg-&gt;buf, data, msg-&gt;buf_len);
+        <span class="hljs-built_in">db_add_data</span>(db, TABLE_DELAYED_TLM, msg);
+        <span class="hljs-built_in">usleep</span>(<span class="hljs-number">100000</span>);
+    &#125;
+    <span class="hljs-built_in">free</span>(msg);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+    <span class="hljs-comment">//get the max time msg id and time_stamp</span>
+    <span class="hljs-keyword">uint64_t</span> max_time;
+    <span class="hljs-keyword">int</span> max_time_id = <span class="hljs-built_in">db_get_max_time_stamp_id</span>(db, TABLE_DELAYED_TLM, &amp;max_time);
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;max_time_id = %d, max_time = %ld\n&quot;</span>, max_time_id, max_time);
+
+    <span class="hljs-comment">//get the msg of max time_stamp by function &quot;db_get_blob_by_ts&quot;</span>
+    db_data *max_tm_msg = (db_data *)<span class="hljs-built_in">malloc</span>(<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(db_data));
+    max_tm_msg-&gt;time_stamp = max_time;
+    max_tm_msg-&gt;buf_len = MAX_DATA_BUFFER_SIZE;
+    <span class="hljs-built_in">db_get_blob_by_ts</span>(db, TABLE_DELAYED_TLM, max_tm_msg);
+    <span class="hljs-built_in">show_msg</span>(max_tm_msg);
+    <span class="hljs-built_in">free</span>(max_tm_msg);
+
+    <span class="hljs-comment">//update blob data by id, the time will be updated</span>
+    <span class="hljs-comment">// uint8_t buf[] = &#123;1, 2, 3, 4, 5, 6, 7, 8, 9, 10&#125;;</span>
+    <span class="hljs-comment">// db_data *msg = (db_data *)malloc(sizeof(db_data));</span>
+    <span class="hljs-comment">// msg-&gt;id = 10;</span>
+    <span class="hljs-comment">// msg-&gt;time_stamp = time(NULL);</span>
+    <span class="hljs-comment">// msg-&gt;buf_len = sizeof(buf);</span>
+    <span class="hljs-comment">// memcpy(msg-&gt;buf, buf, msg-&gt;buf_len);</span>
+    <span class="hljs-comment">// db_add_data(db, TABLE_DELAYED_TLM, msg);</span>
+
+    <span class="hljs-comment">//update blob data by id, the time will NOT be updated</span>
+    <span class="hljs-keyword">uint8_t</span> buf[] = &#123;<span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>, <span class="hljs-number">0x30</span>&#125;;
+    <span class="hljs-built_in">db_write_blob_by_id</span>(db, TABLE_DELAYED_TLM, <span class="hljs-number">10</span>, buf, <span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(buf));
+
+    <span class="hljs-comment">//</span>
+    <span class="hljs-built_in">delete_blob_by_id</span>(db, TABLE_DELAYED_TLM, <span class="hljs-number">15</span>);
+    <span class="hljs-keyword">int</span> ret = <span class="hljs-built_in">db_judge_id_exist</span>(db, TABLE_DELAYED_TLM, <span class="hljs-number">15</span>);
+    <span class="hljs-keyword">if</span> (ret &lt; <span class="hljs-number">0</span>)
+    &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;cannot find id = 15 msg\n&quot;</span>);
+    &#125;
+    <span class="hljs-built_in">delete_blob_by_id</span>(db, TABLE_DELAYED_TLM, <span class="hljs-number">15</span>);
+
+    <span class="hljs-comment">// read blob from table by id</span>
+    db_data *ret_msg = (db_data *)<span class="hljs-built_in">malloc</span>(<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(db_data));
+    ret_msg-&gt;id = <span class="hljs-number">15</span>;
+    ret_msg-&gt;buf_len = MAX_DATA_BUFFER_SIZE;
+    <span class="hljs-built_in">db_get_blob_by_id</span>(db, TABLE_DELAYED_TLM, ret_msg);
+    <span class="hljs-built_in">show_msg</span>(ret_msg);
+    <span class="hljs-built_in">free</span>(ret_msg);
+
+    <span class="hljs-built_in">db_close</span>(db);
+&#125;</code></pre></div>
+</details>
+
+
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/linux/">linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/C-C/">C/C++</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/23/%E5%B5%8C%E5%85%A5%E5%BC%8F%E2%80%94%E2%80%94%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">计算机网络</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/16/%E5%B5%8C%E5%85%A5%E5%BC%8F%E2%80%94%E2%80%94%E5%8D%8E%E4%B8%BA%E4%BA%91%E7%89%A9%E8%81%94%E7%BD%91%E8%AE%BE%E5%A4%87%E6%8E%A5%E5%85%A5%E5%8F%8AOBS%E4%BD%BF%E7%94%A8/">
+                        <span class="hidden-mobile">华为云物联网设备接入及OBS使用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Jianliang Shen</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2023</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "SQLite3 BLOB增删改查编写&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>

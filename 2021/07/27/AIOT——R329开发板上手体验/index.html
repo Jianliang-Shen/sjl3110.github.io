@@ -1,0 +1,669 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>R329开发板上手体验 - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2021-07-27 11:23" pubdate>
+      2021年7月27日 上午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      12
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">R329开发板上手体验</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>R329的板子到手后折腾了几天，将前期学习的步骤简单记录一下。</p>
+<span id="more"></span>  
+
+<h2><span id="0硬件">0.硬件</span></h2><p>板子的设计十分精巧，尤其是相机模组的Type-C连接方式，比起以前习惯的相机拽着排线前后翻动好用得多。<br><img src="/img/post_pics/r329/1.jpeg"><br>翻开显示屏下面是卡槽和两侧Type-C数据接口，左侧连相机，右侧连主机。显示屏是磁吸式的（指两块柔性吸铁石）。卡槽插卡时金手指向下。<br><img src="/img/post_pics/r329/2.jpeg"></p>
+<p>最后再来个正面照~<br><img src="/img/post_pics/r329/3.jpeg"></p>
+<p>调试板子至少需要：</p>
+<ul>
+<li>开发板</li>
+<li>USB转Type-C数据线</li>
+<li>大于512MB的SD卡及读卡器</li>
+<li>一个Ubuntu主机</li>
+<li>WIFI</li>
+</ul>
+<h2><span id="1刷系统制卡">1.刷系统制卡</span></h2><h3><span id="11编译系统">1.1编译系统</span></h3><p>参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/juwan/p/14650733.html">R329 SDK 上手编译与烧录!</a>以及<a target="_blank" rel="noopener" href="https://aijishu.com/a/1060000000221484">【R329测评】全志 R329 Tina 系统镜像编译</a>,遗憾的是本地编译u-boot的时候就失败了，遂采用<a target="_blank" rel="noopener" href="https://aijishu.com/a/1060000000220719">R329开发板系列教程之二|实机运行aipu程序</a>中网盘提供的镜像。</p>
+<h3><span id="12制卡">1.2制卡</span></h3><p>使用网盘中PhoenixCard工具将img刷入sd卡，因为后面要用到OpenCV，所以先烧写tina_r329-evb5_uart0_0723.img。如下图步骤：<br><img src="/img/post_pics/r329/4.jpeg"></p>
+<p>制卡完成显示一个绿色的进度条，如果不行尝试换卡。</p>
+<p>注：如果制卡后可以启动，则继续，要是和我一样在启动是找不到根目录，可以在上位机Ubuntu中将根目录删除，并将网盘中rootfs.tar.gz解压拷贝到根目录，拷贝完成后不要急着拔卡，sync一下，要优雅~</p>
+<h3><span id="13扩展分区">1.3扩展分区</span></h3><p>系统根目录没有使用所有的存储，可以使用df -h命令查看。在ubuntu运行：</p>
+<div class="hljs"><pre><code class="hljs bash">df -h   <span class="hljs-comment">#查看卡挂载的位置，比如/dev/sdb</span>
+sudo fdisk /dev/sdb
+p       <span class="hljs-comment">#查看分区</span>
+d       <span class="hljs-comment">#删除分区8</span>
+8
+d       <span class="hljs-comment">#删除分区7</span>
+7
+n       <span class="hljs-comment">#创建分区7</span>
+7
+xxxx    <span class="hljs-comment">#输入起始位置（原7的起始地址）</span>
+w       <span class="hljs-comment">#保存</span>
+sudo umount /dev/sdb7
+sudo e2fsck -f /dev/sdb7
+sudo resize2fs /dev/sdb7
+df -h</code></pre></div>
+<p>此时应该将分区扩大了，此处感谢<a target="_blank" rel="noopener" href="https://aijishu.com/u/liyang_dmdooa">李洋</a>。</p>
+<h3><span id="14开机">1.4开机</span></h3><p>数据线连接电脑后，主机打开串口，波特率115200，Ubuntu可以使用</p>
+<div class="hljs"><pre><code class="hljs bash">sudo minicom -D /dev/ttyUSB0</code></pre></div>
+<p>开机进入系统：<br><img src="/img/post_pics/r329/5.jpeg"></p>
+<p>连接wifi：</p>
+<div class="hljs"><pre><code class="hljs bash">wifi_connect_ap_test [wifiname] [wifipasswd]</code></pre></div>
+<p>传递文件用scp，密码是sipeed。</p>
+<h2><span id="2验证模型">2.验证模型</span></h2><div class="hljs"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /root/maix_sense
+insmod aipu.ko
+./run.sh -c mbnetv2
+./zhouyi models/mbnetv2/aipu.bin test.bmp 0</code></pre></div>
+<p>将自己模型放到maxi_sense的models下，并且aipu.bin（来自于模型交叉编译），input0.bin（来自量化模型时的输入input.bin）以及output.bin（来自仿真时的输出）文件需要准备好，再回到maix_sense下运行脚本，-c后面跟着的是模型目录名。注意系统给模型预留了约100MB的内存，我的VGG模型过大，所以验证失败。解决办法要么编译系统时扩大预留空间，要么换成更轻量的模型。</p>
+<p>可执行文件zhouyi来自于网盘zhouyi_bmp目录，使用交叉编译工具编译，运行时依赖相关的库文件，注意检查系统根目录是否配置。test.bmp的测试图片需要注意输入的尺寸与模型一致，这里是224x224x3。获得一个224x224x3通道的bmp位图可以借助PS软件，打开图片，裁剪为正方形，再点击菜单-&gt;图像大小：<br><img src="/img/post_pics/r329/6.jpeg"></p>
+<p>然后另存为，选择BMP格式，在弹出的窗口选择高级模式，选择24位R8 G8 B8格式：<br><img src="/img/post_pics/r329/7.jpeg"></p>
+<p>保存为test.bmp后发送到板子上运行即可，结果如下，分的类都是猫的类型。<br><img src="/img/post_pics/r329/8.jpeg"></p>
+<h2><span id="3跑通opencv">3.跑通OpenCV</span></h2><h3><span id="31编译">3.1编译</span></h3><p>参考<a target="_blank" rel="noopener" href="https://aijishu.com/a/1060000000221762">R329开发板教程之三|视觉模型实时运行</a>。</p>
+<p>在上位机准备源码、toolchain和rootfs（内涵opencv的动态库和头文件），目录如下：</p>
+<div class="hljs"><pre><code class="hljs bash">.
+├── zhouyi_cam
+├── rootfs
+└── toolchain</code></pre></div>
+<p>在zhouyi_cam路径下CMakLists.txt中需要将编译链和<code>ROOTFS_root</code>配置一下再编译：</p>
+<div class="hljs"><pre><code class="hljs bash">mkdir build &amp;&amp; <span class="hljs-built_in">cd</span> build
+cmake .. &amp;&amp; make -j32</code></pre></div>
+
+<p>下载到板子上，如果目标板系统缺少OpenCV的依赖，参考步骤1.2制卡，将zhouyi_cam拷贝到root下，运行：</p>
+<div class="hljs"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /root
+insmod maix_sense/aipu.ko
+./zhouyi_cam maix_sense/models/resnet50/aipu.bin 1
+rmmod maix_sense/aipu.ko</code></pre></div>
+<p>运行结果：<br><img src="/img/post_pics/r329/9.jpeg"></p>
+<p>测试中发现：</p>
+<ul>
+<li>帧率和模型有关，resnet50只有7-8帧，而mbnetv2可以达到20-21帧</li>
+<li>注意参数使用int8还是uint8</li>
+<li>多跑几次内存不足，所以需要卸载驱动模块。</li>
+</ul>
+<h2><span id="4待续">4.待续</span></h2><p>挖坑。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%BE%B9%E7%BC%98%E8%AE%A1%E7%AE%97/">边缘计算</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/linux/">linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+                    
+                      <a class="hover-with-bg" href="/tags/OpenCV/">OpenCV</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/02/AIOT%E2%80%94%E2%80%94R329-Debian%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85%E4%BD%93%E9%AA%8C/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">R329 Debian系统安装体验</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/06/15/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94mbedtls%E5%AD%A6%E4%B9%A0-%E4%BC%AA%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E5%99%A8/">
+                        <span class="hidden-mobile">Mbedtls学习--伪随机数生成器</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Jianliang Shen</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2023</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "R329开发板上手体验&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>

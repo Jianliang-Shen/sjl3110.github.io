@@ -1,0 +1,792 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>快速搭建工作环境 - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2023-08-10 19:11" pubdate>
+      2023年8月10日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      992 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      19
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">快速搭建工作环境</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>装机要快～～～</p>
+<span id="more"></span>
+
+<h2><span id="ssh远程">ssh远程</span></h2><div class="hljs"><pre><code class="hljs bash">ssh-keygen
+cat cat .ssh/id_rsa.pub
+
+<span class="hljs-comment"># 在服务器</span>
+<span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;&lt;pub&gt;&quot;</span> &gt;&gt; .ssh/authorized_keys
+
+<span class="hljs-comment"># 在客户端</span>
+ssh &lt;user-name&gt;@&lt;host-ip&gt;</code></pre></div>
+
+<h2><span id="zsh">zsh</span></h2><div class="hljs"><pre><code class="hljs bash">
+brew install zsh
+sudo apt-get install zsh
+chsh -s /bin/zsh
+sh -c <span class="hljs-string">&quot;<span class="hljs-subst">$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)</span>&quot;</span>
+<span class="hljs-comment"># sh -c &quot;$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)&quot;</span>
+
+<span class="hljs-comment"># 主题</span>
+git <span class="hljs-built_in">clone</span> --depth=1 https://github.com/romkatv/powerlevel10k.git <span class="hljs-variable">$&#123;ZSH_CUSTOM:-<span class="hljs-variable">$HOME</span>/.oh-my-zsh/custom&#125;</span>/themes/powerlevel10k
+<span class="hljs-comment"># ZSH_THEME=&quot;powerlevel10k/powerlevel10k&quot;</span>
+
+<span class="hljs-comment"># 自动补全</span>
+git <span class="hljs-built_in">clone</span> https://github.com/zsh-users/zsh-autosuggestions <span class="hljs-variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/plugins/zsh-autosuggestions
+<span class="hljs-comment"># plugins=(</span>
+<span class="hljs-comment">#     # other plugins...</span>
+<span class="hljs-comment">#     zsh-autosuggestions  # 插件之间使用空格隔开</span>
+<span class="hljs-comment"># )</span>
+
+<span class="hljs-comment"># 语法</span>
+git <span class="hljs-built_in">clone</span> https://github.com/zsh-users/zsh-syntax-highlighting.git <span class="hljs-variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/plugins/zsh-syntax-highlighting
+
+<span class="hljs-comment"># 使配置生效</span>
+<span class="hljs-built_in">source</span> ~/.zshrc</code></pre></div>
+
+<h2><span id="配置vim">配置Vim</span></h2><p>在～下新建<code>.vimrc</code>文件</p>
+<div class="hljs"><pre><code class="hljs bash"><span class="hljs-string">&quot; File: .vimrc</span>
+<span class="hljs-string">&quot;</span> Author: Jake Zimmerman &lt;jake@zimmerman.io&gt;
+<span class="hljs-string">&quot;</span>
+<span class="hljs-string">&quot;</span> How I configure Vim :P
+<span class="hljs-string">&quot;</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot;</span> Gotta be first
+<span class="hljs-built_in">set</span> nocompatible
+
+filetype off
+
+<span class="hljs-built_in">set</span> rtp+=~/.vim/bundle/Vundle.vim
+call vundle<span class="hljs-comment">#begin()</span>
+
+Plugin <span class="hljs-string">&#x27;VundleVim/Vundle.vim&#x27;</span>
+
+<span class="hljs-string">&quot; ----- Making Vim look good ------------------------------------------</span>
+<span class="hljs-string">Plugin &#x27;altercation/vim-colors-solarized&#x27;</span>
+<span class="hljs-string">Plugin &#x27;tomasr/molokai&#x27;</span>
+<span class="hljs-string">Plugin &#x27;vim-airline/vim-airline&#x27;</span>
+<span class="hljs-string">Plugin &#x27;vim-airline/vim-airline-themes&#x27;</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot;</span> ----- Vim as a programmer<span class="hljs-string">&#x27;s text editor -----------------------------</span>
+<span class="hljs-string">Plugin &#x27;</span>scrooloose/nerdtree<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">Plugin &#x27;</span>jistr/vim-nerdtree-tabs<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">Plugin &#x27;</span>vim-syntastic/syntastic<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">Plugin &#x27;</span>xolox/vim-misc<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">Plugin &#x27;</span>xolox/vim-easytags<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">Plugin &#x27;</span>majutsushi/tagbar<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">Plugin &#x27;</span>ctrlpvim/ctrlp.vim<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">Plugin &#x27;</span>vim-scripts/a.vim<span class="hljs-string">&#x27;</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ----- Working with Git ----------------------------------------------</span>
+<span class="hljs-string">Plugin &#x27;</span>airblade/vim-gitgutter<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">Plugin &#x27;</span>tpope/vim-fugitive<span class="hljs-string">&#x27;</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ----- Other text editing features -----------------------------------</span>
+<span class="hljs-string">Plugin &#x27;</span>Raimondi/delimitMate<span class="hljs-string">&#x27;</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ----- man pages, tmux -----------------------------------------------</span>
+<span class="hljs-string">Plugin &#x27;</span>jez/vim-superman<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">Plugin &#x27;</span>christoomey/vim-tmux-navigator<span class="hljs-string">&#x27;</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ----- Syntax plugins ------------------------------------------------</span>
+<span class="hljs-string">Plugin &#x27;</span>jez/vim-c0<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">Plugin &#x27;</span>jez/vim-ispc<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">Plugin &#x27;</span>kchmck/vim-coffee-script<span class="hljs-string">&#x27;</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ---- Extras/Advanced plugins ----------------------------------------</span>
+<span class="hljs-string">&quot; Highlight and strip trailing whitespace</span>
+<span class="hljs-string">&quot;Plugin &#x27;</span>ntpeters/vim-better-whitespace<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">&quot; Easily surround chunks of text</span>
+<span class="hljs-string">&quot;Plugin &#x27;</span>tpope/vim-surround<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">&quot; Align CSV files at commas, align Markdown tables, and more</span>
+<span class="hljs-string">&quot;Plugin &#x27;</span>godlygeek/tabular<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">&quot; Automaticall insert the closing HTML tag</span>
+<span class="hljs-string">&quot;Plugin &#x27;</span>HTML-AutoCloseTag<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">&quot; Make tmux look like vim-airline (read README for extra instructions)</span>
+<span class="hljs-string">&quot;Plugin &#x27;</span>edkolev/tmuxline.vim<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">&quot; All the other syntax plugins I use</span>
+<span class="hljs-string">&quot;Plugin &#x27;</span>ekalinin/Dockerfile.vim<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">&quot;Plugin &#x27;</span>digitaltoad/vim-jade<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">&quot;Plugin &#x27;</span>tpope/vim-liquid<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">&quot;Plugin &#x27;</span>cakebaker/scss-syntax.vim<span class="hljs-string">&#x27;</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">call vundle#end()</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">filetype plugin indent on</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; --- General settings ---</span>
+<span class="hljs-string">set backspace=indent,eol,start</span>
+<span class="hljs-string">set ruler</span>
+<span class="hljs-string">set number</span>
+<span class="hljs-string">set showcmd</span>
+<span class="hljs-string">set incsearch</span>
+<span class="hljs-string">set hlsearch</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">syntax on</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">set mouse=a</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; We need this for plugins like Syntastic and vim-gitgutter which put symbols</span>
+<span class="hljs-string">&quot; in the sign column.</span>
+<span class="hljs-string">hi clear SignColumn</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ----- Plugin-Specific Settings --------------------------------------</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ----- altercation/vim-colors-solarized settings -----</span>
+<span class="hljs-string">&quot; Toggle this to &quot;light&quot; for light colorscheme</span>
+<span class="hljs-string">set background=dark</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; Uncomment the next line if your terminal is not configured for solarized</span>
+<span class="hljs-string">&quot;let g:solarized_termcolors=256</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; Set the colorscheme</span>
+<span class="hljs-string">&quot; colorscheme solarized</span>
+<span class="hljs-string"></span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ----- bling/vim-airline settings -----</span>
+<span class="hljs-string">&quot; Always show statusbar</span>
+<span class="hljs-string">set laststatus=2</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; Fancy arrow symbols, requires a patched font</span>
+<span class="hljs-string">&quot; To install a patched font, run over to</span>
+<span class="hljs-string">&quot;     https://github.com/abertsch/Menlo-for-Powerline</span>
+<span class="hljs-string">&quot; download all the .ttf files, double-click on them and click &quot;Install&quot;</span>
+<span class="hljs-string">&quot; Finally, uncomment the next line</span>
+<span class="hljs-string">&quot;let g:airline_powerline_fonts = 1</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; Show PASTE if in paste mode</span>
+<span class="hljs-string">let g:airline_detect_paste=1</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; Show airline for tabs too</span>
+<span class="hljs-string">let g:airline#extensions#tabline#enabled = 1</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; Use the solarized theme for the Airline status bar</span>
+<span class="hljs-string">let g:airline_theme=&#x27;</span>solarized<span class="hljs-string">&#x27;</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ----- jistr/vim-nerdtree-tabs -----</span>
+<span class="hljs-string">&quot; Open/close NERDTree Tabs with \t</span>
+<span class="hljs-string">nmap &lt;silent&gt; &lt;leader&gt;t :NERDTreeTabsToggle&lt;CR&gt;</span>
+<span class="hljs-string">&quot; To have NERDTree always open on startup</span>
+<span class="hljs-string">let g:nerdtree_tabs_open_on_console_startup = 1</span>
+<span class="hljs-string"></span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ----- scrooloose/syntastic settings -----</span>
+<span class="hljs-string">let g:syntastic_error_symbol = &#x27;</span>✘<span class="hljs-string">&#x27;</span>
+<span class="hljs-string">let g:syntastic_warning_symbol = &quot;▲&quot;</span>
+<span class="hljs-string">augroup mySyntastic</span>
+<span class="hljs-string">  au!</span>
+<span class="hljs-string">  au FileType tex let b:syntastic_mode = &quot;passive&quot;</span>
+<span class="hljs-string">augroup END</span>
+<span class="hljs-string"></span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ----- xolox/vim-easytags settings -----</span>
+<span class="hljs-string">&quot; Where to look for tags files</span>
+<span class="hljs-string">set tags=./tags;,~/.vimtags</span>
+<span class="hljs-string">&quot; Sensible defaults</span>
+<span class="hljs-string">let g:easytags_events = [&#x27;</span>BufReadPost<span class="hljs-string">&#x27;, &#x27;</span>BufWritePost<span class="hljs-string">&#x27;]</span>
+<span class="hljs-string">let g:easytags_async = 1</span>
+<span class="hljs-string">let g:easytags_dynamic_files = 2</span>
+<span class="hljs-string">let g:easytags_resolve_links = 1</span>
+<span class="hljs-string">let g:easytags_suppress_ctags_warning = 1</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ----- majutsushi/tagbar settings -----</span>
+<span class="hljs-string">&quot; Open/close tagbar with \b</span>
+<span class="hljs-string">nmap &lt;silent&gt; &lt;leader&gt;b :TagbarToggle&lt;CR&gt;</span>
+<span class="hljs-string">&quot; Uncomment to open tagbar automatically whenever possible</span>
+<span class="hljs-string">&quot;autocmd BufEnter * nested :call tagbar#autoopen(0)</span>
+<span class="hljs-string"></span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ----- airblade/vim-gitgutter settings -----</span>
+<span class="hljs-string">&quot; In vim-airline, only display &quot;hunks&quot; if the diff is non-zero</span>
+<span class="hljs-string">let g:airline#extensions#hunks#non_zero_only = 1</span>
+<span class="hljs-string"></span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot; ----- Raimondi/delimitMate settings -----</span>
+<span class="hljs-string">let delimitMate_expand_cr = 1</span>
+<span class="hljs-string">augroup mydelimitMate</span>
+<span class="hljs-string">  au!</span>
+<span class="hljs-string">  au FileType markdown let b:delimitMate_nesting_quotes = [&quot;`&quot;]</span>
+<span class="hljs-string">  au FileType tex let b:delimitMate_quotes = &quot;&quot;</span>
+<span class="hljs-string">  au FileType tex let b:delimitMate_matchpairs = &quot;(:),[:],&#123;:&#125;,`:&#x27;</span><span class="hljs-string">&quot;</span>
+<span class="hljs-string">  au FileType python let b:delimitMate_nesting_quotes = [&#x27;&quot;</span><span class="hljs-string">&#x27;, &quot;&#x27;</span><span class="hljs-string">&quot;]</span>
+<span class="hljs-string">augroup END</span>
+<span class="hljs-string"></span>
+<span class="hljs-string">&quot;</span> ----- jez/vim-superman settings -----
+<span class="hljs-string">&quot; better man page support</span>
+<span class="hljs-string">noremap K :SuperMan &lt;cword&gt;&lt;CR&gt;</span></code></pre></div>
+
+<p>下载vim插件管理软件：</p>
+<div class="hljs"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+vim +PluginInstall +qall</code></pre></div>
+
+<h2><span id="mac配置iterm2">Mac配置iTerm2</span></h2><p>参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/550022490">iTerm2安装配置使用指南——保姆级</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/01/19/AIOT%E2%80%94%E2%80%94R329%E6%A8%A1%E5%9E%8B%E4%BB%BF%E7%9C%9F%E6%B5%8B%E8%AF%95/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">R329模型仿真测试</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/10/%E8%BD%AF%E4%BB%B6%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8qemu%E6%9D%A5debug/">
+                        <span class="hidden-mobile">VScode+Qemu调试TF-M</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Jianliang Shen</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2023</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "快速搭建工作环境&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>

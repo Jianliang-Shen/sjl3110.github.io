@@ -1,0 +1,1707 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>C语言读入cjson配置文件 - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-15 21:34" pubdate>
+      2020年6月15日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      147
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">C语言读入cjson配置文件</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>使用C语言在程序读入配置文件时，一种常用的方式就是使用JSON格式，对于C语言而言，处理JSON格式的数据稍显麻烦，本文将介绍简单一层格式的读入方式以及二层格式的读入方式，更复杂的写入配置文件不细述。</p>
+<span id="more"></span>
+
+<ul>
+<li><a href="#cjson%E6%8E%A5%E5%8F%A3%E5%87%BD%E6%95%B0">CJSON接口函数</a><ul>
+<li><a href="#%E5%BA%93%E5%87%BD%E6%95%B0%E4%BB%A3%E7%A0%81">库函数代码</a></li>
+<li><a href="#%E6%8E%A5%E5%8F%A3%E5%87%BD%E6%95%B0">接口函数</a></li>
+</ul>
+</li>
+<li><a href="#%E8%AF%BB%E4%B8%80%E5%B1%82%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">读一层配置文件</a></li>
+<li><a href="#%E8%AF%BB%E4%B8%A4%E5%B1%82%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">读两层配置文件</a></li>
+<li><a href="#%E5%86%99%E5%85%A5%E4%B8%A4%E5%B1%82%E6%96%87%E4%BB%B6">写入两层文件</a><h2><span id="cjson接口函数">CJSON接口函数</span></h2><h3><span id="库函数代码">库函数代码</span></h3>使用下面两个文件添加到项目中，编译时增加-lm条件，引用math库：</li>
+</ul>
+<details>
+<summary>cJSON.h</summary>  
+  
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-comment">/*</span>
+<span class="hljs-comment">  Copyright (c) 2009 Dave Gamble</span>
+<span class="hljs-comment"> </span>
+<span class="hljs-comment">  Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="hljs-comment">  of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="hljs-comment">  in the Software without restriction, including without limitation the rights</span>
+<span class="hljs-comment">  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="hljs-comment">  copies of the Software, and to permit persons to whom the Software is</span>
+<span class="hljs-comment">  furnished to do so, subject to the following conditions:</span>
+<span class="hljs-comment"> </span>
+<span class="hljs-comment">  The above copyright notice and this permission notice shall be included in</span>
+<span class="hljs-comment">  all copies or substantial portions of the Software.</span>
+<span class="hljs-comment"> </span>
+<span class="hljs-comment">  THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="hljs-comment">  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="hljs-comment">  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="hljs-comment">  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="hljs-comment">  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="hljs-comment">  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN</span>
+<span class="hljs-comment">  THE SOFTWARE.</span>
+<span class="hljs-comment">*/</span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">ifndef</span> cJSON__h</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON__h</span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">ifdef</span> __cplusplus</span>
+<span class="hljs-keyword">extern</span> <span class="hljs-string">&quot;C&quot;</span>
+&#123;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;math.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;float.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;limits.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;ctype.h&gt;</span></span>
+
+<span class="hljs-comment">/* cJSON Types: */</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_False 0</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_True 1</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_NULL 2</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_Number 3</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_String 4</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_Array 5</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_Object 6</span>
+	
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_IsReference 256</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_StringIsConst 512</span>
+
+<span class="hljs-comment">/* The cJSON structure: */</span>
+<span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cJSON</span> &#123;</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cJSON</span> *<span class="hljs-title">next</span>,*<span class="hljs-title">prev</span>;</span>	<span class="hljs-comment">/* next/prev allow you to walk array/object chains. Alternatively, use GetArraySize/GetArrayItem/GetObjectItem */</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cJSON</span> *<span class="hljs-title">child</span>;</span>		<span class="hljs-comment">/* An array or object item will have a child pointer pointing to a chain of the items in the array/object. */</span>
+
+	<span class="hljs-keyword">int</span> type;					<span class="hljs-comment">/* The type of the item, as above. */</span>
+
+	<span class="hljs-keyword">char</span> *valuestring;			<span class="hljs-comment">/* The item&#x27;s string, if type==cJSON_String */</span>
+	<span class="hljs-keyword">int</span> valueint;				<span class="hljs-comment">/* The item&#x27;s number, if type==cJSON_Number */</span>
+	<span class="hljs-keyword">double</span> valuedouble;			<span class="hljs-comment">/* The item&#x27;s number, if type==cJSON_Number */</span>
+
+	<span class="hljs-keyword">char</span> *string;				<span class="hljs-comment">/* The item&#x27;s name string, if this item is the child of, or is in the list of subitems of an object. */</span>
+&#125; cJSON;
+
+<span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cJSON_Hooks</span> &#123;</span>
+      <span class="hljs-keyword">void</span> *(*malloc_fn)(<span class="hljs-keyword">size_t</span> sz);
+      <span class="hljs-built_in"><span class="hljs-keyword">void</span></span> (*free_fn)(<span class="hljs-keyword">void</span> *ptr);
+&#125; cJSON_Hooks;
+
+<span class="hljs-comment">/* Supply malloc, realloc and free functions to cJSON */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">void</span> <span class="hljs-title">cJSON_InitHooks</span><span class="hljs-params">(cJSON_Hooks* hooks)</span></span>;
+
+
+<span class="hljs-comment">/* Supply a block of JSON, and this returns a cJSON object you can interrogate. Call cJSON_Delete when finished. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_Parse</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *value)</span></span>;
+<span class="hljs-comment">/* Render a cJSON entity to text for transfer/storage. Free the char* when finished. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">char</span>  *<span class="hljs-title">cJSON_Print</span><span class="hljs-params">(cJSON *item)</span></span>;
+<span class="hljs-comment">/* Render a cJSON entity to text for transfer/storage without any formatting. Free the char* when finished. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">char</span>  *<span class="hljs-title">cJSON_PrintUnformatted</span><span class="hljs-params">(cJSON *item)</span></span>;
+<span class="hljs-comment">/* Render a cJSON entity to text using a buffered strategy. prebuffer is a guess at the final size. guessing well reduces reallocation. fmt=0 gives unformatted, =1 gives formatted */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">cJSON_PrintBuffered</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">int</span> prebuffer,<span class="hljs-keyword">int</span> fmt)</span></span>;
+<span class="hljs-comment">/* Delete a cJSON entity and all subentities. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">void</span>   <span class="hljs-title">cJSON_Delete</span><span class="hljs-params">(cJSON *c)</span></span>;
+
+<span class="hljs-comment">/* Returns the number of items in an array (or object). */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">int</span>	  <span class="hljs-title">cJSON_GetArraySize</span><span class="hljs-params">(cJSON *array)</span></span>;
+<span class="hljs-comment">/* Retrieve item number &quot;item&quot; from array &quot;array&quot;. Returns NULL if unsuccessful. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_GetArrayItem</span><span class="hljs-params">(cJSON *array,<span class="hljs-keyword">int</span> item)</span></span>;
+<span class="hljs-comment">/* Get item &quot;string&quot; from object. Case insensitive. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_GetObjectItem</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string)</span></span>;
+
+<span class="hljs-comment">/* For analysing failed parses. This returns a pointer to the parse error. You&#x27;ll probably need to look a few chars back to make sense of it. Defined when cJSON_Parse() returns 0. 0 when cJSON_Parse() succeeds. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">cJSON_GetErrorPtr</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>;
+	
+<span class="hljs-comment">/* These calls create a cJSON item of the appropriate type. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_CreateNull</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_CreateTrue</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_CreateFalse</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_CreateBool</span><span class="hljs-params">(<span class="hljs-keyword">int</span> b)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_CreateNumber</span><span class="hljs-params">(<span class="hljs-keyword">double</span> num)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_CreateString</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_CreateArray</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_CreateObject</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>;
+
+<span class="hljs-comment">/* These utilities create an Array of count items. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_CreateIntArray</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> *numbers,<span class="hljs-keyword">int</span> count)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_CreateFloatArray</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">float</span> *numbers,<span class="hljs-keyword">int</span> count)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_CreateDoubleArray</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">double</span> *numbers,<span class="hljs-keyword">int</span> count)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_CreateStringArray</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> **strings,<span class="hljs-keyword">int</span> count)</span></span>;
+
+<span class="hljs-comment">/* Append item to the specified array/object. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">void</span> <span class="hljs-title">cJSON_AddItemToArray</span><span class="hljs-params">(cJSON *array, cJSON *item)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">void</span>	<span class="hljs-title">cJSON_AddItemToObject</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string,cJSON *item)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">void</span>	<span class="hljs-title">cJSON_AddItemToObjectCS</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string,cJSON *item)</span></span>;	<span class="hljs-comment">/* Use this when string is definitely const (i.e. a literal, or as good as), and will definitely survive the cJSON object */</span>
+<span class="hljs-comment">/* Append reference to item to the specified array/object. Use this when you want to add an existing cJSON to a new cJSON, but don&#x27;t want to corrupt your existing cJSON. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">void</span> <span class="hljs-title">cJSON_AddItemReferenceToArray</span><span class="hljs-params">(cJSON *array, cJSON *item)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">void</span>	<span class="hljs-title">cJSON_AddItemReferenceToObject</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string,cJSON *item)</span></span>;
+
+<span class="hljs-comment">/* Remove/Detatch items from Arrays/Objects. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_DetachItemFromArray</span><span class="hljs-params">(cJSON *array,<span class="hljs-keyword">int</span> which)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">void</span>   <span class="hljs-title">cJSON_DeleteItemFromArray</span><span class="hljs-params">(cJSON *array,<span class="hljs-keyword">int</span> which)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_DetachItemFromObject</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">void</span>   <span class="hljs-title">cJSON_DeleteItemFromObject</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string)</span></span>;
+	
+<span class="hljs-comment">/* Update array items. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">void</span> <span class="hljs-title">cJSON_InsertItemInArray</span><span class="hljs-params">(cJSON *array,<span class="hljs-keyword">int</span> which,cJSON *newitem)</span></span>;	<span class="hljs-comment">/* Shifts pre-existing items to the right. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">void</span> <span class="hljs-title">cJSON_ReplaceItemInArray</span><span class="hljs-params">(cJSON *array,<span class="hljs-keyword">int</span> which,cJSON *newitem)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">void</span> <span class="hljs-title">cJSON_ReplaceItemInObject</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string,cJSON *newitem)</span></span>;
+
+<span class="hljs-comment">/* Duplicate a cJSON item */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_Duplicate</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">int</span> recurse)</span></span>;
+<span class="hljs-comment">/* Duplicate will create a new, identical cJSON item to the one you pass, in new memory that will</span>
+<span class="hljs-comment">need to be released. With recurse!=0, it will duplicate any children connected to the item.</span>
+<span class="hljs-comment">The item-&gt;next and -&gt;prev pointers are always zero on return from Duplicate. */</span>
+
+<span class="hljs-comment">/* ParseWithOpts allows you to require (and check) that the JSON is null terminated, and to retrieve the pointer to the final byte parsed. */</span>
+<span class="hljs-function"><span class="hljs-keyword">extern</span> cJSON *<span class="hljs-title">cJSON_ParseWithOpts</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *value,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> **return_parse_end,<span class="hljs-keyword">int</span> require_null_terminated)</span></span>;
+
+<span class="hljs-function"><span class="hljs-keyword">extern</span> <span class="hljs-keyword">void</span> <span class="hljs-title">cJSON_Minify</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *json)</span></span>;
+
+<span class="hljs-comment">/* Macros for creating things quickly. */</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_AddNullToObject(object,name)		cJSON_AddItemToObject(object, name, cJSON_CreateNull())</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_AddTrueToObject(object,name)		cJSON_AddItemToObject(object, name, cJSON_CreateTrue())</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_AddFalseToObject(object,name)		cJSON_AddItemToObject(object, name, cJSON_CreateFalse())</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_AddBoolToObject(object,name,b)	cJSON_AddItemToObject(object, name, cJSON_CreateBool(b))</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_AddNumberToObject(object,name,n)	cJSON_AddItemToObject(object, name, cJSON_CreateNumber(n))</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_AddStringToObject(object,name,s)	cJSON_AddItemToObject(object, name, cJSON_CreateString(s))</span>
+
+<span class="hljs-comment">/* When assigning an integer value, it needs to be propagated to valuedouble too. */</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_SetIntValue(object,val)			((object)?(object)-&gt;valueint=(object)-&gt;valuedouble=(val):(val))</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> cJSON_SetNumberValue(object,val)		((object)?(object)-&gt;valueint=(object)-&gt;valuedouble=(val):(val))</span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">ifdef</span> __cplusplus</span>
+&#125;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+</code></pre></div>
+</details>  
+  
+<details>
+<summary>cJSON.c</summary>  
+  
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-comment">/*</span>
+<span class="hljs-comment">  Copyright (c) 2009 Dave Gamble</span>
+<span class="hljs-comment"></span>
+<span class="hljs-comment">  Permission is hereby granted, free of charge, to any person obtaining a copy</span>
+<span class="hljs-comment">  of this software and associated documentation files (the &quot;Software&quot;), to deal</span>
+<span class="hljs-comment">  in the Software without restriction, including without limitation the rights</span>
+<span class="hljs-comment">  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell</span>
+<span class="hljs-comment">  copies of the Software, and to permit persons to whom the Software is</span>
+<span class="hljs-comment">  furnished to do so, subject to the following conditions:</span>
+<span class="hljs-comment"></span>
+<span class="hljs-comment">  The above copyright notice and this permission notice shall be included in</span>
+<span class="hljs-comment">  all copies or substantial portions of the Software.</span>
+<span class="hljs-comment"></span>
+<span class="hljs-comment">  THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR</span>
+<span class="hljs-comment">  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span>
+<span class="hljs-comment">  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span>
+<span class="hljs-comment">  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span>
+<span class="hljs-comment">  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,</span>
+<span class="hljs-comment">  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN</span>
+<span class="hljs-comment">  THE SOFTWARE.</span>
+<span class="hljs-comment">*/</span>
+
+<span class="hljs-comment">/* cJSON */</span>
+<span class="hljs-comment">/* JSON parser in C. */</span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;math.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;float.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;limits.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;ctype.h&gt;</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&quot;cJSON.h&quot;</span></span>
+
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *ep;
+
+<span class="hljs-function"><span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">cJSON_GetErrorPtr</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span> </span>&#123;<span class="hljs-keyword">return</span> ep;&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">cJSON_strcasecmp</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *s1,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *s2)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">if</span> (!s1) <span class="hljs-keyword">return</span> (s1==s2)?<span class="hljs-number">0</span>:<span class="hljs-number">1</span>;<span class="hljs-keyword">if</span> (!s2) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+	<span class="hljs-keyword">for</span>(; <span class="hljs-built_in">tolower</span>(*s1) == <span class="hljs-built_in">tolower</span>(*s2); ++s1, ++s2)	<span class="hljs-keyword">if</span>(*s1 == <span class="hljs-number">0</span>)	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">return</span> <span class="hljs-built_in">tolower</span>(*(<span class="hljs-keyword">const</span> <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> *)s1) - <span class="hljs-built_in">tolower</span>(*(<span class="hljs-keyword">const</span> <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> *)s2);
+&#125;
+
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> *(*cJSON_malloc)(<span class="hljs-keyword">size_t</span> sz) = malloc;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-title">void</span> <span class="hljs-params">(*cJSON_free)</span><span class="hljs-params">(<span class="hljs-keyword">void</span> *ptr)</span> </span>= free;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">char</span>* <span class="hljs-title">cJSON_strdup</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* str)</span></span>
+<span class="hljs-function"></span>&#123;
+      <span class="hljs-keyword">size_t</span> len;
+      <span class="hljs-keyword">char</span>* copy;
+
+      len = <span class="hljs-built_in">strlen</span>(str) + <span class="hljs-number">1</span>;
+      <span class="hljs-keyword">if</span> (!(copy = (<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(len))) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+      <span class="hljs-built_in">memcpy</span>(copy,str,len);
+      <span class="hljs-keyword">return</span> copy;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">cJSON_InitHooks</span><span class="hljs-params">(cJSON_Hooks* hooks)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">if</span> (!hooks) &#123; <span class="hljs-comment">/* Reset hooks */</span>
+        cJSON_malloc = malloc;
+        cJSON_free = free;
+        <span class="hljs-keyword">return</span>;
+    &#125;
+
+	cJSON_malloc = (hooks-&gt;malloc_fn)?hooks-&gt;malloc_fn:malloc;
+	cJSON_free	 = (hooks-&gt;free_fn)?hooks-&gt;free_fn:free;
+&#125;
+
+<span class="hljs-comment">/* Internal constructor. */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> cJSON *<span class="hljs-title">cJSON_New_Item</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+	cJSON* node = (cJSON*)<span class="hljs-built_in">cJSON_malloc</span>(<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(cJSON));
+	<span class="hljs-keyword">if</span> (node) <span class="hljs-built_in">memset</span>(node,<span class="hljs-number">0</span>,<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(cJSON));
+	<span class="hljs-keyword">return</span> node;
+&#125;
+
+<span class="hljs-comment">/* Delete a cJSON structure. */</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">cJSON_Delete</span><span class="hljs-params">(cJSON *c)</span></span>
+<span class="hljs-function"></span>&#123;
+	cJSON *next;
+	<span class="hljs-keyword">while</span> (c)
+	&#123;
+		next=c-&gt;next;
+		<span class="hljs-keyword">if</span> (!(c-&gt;type&amp;cJSON_IsReference) &amp;&amp; c-&gt;child) <span class="hljs-built_in">cJSON_Delete</span>(c-&gt;child);
+		<span class="hljs-keyword">if</span> (!(c-&gt;type&amp;cJSON_IsReference) &amp;&amp; c-&gt;valuestring) <span class="hljs-built_in">cJSON_free</span>(c-&gt;valuestring);
+		<span class="hljs-keyword">if</span> (!(c-&gt;type&amp;cJSON_StringIsConst) &amp;&amp; c-&gt;string) <span class="hljs-built_in">cJSON_free</span>(c-&gt;string);
+		<span class="hljs-built_in">cJSON_free</span>(c);
+		c=next;
+	&#125;
+&#125;
+
+<span class="hljs-comment">/* Parse the input text to generate a number, and populate the result into item. */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">parse_number</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *num)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">double</span> n=<span class="hljs-number">0</span>,sign=<span class="hljs-number">1</span>,scale=<span class="hljs-number">0</span>;<span class="hljs-keyword">int</span> subscale=<span class="hljs-number">0</span>,signsubscale=<span class="hljs-number">1</span>;
+
+	<span class="hljs-keyword">if</span> (*num==<span class="hljs-string">&#x27;-&#x27;</span>) sign=<span class="hljs-number">-1</span>,num++;	<span class="hljs-comment">/* Has sign? */</span>
+	<span class="hljs-keyword">if</span> (*num==<span class="hljs-string">&#x27;0&#x27;</span>) num++;			<span class="hljs-comment">/* is zero */</span>
+	<span class="hljs-keyword">if</span> (*num&gt;=<span class="hljs-string">&#x27;1&#x27;</span> &amp;&amp; *num&lt;=<span class="hljs-string">&#x27;9&#x27;</span>)	<span class="hljs-keyword">do</span>	n=(n*<span class="hljs-number">10.0</span>)+(*num++ -<span class="hljs-string">&#x27;0&#x27;</span>);	<span class="hljs-keyword">while</span> (*num&gt;=<span class="hljs-string">&#x27;0&#x27;</span> &amp;&amp; *num&lt;=<span class="hljs-string">&#x27;9&#x27;</span>);	<span class="hljs-comment">/* Number? */</span>
+	<span class="hljs-keyword">if</span> (*num==<span class="hljs-string">&#x27;.&#x27;</span> &amp;&amp; num[<span class="hljs-number">1</span>]&gt;=<span class="hljs-string">&#x27;0&#x27;</span> &amp;&amp; num[<span class="hljs-number">1</span>]&lt;=<span class="hljs-string">&#x27;9&#x27;</span>) &#123;num++;		<span class="hljs-keyword">do</span>	n=(n*<span class="hljs-number">10.0</span>)+(*num++ -<span class="hljs-string">&#x27;0&#x27;</span>),scale--; <span class="hljs-keyword">while</span> (*num&gt;=<span class="hljs-string">&#x27;0&#x27;</span> &amp;&amp; *num&lt;=<span class="hljs-string">&#x27;9&#x27;</span>);&#125;	<span class="hljs-comment">/* Fractional part? */</span>
+	<span class="hljs-keyword">if</span> (*num==<span class="hljs-string">&#x27;e&#x27;</span> || *num==<span class="hljs-string">&#x27;E&#x27;</span>)		<span class="hljs-comment">/* Exponent? */</span>
+	&#123;	num++;<span class="hljs-keyword">if</span> (*num==<span class="hljs-string">&#x27;+&#x27;</span>) num++;	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*num==<span class="hljs-string">&#x27;-&#x27;</span>) signsubscale=<span class="hljs-number">-1</span>,num++;		<span class="hljs-comment">/* With sign? */</span>
+		<span class="hljs-keyword">while</span> (*num&gt;=<span class="hljs-string">&#x27;0&#x27;</span> &amp;&amp; *num&lt;=<span class="hljs-string">&#x27;9&#x27;</span>) subscale=(subscale*<span class="hljs-number">10</span>)+(*num++ - <span class="hljs-string">&#x27;0&#x27;</span>);	<span class="hljs-comment">/* Number? */</span>
+	&#125;
+
+	n=sign*n*<span class="hljs-built_in">pow</span>(<span class="hljs-number">10.0</span>,(scale+subscale*signsubscale));	<span class="hljs-comment">/* number = +/- number.fraction * 10^+/- exponent */</span>
+	
+	item-&gt;valuedouble=n;
+	item-&gt;valueint=(<span class="hljs-keyword">int</span>)n;
+	item-&gt;type=cJSON_Number;
+	<span class="hljs-keyword">return</span> num;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">pow2gt</span> <span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span>	</span>&#123;	--x;	x|=x&gt;&gt;<span class="hljs-number">1</span>;	x|=x&gt;&gt;<span class="hljs-number">2</span>;	x|=x&gt;&gt;<span class="hljs-number">4</span>;	x|=x&gt;&gt;<span class="hljs-number">8</span>;	x|=x&gt;&gt;<span class="hljs-number">16</span>;	<span class="hljs-keyword">return</span> x+<span class="hljs-number">1</span>;	&#125;
+
+<span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> &#123;</span><span class="hljs-keyword">char</span> *buffer; <span class="hljs-keyword">int</span> length; <span class="hljs-keyword">int</span> offset; &#125; printbuffer;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">char</span>* <span class="hljs-title">ensure</span><span class="hljs-params">(printbuffer *p,<span class="hljs-keyword">int</span> needed)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">char</span> *newbuffer;<span class="hljs-keyword">int</span> newsize;
+	<span class="hljs-keyword">if</span> (!p || !p-&gt;buffer) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	needed+=p-&gt;offset;
+	<span class="hljs-keyword">if</span> (needed&lt;=p-&gt;length) <span class="hljs-keyword">return</span> p-&gt;buffer+p-&gt;offset;
+
+	newsize=<span class="hljs-built_in">pow2gt</span>(needed);
+	newbuffer=(<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(newsize);
+	<span class="hljs-keyword">if</span> (!newbuffer) &#123;<span class="hljs-built_in">cJSON_free</span>(p-&gt;buffer);p-&gt;length=<span class="hljs-number">0</span>,p-&gt;buffer=<span class="hljs-number">0</span>;<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;
+	<span class="hljs-keyword">if</span> (newbuffer) <span class="hljs-built_in">memcpy</span>(newbuffer,p-&gt;buffer,p-&gt;length);
+	<span class="hljs-built_in">cJSON_free</span>(p-&gt;buffer);
+	p-&gt;length=newsize;
+	p-&gt;buffer=newbuffer;
+	<span class="hljs-keyword">return</span> newbuffer+p-&gt;offset;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">update</span><span class="hljs-params">(printbuffer *p)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">char</span> *str;
+	<span class="hljs-keyword">if</span> (!p || !p-&gt;buffer) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	str=p-&gt;buffer+p-&gt;offset;
+	<span class="hljs-keyword">return</span> p-&gt;offset+<span class="hljs-built_in">strlen</span>(str);
+&#125;
+
+<span class="hljs-comment">/* Render the number nicely from the given item into a string. */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">print_number</span><span class="hljs-params">(cJSON *item,printbuffer *p)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">char</span> *str=<span class="hljs-number">0</span>;
+	<span class="hljs-keyword">double</span> d=item-&gt;valuedouble;
+	<span class="hljs-keyword">if</span> (d==<span class="hljs-number">0</span>)
+	&#123;
+		<span class="hljs-keyword">if</span> (p)	str=<span class="hljs-built_in">ensure</span>(p,<span class="hljs-number">2</span>);
+		<span class="hljs-keyword">else</span>	str=(<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(<span class="hljs-number">2</span>);	<span class="hljs-comment">/* special case for 0. */</span>
+		<span class="hljs-keyword">if</span> (str) <span class="hljs-built_in">strcpy</span>(str,<span class="hljs-string">&quot;0&quot;</span>);
+	&#125;
+	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">fabs</span>(((<span class="hljs-keyword">double</span>)item-&gt;valueint)-d)&lt;=DBL_EPSILON &amp;&amp; d&lt;=INT_MAX &amp;&amp; d&gt;=INT_MIN)
+	&#123;
+		<span class="hljs-keyword">if</span> (p)	str=<span class="hljs-built_in">ensure</span>(p,<span class="hljs-number">21</span>);
+		<span class="hljs-keyword">else</span>	str=(<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(<span class="hljs-number">21</span>);	<span class="hljs-comment">/* 2^64+1 can be represented in 21 chars. */</span>
+		<span class="hljs-keyword">if</span> (str)	<span class="hljs-built_in">sprintf</span>(str,<span class="hljs-string">&quot;%d&quot;</span>,item-&gt;valueint);
+	&#125;
+	<span class="hljs-keyword">else</span>
+	&#123;
+		<span class="hljs-keyword">if</span> (p)	str=<span class="hljs-built_in">ensure</span>(p,<span class="hljs-number">64</span>);
+		<span class="hljs-keyword">else</span>	str=(<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(<span class="hljs-number">64</span>);	<span class="hljs-comment">/* This is a nice tradeoff. */</span>
+		<span class="hljs-keyword">if</span> (str)
+		&#123;
+			<span class="hljs-keyword">if</span> (<span class="hljs-built_in">fabs</span>(<span class="hljs-built_in">floor</span>(d)-d)&lt;=DBL_EPSILON &amp;&amp; <span class="hljs-built_in">fabs</span>(d)&lt;<span class="hljs-number">1.0e60</span>)<span class="hljs-built_in">sprintf</span>(str,<span class="hljs-string">&quot;%.0f&quot;</span>,d);
+			<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-built_in">fabs</span>(d)&lt;<span class="hljs-number">1.0e-6</span> || <span class="hljs-built_in">fabs</span>(d)&gt;<span class="hljs-number">1.0e9</span>)			<span class="hljs-built_in">sprintf</span>(str,<span class="hljs-string">&quot;%e&quot;</span>,d);
+			<span class="hljs-keyword">else</span>												<span class="hljs-built_in">sprintf</span>(str,<span class="hljs-string">&quot;%f&quot;</span>,d);
+		&#125;
+	&#125;
+	<span class="hljs-keyword">return</span> str;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">unsigned</span> <span class="hljs-title">parse_hex4</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *str)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">unsigned</span> h=<span class="hljs-number">0</span>;
+	<span class="hljs-keyword">if</span> (*str&gt;=<span class="hljs-string">&#x27;0&#x27;</span> &amp;&amp; *str&lt;=<span class="hljs-string">&#x27;9&#x27;</span>) h+=(*str)-<span class="hljs-string">&#x27;0&#x27;</span>; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*str&gt;=<span class="hljs-string">&#x27;A&#x27;</span> &amp;&amp; *str&lt;=<span class="hljs-string">&#x27;F&#x27;</span>) h+=<span class="hljs-number">10</span>+(*str)-<span class="hljs-string">&#x27;A&#x27;</span>; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*str&gt;=<span class="hljs-string">&#x27;a&#x27;</span> &amp;&amp; *str&lt;=<span class="hljs-string">&#x27;f&#x27;</span>) h+=<span class="hljs-number">10</span>+(*str)-<span class="hljs-string">&#x27;a&#x27;</span>; <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	h=h&lt;&lt;<span class="hljs-number">4</span>;str++;
+	<span class="hljs-keyword">if</span> (*str&gt;=<span class="hljs-string">&#x27;0&#x27;</span> &amp;&amp; *str&lt;=<span class="hljs-string">&#x27;9&#x27;</span>) h+=(*str)-<span class="hljs-string">&#x27;0&#x27;</span>; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*str&gt;=<span class="hljs-string">&#x27;A&#x27;</span> &amp;&amp; *str&lt;=<span class="hljs-string">&#x27;F&#x27;</span>) h+=<span class="hljs-number">10</span>+(*str)-<span class="hljs-string">&#x27;A&#x27;</span>; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*str&gt;=<span class="hljs-string">&#x27;a&#x27;</span> &amp;&amp; *str&lt;=<span class="hljs-string">&#x27;f&#x27;</span>) h+=<span class="hljs-number">10</span>+(*str)-<span class="hljs-string">&#x27;a&#x27;</span>; <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	h=h&lt;&lt;<span class="hljs-number">4</span>;str++;
+	<span class="hljs-keyword">if</span> (*str&gt;=<span class="hljs-string">&#x27;0&#x27;</span> &amp;&amp; *str&lt;=<span class="hljs-string">&#x27;9&#x27;</span>) h+=(*str)-<span class="hljs-string">&#x27;0&#x27;</span>; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*str&gt;=<span class="hljs-string">&#x27;A&#x27;</span> &amp;&amp; *str&lt;=<span class="hljs-string">&#x27;F&#x27;</span>) h+=<span class="hljs-number">10</span>+(*str)-<span class="hljs-string">&#x27;A&#x27;</span>; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*str&gt;=<span class="hljs-string">&#x27;a&#x27;</span> &amp;&amp; *str&lt;=<span class="hljs-string">&#x27;f&#x27;</span>) h+=<span class="hljs-number">10</span>+(*str)-<span class="hljs-string">&#x27;a&#x27;</span>; <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	h=h&lt;&lt;<span class="hljs-number">4</span>;str++;
+	<span class="hljs-keyword">if</span> (*str&gt;=<span class="hljs-string">&#x27;0&#x27;</span> &amp;&amp; *str&lt;=<span class="hljs-string">&#x27;9&#x27;</span>) h+=(*str)-<span class="hljs-string">&#x27;0&#x27;</span>; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*str&gt;=<span class="hljs-string">&#x27;A&#x27;</span> &amp;&amp; *str&lt;=<span class="hljs-string">&#x27;F&#x27;</span>) h+=<span class="hljs-number">10</span>+(*str)-<span class="hljs-string">&#x27;A&#x27;</span>; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*str&gt;=<span class="hljs-string">&#x27;a&#x27;</span> &amp;&amp; *str&lt;=<span class="hljs-string">&#x27;f&#x27;</span>) h+=<span class="hljs-number">10</span>+(*str)-<span class="hljs-string">&#x27;a&#x27;</span>; <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">return</span> h;
+&#125;
+
+<span class="hljs-comment">/* Parse the input text into an unescaped cstring, and populate item. */</span>
+<span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> firstByteMark[<span class="hljs-number">7</span>] = &#123; <span class="hljs-number">0x00</span>, <span class="hljs-number">0x00</span>, <span class="hljs-number">0xC0</span>, <span class="hljs-number">0xE0</span>, <span class="hljs-number">0xF0</span>, <span class="hljs-number">0xF8</span>, <span class="hljs-number">0xFC</span> &#125;;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">parse_string</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *str)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *ptr=str+<span class="hljs-number">1</span>;<span class="hljs-keyword">char</span> *ptr2;<span class="hljs-keyword">char</span> *out;<span class="hljs-keyword">int</span> len=<span class="hljs-number">0</span>;<span class="hljs-keyword">unsigned</span> uc,uc2;
+	<span class="hljs-keyword">if</span> (*str!=<span class="hljs-string">&#x27;\&quot;&#x27;</span>) &#123;ep=str;<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;	<span class="hljs-comment">/* not a string! */</span>
+	
+	<span class="hljs-keyword">while</span> (*ptr!=<span class="hljs-string">&#x27;\&quot;&#x27;</span> &amp;&amp; *ptr &amp;&amp; ++len) <span class="hljs-keyword">if</span> (*ptr++ == <span class="hljs-string">&#x27;\\&#x27;</span>) ptr++;	<span class="hljs-comment">/* Skip escaped quotes. */</span>
+	
+	out=(<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(len+<span class="hljs-number">1</span>);	<span class="hljs-comment">/* This is how long we need for the string, roughly. */</span>
+	<span class="hljs-keyword">if</span> (!out) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	
+	ptr=str+<span class="hljs-number">1</span>;ptr2=out;
+	<span class="hljs-keyword">while</span> (*ptr!=<span class="hljs-string">&#x27;\&quot;&#x27;</span> &amp;&amp; *ptr)
+	&#123;
+		<span class="hljs-keyword">if</span> (*ptr!=<span class="hljs-string">&#x27;\\&#x27;</span>) *ptr2++=*ptr++;
+		<span class="hljs-keyword">else</span>
+		&#123;
+			ptr++;
+			<span class="hljs-built_in"><span class="hljs-keyword">switch</span></span> (*ptr)
+			&#123;
+				<span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;b&#x27;</span>: *ptr2++=<span class="hljs-string">&#x27;\b&#x27;</span>;	<span class="hljs-keyword">break</span>;
+				<span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;f&#x27;</span>: *ptr2++=<span class="hljs-string">&#x27;\f&#x27;</span>;	<span class="hljs-keyword">break</span>;
+				<span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;n&#x27;</span>: *ptr2++=<span class="hljs-string">&#x27;\n&#x27;</span>;	<span class="hljs-keyword">break</span>;
+				<span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;r&#x27;</span>: *ptr2++=<span class="hljs-string">&#x27;\r&#x27;</span>;	<span class="hljs-keyword">break</span>;
+				<span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;t&#x27;</span>: *ptr2++=<span class="hljs-string">&#x27;\t&#x27;</span>;	<span class="hljs-keyword">break</span>;
+				<span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;u&#x27;</span>:	 <span class="hljs-comment">/* transcode utf16 to utf8. */</span>
+					uc=<span class="hljs-built_in">parse_hex4</span>(ptr+<span class="hljs-number">1</span>);ptr+=<span class="hljs-number">4</span>;	<span class="hljs-comment">/* get the unicode char. */</span>
+
+					<span class="hljs-keyword">if</span> ((uc&gt;=<span class="hljs-number">0xDC00</span> &amp;&amp; uc&lt;=<span class="hljs-number">0xDFFF</span>) || uc==<span class="hljs-number">0</span>)	<span class="hljs-keyword">break</span>;	<span class="hljs-comment">/* check for invalid.	*/</span>
+
+					<span class="hljs-keyword">if</span> (uc&gt;=<span class="hljs-number">0xD800</span> &amp;&amp; uc&lt;=<span class="hljs-number">0xDBFF</span>)	<span class="hljs-comment">/* UTF16 surrogate pairs.	*/</span>
+					&#123;
+						<span class="hljs-keyword">if</span> (ptr[<span class="hljs-number">1</span>]!=<span class="hljs-string">&#x27;\\&#x27;</span> || ptr[<span class="hljs-number">2</span>]!=<span class="hljs-string">&#x27;u&#x27;</span>)	<span class="hljs-keyword">break</span>;	<span class="hljs-comment">/* missing second-half of surrogate.	*/</span>
+						uc2=<span class="hljs-built_in">parse_hex4</span>(ptr+<span class="hljs-number">3</span>);ptr+=<span class="hljs-number">6</span>;
+						<span class="hljs-keyword">if</span> (uc2&lt;<span class="hljs-number">0xDC00</span> || uc2&gt;<span class="hljs-number">0xDFFF</span>)		<span class="hljs-keyword">break</span>;	<span class="hljs-comment">/* invalid second-half of surrogate.	*/</span>
+						uc=<span class="hljs-number">0x10000</span> + (((uc&amp;<span class="hljs-number">0x3FF</span>)&lt;&lt;<span class="hljs-number">10</span>) | (uc2&amp;<span class="hljs-number">0x3FF</span>));
+					&#125;
+
+					len=<span class="hljs-number">4</span>;<span class="hljs-keyword">if</span> (uc&lt;<span class="hljs-number">0x80</span>) len=<span class="hljs-number">1</span>;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (uc&lt;<span class="hljs-number">0x800</span>) len=<span class="hljs-number">2</span>;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (uc&lt;<span class="hljs-number">0x10000</span>) len=<span class="hljs-number">3</span>; ptr2+=len;
+					
+					<span class="hljs-built_in"><span class="hljs-keyword">switch</span></span> (len) &#123;
+						<span class="hljs-keyword">case</span> <span class="hljs-number">4</span>: *--ptr2 =((uc | <span class="hljs-number">0x80</span>) &amp; <span class="hljs-number">0xBF</span>); uc &gt;&gt;= <span class="hljs-number">6</span>;
+						<span class="hljs-keyword">case</span> <span class="hljs-number">3</span>: *--ptr2 =((uc | <span class="hljs-number">0x80</span>) &amp; <span class="hljs-number">0xBF</span>); uc &gt;&gt;= <span class="hljs-number">6</span>;
+						<span class="hljs-keyword">case</span> <span class="hljs-number">2</span>: *--ptr2 =((uc | <span class="hljs-number">0x80</span>) &amp; <span class="hljs-number">0xBF</span>); uc &gt;&gt;= <span class="hljs-number">6</span>;
+						<span class="hljs-keyword">case</span> <span class="hljs-number">1</span>: *--ptr2 =(uc | firstByteMark[len]);
+					&#125;
+					ptr2+=len;
+					<span class="hljs-keyword">break</span>;
+				<span class="hljs-keyword">default</span>:  *ptr2++=*ptr; <span class="hljs-keyword">break</span>;
+			&#125;
+			ptr++;
+		&#125;
+	&#125;
+	*ptr2=<span class="hljs-number">0</span>;
+	<span class="hljs-keyword">if</span> (*ptr==<span class="hljs-string">&#x27;\&quot;&#x27;</span>) ptr++;
+	item-&gt;valuestring=out;
+	item-&gt;type=cJSON_String;
+	<span class="hljs-keyword">return</span> ptr;
+&#125;
+
+<span class="hljs-comment">/* Render the cstring provided to an escaped version that can be printed. */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">print_string_ptr</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *str,printbuffer *p)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *ptr;<span class="hljs-keyword">char</span> *ptr2,*out;<span class="hljs-keyword">int</span> len=<span class="hljs-number">0</span>,flag=<span class="hljs-number">0</span>;<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span> token;
+	
+	<span class="hljs-keyword">for</span> (ptr=str;*ptr;ptr++) flag|=((*ptr&gt;<span class="hljs-number">0</span> &amp;&amp; *ptr&lt;<span class="hljs-number">32</span>)||(*ptr==<span class="hljs-string">&#x27;\&quot;&#x27;</span>)||(*ptr==<span class="hljs-string">&#x27;\\&#x27;</span>))?<span class="hljs-number">1</span>:<span class="hljs-number">0</span>;
+	<span class="hljs-keyword">if</span> (!flag)
+	&#123;
+		len=ptr-str;
+		<span class="hljs-keyword">if</span> (p) out=<span class="hljs-built_in">ensure</span>(p,len+<span class="hljs-number">3</span>);
+		<span class="hljs-keyword">else</span>		out=(<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(len+<span class="hljs-number">3</span>);
+		<span class="hljs-keyword">if</span> (!out) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+		ptr2=out;*ptr2++=<span class="hljs-string">&#x27;\&quot;&#x27;</span>;
+		<span class="hljs-built_in">strcpy</span>(ptr2,str);
+		ptr2[len]=<span class="hljs-string">&#x27;\&quot;&#x27;</span>;
+		ptr2[len+<span class="hljs-number">1</span>]=<span class="hljs-number">0</span>;
+		<span class="hljs-keyword">return</span> out;
+	&#125;
+	
+	<span class="hljs-keyword">if</span> (!str)
+	&#123;
+		<span class="hljs-keyword">if</span> (p)	out=<span class="hljs-built_in">ensure</span>(p,<span class="hljs-number">3</span>);
+		<span class="hljs-keyword">else</span>	out=(<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(<span class="hljs-number">3</span>);
+		<span class="hljs-keyword">if</span> (!out) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+		<span class="hljs-built_in">strcpy</span>(out,<span class="hljs-string">&quot;\&quot;\&quot;&quot;</span>);
+		<span class="hljs-keyword">return</span> out;
+	&#125;
+	ptr=str;<span class="hljs-keyword">while</span> ((token=*ptr) &amp;&amp; ++len) &#123;<span class="hljs-keyword">if</span> (<span class="hljs-built_in">strchr</span>(<span class="hljs-string">&quot;\&quot;\\\b\f\n\r\t&quot;</span>,token)) len++; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (token&lt;<span class="hljs-number">32</span>) len+=<span class="hljs-number">5</span>;ptr++;&#125;
+	
+	<span class="hljs-keyword">if</span> (p)	out=<span class="hljs-built_in">ensure</span>(p,len+<span class="hljs-number">3</span>);
+	<span class="hljs-keyword">else</span>	out=(<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(len+<span class="hljs-number">3</span>);
+	<span class="hljs-keyword">if</span> (!out) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+
+	ptr2=out;ptr=str;
+	*ptr2++=<span class="hljs-string">&#x27;\&quot;&#x27;</span>;
+	<span class="hljs-keyword">while</span> (*ptr)
+	&#123;
+		<span class="hljs-keyword">if</span> ((<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span>)*ptr&gt;<span class="hljs-number">31</span> &amp;&amp; *ptr!=<span class="hljs-string">&#x27;\&quot;&#x27;</span> &amp;&amp; *ptr!=<span class="hljs-string">&#x27;\\&#x27;</span>) *ptr2++=*ptr++;
+		<span class="hljs-keyword">else</span>
+		&#123;
+			*ptr2++=<span class="hljs-string">&#x27;\\&#x27;</span>;
+			<span class="hljs-built_in"><span class="hljs-keyword">switch</span></span> (token=*ptr++)
+			&#123;
+				<span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;\\&#x27;</span>:	*ptr2++=<span class="hljs-string">&#x27;\\&#x27;</span>;	<span class="hljs-keyword">break</span>;
+				<span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;\&quot;&#x27;</span>:	*ptr2++=<span class="hljs-string">&#x27;\&quot;&#x27;</span>;	<span class="hljs-keyword">break</span>;
+				<span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;\b&#x27;</span>:	*ptr2++=<span class="hljs-string">&#x27;b&#x27;</span>;	<span class="hljs-keyword">break</span>;
+				<span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;\f&#x27;</span>:	*ptr2++=<span class="hljs-string">&#x27;f&#x27;</span>;	<span class="hljs-keyword">break</span>;
+				<span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;\n&#x27;</span>:	*ptr2++=<span class="hljs-string">&#x27;n&#x27;</span>;	<span class="hljs-keyword">break</span>;
+				<span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;\r&#x27;</span>:	*ptr2++=<span class="hljs-string">&#x27;r&#x27;</span>;	<span class="hljs-keyword">break</span>;
+				<span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;\t&#x27;</span>:	*ptr2++=<span class="hljs-string">&#x27;t&#x27;</span>;	<span class="hljs-keyword">break</span>;
+				<span class="hljs-keyword">default</span>: <span class="hljs-built_in">sprintf</span>(ptr2,<span class="hljs-string">&quot;u%04x&quot;</span>,token);ptr2+=<span class="hljs-number">5</span>;	<span class="hljs-keyword">break</span>;	<span class="hljs-comment">/* escape and print */</span>
+			&#125;
+		&#125;
+	&#125;
+	*ptr2++=<span class="hljs-string">&#x27;\&quot;&#x27;</span>;*ptr2++=<span class="hljs-number">0</span>;
+	<span class="hljs-keyword">return</span> out;
+&#125;
+<span class="hljs-comment">/* Invote print_string_ptr (which is useful) on an item. */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">print_string</span><span class="hljs-params">(cJSON *item,printbuffer *p)</span>	</span>&#123;<span class="hljs-keyword">return</span> <span class="hljs-built_in">print_string_ptr</span>(item-&gt;valuestring,p);&#125;
+
+<span class="hljs-comment">/* Predeclare these prototypes. */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">parse_value</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *value)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">print_value</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">int</span> depth,<span class="hljs-keyword">int</span> fmt,printbuffer *p)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">parse_array</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *value)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">print_array</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">int</span> depth,<span class="hljs-keyword">int</span> fmt,printbuffer *p)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">parse_object</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *value)</span></span>;
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">print_object</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">int</span> depth,<span class="hljs-keyword">int</span> fmt,printbuffer *p)</span></span>;
+
+<span class="hljs-comment">/* Utility to jump whitespace and cr/lf */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">skip</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *in)</span> </span>&#123;<span class="hljs-keyword">while</span> (in &amp;&amp; *in &amp;&amp; (<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">char</span>)*in&lt;=<span class="hljs-number">32</span>) in++; <span class="hljs-keyword">return</span> in;&#125;
+
+<span class="hljs-comment">/* Parse an object - create a new root, and populate. */</span>
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_ParseWithOpts</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *value,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> **return_parse_end,<span class="hljs-keyword">int</span> require_null_terminated)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *end=<span class="hljs-number">0</span>;
+	cJSON *c=<span class="hljs-built_in">cJSON_New_Item</span>();
+	ep=<span class="hljs-number">0</span>;
+	<span class="hljs-keyword">if</span> (!c) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;       <span class="hljs-comment">/* memory fail */</span>
+
+	end=<span class="hljs-built_in">parse_value</span>(c,<span class="hljs-built_in">skip</span>(value));
+	<span class="hljs-keyword">if</span> (!end)	&#123;<span class="hljs-built_in">cJSON_Delete</span>(c);<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;	<span class="hljs-comment">/* parse failure. ep is set. */</span>
+
+	<span class="hljs-comment">/* if we require null-terminated JSON without appended garbage, skip and then check for a null terminator */</span>
+	<span class="hljs-keyword">if</span> (require_null_terminated) &#123;end=<span class="hljs-built_in">skip</span>(end);<span class="hljs-keyword">if</span> (*end) &#123;<span class="hljs-built_in">cJSON_Delete</span>(c);ep=end;<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;&#125;
+	<span class="hljs-keyword">if</span> (return_parse_end) *return_parse_end=end;
+	<span class="hljs-keyword">return</span> c;
+&#125;
+<span class="hljs-comment">/* Default options for cJSON_Parse */</span>
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_Parse</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *value)</span> </span>&#123;<span class="hljs-keyword">return</span> <span class="hljs-built_in">cJSON_ParseWithOpts</span>(value,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>);&#125;
+
+<span class="hljs-comment">/* Render a cJSON item/entity/structure to text. */</span>
+<span class="hljs-function"><span class="hljs-keyword">char</span> *<span class="hljs-title">cJSON_Print</span><span class="hljs-params">(cJSON *item)</span>				</span>&#123;<span class="hljs-keyword">return</span> <span class="hljs-built_in">print_value</span>(item,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>);&#125;
+<span class="hljs-function"><span class="hljs-keyword">char</span> *<span class="hljs-title">cJSON_PrintUnformatted</span><span class="hljs-params">(cJSON *item)</span>	</span>&#123;<span class="hljs-keyword">return</span> <span class="hljs-built_in">print_value</span>(item,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>);&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">char</span> *<span class="hljs-title">cJSON_PrintBuffered</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">int</span> prebuffer,<span class="hljs-keyword">int</span> fmt)</span></span>
+<span class="hljs-function"></span>&#123;
+	printbuffer p;
+	p.buffer=(<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(prebuffer);
+	p.length=prebuffer;
+	p.offset=<span class="hljs-number">0</span>;
+	<span class="hljs-keyword">return</span> <span class="hljs-built_in">print_value</span>(item,<span class="hljs-number">0</span>,fmt,&amp;p);
+	<span class="hljs-keyword">return</span> p.buffer;
+&#125;
+
+
+<span class="hljs-comment">/* Parser core - when encountering text, process appropriately. */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">parse_value</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *value)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">if</span> (!value)						<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;	<span class="hljs-comment">/* Fail on null. */</span>
+	<span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strncmp</span>(value,<span class="hljs-string">&quot;null&quot;</span>,<span class="hljs-number">4</span>))	&#123; item-&gt;type=cJSON_NULL;  <span class="hljs-keyword">return</span> value+<span class="hljs-number">4</span>; &#125;
+	<span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strncmp</span>(value,<span class="hljs-string">&quot;false&quot;</span>,<span class="hljs-number">5</span>))	&#123; item-&gt;type=cJSON_False; <span class="hljs-keyword">return</span> value+<span class="hljs-number">5</span>; &#125;
+	<span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strncmp</span>(value,<span class="hljs-string">&quot;true&quot;</span>,<span class="hljs-number">4</span>))	&#123; item-&gt;type=cJSON_True; item-&gt;valueint=<span class="hljs-number">1</span>;	<span class="hljs-keyword">return</span> value+<span class="hljs-number">4</span>; &#125;
+	<span class="hljs-keyword">if</span> (*value==<span class="hljs-string">&#x27;\&quot;&#x27;</span>)				&#123; <span class="hljs-keyword">return</span> <span class="hljs-built_in">parse_string</span>(item,value); &#125;
+	<span class="hljs-keyword">if</span> (*value==<span class="hljs-string">&#x27;-&#x27;</span> || (*value&gt;=<span class="hljs-string">&#x27;0&#x27;</span> &amp;&amp; *value&lt;=<span class="hljs-string">&#x27;9&#x27;</span>))	&#123; <span class="hljs-keyword">return</span> <span class="hljs-built_in">parse_number</span>(item,value); &#125;
+	<span class="hljs-keyword">if</span> (*value==<span class="hljs-string">&#x27;[&#x27;</span>)				&#123; <span class="hljs-keyword">return</span> <span class="hljs-built_in">parse_array</span>(item,value); &#125;
+	<span class="hljs-keyword">if</span> (*value==<span class="hljs-string">&#x27;&#123;&#x27;</span>)				&#123; <span class="hljs-keyword">return</span> <span class="hljs-built_in">parse_object</span>(item,value); &#125;
+
+	ep=value;<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;	<span class="hljs-comment">/* failure. */</span>
+&#125;
+
+<span class="hljs-comment">/* Render a value to text. */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">print_value</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">int</span> depth,<span class="hljs-keyword">int</span> fmt,printbuffer *p)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">char</span> *out=<span class="hljs-number">0</span>;
+	<span class="hljs-keyword">if</span> (!item) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">if</span> (p)
+	&#123;
+		<span class="hljs-built_in"><span class="hljs-keyword">switch</span></span> ((item-&gt;type)&amp;<span class="hljs-number">255</span>)
+		&#123;
+			<span class="hljs-keyword">case</span> cJSON_NULL:	&#123;out=<span class="hljs-built_in">ensure</span>(p,<span class="hljs-number">5</span>);	<span class="hljs-keyword">if</span> (out) <span class="hljs-built_in">strcpy</span>(out,<span class="hljs-string">&quot;null&quot;</span>);	<span class="hljs-keyword">break</span>;&#125;
+			<span class="hljs-keyword">case</span> cJSON_False:	&#123;out=<span class="hljs-built_in">ensure</span>(p,<span class="hljs-number">6</span>);	<span class="hljs-keyword">if</span> (out) <span class="hljs-built_in">strcpy</span>(out,<span class="hljs-string">&quot;false&quot;</span>);	<span class="hljs-keyword">break</span>;&#125;
+			<span class="hljs-keyword">case</span> cJSON_True:	&#123;out=<span class="hljs-built_in">ensure</span>(p,<span class="hljs-number">5</span>);	<span class="hljs-keyword">if</span> (out) <span class="hljs-built_in">strcpy</span>(out,<span class="hljs-string">&quot;true&quot;</span>);	<span class="hljs-keyword">break</span>;&#125;
+			<span class="hljs-keyword">case</span> cJSON_Number:	out=<span class="hljs-built_in">print_number</span>(item,p);<span class="hljs-keyword">break</span>;
+			<span class="hljs-keyword">case</span> cJSON_String:	out=<span class="hljs-built_in">print_string</span>(item,p);<span class="hljs-keyword">break</span>;
+			<span class="hljs-keyword">case</span> cJSON_Array:	out=<span class="hljs-built_in">print_array</span>(item,depth,fmt,p);<span class="hljs-keyword">break</span>;
+			<span class="hljs-keyword">case</span> cJSON_Object:	out=<span class="hljs-built_in">print_object</span>(item,depth,fmt,p);<span class="hljs-keyword">break</span>;
+		&#125;
+	&#125;
+	<span class="hljs-keyword">else</span>
+	&#123;
+		<span class="hljs-built_in"><span class="hljs-keyword">switch</span></span> ((item-&gt;type)&amp;<span class="hljs-number">255</span>)
+		&#123;
+			<span class="hljs-keyword">case</span> cJSON_NULL:	out=<span class="hljs-built_in">cJSON_strdup</span>(<span class="hljs-string">&quot;null&quot;</span>);	<span class="hljs-keyword">break</span>;
+			<span class="hljs-keyword">case</span> cJSON_False:	out=<span class="hljs-built_in">cJSON_strdup</span>(<span class="hljs-string">&quot;false&quot;</span>);<span class="hljs-keyword">break</span>;
+			<span class="hljs-keyword">case</span> cJSON_True:	out=<span class="hljs-built_in">cJSON_strdup</span>(<span class="hljs-string">&quot;true&quot;</span>); <span class="hljs-keyword">break</span>;
+			<span class="hljs-keyword">case</span> cJSON_Number:	out=<span class="hljs-built_in">print_number</span>(item,<span class="hljs-number">0</span>);<span class="hljs-keyword">break</span>;
+			<span class="hljs-keyword">case</span> cJSON_String:	out=<span class="hljs-built_in">print_string</span>(item,<span class="hljs-number">0</span>);<span class="hljs-keyword">break</span>;
+			<span class="hljs-keyword">case</span> cJSON_Array:	out=<span class="hljs-built_in">print_array</span>(item,depth,fmt,<span class="hljs-number">0</span>);<span class="hljs-keyword">break</span>;
+			<span class="hljs-keyword">case</span> cJSON_Object:	out=<span class="hljs-built_in">print_object</span>(item,depth,fmt,<span class="hljs-number">0</span>);<span class="hljs-keyword">break</span>;
+		&#125;
+	&#125;
+	<span class="hljs-keyword">return</span> out;
+&#125;
+
+<span class="hljs-comment">/* Build an array from input text. */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">parse_array</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *value)</span></span>
+<span class="hljs-function"></span>&#123;
+	cJSON *child;
+	<span class="hljs-keyword">if</span> (*value!=<span class="hljs-string">&#x27;[&#x27;</span>)	&#123;ep=value;<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;	<span class="hljs-comment">/* not an array! */</span>
+
+	item-&gt;type=cJSON_Array;
+	value=<span class="hljs-built_in">skip</span>(value+<span class="hljs-number">1</span>);
+	<span class="hljs-keyword">if</span> (*value==<span class="hljs-string">&#x27;]&#x27;</span>) <span class="hljs-keyword">return</span> value+<span class="hljs-number">1</span>;	<span class="hljs-comment">/* empty array. */</span>
+
+	item-&gt;child=child=<span class="hljs-built_in">cJSON_New_Item</span>();
+	<span class="hljs-keyword">if</span> (!item-&gt;child) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;		 <span class="hljs-comment">/* memory fail */</span>
+	value=<span class="hljs-built_in">skip</span>(<span class="hljs-built_in">parse_value</span>(child,<span class="hljs-built_in">skip</span>(value)));	<span class="hljs-comment">/* skip any spacing, get the value. */</span>
+	<span class="hljs-keyword">if</span> (!value) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+
+	<span class="hljs-keyword">while</span> (*value==<span class="hljs-string">&#x27;,&#x27;</span>)
+	&#123;
+		cJSON *new_item;
+		<span class="hljs-keyword">if</span> (!(new_item=<span class="hljs-built_in">cJSON_New_Item</span>())) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>; 	<span class="hljs-comment">/* memory fail */</span>
+		child-&gt;next=new_item;new_item-&gt;prev=child;child=new_item;
+		value=<span class="hljs-built_in">skip</span>(<span class="hljs-built_in">parse_value</span>(child,<span class="hljs-built_in">skip</span>(value+<span class="hljs-number">1</span>)));
+		<span class="hljs-keyword">if</span> (!value) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;	<span class="hljs-comment">/* memory fail */</span>
+	&#125;
+
+	<span class="hljs-keyword">if</span> (*value==<span class="hljs-string">&#x27;]&#x27;</span>) <span class="hljs-keyword">return</span> value+<span class="hljs-number">1</span>;	<span class="hljs-comment">/* end of array */</span>
+	ep=value;<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;	<span class="hljs-comment">/* malformed. */</span>
+&#125;
+
+<span class="hljs-comment">/* Render an array to text */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">print_array</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">int</span> depth,<span class="hljs-keyword">int</span> fmt,printbuffer *p)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">char</span> **entries;
+	<span class="hljs-keyword">char</span> *out=<span class="hljs-number">0</span>,*ptr,*ret;<span class="hljs-keyword">int</span> len=<span class="hljs-number">5</span>;
+	cJSON *child=item-&gt;child;
+	<span class="hljs-keyword">int</span> numentries=<span class="hljs-number">0</span>,i=<span class="hljs-number">0</span>,fail=<span class="hljs-number">0</span>;
+	<span class="hljs-keyword">size_t</span> tmplen=<span class="hljs-number">0</span>;
+	
+	<span class="hljs-comment">/* How many entries in the array? */</span>
+	<span class="hljs-keyword">while</span> (child) numentries++,child=child-&gt;next;
+	<span class="hljs-comment">/* Explicitly handle numentries==0 */</span>
+	<span class="hljs-keyword">if</span> (!numentries)
+	&#123;
+		<span class="hljs-keyword">if</span> (p)	out=<span class="hljs-built_in">ensure</span>(p,<span class="hljs-number">3</span>);
+		<span class="hljs-keyword">else</span>	out=(<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(<span class="hljs-number">3</span>);
+		<span class="hljs-keyword">if</span> (out) <span class="hljs-built_in">strcpy</span>(out,<span class="hljs-string">&quot;[]&quot;</span>);
+		<span class="hljs-keyword">return</span> out;
+	&#125;
+
+	<span class="hljs-keyword">if</span> (p)
+	&#123;
+		<span class="hljs-comment">/* Compose the output array. */</span>
+		i=p-&gt;offset;
+		ptr=<span class="hljs-built_in">ensure</span>(p,<span class="hljs-number">1</span>);<span class="hljs-keyword">if</span> (!ptr) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;	*ptr=<span class="hljs-string">&#x27;[&#x27;</span>;	p-&gt;offset++;
+		child=item-&gt;child;
+		<span class="hljs-keyword">while</span> (child &amp;&amp; !fail)
+		&#123;
+			<span class="hljs-built_in">print_value</span>(child,depth+<span class="hljs-number">1</span>,fmt,p);
+			p-&gt;offset=<span class="hljs-built_in">update</span>(p);
+			<span class="hljs-keyword">if</span> (child-&gt;next) &#123;len=fmt?<span class="hljs-number">2</span>:<span class="hljs-number">1</span>;ptr=<span class="hljs-built_in">ensure</span>(p,len+<span class="hljs-number">1</span>);<span class="hljs-keyword">if</span> (!ptr) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;*ptr++=<span class="hljs-string">&#x27;,&#x27;</span>;<span class="hljs-keyword">if</span>(fmt)*ptr++=<span class="hljs-string">&#x27; &#x27;</span>;*ptr=<span class="hljs-number">0</span>;p-&gt;offset+=len;&#125;
+			child=child-&gt;next;
+		&#125;
+		ptr=<span class="hljs-built_in">ensure</span>(p,<span class="hljs-number">2</span>);<span class="hljs-keyword">if</span> (!ptr) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;	*ptr++=<span class="hljs-string">&#x27;]&#x27;</span>;*ptr=<span class="hljs-number">0</span>;
+		out=(p-&gt;buffer)+i;
+	&#125;
+	<span class="hljs-keyword">else</span>
+	&#123;
+		<span class="hljs-comment">/* Allocate an array to hold the values for each */</span>
+		entries=(<span class="hljs-keyword">char</span>**)<span class="hljs-built_in">cJSON_malloc</span>(numentries*<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(<span class="hljs-keyword">char</span>*));
+		<span class="hljs-keyword">if</span> (!entries) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+		<span class="hljs-built_in">memset</span>(entries,<span class="hljs-number">0</span>,numentries*<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(<span class="hljs-keyword">char</span>*));
+		<span class="hljs-comment">/* Retrieve all the results: */</span>
+		child=item-&gt;child;
+		<span class="hljs-keyword">while</span> (child &amp;&amp; !fail)
+		&#123;
+			ret=<span class="hljs-built_in">print_value</span>(child,depth+<span class="hljs-number">1</span>,fmt,<span class="hljs-number">0</span>);
+			entries[i++]=ret;
+			<span class="hljs-keyword">if</span> (ret) len+=<span class="hljs-built_in">strlen</span>(ret)+<span class="hljs-number">2</span>+(fmt?<span class="hljs-number">1</span>:<span class="hljs-number">0</span>); <span class="hljs-keyword">else</span> fail=<span class="hljs-number">1</span>;
+			child=child-&gt;next;
+		&#125;
+		
+		<span class="hljs-comment">/* If we didn&#x27;t fail, try to malloc the output string */</span>
+		<span class="hljs-keyword">if</span> (!fail)	out=(<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(len);
+		<span class="hljs-comment">/* If that fails, we fail. */</span>
+		<span class="hljs-keyword">if</span> (!out) fail=<span class="hljs-number">1</span>;
+
+		<span class="hljs-comment">/* Handle failure. */</span>
+		<span class="hljs-keyword">if</span> (fail)
+		&#123;
+			<span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>;i&lt;numentries;i++) <span class="hljs-keyword">if</span> (entries[i]) <span class="hljs-built_in">cJSON_free</span>(entries[i]);
+			<span class="hljs-built_in">cJSON_free</span>(entries);
+			<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+		&#125;
+		
+		<span class="hljs-comment">/* Compose the output array. */</span>
+		*out=<span class="hljs-string">&#x27;[&#x27;</span>;
+		ptr=out+<span class="hljs-number">1</span>;*ptr=<span class="hljs-number">0</span>;
+		<span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>;i&lt;numentries;i++)
+		&#123;
+			tmplen=<span class="hljs-built_in">strlen</span>(entries[i]);<span class="hljs-built_in">memcpy</span>(ptr,entries[i],tmplen);ptr+=tmplen;
+			<span class="hljs-keyword">if</span> (i!=numentries<span class="hljs-number">-1</span>) &#123;*ptr++=<span class="hljs-string">&#x27;,&#x27;</span>;<span class="hljs-keyword">if</span>(fmt)*ptr++=<span class="hljs-string">&#x27; &#x27;</span>;*ptr=<span class="hljs-number">0</span>;&#125;
+			<span class="hljs-built_in">cJSON_free</span>(entries[i]);
+		&#125;
+		<span class="hljs-built_in">cJSON_free</span>(entries);
+		*ptr++=<span class="hljs-string">&#x27;]&#x27;</span>;*ptr++=<span class="hljs-number">0</span>;
+	&#125;
+	<span class="hljs-keyword">return</span> out;	
+&#125;
+
+<span class="hljs-comment">/* Build an object from the text. */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">parse_object</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *value)</span></span>
+<span class="hljs-function"></span>&#123;
+	cJSON *child;
+	<span class="hljs-keyword">if</span> (*value!=<span class="hljs-string">&#x27;&#123;&#x27;</span>)	&#123;ep=value;<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;	<span class="hljs-comment">/* not an object! */</span>
+	
+	item-&gt;type=cJSON_Object;
+	value=<span class="hljs-built_in">skip</span>(value+<span class="hljs-number">1</span>);
+	<span class="hljs-keyword">if</span> (*value==<span class="hljs-string">&#x27;&#125;&#x27;</span>) <span class="hljs-keyword">return</span> value+<span class="hljs-number">1</span>;	<span class="hljs-comment">/* empty array. */</span>
+	
+	item-&gt;child=child=<span class="hljs-built_in">cJSON_New_Item</span>();
+	<span class="hljs-keyword">if</span> (!item-&gt;child) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	value=<span class="hljs-built_in">skip</span>(<span class="hljs-built_in">parse_string</span>(child,<span class="hljs-built_in">skip</span>(value)));
+	<span class="hljs-keyword">if</span> (!value) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	child-&gt;string=child-&gt;valuestring;child-&gt;valuestring=<span class="hljs-number">0</span>;
+	<span class="hljs-keyword">if</span> (*value!=<span class="hljs-string">&#x27;:&#x27;</span>) &#123;ep=value;<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;	<span class="hljs-comment">/* fail! */</span>
+	value=<span class="hljs-built_in">skip</span>(<span class="hljs-built_in">parse_value</span>(child,<span class="hljs-built_in">skip</span>(value+<span class="hljs-number">1</span>)));	<span class="hljs-comment">/* skip any spacing, get the value. */</span>
+	<span class="hljs-keyword">if</span> (!value) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	
+	<span class="hljs-keyword">while</span> (*value==<span class="hljs-string">&#x27;,&#x27;</span>)
+	&#123;
+		cJSON *new_item;
+		<span class="hljs-keyword">if</span> (!(new_item=<span class="hljs-built_in">cJSON_New_Item</span>()))	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>; <span class="hljs-comment">/* memory fail */</span>
+		child-&gt;next=new_item;new_item-&gt;prev=child;child=new_item;
+		value=<span class="hljs-built_in">skip</span>(<span class="hljs-built_in">parse_string</span>(child,<span class="hljs-built_in">skip</span>(value+<span class="hljs-number">1</span>)));
+		<span class="hljs-keyword">if</span> (!value) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+		child-&gt;string=child-&gt;valuestring;child-&gt;valuestring=<span class="hljs-number">0</span>;
+		<span class="hljs-keyword">if</span> (*value!=<span class="hljs-string">&#x27;:&#x27;</span>) &#123;ep=value;<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;	<span class="hljs-comment">/* fail! */</span>
+		value=<span class="hljs-built_in">skip</span>(<span class="hljs-built_in">parse_value</span>(child,<span class="hljs-built_in">skip</span>(value+<span class="hljs-number">1</span>)));	<span class="hljs-comment">/* skip any spacing, get the value. */</span>
+		<span class="hljs-keyword">if</span> (!value) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	&#125;
+	
+	<span class="hljs-keyword">if</span> (*value==<span class="hljs-string">&#x27;&#125;&#x27;</span>) <span class="hljs-keyword">return</span> value+<span class="hljs-number">1</span>;	<span class="hljs-comment">/* end of array */</span>
+	ep=value;<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;	<span class="hljs-comment">/* malformed. */</span>
+&#125;
+
+<span class="hljs-comment">/* Render an object to text. */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">char</span> *<span class="hljs-title">print_object</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">int</span> depth,<span class="hljs-keyword">int</span> fmt,printbuffer *p)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">char</span> **entries=<span class="hljs-number">0</span>,**names=<span class="hljs-number">0</span>;
+	<span class="hljs-keyword">char</span> *out=<span class="hljs-number">0</span>,*ptr,*ret,*str;<span class="hljs-keyword">int</span> len=<span class="hljs-number">7</span>,i=<span class="hljs-number">0</span>,j;
+	cJSON *child=item-&gt;child;
+	<span class="hljs-keyword">int</span> numentries=<span class="hljs-number">0</span>,fail=<span class="hljs-number">0</span>;
+	<span class="hljs-keyword">size_t</span> tmplen=<span class="hljs-number">0</span>;
+	<span class="hljs-comment">/* Count the number of entries. */</span>
+	<span class="hljs-keyword">while</span> (child) numentries++,child=child-&gt;next;
+	<span class="hljs-comment">/* Explicitly handle empty object case */</span>
+	<span class="hljs-keyword">if</span> (!numentries)
+	&#123;
+		<span class="hljs-keyword">if</span> (p) out=<span class="hljs-built_in">ensure</span>(p,fmt?depth+<span class="hljs-number">4</span>:<span class="hljs-number">3</span>);
+		<span class="hljs-keyword">else</span>	out=(<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(fmt?depth+<span class="hljs-number">4</span>:<span class="hljs-number">3</span>);
+		<span class="hljs-keyword">if</span> (!out)	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+		ptr=out;*ptr++=<span class="hljs-string">&#x27;&#123;&#x27;</span>;
+		<span class="hljs-keyword">if</span> (fmt) &#123;*ptr++=<span class="hljs-string">&#x27;\n&#x27;</span>;<span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>;i&lt;depth<span class="hljs-number">-1</span>;i++) *ptr++=<span class="hljs-string">&#x27;\t&#x27;</span>;&#125;
+		*ptr++=<span class="hljs-string">&#x27;&#125;&#x27;</span>;*ptr++=<span class="hljs-number">0</span>;
+		<span class="hljs-keyword">return</span> out;
+	&#125;
+	<span class="hljs-keyword">if</span> (p)
+	&#123;
+		<span class="hljs-comment">/* Compose the output: */</span>
+		i=p-&gt;offset;
+		len=fmt?<span class="hljs-number">2</span>:<span class="hljs-number">1</span>;	ptr=<span class="hljs-built_in">ensure</span>(p,len+<span class="hljs-number">1</span>);	<span class="hljs-keyword">if</span> (!ptr) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+		*ptr++=<span class="hljs-string">&#x27;&#123;&#x27;</span>;	<span class="hljs-keyword">if</span> (fmt) *ptr++=<span class="hljs-string">&#x27;\n&#x27;</span>;	*ptr=<span class="hljs-number">0</span>;	p-&gt;offset+=len;
+		child=item-&gt;child;depth++;
+		<span class="hljs-keyword">while</span> (child)
+		&#123;
+			<span class="hljs-keyword">if</span> (fmt)
+			&#123;
+				ptr=<span class="hljs-built_in">ensure</span>(p,depth);	<span class="hljs-keyword">if</span> (!ptr) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+				<span class="hljs-keyword">for</span> (j=<span class="hljs-number">0</span>;j&lt;depth;j++) *ptr++=<span class="hljs-string">&#x27;\t&#x27;</span>;
+				p-&gt;offset+=depth;
+			&#125;
+			<span class="hljs-built_in">print_string_ptr</span>(child-&gt;string,p);
+			p-&gt;offset=<span class="hljs-built_in">update</span>(p);
+			
+			len=fmt?<span class="hljs-number">2</span>:<span class="hljs-number">1</span>;
+			ptr=<span class="hljs-built_in">ensure</span>(p,len);	<span class="hljs-keyword">if</span> (!ptr) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+			*ptr++=<span class="hljs-string">&#x27;:&#x27;</span>;<span class="hljs-keyword">if</span> (fmt) *ptr++=<span class="hljs-string">&#x27;\t&#x27;</span>;
+			p-&gt;offset+=len;
+			
+			<span class="hljs-built_in">print_value</span>(child,depth,fmt,p);
+			p-&gt;offset=<span class="hljs-built_in">update</span>(p);
+
+			len=(fmt?<span class="hljs-number">1</span>:<span class="hljs-number">0</span>)+(child-&gt;next?<span class="hljs-number">1</span>:<span class="hljs-number">0</span>);
+			ptr=<span class="hljs-built_in">ensure</span>(p,len+<span class="hljs-number">1</span>); <span class="hljs-keyword">if</span> (!ptr) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+			<span class="hljs-keyword">if</span> (child-&gt;next) *ptr++=<span class="hljs-string">&#x27;,&#x27;</span>;
+			<span class="hljs-keyword">if</span> (fmt) *ptr++=<span class="hljs-string">&#x27;\n&#x27;</span>;*ptr=<span class="hljs-number">0</span>;
+			p-&gt;offset+=len;
+			child=child-&gt;next;
+		&#125;
+		ptr=<span class="hljs-built_in">ensure</span>(p,fmt?(depth+<span class="hljs-number">1</span>):<span class="hljs-number">2</span>);	 <span class="hljs-keyword">if</span> (!ptr) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+		<span class="hljs-keyword">if</span> (fmt)	<span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>;i&lt;depth<span class="hljs-number">-1</span>;i++) *ptr++=<span class="hljs-string">&#x27;\t&#x27;</span>;
+		*ptr++=<span class="hljs-string">&#x27;&#125;&#x27;</span>;*ptr=<span class="hljs-number">0</span>;
+		out=(p-&gt;buffer)+i;
+	&#125;
+	<span class="hljs-keyword">else</span>
+	&#123;
+		<span class="hljs-comment">/* Allocate space for the names and the objects */</span>
+		entries=(<span class="hljs-keyword">char</span>**)<span class="hljs-built_in">cJSON_malloc</span>(numentries*<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(<span class="hljs-keyword">char</span>*));
+		<span class="hljs-keyword">if</span> (!entries) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+		names=(<span class="hljs-keyword">char</span>**)<span class="hljs-built_in">cJSON_malloc</span>(numentries*<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(<span class="hljs-keyword">char</span>*));
+		<span class="hljs-keyword">if</span> (!names) &#123;<span class="hljs-built_in">cJSON_free</span>(entries);<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;
+		<span class="hljs-built_in">memset</span>(entries,<span class="hljs-number">0</span>,<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(<span class="hljs-keyword">char</span>*)*numentries);
+		<span class="hljs-built_in">memset</span>(names,<span class="hljs-number">0</span>,<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(<span class="hljs-keyword">char</span>*)*numentries);
+
+		<span class="hljs-comment">/* Collect all the results into our arrays: */</span>
+		child=item-&gt;child;depth++;<span class="hljs-keyword">if</span> (fmt) len+=depth;
+		<span class="hljs-keyword">while</span> (child)
+		&#123;
+			names[i]=str=<span class="hljs-built_in">print_string_ptr</span>(child-&gt;string,<span class="hljs-number">0</span>);
+			entries[i++]=ret=<span class="hljs-built_in">print_value</span>(child,depth,fmt,<span class="hljs-number">0</span>);
+			<span class="hljs-keyword">if</span> (str &amp;&amp; ret) len+=<span class="hljs-built_in">strlen</span>(ret)+<span class="hljs-built_in">strlen</span>(str)+<span class="hljs-number">2</span>+(fmt?<span class="hljs-number">2</span>+depth:<span class="hljs-number">0</span>); <span class="hljs-keyword">else</span> fail=<span class="hljs-number">1</span>;
+			child=child-&gt;next;
+		&#125;
+		
+		<span class="hljs-comment">/* Try to allocate the output string */</span>
+		<span class="hljs-keyword">if</span> (!fail)	out=(<span class="hljs-keyword">char</span>*)<span class="hljs-built_in">cJSON_malloc</span>(len);
+		<span class="hljs-keyword">if</span> (!out) fail=<span class="hljs-number">1</span>;
+
+		<span class="hljs-comment">/* Handle failure */</span>
+		<span class="hljs-keyword">if</span> (fail)
+		&#123;
+			<span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>;i&lt;numentries;i++) &#123;<span class="hljs-keyword">if</span> (names[i]) <span class="hljs-built_in">cJSON_free</span>(names[i]);<span class="hljs-keyword">if</span> (entries[i]) <span class="hljs-built_in">cJSON_free</span>(entries[i]);&#125;
+			<span class="hljs-built_in">cJSON_free</span>(names);<span class="hljs-built_in">cJSON_free</span>(entries);
+			<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+		&#125;
+		
+		<span class="hljs-comment">/* Compose the output: */</span>
+		*out=<span class="hljs-string">&#x27;&#123;&#x27;</span>;ptr=out+<span class="hljs-number">1</span>;<span class="hljs-keyword">if</span> (fmt)*ptr++=<span class="hljs-string">&#x27;\n&#x27;</span>;*ptr=<span class="hljs-number">0</span>;
+		<span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>;i&lt;numentries;i++)
+		&#123;
+			<span class="hljs-keyword">if</span> (fmt) <span class="hljs-keyword">for</span> (j=<span class="hljs-number">0</span>;j&lt;depth;j++) *ptr++=<span class="hljs-string">&#x27;\t&#x27;</span>;
+			tmplen=<span class="hljs-built_in">strlen</span>(names[i]);<span class="hljs-built_in">memcpy</span>(ptr,names[i],tmplen);ptr+=tmplen;
+			*ptr++=<span class="hljs-string">&#x27;:&#x27;</span>;<span class="hljs-keyword">if</span> (fmt) *ptr++=<span class="hljs-string">&#x27;\t&#x27;</span>;
+			<span class="hljs-built_in">strcpy</span>(ptr,entries[i]);ptr+=<span class="hljs-built_in">strlen</span>(entries[i]);
+			<span class="hljs-keyword">if</span> (i!=numentries<span class="hljs-number">-1</span>) *ptr++=<span class="hljs-string">&#x27;,&#x27;</span>;
+			<span class="hljs-keyword">if</span> (fmt) *ptr++=<span class="hljs-string">&#x27;\n&#x27;</span>;*ptr=<span class="hljs-number">0</span>;
+			<span class="hljs-built_in">cJSON_free</span>(names[i]);<span class="hljs-built_in">cJSON_free</span>(entries[i]);
+		&#125;
+		
+		<span class="hljs-built_in">cJSON_free</span>(names);<span class="hljs-built_in">cJSON_free</span>(entries);
+		<span class="hljs-keyword">if</span> (fmt) <span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>;i&lt;depth<span class="hljs-number">-1</span>;i++) *ptr++=<span class="hljs-string">&#x27;\t&#x27;</span>;
+		*ptr++=<span class="hljs-string">&#x27;&#125;&#x27;</span>;*ptr++=<span class="hljs-number">0</span>;
+	&#125;
+	<span class="hljs-keyword">return</span> out;	
+&#125;
+
+<span class="hljs-comment">/* Get Array size/item / object item. */</span>
+<span class="hljs-function"><span class="hljs-keyword">int</span>    <span class="hljs-title">cJSON_GetArraySize</span><span class="hljs-params">(cJSON *array)</span>							</span>&#123;cJSON *c=array-&gt;child;<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>;<span class="hljs-keyword">while</span>(c)i++,c=c-&gt;next;<span class="hljs-keyword">return</span> i;&#125;
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_GetArrayItem</span><span class="hljs-params">(cJSON *array,<span class="hljs-keyword">int</span> item)</span>				</span>&#123;cJSON *c=array-&gt;child;  <span class="hljs-keyword">while</span> (c &amp;&amp; item&gt;<span class="hljs-number">0</span>) item--,c=c-&gt;next; <span class="hljs-keyword">return</span> c;&#125;
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_GetObjectItem</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string)</span>	</span>&#123;cJSON *c=object-&gt;child; <span class="hljs-keyword">while</span> (c &amp;&amp; <span class="hljs-built_in">cJSON_strcasecmp</span>(c-&gt;string,string)) c=c-&gt;next; <span class="hljs-keyword">return</span> c;&#125;
+
+<span class="hljs-comment">/* Utility for array list handling. */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">suffix_object</span><span class="hljs-params">(cJSON *prev,cJSON *item)</span> </span>&#123;prev-&gt;next=item;item-&gt;prev=prev;&#125;
+<span class="hljs-comment">/* Utility for handling references. */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> cJSON *<span class="hljs-title">create_reference</span><span class="hljs-params">(cJSON *item)</span> </span>&#123;cJSON *ref=<span class="hljs-built_in">cJSON_New_Item</span>();<span class="hljs-keyword">if</span> (!ref) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<span class="hljs-built_in">memcpy</span>(ref,item,<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(cJSON));ref-&gt;string=<span class="hljs-number">0</span>;ref-&gt;type|=cJSON_IsReference;ref-&gt;next=ref-&gt;prev=<span class="hljs-number">0</span>;<span class="hljs-keyword">return</span> ref;&#125;
+
+<span class="hljs-comment">/* Add item to array/object. */</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span>   <span class="hljs-title">cJSON_AddItemToArray</span><span class="hljs-params">(cJSON *array, cJSON *item)</span>						</span>&#123;cJSON *c=array-&gt;child;<span class="hljs-keyword">if</span> (!item) <span class="hljs-keyword">return</span>; <span class="hljs-keyword">if</span> (!c) &#123;array-&gt;child=item;&#125; <span class="hljs-keyword">else</span> &#123;<span class="hljs-keyword">while</span> (c &amp;&amp; c-&gt;next) c=c-&gt;next; <span class="hljs-built_in">suffix_object</span>(c,item);&#125;&#125;
+<span class="hljs-function"><span class="hljs-keyword">void</span>   <span class="hljs-title">cJSON_AddItemToObject</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string,cJSON *item)</span>	</span>&#123;<span class="hljs-keyword">if</span> (!item) <span class="hljs-keyword">return</span>; <span class="hljs-keyword">if</span> (item-&gt;string) <span class="hljs-built_in">cJSON_free</span>(item-&gt;string);item-&gt;string=<span class="hljs-built_in">cJSON_strdup</span>(string);<span class="hljs-built_in">cJSON_AddItemToArray</span>(object,item);&#125;
+<span class="hljs-function"><span class="hljs-keyword">void</span>   <span class="hljs-title">cJSON_AddItemToObjectCS</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string,cJSON *item)</span>	</span>&#123;<span class="hljs-keyword">if</span> (!item) <span class="hljs-keyword">return</span>; <span class="hljs-keyword">if</span> (!(item-&gt;type&amp;cJSON_StringIsConst) &amp;&amp; item-&gt;string) <span class="hljs-built_in">cJSON_free</span>(item-&gt;string);item-&gt;string=(<span class="hljs-keyword">char</span>*)string;item-&gt;type|=cJSON_StringIsConst;<span class="hljs-built_in">cJSON_AddItemToArray</span>(object,item);&#125;
+<span class="hljs-function"><span class="hljs-keyword">void</span>	<span class="hljs-title">cJSON_AddItemReferenceToArray</span><span class="hljs-params">(cJSON *array, cJSON *item)</span>						</span>&#123;<span class="hljs-built_in">cJSON_AddItemToArray</span>(array,<span class="hljs-built_in">create_reference</span>(item));&#125;
+<span class="hljs-function"><span class="hljs-keyword">void</span>	<span class="hljs-title">cJSON_AddItemReferenceToObject</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string,cJSON *item)</span>	</span>&#123;<span class="hljs-built_in">cJSON_AddItemToObject</span>(object,string,<span class="hljs-built_in">create_reference</span>(item));&#125;
+
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_DetachItemFromArray</span><span class="hljs-params">(cJSON *array,<span class="hljs-keyword">int</span> which)</span>			</span>&#123;cJSON *c=array-&gt;child;<span class="hljs-keyword">while</span> (c &amp;&amp; which&gt;<span class="hljs-number">0</span>) c=c-&gt;next,which--;<span class="hljs-keyword">if</span> (!c) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">if</span> (c-&gt;prev) c-&gt;prev-&gt;next=c-&gt;next;<span class="hljs-keyword">if</span> (c-&gt;next) c-&gt;next-&gt;prev=c-&gt;prev;<span class="hljs-keyword">if</span> (c==array-&gt;child) array-&gt;child=c-&gt;next;c-&gt;prev=c-&gt;next=<span class="hljs-number">0</span>;<span class="hljs-keyword">return</span> c;&#125;
+<span class="hljs-function"><span class="hljs-keyword">void</span>   <span class="hljs-title">cJSON_DeleteItemFromArray</span><span class="hljs-params">(cJSON *array,<span class="hljs-keyword">int</span> which)</span>			</span>&#123;<span class="hljs-built_in">cJSON_Delete</span>(<span class="hljs-built_in">cJSON_DetachItemFromArray</span>(array,which));&#125;
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_DetachItemFromObject</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string)</span> </span>&#123;<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>;cJSON *c=object-&gt;child;<span class="hljs-keyword">while</span> (c &amp;&amp; <span class="hljs-built_in">cJSON_strcasecmp</span>(c-&gt;string,string)) i++,c=c-&gt;next;<span class="hljs-keyword">if</span> (c) <span class="hljs-keyword">return</span> <span class="hljs-built_in">cJSON_DetachItemFromArray</span>(object,i);<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;
+<span class="hljs-function"><span class="hljs-keyword">void</span>   <span class="hljs-title">cJSON_DeleteItemFromObject</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string)</span> </span>&#123;<span class="hljs-built_in">cJSON_Delete</span>(<span class="hljs-built_in">cJSON_DetachItemFromObject</span>(object,string));&#125;
+
+<span class="hljs-comment">/* Replace array/object items with new ones. */</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span>   <span class="hljs-title">cJSON_InsertItemInArray</span><span class="hljs-params">(cJSON *array,<span class="hljs-keyword">int</span> which,cJSON *newitem)</span>		</span>&#123;cJSON *c=array-&gt;child;<span class="hljs-keyword">while</span> (c &amp;&amp; which&gt;<span class="hljs-number">0</span>) c=c-&gt;next,which--;<span class="hljs-keyword">if</span> (!c) &#123;<span class="hljs-built_in">cJSON_AddItemToArray</span>(array,newitem);<span class="hljs-keyword">return</span>;&#125;
+	newitem-&gt;next=c;newitem-&gt;prev=c-&gt;prev;c-&gt;prev=newitem;<span class="hljs-keyword">if</span> (c==array-&gt;child) array-&gt;child=newitem; <span class="hljs-keyword">else</span> newitem-&gt;prev-&gt;next=newitem;&#125;
+<span class="hljs-function"><span class="hljs-keyword">void</span>   <span class="hljs-title">cJSON_ReplaceItemInArray</span><span class="hljs-params">(cJSON *array,<span class="hljs-keyword">int</span> which,cJSON *newitem)</span>		</span>&#123;cJSON *c=array-&gt;child;<span class="hljs-keyword">while</span> (c &amp;&amp; which&gt;<span class="hljs-number">0</span>) c=c-&gt;next,which--;<span class="hljs-keyword">if</span> (!c) <span class="hljs-keyword">return</span>;
+	newitem-&gt;next=c-&gt;next;newitem-&gt;prev=c-&gt;prev;<span class="hljs-keyword">if</span> (newitem-&gt;next) newitem-&gt;next-&gt;prev=newitem;
+	<span class="hljs-keyword">if</span> (c==array-&gt;child) array-&gt;child=newitem; <span class="hljs-keyword">else</span> newitem-&gt;prev-&gt;next=newitem;c-&gt;next=c-&gt;prev=<span class="hljs-number">0</span>;<span class="hljs-built_in">cJSON_Delete</span>(c);&#125;
+<span class="hljs-function"><span class="hljs-keyword">void</span>   <span class="hljs-title">cJSON_ReplaceItemInObject</span><span class="hljs-params">(cJSON *object,<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string,cJSON *newitem)</span></span>&#123;<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>;cJSON *c=object-&gt;child;<span class="hljs-keyword">while</span>(c &amp;&amp; <span class="hljs-built_in">cJSON_strcasecmp</span>(c-&gt;string,string))i++,c=c-&gt;next;<span class="hljs-keyword">if</span>(c)&#123;newitem-&gt;string=<span class="hljs-built_in">cJSON_strdup</span>(string);<span class="hljs-built_in">cJSON_ReplaceItemInArray</span>(object,i,newitem);&#125;&#125;
+
+<span class="hljs-comment">/* Create basic types: */</span>
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_CreateNull</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span>					</span>&#123;cJSON *item=<span class="hljs-built_in">cJSON_New_Item</span>();<span class="hljs-keyword">if</span>(item)item-&gt;type=cJSON_NULL;<span class="hljs-keyword">return</span> item;&#125;
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_CreateTrue</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span>					</span>&#123;cJSON *item=<span class="hljs-built_in">cJSON_New_Item</span>();<span class="hljs-keyword">if</span>(item)item-&gt;type=cJSON_True;<span class="hljs-keyword">return</span> item;&#125;
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_CreateFalse</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span>					</span>&#123;cJSON *item=<span class="hljs-built_in">cJSON_New_Item</span>();<span class="hljs-keyword">if</span>(item)item-&gt;type=cJSON_False;<span class="hljs-keyword">return</span> item;&#125;
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_CreateBool</span><span class="hljs-params">(<span class="hljs-keyword">int</span> b)</span>					</span>&#123;cJSON *item=<span class="hljs-built_in">cJSON_New_Item</span>();<span class="hljs-keyword">if</span>(item)item-&gt;type=b?cJSON_True:cJSON_False;<span class="hljs-keyword">return</span> item;&#125;
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_CreateNumber</span><span class="hljs-params">(<span class="hljs-keyword">double</span> num)</span>			</span>&#123;cJSON *item=<span class="hljs-built_in">cJSON_New_Item</span>();<span class="hljs-keyword">if</span>(item)&#123;item-&gt;type=cJSON_Number;item-&gt;valuedouble=num;item-&gt;valueint=(<span class="hljs-keyword">int</span>)num;&#125;<span class="hljs-keyword">return</span> item;&#125;
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_CreateString</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *string)</span>	</span>&#123;cJSON *item=<span class="hljs-built_in">cJSON_New_Item</span>();<span class="hljs-keyword">if</span>(item)&#123;item-&gt;type=cJSON_String;item-&gt;valuestring=<span class="hljs-built_in">cJSON_strdup</span>(string);&#125;<span class="hljs-keyword">return</span> item;&#125;
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_CreateArray</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span>					</span>&#123;cJSON *item=<span class="hljs-built_in">cJSON_New_Item</span>();<span class="hljs-keyword">if</span>(item)item-&gt;type=cJSON_Array;<span class="hljs-keyword">return</span> item;&#125;
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_CreateObject</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span>					</span>&#123;cJSON *item=<span class="hljs-built_in">cJSON_New_Item</span>();<span class="hljs-keyword">if</span>(item)item-&gt;type=cJSON_Object;<span class="hljs-keyword">return</span> item;&#125;
+
+<span class="hljs-comment">/* Create Arrays: */</span>
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_CreateIntArray</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> *numbers,<span class="hljs-keyword">int</span> count)</span>		</span>&#123;<span class="hljs-keyword">int</span> i;cJSON *n=<span class="hljs-number">0</span>,*p=<span class="hljs-number">0</span>,*a=<span class="hljs-built_in">cJSON_CreateArray</span>();<span class="hljs-keyword">for</span>(i=<span class="hljs-number">0</span>;a &amp;&amp; i&lt;count;i++)&#123;n=<span class="hljs-built_in">cJSON_CreateNumber</span>(numbers[i]);<span class="hljs-keyword">if</span>(!i)a-&gt;child=n;<span class="hljs-keyword">else</span> <span class="hljs-built_in">suffix_object</span>(p,n);p=n;&#125;<span class="hljs-keyword">return</span> a;&#125;
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_CreateFloatArray</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">float</span> *numbers,<span class="hljs-keyword">int</span> count)</span>	</span>&#123;<span class="hljs-keyword">int</span> i;cJSON *n=<span class="hljs-number">0</span>,*p=<span class="hljs-number">0</span>,*a=<span class="hljs-built_in">cJSON_CreateArray</span>();<span class="hljs-keyword">for</span>(i=<span class="hljs-number">0</span>;a &amp;&amp; i&lt;count;i++)&#123;n=<span class="hljs-built_in">cJSON_CreateNumber</span>(numbers[i]);<span class="hljs-keyword">if</span>(!i)a-&gt;child=n;<span class="hljs-keyword">else</span> <span class="hljs-built_in">suffix_object</span>(p,n);p=n;&#125;<span class="hljs-keyword">return</span> a;&#125;
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_CreateDoubleArray</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">double</span> *numbers,<span class="hljs-keyword">int</span> count)</span>	</span>&#123;<span class="hljs-keyword">int</span> i;cJSON *n=<span class="hljs-number">0</span>,*p=<span class="hljs-number">0</span>,*a=<span class="hljs-built_in">cJSON_CreateArray</span>();<span class="hljs-keyword">for</span>(i=<span class="hljs-number">0</span>;a &amp;&amp; i&lt;count;i++)&#123;n=<span class="hljs-built_in">cJSON_CreateNumber</span>(numbers[i]);<span class="hljs-keyword">if</span>(!i)a-&gt;child=n;<span class="hljs-keyword">else</span> <span class="hljs-built_in">suffix_object</span>(p,n);p=n;&#125;<span class="hljs-keyword">return</span> a;&#125;
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_CreateStringArray</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> **strings,<span class="hljs-keyword">int</span> count)</span>	</span>&#123;<span class="hljs-keyword">int</span> i;cJSON *n=<span class="hljs-number">0</span>,*p=<span class="hljs-number">0</span>,*a=<span class="hljs-built_in">cJSON_CreateArray</span>();<span class="hljs-keyword">for</span>(i=<span class="hljs-number">0</span>;a &amp;&amp; i&lt;count;i++)&#123;n=<span class="hljs-built_in">cJSON_CreateString</span>(strings[i]);<span class="hljs-keyword">if</span>(!i)a-&gt;child=n;<span class="hljs-keyword">else</span> <span class="hljs-built_in">suffix_object</span>(p,n);p=n;&#125;<span class="hljs-keyword">return</span> a;&#125;
+
+<span class="hljs-comment">/* Duplication */</span>
+<span class="hljs-function">cJSON *<span class="hljs-title">cJSON_Duplicate</span><span class="hljs-params">(cJSON *item,<span class="hljs-keyword">int</span> recurse)</span></span>
+<span class="hljs-function"></span>&#123;
+	cJSON *newitem,*cptr,*nptr=<span class="hljs-number">0</span>,*newchild;
+	<span class="hljs-comment">/* Bail on bad ptr */</span>
+	<span class="hljs-keyword">if</span> (!item) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	<span class="hljs-comment">/* Create new item */</span>
+	newitem=<span class="hljs-built_in">cJSON_New_Item</span>();
+	<span class="hljs-keyword">if</span> (!newitem) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	<span class="hljs-comment">/* Copy over all vars */</span>
+	newitem-&gt;type=item-&gt;type&amp;(~cJSON_IsReference),newitem-&gt;valueint=item-&gt;valueint,newitem-&gt;valuedouble=item-&gt;valuedouble;
+	<span class="hljs-keyword">if</span> (item-&gt;valuestring)	&#123;newitem-&gt;valuestring=<span class="hljs-built_in">cJSON_strdup</span>(item-&gt;valuestring);	<span class="hljs-keyword">if</span> (!newitem-&gt;valuestring)	&#123;<span class="hljs-built_in">cJSON_Delete</span>(newitem);<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;&#125;
+	<span class="hljs-keyword">if</span> (item-&gt;string)		&#123;newitem-&gt;string=<span class="hljs-built_in">cJSON_strdup</span>(item-&gt;string);			<span class="hljs-keyword">if</span> (!newitem-&gt;string)		&#123;<span class="hljs-built_in">cJSON_Delete</span>(newitem);<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;&#125;
+	<span class="hljs-comment">/* If non-recursive, then we&#x27;re done! */</span>
+	<span class="hljs-keyword">if</span> (!recurse) <span class="hljs-keyword">return</span> newitem;
+	<span class="hljs-comment">/* Walk the -&gt;next chain for the child. */</span>
+	cptr=item-&gt;child;
+	<span class="hljs-keyword">while</span> (cptr)
+	&#123;
+		newchild=<span class="hljs-built_in">cJSON_Duplicate</span>(cptr,<span class="hljs-number">1</span>);		<span class="hljs-comment">/* Duplicate (with recurse) each item in the -&gt;next chain */</span>
+		<span class="hljs-keyword">if</span> (!newchild) &#123;<span class="hljs-built_in">cJSON_Delete</span>(newitem);<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;&#125;
+		<span class="hljs-keyword">if</span> (nptr)	&#123;nptr-&gt;next=newchild,newchild-&gt;prev=nptr;nptr=newchild;&#125;	<span class="hljs-comment">/* If newitem-&gt;child already set, then crosswire -&gt;prev and -&gt;next and move on */</span>
+		<span class="hljs-keyword">else</span>		&#123;newitem-&gt;child=newchild;nptr=newchild;&#125;					<span class="hljs-comment">/* Set newitem-&gt;child and move to it */</span>
+		cptr=cptr-&gt;next;
+	&#125;
+	<span class="hljs-keyword">return</span> newitem;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">cJSON_Minify</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *json)</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-keyword">char</span> *into=json;
+	<span class="hljs-keyword">while</span> (*json)
+	&#123;
+		<span class="hljs-keyword">if</span> (*json==<span class="hljs-string">&#x27; &#x27;</span>) json++;
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*json==<span class="hljs-string">&#x27;\t&#x27;</span>) json++;	<span class="hljs-comment">/* Whitespace characters. */</span>
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*json==<span class="hljs-string">&#x27;\r&#x27;</span>) json++;
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*json==<span class="hljs-string">&#x27;\n&#x27;</span>) json++;
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*json==<span class="hljs-string">&#x27;/&#x27;</span> &amp;&amp; json[<span class="hljs-number">1</span>]==<span class="hljs-string">&#x27;/&#x27;</span>)  <span class="hljs-keyword">while</span> (*json &amp;&amp; *json!=<span class="hljs-string">&#x27;\n&#x27;</span>) json++;	<span class="hljs-comment">/* double-slash comments, to end of line. */</span>
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*json==<span class="hljs-string">&#x27;/&#x27;</span> &amp;&amp; json[<span class="hljs-number">1</span>]==<span class="hljs-string">&#x27;*&#x27;</span>) &#123;<span class="hljs-keyword">while</span> (*json &amp;&amp; !(*json==<span class="hljs-string">&#x27;*&#x27;</span> &amp;&amp; json[<span class="hljs-number">1</span>]==<span class="hljs-string">&#x27;/&#x27;</span>)) json++;json+=<span class="hljs-number">2</span>;&#125;	<span class="hljs-comment">/* multiline comments. */</span>
+		<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (*json==<span class="hljs-string">&#x27;\&quot;&#x27;</span>)&#123;*into++=*json++;<span class="hljs-keyword">while</span> (*json &amp;&amp; *json!=<span class="hljs-string">&#x27;\&quot;&#x27;</span>)&#123;<span class="hljs-keyword">if</span> (*json==<span class="hljs-string">&#x27;\\&#x27;</span>) *into++=*json++;*into++=*json++;&#125;*into++=*json++;&#125; <span class="hljs-comment">/* string literals, which are \&quot; sensitive. */</span>
+		<span class="hljs-keyword">else</span> *into++=*json++;			<span class="hljs-comment">/* All other characters. */</span>
+	&#125;
+	*into=<span class="hljs-number">0</span>;	<span class="hljs-comment">/* and null-terminate. */</span>
+&#125;
+</code></pre></div>
+</details>   
+  
+<p>CJSON主要数据结构如下，采用双向链表的形式：</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cJSON</span> &#123;</span>
+　　<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cJSON</span> *<span class="hljs-title">next</span>,*<span class="hljs-title">prev</span>;</span>           <span class="hljs-comment">/* 遍历数组或对象链的前向或后向链表指针*/</span>
+　　<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">cJSON</span> *<span class="hljs-title">child</span>;</span>                <span class="hljs-comment">/*数组或对象的孩子节点*/</span>
+　　<span class="hljs-keyword">int</span> type;                           <span class="hljs-comment">/* key的类型*/</span>
+　　<span class="hljs-keyword">char</span> *valuestring;                  <span class="hljs-comment">/*字符串值*/</span>
+　　<span class="hljs-keyword">int</span> valueint;                       <span class="hljs-comment">/* 整数值*/</span>
+　　<span class="hljs-keyword">double</span> valuedouble;                 <span class="hljs-comment">/* 浮点数值*/</span>
+　　<span class="hljs-keyword">char</span> *string;                       <span class="hljs-comment">/* key的名字*/</span>
+
+&#125; cJSON;</code></pre></div>
+<ol>
+<li>cJSON是使用链表来存储数据的，其访问方式很像一颗树。每一个节点可以有兄弟节点，通过next/prev指针来查找，它类似双向链表；每个节点也可以有孩子节点，通过child指针来访问，进入下一层。只有节点是对象或数组时才可以有孩子节点。</li>
+<li>type是键（key）的类型，一共有7种取值，分别是：False，Ture，NULL，Number，String，Array，Object。<ul>
+<li>若是Number类型，则valueint或valuedouble中存储着值。若期望的是int，则访问valueint，若期望的是double，则访问valuedouble，可以得到值。</li>
+<li>若是String类型的，则valuestring中存储着值，可以访问valuestring得到值。</li>
+</ul>
+</li>
+<li>string中存放的是这个节点的名字，可理解为key的名称。</li>
+</ol>
+<h3><span id="接口函数">接口函数</span></h3><p>重要的接口函数：</p>
+<p>**1. cJSON <em>cJSON_Parse(const char <em>value);</em></em><br>解析JSON数据包，并按照cJSON结构体的结构序列化整个数据包。可以看做是获取一个句柄。<br>**2. cJSON *cJSON_GetObjectItem(cJSON <em>object,const char <em>string);</em></em><br>功能：获取json指定的对象成员<br>参数：<code>*objec</code>：第一个函数中获取的句柄。<code>string</code>：需要获取的对象<br>返回值：这个对象成员的句柄  如果json格式的对象成员直接就是字符串那么就可以直接通过结构体中的valuestring元素来获取这个成员的值<br>**3. cJSON <em>cJSON_GetArrayItem(cJSON <em>array,int item);</em></em><br>功能：有可能第二个函数中获取到的是成员对象值是一个数组，那么就需要用到这个函数。用来获取这个数组指定的下标对象<br>参数：<code>*array</code>：传入第二步中返回的值，<code>item</code>：想要获取这个数组的下标元素<br>返回值：这个数组中指定下标的对象。然后在对这个返回值重复使用第二步函数就可以获取到各个成员的值了。<br>也就是说对象是数组的比是字符串的要多用一个<code>cJSON_GetArrayItem</code>函数，其他的没区别。<br><strong>4. cJSON_Delete()</strong><br>用来释放你第一步获取的句柄，来释放整个内存。用在解析完后调用</p>
+<h2><span id="读一层配置文件">读一层配置文件</span></h2><div class="hljs"><pre><code class="hljs json">&#123;
+    <span class="hljs-attr">&quot;spidev1&quot;</span>: &#123;
+        <span class="hljs-attr">&quot;device_name&quot;</span>: <span class="hljs-string">&quot;spidev1&quot;</span>,
+        <span class="hljs-attr">&quot;speed&quot;</span>: <span class="hljs-string">&quot;150000&quot;</span>,
+        <span class="hljs-attr">&quot;mode&quot;</span>: <span class="hljs-string">&quot;0&quot;</span>,
+        <span class="hljs-attr">&quot;bits&quot;</span>: <span class="hljs-string">&quot;8&quot;</span>,
+        <span class="hljs-attr">&quot;delay&quot;</span>: <span class="hljs-string">&quot;10&quot;</span>
+    &#125;,
+    <span class="hljs-attr">&quot;spidev3&quot;</span>: &#123;
+        <span class="hljs-attr">&quot;device_name&quot;</span>: <span class="hljs-string">&quot;spidev3&quot;</span>,
+        <span class="hljs-attr">&quot;speed&quot;</span>: <span class="hljs-string">&quot;160000&quot;</span>,
+        <span class="hljs-attr">&quot;mode&quot;</span>: <span class="hljs-string">&quot;0&quot;</span>,
+        <span class="hljs-attr">&quot;bits&quot;</span>: <span class="hljs-string">&quot;8&quot;</span>,
+        <span class="hljs-attr">&quot;delay&quot;</span>: <span class="hljs-string">&quot;10&quot;</span>
+    &#125;,
+    <span class="hljs-attr">&quot;spidev4&quot;</span>: &#123;
+        <span class="hljs-attr">&quot;device_name&quot;</span>: <span class="hljs-string">&quot;spidev4&quot;</span>,
+        <span class="hljs-attr">&quot;speed&quot;</span>: <span class="hljs-string">&quot;130000&quot;</span>,
+        <span class="hljs-attr">&quot;mode&quot;</span>: <span class="hljs-string">&quot;0&quot;</span>,
+        <span class="hljs-attr">&quot;bits&quot;</span>: <span class="hljs-string">&quot;8&quot;</span>,
+        <span class="hljs-attr">&quot;delay&quot;</span>: <span class="hljs-string">&quot;10&quot;</span>
+    &#125;
+&#125;</code></pre></div>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&quot;cJSON.h&quot;</span></span>
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+    FILE *fp = <span class="hljs-built_in">fopen</span>(<span class="hljs-string">&quot;test.json&quot;</span>, <span class="hljs-string">&quot;r&quot;</span>);
+    <span class="hljs-keyword">char</span> buf[<span class="hljs-number">1024</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+    <span class="hljs-built_in">fread</span>(buf, <span class="hljs-number">1</span>, <span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(buf), fp);
+    cJSON *root = <span class="hljs-built_in">cJSON_Parse</span>(buf);
+
+    cJSON *subobj = <span class="hljs-built_in">cJSON_GetObjectItem</span>(root, <span class="hljs-string">&quot;spidev2&quot;</span>);
+    <span class="hljs-keyword">if</span> (subobj)
+    &#123;
+        cJSON *item = <span class="hljs-built_in">cJSON_GetObjectItem</span>(subobj, <span class="hljs-string">&quot;speed&quot;</span>);
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;speed: %d\n&quot;</span>, (<span class="hljs-keyword">int</span>)<span class="hljs-built_in">atoi</span>(item-&gt;valuestring));
+
+        item = <span class="hljs-built_in">cJSON_GetObjectItem</span>(subobj, <span class="hljs-string">&quot;mode&quot;</span>);
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;mode: %d\n&quot;</span>, (<span class="hljs-keyword">int</span>)<span class="hljs-built_in">atoi</span>(item-&gt;valuestring));
+
+        item = <span class="hljs-built_in">cJSON_GetObjectItem</span>(subobj, <span class="hljs-string">&quot;bits&quot;</span>);
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;bits: %d\n&quot;</span>, (<span class="hljs-keyword">int</span>)<span class="hljs-built_in">atoi</span>(item-&gt;valuestring));
+
+        item = <span class="hljs-built_in">cJSON_GetObjectItem</span>(subobj, <span class="hljs-string">&quot;delay&quot;</span>);
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;delay: %d\n&quot;</span>, (<span class="hljs-keyword">int</span>)<span class="hljs-built_in">atoi</span>(item-&gt;valuestring));
+        
+
+        <span class="hljs-built_in">cJSON_Delete</span>(root);
+        <span class="hljs-built_in">fclose</span>(fp);
+    &#125;
+&#125;</code></pre></div>
+
+<h2><span id="读两层配置文件">读两层配置文件</span></h2><div class="hljs"><pre><code class="hljs json">&#123;
+	<span class="hljs-attr">&quot;奔驰&quot;</span>:	&#123;
+		<span class="hljs-attr">&quot;factory&quot;</span>:	<span class="hljs-string">&quot;一汽大众&quot;</span>,
+		<span class="hljs-attr">&quot;last&quot;</span>:	<span class="hljs-number">31</span>,
+		<span class="hljs-attr">&quot;price&quot;</span>:	<span class="hljs-number">83</span>,
+		<span class="hljs-attr">&quot;sell&quot;</span>:	<span class="hljs-number">49</span>,
+		<span class="hljs-attr">&quot;sum&quot;</span>:	<span class="hljs-number">80</span>,
+		<span class="hljs-attr">&quot;other&quot;</span>:	[<span class="hljs-number">123</span>, <span class="hljs-number">1</span>, <span class="hljs-string">&quot;hello, world&quot;</span>, &#123;
+				<span class="hljs-attr">&quot;梅斯德斯奔驰&quot;</span>:	<span class="hljs-string">&quot;心所向, 持以恒&quot;</span>
+			&#125;]
+	&#125;
+&#125;</code></pre></div>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&quot;cJSON.h&quot;</span></span>
+ 
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+    FILE* fp = <span class="hljs-built_in">fopen</span>(<span class="hljs-string">&quot;car.json&quot;</span>, <span class="hljs-string">&quot;r&quot;</span>);
+    <span class="hljs-keyword">char</span> buf[<span class="hljs-number">1024</span>] = &#123;<span class="hljs-number">0</span>&#125;;
+    <span class="hljs-built_in">fread</span>(buf, <span class="hljs-number">1</span>, <span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(buf), fp);
+    cJSON* root = <span class="hljs-built_in">cJSON_Parse</span>(buf);
+ 
+    cJSON* subobj = <span class="hljs-built_in">cJSON_GetObjectItem</span>(root,<span class="hljs-string">&quot;奔驰&quot;</span>);
+    <span class="hljs-keyword">if</span>(subobj)&#123;
+        <span class="hljs-comment">// 获取子对象</span>
+        cJSON* fasctory = <span class="hljs-built_in">cJSON_GetObjectItem</span>(subobj,<span class="hljs-string">&quot;factory&quot;</span>);
+        cJSON* last = <span class="hljs-built_in">cJSON_GetObjectItem</span>(subobj,<span class="hljs-string">&quot;last&quot;</span>);
+        cJSON* price = <span class="hljs-built_in">cJSON_GetObjectItem</span>(subobj, <span class="hljs-string">&quot;price&quot;</span>);
+        cJSON* sell = <span class="hljs-built_in">cJSON_GetObjectItem</span>(subobj,<span class="hljs-string">&quot;sell&quot;</span>);
+        cJSON* sum = <span class="hljs-built_in">cJSON_GetObjectItem</span>(subobj,<span class="hljs-string">&quot;sum&quot;</span>);
+        cJSON* other = <span class="hljs-built_in">cJSON_GetObjectItem</span>(subobj,<span class="hljs-string">&quot;other&quot;</span>);
+ 
+        <span class="hljs-comment">// 打印value的值</span>
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;奔驰:  \n&quot;</span>);
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;    factor:  %s\n&quot;</span>,<span class="hljs-built_in">cJSON_pRINT</span>(fasctory));
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;    last:  %s\n&quot;</span>,<span class="hljs-built_in">cJSON_pRINT</span>(last));
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;    price:  %s\n&quot;</span>,<span class="hljs-built_in">cJSON_pRINT</span>(price));
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;    sell:  %s\n&quot;</span>,<span class="hljs-built_in">cJSON_pRINT</span>(sell));
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;    sum:  %s\n&quot;</span>,<span class="hljs-built_in">cJSON_pRINT</span>(sum));
+ 
+        <span class="hljs-comment">// 打印数组内容</span>
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;    other:\n&quot;</span>);
+        <span class="hljs-keyword">if</span>(other-&gt;type == cJSON_Array)&#123;
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>;i&lt;<span class="hljs-built_in">cJSON_GetArraySize</span>(other);i++)&#123;
+                cJSON* node = <span class="hljs-built_in">cJSON_GetArrayItem</span>(other,i);
+                <span class="hljs-keyword">if</span>(node-&gt;type == cJSON_String)&#123;
+                    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;       %s  \n&quot;</span>,node-&gt;valuestring);
+                &#125;
+                <span class="hljs-keyword">if</span>(node-&gt;type == cJSON_Number)&#123;
+                    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;        %s  \n&quot;</span>,node-&gt;valueint);
+                &#125;
+                <span class="hljs-keyword">if</span>(node-&gt;type == cJSON_True)&#123;
+                    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;        %s  \n&quot;</span>,node-&gt;valueint);
+                &#125;
+                <span class="hljs-keyword">if</span>(node-&gt;type == cJSON_False)&#123;
+                    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;        %s  \n&quot;</span>,node-&gt;valueint);
+                &#125;
+            &#125;
+        &#125;
+        <span class="hljs-built_in">cJSON_Delete</span>(root);
+        <span class="hljs-built_in">fclose</span>(fp);
+    &#125;
+&#125;</code></pre></div>
+<h2><span id="写入两层文件">写入两层文件</span></h2><p>效果如上节：</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&quot;cJSON.h&quot;</span></span>
+ 
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-comment">// 创建对象</span>
+    cJSON* obj = <span class="hljs-built_in">cJSON_CreateObject</span>();
+    <span class="hljs-comment">// 创建子对象</span>
+    cJSON* subObj = <span class="hljs-built_in">cJSON_CreateObject</span>();
+    <span class="hljs-comment">// 添加key-value</span>
+    <span class="hljs-built_in">cJSON_AddItemToObject</span>(subObj, <span class="hljs-string">&quot;factory&quot;</span>, <span class="hljs-built_in">cJSON_CreateString</span>(<span class="hljs-string">&quot;一汽大众&quot;</span>));
+    <span class="hljs-built_in">cJSON_AddItemToObject</span>(subObj,<span class="hljs-string">&quot;last&quot;</span>,<span class="hljs-built_in">cJSON_CreateNumber</span>(<span class="hljs-number">31</span>));
+    <span class="hljs-built_in">cJSON_AddItemToObject</span>(subObj,<span class="hljs-string">&quot;price&quot;</span>,<span class="hljs-built_in">cJSON_CreateNumber</span>(<span class="hljs-number">83</span>));
+    <span class="hljs-built_in">cJSON_AddItemToObject</span>(subObj,<span class="hljs-string">&quot;sell&quot;</span>,<span class="hljs-built_in">cJSON_CreateNumber</span>(<span class="hljs-number">49</span>));
+    <span class="hljs-built_in">cJSON_AddItemToObject</span>(subObj,<span class="hljs-string">&quot;sum&quot;</span>,<span class="hljs-built_in">cJSON_CreateNumber</span>(<span class="hljs-number">80</span>));
+    <span class="hljs-comment">// 创建一个json数组</span>
+    cJSON* array = <span class="hljs-built_in">cJSON_CreateArray</span>();
+    <span class="hljs-built_in">cJSON_AddItemToArray</span>(array,<span class="hljs-built_in">cJSON_CreateNumber</span>(<span class="hljs-number">123</span>));
+    <span class="hljs-built_in">cJSON_AddItemToArray</span>(array,<span class="hljs-built_in">cJSON_CreateNumber</span>(<span class="hljs-number">1</span>));
+    <span class="hljs-built_in">cJSON_AddItemToArray</span>(array,<span class="hljs-built_in">cJSON_CreateString</span>(<span class="hljs-string">&quot;hello, world&quot;</span>));
+    <span class="hljs-comment">// 数组中的对象</span>
+    cJSON* subsub= <span class="hljs-built_in">cJSON_CreateObject</span>();
+    <span class="hljs-built_in">cJSON_AddItemToObject</span>(subsub,<span class="hljs-string">&quot;梅斯德斯奔驰&quot;</span>,<span class="hljs-built_in">cJSON_CreateString</span>(<span class="hljs-string">&quot;心所向, 持以恒&quot;</span>));
+    <span class="hljs-built_in">cJSON_AddItemToObject</span>(subObj,<span class="hljs-string">&quot;other&quot;</span>,array);
+    <span class="hljs-comment">// obj 中添加key_value</span>
+    <span class="hljs-built_in">cJSON_AddItemToObject</span>(obj,<span class="hljs-string">&quot;奔驰&quot;</span>, subObj);
+ 
+    <span class="hljs-comment">// 数据格式化</span>
+    <span class="hljs-keyword">char</span>* data = <span class="hljs-built_in">cJSON_Print</span>(obj);
+    FILE *fp = <span class="hljs-built_in">fopen</span>(<span class="hljs-string">&quot;car.json&quot;</span>,<span class="hljs-string">&quot;w&quot;</span>);
+    <span class="hljs-built_in">fwrite</span>(data,<span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(<span class="hljs-keyword">char</span>),<span class="hljs-built_in">strlen</span>(data)+<span class="hljs-number">1</span>,fp);
+    <span class="hljs-built_in">fclose</span>(fp);
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+ 
+&#125;</code></pre></div>
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/">编程语言</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/C-C/">C/C++</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/16/%E5%B5%8C%E5%85%A5%E5%BC%8F%E2%80%94%E2%80%94%E5%8D%8E%E4%B8%BA%E4%BA%91%E7%89%A9%E8%81%94%E7%BD%91%E8%AE%BE%E5%A4%87%E6%8E%A5%E5%85%A5%E5%8F%8AOBS%E4%BD%BF%E7%94%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">华为云物联网设备接入及OBS使用</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/12/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F(%E4%B8%80)/">
+                        <span class="hidden-mobile">深入理解计算机系统</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Jianliang Shen</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2023</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "C语言读入cjson配置文件&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>

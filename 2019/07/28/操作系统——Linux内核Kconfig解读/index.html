@@ -1,0 +1,762 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>Linux内核Kconfig解读 - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2019-07-28 20:55" pubdate>
+      2019年7月28日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      962 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      12
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">Linux内核Kconfig解读</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>Linux内核Kconfig文件和语法。</p>
+<span id="more"></span>
+
+
+<ul>
+<li><a href="#%E5%86%85%E6%A0%B8%E7%9A%84%E7%BC%96%E8%AF%91%E8%BF%87%E7%A8%8B">内核的编译过程</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E8%BF%87%E7%A8%8B--%E4%BB%A5%E9%A9%B1%E5%8A%A8%E4%B8%BA%E4%BE%8B">配置过程–以驱动为例</a><ul>
+<li><a href="#%E6%96%B0%E5%BB%BAkconfig">新建Kconfig</a></li>
+<li><a href="#%E6%96%B0%E5%BB%BAmakefile">新建Makefile</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E4%B8%8A%E5%B1%82makefile%E5%92%8Ckconfig">配置上层Makefile和Kconfig</a></li>
+</ul>
+</li>
+<li><a href="#kconfig%E8%AF%A6%E7%BB%86%E8%AF%AD%E6%B3%95">Kconfig详细语法</a><ul>
+<li><a href="#%E5%85%B3%E9%94%AE%E8%AF%8D">关键词</a></li>
+<li><a href="#%E7%BB%93%E6%9E%84%E8%AF%AD%E6%B3%95">结构语法</a><ul>
+<li><a href="#ifendif">if…endif</a></li>
+<li><a href="#choiceendchoice">choice…endchoice</a></li>
+<li><a href="#menu">menu</a></li>
+<li><a href="#menuconfig">menuconfig</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2><span id="内核的编译过程">内核的编译过程</span></h2><p>arch=arm，tisdk_am57xx-evm-rt_defconfig确定了<code>.config</code>中的配置，主目录的<code>Makefile</code>按照<code>.config</code>文件中的选择遍历所有文件中的<code>Kconfig</code>（首先是arch/arm/Kconfig），按照<code>Kconfig</code>文件中的依赖关系编译文件，再回到顶层目录生成目标文件。<br> <div class="hljs"><pre><code class="hljs xl">K<span class="hljs-function"><span class="hljs-title">config</span> ---&gt;</span> （每个源码目录下）提供选项
+.<span class="hljs-function"><span class="hljs-title">config</span> ---&gt;</span> （源码顶层目录下）保存选择结果
+M<span class="hljs-function"><span class="hljs-title">akefile</span>---&gt;</span> （每个源码目录下）根据.config中的内容来告知编译系统如何编译</code></pre></div></p>
+<h2><span id="配置过程以驱动为例">配置过程–以驱动为例</span></h2><h3><span id="新建kconfig">新建Kconfig</span></h3><p>在/drivers/test下建立<code>Kconfig</code>：</p>
+<div class="hljs"><pre><code class="hljs python">config TEST
+    <span class="hljs-built_in">bool</span> <span class="hljs-string">&quot;Test driver&quot;</span>
+    <span class="hljs-built_in">help</span>
+    This driver <span class="hljs-keyword">is</span> <span class="hljs-keyword">for</span> test kernel making.</code></pre></div>
+<p>这里定义了TEST选项，也就是.config中的<code>CONFIG_TEST</code>，Test driver是显示在menuconfig中的名称。</p>
+<h3><span id="新建makefile">新建Makefile</span></h3><p>建立编译规则，例如CONFIG_TEST=y，目录下源码编译进内核；CONFIG_TEST=m，目录下源码编译为模块。</p>
+<div class="hljs"><pre><code class="hljs C">obj-$(CONFIG_TEST) += test.o</code></pre></div>
+<h3><span id="配置上层makefile和kconfig">配置上层Makefile和Kconfig</span></h3><p>修改Kconfig，增加test子项，在drivers/Kconfig中添加：</p>
+<div class="hljs"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> <span class="hljs-string">&quot;drivers/test/Kconfig&quot;</span></code></pre></div>
+<p>修改Makefile，添加编译规则：</p>
+<div class="hljs"><pre><code class="hljs C">obj-y               += test/</code></pre></div>
+<h2><span id="kconfig详细语法">Kconfig详细语法</span></h2><h3><span id="关键词">关键词</span></h3><p>以下面为例：</p>
+<div class="hljs"><pre><code class="hljs livecodeserver">config SMP
+	bool <span class="hljs-string">&quot;Symmetric Multi-Processing&quot;</span>
+	depends <span class="hljs-keyword">on</span> <span class="hljs-title">CPU_V6K</span> || <span class="hljs-title">CPU_V7</span>
+	depends <span class="hljs-keyword">on</span> <span class="hljs-title">GENERIC_CLOCKEVENTS</span>
+	depends <span class="hljs-keyword">on</span> <span class="hljs-title">HAVE_SMP</span>
+	depends <span class="hljs-keyword">on</span> <span class="hljs-title">MMU</span> || <span class="hljs-title">ARM_MPU</span>
+	select IRQ_WORK
+	help
+	  This enables support <span class="hljs-keyword">for</span> systems <span class="hljs-keyword">with</span> more than <span class="hljs-literal">one</span> CPU. If you have
+	  <span class="hljs-keyword">a</span> <span class="hljs-keyword">system</span> <span class="hljs-keyword">with</span> only <span class="hljs-literal">one</span> CPU, say N. If you have <span class="hljs-keyword">a</span> <span class="hljs-keyword">system</span> <span class="hljs-keyword">with</span> more
+	  than <span class="hljs-literal">one</span> CPU, say Y.
+      ......</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>关键词</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>config</td>
+<td>紧跟句柄，SMP即为CONFIG_SMP</td>
+</tr>
+<tr>
+<td>bool</td>
+<td>表示选择，0或1 [Y]</td>
+</tr>
+<tr>
+<td>“name”</td>
+<td>在menuconfig中显示的字符串，没有则不显示</td>
+</tr>
+<tr>
+<td>depends on</td>
+<td>表示依赖某一项，支持 `</td>
+</tr>
+<tr>
+<td>select</td>
+<td>表示选中后，也会选择select指定的项（被选择的无法取消，符号为-Y-或者{Y}）</td>
+</tr>
+<tr>
+<td>help</td>
+<td>打印帮助，menuconfig可以用shift+？查看</td>
+</tr>
+<tr>
+<td>tristate</td>
+<td>模块选项，<code>&lt;M&gt;</code>或者<code>&lt;Y&gt;</code>或者<code>&lt;N&gt;</code>（三态）</td>
+</tr>
+<tr>
+<td>int/hex/string</td>
+<td>选项值为整型数或十六进制数或字符串</td>
+</tr>
+<tr>
+<td>range</td>
+<td>整型数的范围</td>
+</tr>
+<tr>
+<td>default</td>
+<td>默认值，数值或者布尔y/n或者字符串或者choice中的选项</td>
+</tr>
+<tr>
+<td>prompt</td>
+<td>出现在choice中的菜单文字</td>
+</tr>
+<tr>
+<td>source</td>
+<td>引入子目录的Kconfig</td>
+</tr>
+</tbody></table>
+<p>补充：</p>
+<ul>
+<li><p>无depends on，default 为y：默认为y，一般用于必须要设置的选项，此时不要设置prompt；  </p>
+</li>
+<li><p>有depends on，default 为y：所依赖的条目己设置，则默认为y；所依赖的条目未设置，则为n；  </p>
+</li>
+<li><p>有depends on，default 为n：所依赖的条目己设置，则默认为n；所依赖的条目未设置，则为n；  </p>
+</li>
+<li><p>无depends on，default 为n：在为设置prompt的情况下，此选项想要被设置，需要由其他选项来select它。  </p>
+</li>
+</ul>
+<h3><span id="结构语法">结构语法</span></h3><h4><span id="ifendif">if…endif</span></h4><div class="hljs"><pre><code class="hljs apache"><span class="hljs-attribute">if</span> ARCH_S<span class="hljs-number">5</span>PC<span class="hljs-number">100</span> ---&gt;如果ARCH_S<span class="hljs-number">5</span>PC<span class="hljs-number">100</span>选项选中了，则在endif范围内的选项才会被选
+<span class="hljs-attribute">config</span> CPU_S<span class="hljs-number">5</span>PC<span class="hljs-number">100</span>
+    <span class="hljs-attribute">bool</span> <span class="hljs-string">&quot;选项名&quot;</span>
+    <span class="hljs-attribute">select</span> S<span class="hljs-number">5</span>P_EXT_INT
+    <span class="hljs-attribute">select</span> SAMSUNG_DMADEV
+    <span class="hljs-attribute">help</span>
+      <span class="hljs-attribute">Enable</span> S<span class="hljs-number">5</span>PC<span class="hljs-number">100</span> CPU support
+
+<span class="hljs-attribute">endif</span></code></pre></div>
+<h4><span id="choiceendchoice">choice…endchoice</span></h4><div class="hljs"><pre><code class="hljs arduino">choice      ---&gt;表示选择列表
+    prompt <span class="hljs-string">&quot;Default I/O scheduler&quot;</span>         <span class="hljs-comment">//主目录名字</span>
+    <span class="hljs-keyword">default</span> DEFAULT_CFQ                    <span class="hljs-comment">//默认CFQ</span>
+    help
+      Select the I/O scheduler which will be used by <span class="hljs-keyword">default</span> <span class="hljs-keyword">for</span> all
+      block devices.
+
+    config DEFAULT_DEADLINE
+        <span class="hljs-keyword">bool</span> <span class="hljs-string">&quot;Deadline&quot;</span> <span class="hljs-keyword">if</span> IOSCHED_DEADLINE=y 
+
+    config DEFAULT_CFQ
+        <span class="hljs-keyword">bool</span> <span class="hljs-string">&quot;CFQ&quot;</span> <span class="hljs-keyword">if</span> IOSCHED_CFQ=y
+
+    config DEFAULT_NOOP
+        <span class="hljs-keyword">bool</span> <span class="hljs-string">&quot;No-op&quot;</span>
+
+endchoice</code></pre></div>
+<h4><span id="menu">menu</span></h4><div class="hljs"><pre><code class="hljs mel"><span class="hljs-keyword">menu</span> <span class="hljs-string">&quot;Boot options&quot;</span>  ----&gt; <span class="hljs-keyword">menu</span>表示该选项是<span class="hljs-string">`不可选`</span>的菜单，其后是在选择列表的菜单名
+
+config USE_OF
+    bool <span class="hljs-string">&quot;Flattened Device Tree support&quot;</span>
+    <span class="hljs-keyword">select</span> IRQ_DOMAIN
+    <span class="hljs-keyword">select</span> OF
+    <span class="hljs-keyword">select</span> OF_EARLY_FLATTREE
+    <span class="hljs-keyword">help</span>
+      Include support <span class="hljs-keyword">for</span> flattened device tree machine descriptions.
+....
+
+endmenu     ----&gt; <span class="hljs-keyword">menu</span>菜单结束</code></pre></div>
+<h4><span id="menuconfig">menuconfig</span></h4><div class="hljs"><pre><code class="hljs cmake">menuconfig <span class="hljs-keyword">TEST</span> ---&gt; menuconfig表示<span class="hljs-keyword">TEST</span>是一个`可选`菜单，其选中后是CONFIG_TEST
+    bool <span class="hljs-string">&quot;菜单名&quot;</span>
+<span class="hljs-keyword">if</span> <span class="hljs-keyword">TEST</span>
+...
+<span class="hljs-keyword">endif</span> <span class="hljs-comment"># TEST</span></code></pre></div>
+<ul>
+<li>menu 和 choice 的区别：<br>menu可以多选；choice为单选。</li>
+<li>menuconfig 和 menu 的区别：<br>menuconfig本身是可以选中，而menu只能进入子菜单选择，一般menuconfig的句柄是子项的依赖项，而menu是子项的汇总。</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/linux/">linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/kernel/">kernel</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/08/09/%E5%B5%8C%E5%85%A5%E5%BC%8F%E2%80%94%E2%80%94%E5%9F%BA%E4%BA%8ETCP-IP%E7%BD%91%E7%BB%9Csocket%E9%80%9A%E4%BF%A1/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">基于TCP/IP网络socket通信</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/07/24/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94linux%E5%86%85%E6%A0%B8%E9%85%8D%E7%BD%AE-Boot-options/">
+                        <span class="hidden-mobile">linux内核配置--Boot options</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Jianliang Shen</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2023</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Linux内核Kconfig解读&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>

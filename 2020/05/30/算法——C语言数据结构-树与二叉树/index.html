@@ -1,0 +1,816 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" >
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>C语言数据结构--树与二叉树 - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-05-30 10:01" pubdate>
+      2020年5月30日 上午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      20
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">C语言数据结构--树与二叉树</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>介绍二叉树的定义使用，以及一些算法和力扣例题。</p>
+<span id="more"></span>
+
+<ul>
+<li><a href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E5%AE%9A%E4%B9%89">二叉树定义</a></li>
+<li><a href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E5%88%9B%E5%BB%BA">二叉树创建</a><ul>
+<li><a href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E9%81%8D%E5%8E%86">二叉树遍历</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C">运行结果</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8A%9B%E6%89%A3%E4%BA%8C%E5%8F%89%E6%A0%91%E9%A2%98%E7%9B%AE%E6%B1%87%E6%80%BB">力扣二叉树题目汇总</a></li>
+</ul>
+<h2><span id="二叉树定义">二叉树定义</span></h2><p>Leetcode定义，习惯用这种：</p>
+<div class="hljs"><pre><code class="hljs c">Definition <span class="hljs-keyword">for</span> a binary tree node.
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">TreeNode</span> &#123;</span>
+     <span class="hljs-keyword">int</span> data;
+     <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">TreeNode</span> *<span class="hljs-title">left</span>;</span>
+     <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">TreeNode</span> *<span class="hljs-title">right</span>;</span>
+&#125;;
+<span class="hljs-comment">// 力扣中是val不是data，之后不做说明</span></code></pre></div>
+<p>其他方式定义：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">TreeNode</span> &#123;</span>
+	<span class="hljs-keyword">int</span> val;
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">TreeNode</span> *<span class="hljs-title">left</span>;</span>
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">TreeNode</span> *<span class="hljs-title">right</span>;</span>
+&#125; BiNode, *BiTree;</code></pre></div>
+<h2><span id="二叉树创建">二叉树创建</span></h2><p>函数采用递归创建，这里传递的是定义的<code>struct TreeNode *T</code>的地址，也就是<code>&amp;(T)</code>，在输入<code>$</code>时认为是空结点。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">//二叉树的建立  按照先序遍历建立</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">createBiTree</span><span class="hljs-params">(struct TreeNode **T)</span> </span>&#123;
+    <span class="hljs-keyword">char</span> s[<span class="hljs-number">10</span>];
+    <span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%s&quot;</span>, &amp;s);
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">strcmp</span>(s, <span class="hljs-string">&quot;$&quot;</span>) == <span class="hljs-number">0</span>) &#123;
+        *T = <span class="hljs-literal">NULL</span>;
+    &#125; <span class="hljs-keyword">else</span> &#123;
+        *T = (struct TreeNode *)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(struct TreeNode));  <span class="hljs-comment">//生成结点</span>
+        <span class="hljs-keyword">if</span> (!(*T)) &#123;
+            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;申请空间失败\n&quot;</span>);
+        &#125;
+        (*T)-&gt;data = atoi(s);
+        createBiTree(&amp;(*T)-&gt;left);
+        createBiTree(&amp;(*T)-&gt;right);
+    &#125;
+&#125;</code></pre></div>
+<h3><span id="二叉树遍历">二叉树遍历</span></h3><div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">//二叉树先序遍历。先访问根结点，先遍历左子树再遍历右子树</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">preorderVisit</span><span class="hljs-params">(struct TreeNode *T)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (T)  <span class="hljs-comment">//先要进行判断，只有结点不为空才会遍历</span>
+    &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d &quot;</span>, T-&gt;data);
+        preorderVisit(T-&gt;left);
+        preorderVisit(T-&gt;right);
+    &#125;
+&#125;
+
+<span class="hljs-comment">//二叉树中序遍历，先遍历左子树，再访问根结点，再遍历右子树</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">middleVisit</span><span class="hljs-params">(struct TreeNode *T)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (T)  <span class="hljs-comment">//先要进行判断，只有结点不为空才会遍历</span>
+    &#123;
+        middleVisit(T-&gt;left);
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d &quot;</span>, T-&gt;data);
+        middleVisit(T-&gt;right);
+    &#125;
+&#125;
+
+<span class="hljs-comment">//二叉树后序遍历，先遍历左子树，再遍历右子树，最后访问根节点</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">postVisit</span><span class="hljs-params">(struct TreeNode *T)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (T)  <span class="hljs-comment">//先要进行判断，只有结点不为空才会遍历</span>
+    &#123;
+        postVisit(T-&gt;left);
+        postVisit(T-&gt;right);
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d &quot;</span>, T-&gt;data);
+    &#125;
+&#125;
+
+<span class="hljs-comment">//二叉树的层序遍历，使用数组模拟队列</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">bfsVisit</span><span class="hljs-params">(struct TreeNode *T)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (T) &#123;
+        <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">TreeNode</span> *<span class="hljs-title">queue</span>[<span class="hljs-title">MAXSIZE</span>];</span>
+        <span class="hljs-keyword">int</span> front = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">int</span> rear = <span class="hljs-number">0</span>;
+        <span class="hljs-built_in">queue</span>[rear++] = T;  <span class="hljs-comment">//入队</span>
+        <span class="hljs-keyword">while</span> (front &lt; rear) &#123;
+            <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">TreeNode</span> *<span class="hljs-title">tmp</span> =</span> <span class="hljs-built_in">queue</span>[front++];  <span class="hljs-comment">//出队</span>
+            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d &quot;</span>, tmp-&gt;data);
+            <span class="hljs-keyword">if</span> (tmp-&gt;left) &#123;
+                <span class="hljs-built_in">queue</span>[rear++] = tmp-&gt;left;  <span class="hljs-comment">//左孩入队</span>
+            &#125;
+            <span class="hljs-keyword">if</span> (tmp-&gt;right) &#123;
+                <span class="hljs-built_in">queue</span>[rear++] = tmp-&gt;right;  <span class="hljs-comment">//右孩入队</span>
+            &#125;
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+<h3><span id="运行结果">运行结果</span></h3><div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;请输入二叉树，按照先序遍历，无字树用$号表示\n&quot;</span>);
+
+    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">TreeNode</span> *<span class="hljs-title">T</span>;</span>
+    createBiTree(&amp;T);
+
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;先序遍历结果如下：\n&quot;</span>);
+    preorderVisit(T);
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n&quot;</span>);
+
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;中序遍历结果如下：\n&quot;</span>);
+    middleVisit(T);
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n&quot;</span>);
+
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;后序遍历结果如下：\n&quot;</span>);
+    postVisit(T);
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n&quot;</span>);
+
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;层序遍历结果如下：\n&quot;</span>);
+    bfsVisit(T);
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n&quot;</span>);
+&#125;</code></pre></div>
+<p>创建如图的二叉树：</p>
+<div class="hljs"><pre><code class="hljs awk">     <span class="hljs-number">3</span>
+   /   \
+  <span class="hljs-number">9</span>     <span class="hljs-number">8</span>
+ <span class="hljs-regexp">/ \   /</span> 
+<span class="hljs-number">2</span>   <span class="hljs-number">3</span> <span class="hljs-number">6</span>
+     /
+    <span class="hljs-number">5</span>
+   /
+  <span class="hljs-number">4</span></code></pre></div>
+<p>编译运行：</p>
+<div class="hljs"><pre><code class="hljs shell">请输入二叉树，按照先序遍历，无字树用$号表示
+3 2 2 $ $ 3 $ $ 8 6 5 4 $ $ $ $ $
+先序遍历结果如下：
+3 2 2 3 8 6 5 4
+中序遍历结果如下：
+2 2 3 3 4 5 6 8
+后序遍历结果如下：
+2 3 2 4 5 6 8 3
+层序遍历结果如下：
+3 2 8 2 3 6 5 4</code></pre></div>
+
+<h2><span id="力扣二叉树题目汇总">力扣二叉树题目汇总</span></h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/symmetric-tree/">101. 对称二叉树</a><br>使用递归法，依次判断左节点和右节点是否相等非空，继续递归其左根与右根、右根与左根：  </p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Definition for a binary tree node.</span>
+<span class="hljs-comment"> * struct TreeNode &#123;</span>
+<span class="hljs-comment"> *     int val;</span>
+<span class="hljs-comment"> *     struct TreeNode *left;</span>
+<span class="hljs-comment"> *     struct TreeNode *right;</span>
+<span class="hljs-comment"> * &#125;;</span>
+<span class="hljs-comment"> */</span>
+
+<span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">IsSym</span><span class="hljs-params">(struct TreeNode* a,struct TreeNode* b)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">if</span>(!a &amp;&amp; !b)
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    <span class="hljs-keyword">if</span>( (!a &amp;&amp; b) || (a &amp;&amp; !b) )
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">return</span>  a-&gt;val == b-&gt;val &amp;&amp; IsSym(a-&gt;left, b-&gt;right) &amp;&amp; IsSym(a-&gt;right, b-&gt;left);
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">isSymmetric</span><span class="hljs-params">(struct TreeNode* root)</span></span>&#123;
+    <span class="hljs-keyword">if</span>(!root)
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    <span class="hljs-keyword">return</span> IsSym(root-&gt;left, root-&gt;right);
+&#125;</code></pre></div>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/cong-shang-dao-xia-da-yin-er-cha-shu-lcof/">面试题32 - I. 从上到下打印二叉树，二叉树层序遍历</a><br>参考前面介绍的层序遍历算法，主要按照题目意思需要增加计数和返回</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MAXSIZE 2000</span>
+
+<span class="hljs-function"><span class="hljs-keyword">int</span>* <span class="hljs-title">levelOrder</span><span class="hljs-params">(struct TreeNode* root, <span class="hljs-keyword">int</span>* returnSize)</span> </span>&#123;
+	returnSize[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">if</span> (root == <span class="hljs-literal">NULL</span>)
+		<span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+	<span class="hljs-keyword">int</span>* res = (<span class="hljs-keyword">int</span>*)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">int</span>) * MAXSIZE);
+	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">TreeNode</span>* <span class="hljs-title">queue</span>[<span class="hljs-title">MAXSIZE</span>];</span>
+	<span class="hljs-keyword">int</span> front = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">int</span> rear = <span class="hljs-number">0</span>;
+	<span class="hljs-built_in">queue</span>[rear++] = root;
+	<span class="hljs-keyword">while</span> (front &lt; rear)
+	&#123;
+		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">TreeNode</span>* <span class="hljs-title">tmp</span> =</span> <span class="hljs-built_in">queue</span>[front++];
+		res[returnSize[<span class="hljs-number">0</span>]++] = tmp-&gt;val;
+		<span class="hljs-keyword">if</span> (tmp-&gt;left)
+			<span class="hljs-built_in">queue</span>[rear++] = tmp-&gt;left;
+		<span class="hljs-keyword">if</span> (tmp-&gt;right)
+			<span class="hljs-built_in">queue</span>[rear++] = tmp-&gt;right;
+	&#125;
+	<span class="hljs-keyword">return</span> res;
+&#125;</code></pre></div>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/zhong-jian-er-cha-shu-lcof/">面试题07. 重建二叉树</a><br>使用递归法，按照前序和中序的组成格式，一般一个树前序由<code>根节点|左子树|右子树</code>，中序由<code>左子树|根节点|右子树</code>。<br>程序运行过程，以题目示例：</p>
+<div class="hljs"><pre><code class="hljs crmsh">    <span class="hljs-number">3</span>
+   / \
+  <span class="hljs-number">9</span>  <span class="hljs-number">20</span>
+    /  \
+   <span class="hljs-number">15</span>   <span class="hljs-number">7</span>
+前序遍历 preorder = [<span class="hljs-number">3</span>,<span class="hljs-number">9</span>,<span class="hljs-number">20</span>,<span class="hljs-number">15</span>,<span class="hljs-number">7</span>]
+中序遍历 inorder = [<span class="hljs-number">9</span>,<span class="hljs-number">3</span>,<span class="hljs-number">15</span>,<span class="hljs-number">20</span>,<span class="hljs-number">7</span>]
+
+第一次运行：
+<span class="hljs-keyword">node</span><span class="hljs-title">-&gt;val</span> = <span class="hljs-number">3</span>;
+num = <span class="hljs-number">1</span>（位置）,all = <span class="hljs-number">2</span>（截断的长度）
+<span class="hljs-keyword">node</span><span class="hljs-title">-&gt;left</span> = buildTree([<span class="hljs-number">9</span>,<span class="hljs-number">20</span>,<span class="hljs-number">15</span>,<span class="hljs-number">7</span>],<span class="hljs-number">1</span>,[<span class="hljs-number">9</span>,<span class="hljs-number">3</span>,<span class="hljs-number">15</span>,<span class="hljs-number">20</span>,<span class="hljs-number">7</span>],<span class="hljs-number">1</span>)
+    下一层：
+    num-&gt;val  = <span class="hljs-number">9</span>;
+    num = <span class="hljs-number">0</span>,all = <span class="hljs-number">1</span>
+    <span class="hljs-keyword">node</span><span class="hljs-title">-&gt;left</span> = buildTree([<span class="hljs-number">20</span>,<span class="hljs-number">15</span>,<span class="hljs-number">7</span>],<span class="hljs-number">0</span>,[<span class="hljs-number">9</span>,<span class="hljs-number">3</span>,<span class="hljs-number">15</span>,<span class="hljs-number">20</span>,<span class="hljs-number">7</span>],<span class="hljs-number">0</span>)  返回NULL
+    <span class="hljs-keyword">node</span><span class="hljs-title">-&gt;right</span> = buildTree([<span class="hljs-number">20</span>,<span class="hljs-number">15</span>,<span class="hljs-number">7</span>],<span class="hljs-number">0</span>,[<span class="hljs-number">3</span>,<span class="hljs-number">15</span>,<span class="hljs-number">20</span>,<span class="hljs-number">7</span>],<span class="hljs-number">0</span>)   返回NULL
+<span class="hljs-keyword">node</span><span class="hljs-title">-&gt;right</span> = buildTree([<span class="hljs-number">20</span>,<span class="hljs-number">15</span>,<span class="hljs-number">7</span>],<span class="hljs-number">3</span>,[<span class="hljs-number">15</span>,<span class="hljs-number">20</span>,<span class="hljs-number">7</span>],<span class="hljs-number">3</span>)
+这个做下去显而易见</code></pre></div>
+<p>代码如下：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function">struct TreeNode* <span class="hljs-title">buildTree</span><span class="hljs-params">(<span class="hljs-keyword">int</span>* preorder, <span class="hljs-keyword">int</span> preorderSize, <span class="hljs-keyword">int</span>* inorder, <span class="hljs-keyword">int</span> inorderSize)</span></span>&#123;
+    <span class="hljs-comment">//空数组返回空指针，表示空树</span>
+    <span class="hljs-keyword">if</span>(preorderSize==<span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+    <span class="hljs-keyword">int</span> all,num=preorderSize;<span class="hljs-comment">//标记先序数组第一个元素在中序数组位置</span>
+    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">TreeNode</span>* <span class="hljs-title">node</span>=</span><span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(struct TreeNode));
+    node-&gt;val=preorder[<span class="hljs-number">0</span>];
+    <span class="hljs-comment">//匹配preorder[0]在inorder的下标</span>
+    <span class="hljs-keyword">while</span>(num--) &#123;
+        <span class="hljs-keyword">if</span>(inorder[num]==preorder[<span class="hljs-number">0</span>])&#123;
+            <span class="hljs-keyword">break</span>;
+        &#125; 
+    &#125;
+    all=num+<span class="hljs-number">1</span>;
+    node-&gt;left=buildTree(preorder+<span class="hljs-number">1</span>,num,inorder,num);
+    node-&gt;right=buildTree(preorder+all,preorderSize-all,inorder+all,inorderSize-all);
+    <span class="hljs-keyword">return</span> node;
+&#125;</code></pre></div>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法/数据结构</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/C-C/">C/C++</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/06/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E2%80%94%E2%80%94C-%E5%AE%B9%E5%99%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">C++容器及使用</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/05/29/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E2%80%94%E2%80%94C%E8%AF%AD%E8%A8%80%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA%E6%B1%87%E6%80%BB/">
+                        <span class="hidden-mobile">C语言输入输出汇总</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Jianliang Shen</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2023</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "C语言数据结构--树与二叉树&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>
