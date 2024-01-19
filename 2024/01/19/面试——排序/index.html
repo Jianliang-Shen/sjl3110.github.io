@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html lang="zh-CN" >
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
 
 
 
@@ -148,6 +148,11 @@
           </li>
         
         
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
       </ul>
     </div>
   </div>
@@ -167,8 +172,8 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2020-06-06 16:22" pubdate>
-      2020年6月6日 下午
+    <time datetime="2024-01-19 16:22" pubdate>
+      2024年1月19日 下午
     </time>
   </div>
 
@@ -178,7 +183,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.8k 字
+      3.1k 字
     </span>
   
 
@@ -188,7 +193,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      42
+      47
        分钟
     </span>
   
@@ -622,49 +627,93 @@ k[i] &gt;= k[2i+1]
 <td>11837.9 ms</td>
 <td>92.139 ms</td>
 </tr>
+</tbody></table>
+<p>当数据长度提高时，显然插入排序已经无法计算，对比堆排序的运行结果：  </p>
+<table>
+<thead>
 <tr>
-<td></td>
-<td></td>
-<td></td>
+<th>数组长度 2000000</th>
+<th>堆排序</th>
 </tr>
-<tr>
-<td>当数据长度提高时，显然插入排序已经无法计算，对比堆排序的运行结果：</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>数组长度 2000000</td>
-<td>堆排序</td>
-<td></td>
-</tr>
-<tr>
-<td>—————–</td>
-<td>———</td>
-<td></td>
-</tr>
-<tr>
+</thead>
+<tbody><tr>
 <td>WSL运行时间</td>
 <td>875 ms</td>
-<td></td>
 </tr>
 <tr>
 <td>ARM linux运行时间</td>
 <td>5894.98 ms</td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
 </tr>
 </tbody></table>
 <h2><span id="归并排序">归并排序</span></h2><p>归并排序是一种稳定排序。</p>
-<h2><span id="快速排序">快速排序</span></h2>
+<h2><span id="快速排序">快速排序</span></h2><div class="hljs"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;vector&gt;</span></span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">swap</span><span class="hljs-params">(<span class="hljs-keyword">int</span>&amp; a, <span class="hljs-keyword">int</span>&amp; b)</span> </span>&#123;
+    <span class="hljs-keyword">int</span> temp = a;
+    a = b;
+    b = temp;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">partition</span><span class="hljs-params">(vector&lt;<span class="hljs-keyword">int</span>&gt;&amp; vec, <span class="hljs-keyword">int</span> low, <span class="hljs-keyword">int</span> high)</span></span>&#123;
+    <span class="hljs-keyword">int</span> p = vec[high];
+    <span class="hljs-keyword">int</span> idx = low - <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">int</span> tmp;
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = low; j &lt; high; j++)&#123;
+        <span class="hljs-keyword">if</span> (vec[j] &lt; p)&#123;
+            idx ++;
+            <span class="hljs-built_in">swap</span>(vec[idx], vec[j]);
+        &#125;
+    &#125;
+
+    <span class="hljs-built_in">swap</span>(vec[idx + <span class="hljs-number">1</span>], vec[high]);
+
+    <span class="hljs-keyword">return</span> idx + <span class="hljs-number">1</span>;
+&#125;
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment"> * 快排</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">quickSort</span><span class="hljs-params">(vector&lt;<span class="hljs-keyword">int</span>&gt;&amp; vec, <span class="hljs-keyword">int</span> low, <span class="hljs-keyword">int</span> high)</span></span>&#123;
+    <span class="hljs-keyword">if</span>(low &lt; high)&#123;
+        <span class="hljs-keyword">int</span> pi  = <span class="hljs-built_in">partition</span>(vec, low, high);
+
+        <span class="hljs-built_in">quickSort</span>(vec, low, pi - <span class="hljs-number">1</span>);
+        <span class="hljs-built_in">quickSort</span>(vec, pi + <span class="hljs-number">1</span>, high);
+    &#125;
+&#125;
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment"> * 冒泡</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">bubbleSort</span><span class="hljs-params">(vector&lt;<span class="hljs-keyword">int</span>&gt;&amp; vec)</span></span>&#123;
+    <span class="hljs-keyword">int</span> n = vec.<span class="hljs-built_in">size</span>();
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n - <span class="hljs-number">1</span>; i ++)&#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; n - <span class="hljs-number">1</span> - i; j++)&#123;
+            <span class="hljs-keyword">if</span> (vec[j] &gt; vec[j+<span class="hljs-number">1</span>])&#123;
+                <span class="hljs-built_in">swap</span>(vec[j], vec[j+<span class="hljs-number">1</span>]);
+            &#125;
+        &#125;
+    &#125;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;
+    <span class="hljs-keyword">int</span> arr[] = &#123;<span class="hljs-number">12</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">8</span>, <span class="hljs-number">2</span>, <span class="hljs-number">9</span>, <span class="hljs-number">2</span>&#125;;
+    <span class="hljs-keyword">int</span> n = <span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(arr) / <span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(arr[<span class="hljs-number">0</span>]);
+    <span class="hljs-function">vector&lt;<span class="hljs-keyword">int</span>&gt; <span class="hljs-title">vec</span><span class="hljs-params">(arr, arr + n)</span></span>;
+
+    <span class="hljs-built_in">quickSort</span>(vec, <span class="hljs-number">0</span>, n - <span class="hljs-number">1</span>);
+
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i ++)&#123;
+        cout &lt;&lt; vec[i] &lt;&lt; <span class="hljs-string">&quot; &quot;</span>;
+    &#125;
+    cout &lt;&lt; endl;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
             </div>
             <hr>
             <div>
@@ -673,7 +722,7 @@ k[i] &gt;= k[2i+1]
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E7%AE%97%E6%B3%95-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">算法/数据结构</a>
+                      <a class="hover-with-bg" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a>
                     
                   </div>
                 
@@ -696,9 +745,9 @@ k[i] &gt;= k[2i+1]
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/06/11/%E5%B5%8C%E5%85%A5%E5%BC%8F%E2%80%94%E2%80%94%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%A8%8B%E5%BA%8F%E5%91%98%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%840x10%E4%B8%AA%E9%97%AE%E9%A2%98/">
+                      <a href="/2024/01/19/%E9%9D%A2%E8%AF%95%E2%80%94%E2%80%94%E9%87%8D%E8%A6%81%E7%AE%97%E6%B3%95%E6%B1%87%E6%80%BB/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">想成为嵌入式程序员应知道的0x10个基本问题</span>
+                        <span class="hidden-mobile">Leetcode主要算法汇总</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -706,8 +755,8 @@ k[i] &gt;= k[2i+1]
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/06/06/%E7%AE%97%E6%B3%95%E2%80%94%E2%80%94%E5%A4%A7%E8%AF%9D%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E5%93%88%E5%B8%8C%E8%A1%A8/">
-                        <span class="hidden-mobile">哈希表</span>
+                      <a href="/2023/08/10/%E8%BD%AF%E4%BB%B6%E2%80%94%E2%80%94%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+                        <span class="hidden-mobile">快速搭建工作环境</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

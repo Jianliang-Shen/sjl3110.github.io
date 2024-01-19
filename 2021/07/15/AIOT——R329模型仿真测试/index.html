@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html lang="zh-CN" >
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
 
 
 
@@ -148,6 +148,11 @@
           </li>
         
         
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
       </ul>
     </div>
   </div>
@@ -167,8 +172,8 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2024-01-19 16:10" pubdate>
-      2024年1月19日 下午
+    <time datetime="2021-07-15 22:07" pubdate>
+      2021年7月15日 晚上
     </time>
   </div>
 
@@ -221,18 +226,23 @@
             <h1 style="display: none">R329模型仿真测试</h1>
             
             <div class="markdown-body" id="post-body">
-              <h1><span id="docker安装及使用">Docker安装及使用</span></h1><p>参考这个帖子安装docker<a target="_blank" rel="noopener" href="https://www.cnblogs.com/blog-rui/p/11244023.html">在Ubuntu中安装Docker和docker的使用</a><br>安装完毕后拉取环境并启动</p>
+              <h2><span id="docker安装及使用">Docker安装及使用</span></h2><p>参考这个帖子安装docker<a target="_blank" rel="noopener" href="https://www.cnblogs.com/blog-rui/p/11244023.html">在Ubuntu中安装Docker和docker的使用</a><br>安装完毕后拉取环境并启动</p>
 <span id="more"></span>  
+
 <div class="hljs"><pre><code class="hljs bash">sudo docker pull zepan/zhouyi
 sudo docker run -i -t zepan/zhouyi  /bin/bash</code></pre></div>
-<h2><span id="运行中保存">运行中保存</span></h2><div class="hljs"><pre><code class="hljs bash">docker ps
+
+<h3><span id="运行中保存">运行中保存</span></h3><div class="hljs"><pre><code class="hljs bash">docker ps
 docker commit b4c875ede137 zepan/zhouyi</code></pre></div>
-<h2><span id="传递文件">传递文件</span></h2><div class="hljs"><pre><code class="hljs bash">docker cp [DOCKER ID]:[path] [path]
+
+<h3><span id="传递文件">传递文件</span></h3><div class="hljs"><pre><code class="hljs bash">docker cp [DOCKER ID]:[path] [path]
 docker cp [path] [DOCKER ID]:[path]</code></pre></div>
-<h1><span id="模型处理">模型处理</span></h1><p>模型下载：<a target="_blank" rel="noopener" href="https://github.com/tensorflow/models/tree/master/research/slim#pre-trained-models">Github</a><br>这里下载vgg_16_2016_08_28.tar.gz</p>
+
+<h2><span id="模型处理">模型处理</span></h2><p>模型下载：<a target="_blank" rel="noopener" href="https://github.com/tensorflow/models/tree/master/research/slim#pre-trained-models">Github</a><br>这里下载vgg_16_2016_08_28.tar.gz</p>
 <div class="hljs"><pre><code class="hljs bash">tar xvf vgg_16_2016_08_28.tar.gz
 vgg_16.ckpt</code></pre></div>
-<h2><span id="导出图">导出图</span></h2><div class="hljs"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> git@github.com:tensorflow/models.git
+
+<h3><span id="导出图">导出图</span></h3><div class="hljs"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> git@github.com:tensorflow/models.git
 <span class="hljs-built_in">cd</span> models/research/slim
 python setup.py install
 python3 export_inference_graph.py \
@@ -241,7 +251,8 @@ python3 export_inference_graph.py \
         --image_size=224 \
         --labels_offset=1 \
         --output_file=/root/<span class="hljs-built_in">test</span>/vgg/model/vgg.pb</code></pre></div>
-<h2><span id="冻结">冻结</span></h2><p>下载1.15的tensorflow</p>
+
+<h3><span id="冻结">冻结</span></h3><p>下载1.15的tensorflow</p>
 <div class="hljs"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> -b r1.15 --single-branch https://github.com/tensorflow/tensorflow.git
 <span class="hljs-built_in">cd</span> tensorflow/tensorflow/python/tools
 python3 freeze_graph.py \
@@ -250,8 +261,9 @@ python3 freeze_graph.py \
             --input_binary=<span class="hljs-literal">true</span> \
             --output_node_names=vgg_16/fc8/BiasAdd \
             --output_graph=/root/<span class="hljs-built_in">test</span>/vgg/model/vgg_frozen.pb</code></pre></div>
+
 <p>其中vgg_16/fc8/BiasAdd通过将vgg.pb上传至<a target="_blank" rel="noopener" href="https://netron.app/">Netron</a>网站查看。vgg_frozen.pb存放在工程model路径下。</p>
-<h1><span id="准备数据集">准备数据集</span></h1><p>下载ILSVRC2012，通过脚本生成numpy格式的文件</p>
+<h2><span id="准备数据集">准备数据集</span></h2><p>下载ILSVRC2012，通过脚本生成numpy格式的文件</p>
 <div class="hljs"><pre><code class="hljs python"><span class="hljs-keyword">import</span> tensorflow <span class="hljs-keyword">as</span> tf
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">import</span> sys
@@ -406,8 +418,9 @@ np.save(<span class="hljs-string">&#x27;dataset.npy&#x27;</span>, images)
 
 labels = np.array(label_list)
 np.save(<span class="hljs-string">&#x27;label.npy&#x27;</span>, labels)</code></pre></div>
+
 <p>label.npy和dataset.npy存放在dataset路径下。</p>
-<h1><span id="仿真配置文件">仿真配置文件</span></h1><p>编写run.cfg</p>
+<h2><span id="仿真配置文件">仿真配置文件</span></h2><p>编写run.cfg</p>
 <div class="hljs"><pre><code class="hljs python">[Common]
 mode=run
 
@@ -438,6 +451,7 @@ simulator=aipu_simulator_z1
 outputs=output_vgg.<span class="hljs-built_in">bin</span>
 profile= <span class="hljs-literal">True</span>
 target=Z1_0701</code></pre></div>
+
 <p>Input.bin文件可以在/root/demos/tflite/model下找到。开始仿真</p>
 <div class="hljs"><pre><code class="hljs bash">aipubuild run.cfg
 [I]     step1: get max/min statistic value DONE
@@ -512,7 +526,8 @@ aipu_simulator_z1 /tmp/temp_c68782b79b33b6f5c74dd8da6592.cfg
 [INFO]:SIMULATOR EXIT!
 [I] [main.cpp  : 135] Simulator finished.
 Total errors: 0,  warnings: 0</code></pre></div>
-<h1><span id="测试">测试</span></h1><p>通过quant_predict.py脚本进行测试：</p>
+
+<h2><span id="测试">测试</span></h2><p>通过quant_predict.py脚本进行测试：</p>
 <div class="hljs"><pre><code class="hljs python"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
 <span class="hljs-keyword">import</span> cv2
 <span class="hljs-keyword">from</span> matplotlib <span class="hljs-keyword">import</span> pyplot <span class="hljs-keyword">as</span> plt
@@ -550,20 +565,22 @@ image = np.clip(np.<span class="hljs-built_in">round</span>(npyinput)+<span clas
 image = np.reshape(image, (<span class="hljs-number">224</span>, <span class="hljs-number">224</span>, <span class="hljs-number">3</span>))
 im = Image.fromarray(image)
 im.save(<span class="hljs-string">&#x27;result.jpeg&#x27;</span>)</code></pre></div>
+
 <p>其中output_ref.bin、imagenet_classes.py可以在/root/demos/tflite下找到。运行结果：</p>
-<div class="hljs"><pre><code class="hljs excel">python3 quant_predict.py
-predict first <span class="hljs-number">5</span> lab<span class="hljs-symbol">el:</span>
-    <span class="hljs-built_in">index</span>  <span class="hljs-number">230</span>, <span class="hljs-built_in">prob</span> <span class="hljs-number">116</span>, <span class="hljs-built_in">na</span><span class="hljs-symbol">me:</span> Old English sheepdog, bobtail
-    <span class="hljs-built_in">index</span>  <span class="hljs-number">231</span>, <span class="hljs-built_in">prob</span> <span class="hljs-number">108</span>, <span class="hljs-built_in">na</span><span class="hljs-symbol">me:</span> Shetland sheepdog, Shetland sheep dog, Shetland
-    <span class="hljs-built_in">index</span>  <span class="hljs-number">157</span>, <span class="hljs-built_in">prob</span>  <span class="hljs-number">71</span>, <span class="hljs-built_in">na</span><span class="hljs-symbol">me:</span> Blenheim spaniel
-    <span class="hljs-built_in">index</span>  <span class="hljs-number">169</span>, <span class="hljs-built_in">prob</span>  <span class="hljs-number">58</span>, <span class="hljs-built_in">na</span><span class="hljs-symbol">me:</span> redbone
-    <span class="hljs-built_in">index</span>  <span class="hljs-number">259</span>, <span class="hljs-built_in">prob</span>  <span class="hljs-number">53</span>, <span class="hljs-built_in">na</span><span class="hljs-symbol">me:</span> Samoyed, Samoyede
-<span class="hljs-built_in">true</span> first <span class="hljs-number">5</span> lab<span class="hljs-symbol">el:</span>
-    <span class="hljs-built_in">index</span>  <span class="hljs-number">232</span>, <span class="hljs-built_in">prob</span>  <span class="hljs-number">83</span>, <span class="hljs-built_in">na</span><span class="hljs-symbol">me:</span> collie
-    <span class="hljs-built_in">index</span>  <span class="hljs-number">231</span>, <span class="hljs-built_in">prob</span>  <span class="hljs-number">83</span>, <span class="hljs-built_in">na</span><span class="hljs-symbol">me:</span> Shetland sheepdog, Shetland sheep dog, Shetland
-    <span class="hljs-built_in">index</span>  <span class="hljs-number">158</span>, <span class="hljs-built_in">prob</span>  <span class="hljs-number">41</span>, <span class="hljs-built_in">na</span><span class="hljs-symbol">me:</span> papillon
-    <span class="hljs-built_in">index</span>  <span class="hljs-number">170</span>, <span class="hljs-built_in">prob</span>  <span class="hljs-number">40</span>, <span class="hljs-built_in">na</span><span class="hljs-symbol">me:</span> borzoi, Russian wolfhound
-    <span class="hljs-built_in">index</span>  <span class="hljs-number">161</span>, <span class="hljs-built_in">prob</span>  <span class="hljs-number">39</span>, <span class="hljs-built_in">na</span><span class="hljs-symbol">me:</span> Afghan hound, Afghan</code></pre></div>
+<div class="hljs"><pre><code class="hljs bash">python3 quant_predict.py
+predict first 5 label:
+    index  230, prob 116, name: Old English sheepdog, bobtail
+    index  231, prob 108, name: Shetland sheepdog, Shetland sheep dog, Shetland
+    index  157, prob  71, name: Blenheim spaniel
+    index  169, prob  58, name: redbone
+    index  259, prob  53, name: Samoyed, Samoyede
+<span class="hljs-literal">true</span> first 5 label:
+    index  232, prob  83, name: collie
+    index  231, prob  83, name: Shetland sheepdog, Shetland sheep dog, Shetland
+    index  158, prob  41, name: papillon
+    index  170, prob  40, name: borzoi, Russian wolfhound
+    index  161, prob  39, name: Afghan hound, Afghan</code></pre></div>
+
 <p>可以看到正确预测了图片231。文件见<a target="_blank" rel="noopener" href="https://github.com/sjl3110/AIPU-Zhouyi-VGG-16">AIPU-Zhouyi-VGG-1</a></p>
 
             </div>
@@ -579,6 +596,15 @@ predict first <span class="hljs-number">5</span> lab<span class="hljs-symbol">el
                   </div>
                 
                 
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/linux/">linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+                    
+                  </div>
+                
               </div>
               
               
@@ -586,12 +612,18 @@ predict first <span class="hljs-number">5</span> lab<span class="hljs-symbol">el
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2021/07/27/AIOT%E2%80%94%E2%80%94R329%E5%BC%80%E5%8F%91%E6%9D%BF%E4%B8%8A%E6%89%8B%E4%BD%93%E9%AA%8C/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">R329开发板上手体验</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/08/10/%E8%BD%AF%E4%BB%B6%E2%80%94%E2%80%94%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
-                        <span class="hidden-mobile">快速搭建工作环境</span>
+                      <a href="/2021/06/15/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94mbedtls%E5%AD%A6%E4%B9%A0-%E4%BC%AA%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E5%99%A8/">
+                        <span class="hidden-mobile">Mbedtls学习--伪随机数生成器</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

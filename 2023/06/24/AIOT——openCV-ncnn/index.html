@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html lang="zh-CN" >
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
 
 
 
@@ -148,6 +148,11 @@
           </li>
         
         
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
       </ul>
     </div>
   </div>
@@ -226,23 +231,23 @@
 
 <h2><span id="安装腾讯ncnn">安装腾讯ncnn</span></h2><p>参考：<a target="_blank" rel="noopener" href="https://github.com/Tencent/ncnn/wiki/how-to-build#build-for-macos">https://github.com/Tencent/ncnn/wiki/how-to-build#build-for-macos</a></p>
 <p>安装完成后，在bashrc导入：</p>
-<div class="hljs"><pre><code class="hljs ini"><span class="hljs-comment"># ncnn_install</span>
-<span class="hljs-attr">PATH</span>=<span class="hljs-string">&quot;/Users/sjl/learn/ncnn/build/install/bin&quot;</span>:<span class="hljs-string">&quot;$PATH&quot;</span>
-<span class="hljs-attr">PATH</span>=<span class="hljs-string">&quot;/Users/sjl/learn/ncnn/build/examples&quot;</span>:<span class="hljs-string">&quot;$PATH&quot;</span></code></pre></div>
+<div class="hljs"><pre><code class="hljs bash"><span class="hljs-comment"># ncnn_install</span>
+PATH=<span class="hljs-string">&quot;/Users/sjl/learn/ncnn/build/install/bin&quot;</span>:<span class="hljs-string">&quot;<span class="hljs-variable">$PATH</span>&quot;</span>
+PATH=<span class="hljs-string">&quot;/Users/sjl/learn/ncnn/build/examples&quot;</span>:<span class="hljs-string">&quot;<span class="hljs-variable">$PATH</span>&quot;</span></code></pre></div>
 
 <p>下载model，建议压缩包</p>
-<div class="hljs"><pre><code class="hljs crmsh">git <span class="hljs-keyword">clone</span> <span class="hljs-title">git</span>@github.com:nihui/ncnn-assets.git</code></pre></div>
+<div class="hljs"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> git@github.com:nihui/ncnn-assets.git</code></pre></div>
 
 <p>到models路径下</p>
-<div class="hljs"><pre><code class="hljs cmake">yolov3 <span class="hljs-keyword">test</span>.jpeg</code></pre></div>
+<div class="hljs"><pre><code class="hljs bash">yolov3 test.jpeg</code></pre></div>
 
 <h2><span id="安装opencv">安装opencv</span></h2><p>下载安装包</p>
-<div class="hljs"><pre><code class="hljs vim"><span class="hljs-keyword">cd</span> opencv-<span class="hljs-number">3.4</span>.<span class="hljs-number">16</span>
-<span class="hljs-built_in">mkdir</span> build
-<span class="hljs-keyword">cd</span> build
-cmake-<span class="hljs-keyword">gui</span>
-<span class="hljs-keyword">make</span> -j32
-sudo <span class="hljs-keyword">make</span> install
+<div class="hljs"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> opencv-3.4.16
+mkdir build
+<span class="hljs-built_in">cd</span> build
+cmake-gui
+make -j32
+sudo make install
 opencv2_version</code></pre></div>
 
             </div>

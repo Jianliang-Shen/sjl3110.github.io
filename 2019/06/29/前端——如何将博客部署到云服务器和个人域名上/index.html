@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html lang="zh-CN" >
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
 
 
 
@@ -148,6 +148,11 @@
           </li>
         
         
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
       </ul>
     </div>
   </div>
@@ -236,8 +241,8 @@
 <li><a href="#%E5%9F%9F%E5%90%8D%E5%A4%87%E6%A1%88">域名备案</a></li>
 </ul>
 <h2><span id="云服务器部署">云服务器部署</span></h2><p>服务器安装CentOS 7操作系统，首先安装Nodejs和git：  </p>
-<div class="hljs"><pre><code class="hljs cmake">yum <span class="hljs-keyword">install</span> nodejs
-yum <span class="hljs-keyword">install</span> git</code></pre></div>
+<div class="hljs"><pre><code class="hljs bash">yum install nodejs
+yum install git</code></pre></div>
 <h3><span id="创建git用户和仓库">创建git用户和仓库</span></h3><div class="hljs"><pre><code class="hljs shell">adduser git
 chmod 740 /etc/sudoers
 vim /etc/sudoers
@@ -267,23 +272,25 @@ vim post-receive # 创建一个钩子
 chmod +x post-receive # 添加可执行权限
 exit # 返回到root用户
 chown -R git:git /home/git/repos/blog.git # 给git用户添加权限</code></pre></div>
-<h3><span id="使用nginx反向代理">使用nginx反向代理</span></h3><p>安装nginx及使用：  </p>
-<div class="hljs"><pre><code class="hljs gauss">yum install nginx
-nginx -s reload  <span class="hljs-meta">#重载配置文件</span>
-nginx -s <span class="hljs-keyword">stop</span>
+
+<h3><span id="使用nginx反向代理">使用nginx反向代理</span></h3><p>安装nginx及使用：</p>
+<div class="hljs"><pre><code class="hljs bash">yum install nginx
+nginx -s reload  <span class="hljs-comment">#重载配置文件</span>
+nginx -s stop
 sudo service nginx restart
-systemctl <span class="hljs-keyword">enable</span> nginx.service  <span class="hljs-meta">#设置开机自启动</span></code></pre></div>
-<p>配置nginx，修改/etc/nginx/nginx.conf：  </p>
-<div class="hljs"><pre><code class="hljs C">user root;         <span class="hljs-comment">//用户</span>
+systemctl <span class="hljs-built_in">enable</span> nginx.service  <span class="hljs-comment">#设置开机自启动</span></code></pre></div>
+
+<p>配置nginx，修改/etc/nginx/nginx.conf：</p>
+<div class="hljs"><pre><code class="hljs json">user root;         <span class="hljs-comment">//用户</span>
 ...
 server &#123;
-        listen       <span class="hljs-number">80</span>;
-        <span class="hljs-meta"># listen       [::]:80 default_server;</span>
+        listen       80;
+        # listen       [::]:<span class="hljs-number">80</span> default_server;
         server_name  www.jianliang-shen.cn jianliang-shen.cn;   <span class="hljs-comment">//个人域名</span>
         root         /home/git/projects/blog;                  <span class="hljs-comment">//仓库位置</span>
 
-        # Load configuration files <span class="hljs-keyword">for</span> the <span class="hljs-keyword">default</span> server block.
-        include /etc/nginx/<span class="hljs-keyword">default</span>.d<span class="hljs-comment">/*.conf;</span>
+        # Load configuration files for the default server block.
+        include /etc/nginx/default.d<span class="hljs-comment">/*.conf;</span>
 <span class="hljs-comment"></span>
 <span class="hljs-comment">        location / &#123;</span>
 <span class="hljs-comment">        &#125;</span>
@@ -296,17 +303,20 @@ server &#123;
 <span class="hljs-comment">            location = /50x.html &#123;</span>
 <span class="hljs-comment">        &#125;</span>
 <span class="hljs-comment">    &#125;</span></code></pre></div>
+
 <p>保存后重新部署。在公网中尝试连接，一般来说是失败。  </p>
 <h3><span id="开放云服务器端口">开放云服务器端口</span></h3><p>因为腾讯云服务器并没有开放端口无法外部ping通，因此需要在“安全规则中”开放端口，如下所示：  </p>
-<p><img src="/img/post_pics/Front/front1.png"></p>
-<h2><span id="设置hexo仓库">设置Hexo仓库</span></h2><div class="hljs"><pre><code class="hljs elixir"><span class="hljs-symbol">deploy:</span>
-    <span class="hljs-symbol">type:</span> git
-    <span class="hljs-symbol">repo:</span> git<span class="hljs-variable">@server_ip</span><span class="hljs-symbol">:/home/git/repos/blog</span>.git    
-    <span class="hljs-symbol">branch:</span> master</code></pre></div>
-<p>提交更新：  </p>
-<div class="hljs"><pre><code class="hljs ebnf"><span class="hljs-attribute">hexo d -g</span></code></pre></div>
+<p><img src="/img/post_pics/Front/front1.png" alt="fig1"></p>
+<h2><span id="设置hexo仓库">设置Hexo仓库</span></h2><div class="hljs"><pre><code class="hljs json">deploy:
+    type: git
+    repo: git@server_ip:/home/git/repos/blog.git    
+    branch: master</code></pre></div>
+
+<p>提交更新：</p>
+<div class="hljs"><pre><code class="hljs bash">hexo d -g</code></pre></div>
+
 <h2><span id="配置域名解析">配置域名解析</span></h2><p>例如aliyun的域名解析设置如下：  </p>
-<p><img src="/img/post_pics/Front/front2.png"></p>
+<p><img src="/img/post_pics/Front/front2.png" alt="fig2"></p>
 <h2><span id="域名备案">域名备案</span></h2><p>各类云服务器在绑定域名时都需要备案，否则无法使用，例如我用的阿里云域名和腾讯云服务器，就需要在腾讯云中登记公网ip绑定的域名。</p>
 
             </div>

@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html lang="zh-CN" >
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
 
 
 
@@ -148,6 +148,11 @@
           </li>
         
         
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
       </ul>
     </div>
   </div>
@@ -224,8 +229,11 @@
               <p>R329的板子到手后折腾了几天，将前期学习的步骤简单记录一下。</p>
 <span id="more"></span>  
 
-<h2><span id="0硬件">0.硬件</span></h2><p>板子的设计十分精巧，尤其是相机模组的Type-C连接方式，比起以前习惯的相机拽着排线前后翻动好用得多。<br><img src="/img/post_pics/r329/1.jpeg"><br>翻开显示屏下面是卡槽和两侧Type-C数据接口，左侧连相机，右侧连主机。显示屏是磁吸式的（指两块柔性吸铁石）。卡槽插卡时金手指向下。<br><img src="/img/post_pics/r329/2.jpeg"></p>
-<p>最后再来个正面照~<br><img src="/img/post_pics/r329/3.jpeg"></p>
+<h2><span id="0硬件">0.硬件</span></h2><p>板子的设计十分精巧，尤其是相机模组的Type-C连接方式，比起以前习惯的相机拽着排线前后翻动好用得多。</p>
+<p><img src="/img/post_pics/r329/1.jpeg" alt="图1"></p>
+<p>翻开显示屏下面是卡槽和两侧Type-C数据接口，左侧连相机，右侧连主机。显示屏是磁吸式的（指两块柔性吸铁石）。卡槽插卡时金手指向下。</p>
+<p><img src="/img/post_pics/r329/2.jpeg" alt="图2"></p>
+<p>最后再来个正面照~<br><img src="/img/post_pics/r329/3.jpeg" alt="图3"></p>
 <p>调试板子至少需要：</p>
 <ul>
 <li>开发板</li>
@@ -235,7 +243,7 @@
 <li>WIFI</li>
 </ul>
 <h2><span id="1刷系统制卡">1.刷系统制卡</span></h2><h3><span id="11编译系统">1.1编译系统</span></h3><p>参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/juwan/p/14650733.html">R329 SDK 上手编译与烧录!</a>以及<a target="_blank" rel="noopener" href="https://aijishu.com/a/1060000000221484">【R329测评】全志 R329 Tina 系统镜像编译</a>,遗憾的是本地编译u-boot的时候就失败了，遂采用<a target="_blank" rel="noopener" href="https://aijishu.com/a/1060000000220719">R329开发板系列教程之二|实机运行aipu程序</a>中网盘提供的镜像。</p>
-<h3><span id="12制卡">1.2制卡</span></h3><p>使用网盘中PhoenixCard工具将img刷入sd卡，因为后面要用到OpenCV，所以先烧写tina_r329-evb5_uart0_0723.img。如下图步骤：<br><img src="/img/post_pics/r329/4.jpeg"></p>
+<h3><span id="12制卡">1.2制卡</span></h3><p>使用网盘中PhoenixCard工具将img刷入sd卡，因为后面要用到OpenCV，所以先烧写tina_r329-evb5_uart0_0723.img。如下图步骤：<br><img src="/img/post_pics/r329/4.jpeg" alt="图4"></p>
 <p>制卡完成显示一个绿色的进度条，如果不行尝试换卡。</p>
 <p>注：如果制卡后可以启动，则继续，要是和我一样在启动是找不到根目录，可以在上位机Ubuntu中将根目录删除，并将网盘中rootfs.tar.gz解压拷贝到根目录，拷贝完成后不要急着拔卡，sync一下，要优雅~</p>
 <h3><span id="13扩展分区">1.3扩展分区</span></h3><p>系统根目录没有使用所有的存储，可以使用df -h命令查看。在ubuntu运行：</p>
@@ -254,27 +262,32 @@ sudo umount /dev/sdb7
 sudo e2fsck -f /dev/sdb7
 sudo resize2fs /dev/sdb7
 df -h</code></pre></div>
+
 <p>此时应该将分区扩大了，此处感谢<a target="_blank" rel="noopener" href="https://aijishu.com/u/liyang_dmdooa">李洋</a>。</p>
 <h3><span id="14开机">1.4开机</span></h3><p>数据线连接电脑后，主机打开串口，波特率115200，Ubuntu可以使用</p>
 <div class="hljs"><pre><code class="hljs bash">sudo minicom -D /dev/ttyUSB0</code></pre></div>
-<p>开机进入系统：<br><img src="/img/post_pics/r329/5.jpeg"></p>
+
+<p>开机进入系统：<br><img src="/img/post_pics/r329/5.jpeg" alt="图5"></p>
 <p>连接wifi：</p>
 <div class="hljs"><pre><code class="hljs bash">wifi_connect_ap_test [wifiname] [wifipasswd]</code></pre></div>
+
 <p>传递文件用scp，密码是sipeed。</p>
 <h2><span id="2验证模型">2.验证模型</span></h2><div class="hljs"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /root/maix_sense
 insmod aipu.ko
 ./run.sh -c mbnetv2
 ./zhouyi models/mbnetv2/aipu.bin test.bmp 0</code></pre></div>
+
 <p>将自己模型放到maxi_sense的models下，并且aipu.bin（来自于模型交叉编译），input0.bin（来自量化模型时的输入input.bin）以及output.bin（来自仿真时的输出）文件需要准备好，再回到maix_sense下运行脚本，-c后面跟着的是模型目录名。注意系统给模型预留了约100MB的内存，我的VGG模型过大，所以验证失败。解决办法要么编译系统时扩大预留空间，要么换成更轻量的模型。</p>
-<p>可执行文件zhouyi来自于网盘zhouyi_bmp目录，使用交叉编译工具编译，运行时依赖相关的库文件，注意检查系统根目录是否配置。test.bmp的测试图片需要注意输入的尺寸与模型一致，这里是224x224x3。获得一个224x224x3通道的bmp位图可以借助PS软件，打开图片，裁剪为正方形，再点击菜单-&gt;图像大小：<br><img src="/img/post_pics/r329/6.jpeg"></p>
-<p>然后另存为，选择BMP格式，在弹出的窗口选择高级模式，选择24位R8 G8 B8格式：<br><img src="/img/post_pics/r329/7.jpeg"></p>
-<p>保存为test.bmp后发送到板子上运行即可，结果如下，分的类都是猫的类型。<br><img src="/img/post_pics/r329/8.jpeg"></p>
+<p>可执行文件zhouyi来自于网盘zhouyi_bmp目录，使用交叉编译工具编译，运行时依赖相关的库文件，注意检查系统根目录是否配置。test.bmp的测试图片需要注意输入的尺寸与模型一致，这里是224x224x3。获得一个224x224x3通道的bmp位图可以借助PS软件，打开图片，裁剪为正方形，再点击菜单-&gt;图像大小：<br><img src="/img/post_pics/r329/6.jpeg" alt="图6"></p>
+<p>然后另存为，选择BMP格式，在弹出的窗口选择高级模式，选择24位R8 G8 B8格式：<br><img src="/img/post_pics/r329/7.jpeg" alt="图7"></p>
+<p>保存为test.bmp后发送到板子上运行即可，结果如下，分的类都是猫的类型。<br><img src="/img/post_pics/r329/8.png" alt="图8"></p>
 <h2><span id="3跑通opencv">3.跑通OpenCV</span></h2><h3><span id="31编译">3.1编译</span></h3><p>参考<a target="_blank" rel="noopener" href="https://aijishu.com/a/1060000000221762">R329开发板教程之三|视觉模型实时运行</a>。</p>
 <p>在上位机准备源码、toolchain和rootfs（内涵opencv的动态库和头文件），目录如下：</p>
 <div class="hljs"><pre><code class="hljs bash">.
 ├── zhouyi_cam
 ├── rootfs
 └── toolchain</code></pre></div>
+
 <p>在zhouyi_cam路径下CMakLists.txt中需要将编译链和<code>ROOTFS_root</code>配置一下再编译：</p>
 <div class="hljs"><pre><code class="hljs bash">mkdir build &amp;&amp; <span class="hljs-built_in">cd</span> build
 cmake .. &amp;&amp; make -j32</code></pre></div>
@@ -284,7 +297,8 @@ cmake .. &amp;&amp; make -j32</code></pre></div>
 insmod maix_sense/aipu.ko
 ./zhouyi_cam maix_sense/models/resnet50/aipu.bin 1
 rmmod maix_sense/aipu.ko</code></pre></div>
-<p>运行结果：<br><img src="/img/post_pics/r329/9.jpeg"></p>
+
+<p>运行结果：<br><img src="/img/post_pics/r329/9.jpeg" alt="图9"></p>
 <p>测试中发现：</p>
 <ul>
 <li>帧率和模型有关，resnet50只有7-8帧，而mbnetv2可以达到20-21帧</li>
@@ -334,8 +348,8 @@ rmmod maix_sense/aipu.ko</code></pre></div>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/06/15/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94mbedtls%E5%AD%A6%E4%B9%A0-%E4%BC%AA%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E5%99%A8/">
-                        <span class="hidden-mobile">Mbedtls学习--伪随机数生成器</span>
+                      <a href="/2021/07/15/AIOT%E2%80%94%E2%80%94R329%E6%A8%A1%E5%9E%8B%E4%BB%BF%E7%9C%9F%E6%B5%8B%E8%AF%95/">
+                        <span class="hidden-mobile">R329模型仿真测试</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
