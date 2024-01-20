@@ -490,16 +490,16 @@
     
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
-        <a href="/2021/06/15/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94mbedtls%E5%AD%A6%E4%B9%A0-%E4%BC%AA%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E5%99%A8/">Mbedtls学习--伪随机数生成器</a>
+        <a href="/2021/05/29/TF-M%E2%80%94%E2%80%94tf-m%E6%98%AF%E5%A6%82%E4%BD%95%E8%B0%83%E7%94%A8secure%E6%8E%A5%E5%8F%A3%E7%9A%84/">TF-M是如何调用secure接口的</a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2021/06/15/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94mbedtls%E5%AD%A6%E4%B9%A0-%E4%BC%AA%E9%9A%8F%E6%9C%BA%E6%95%B0%E7%94%9F%E6%88%90%E5%99%A8/">
+        <a href="/2021/05/29/TF-M%E2%80%94%E2%80%94tf-m%E6%98%AF%E5%A6%82%E4%BD%95%E8%B0%83%E7%94%A8secure%E6%8E%A5%E5%8F%A3%E7%9A%84/">
           
           
             
           
-          伪随机数应用和原理。
+          回到问题之初，TF-M是怎么进入secure端的，在LIB model的时候，曾有过一个SG命令，看看其他模式怎么进入的。
         </a>
       </p>
 
@@ -507,8 +507,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-06-15 13:51" pubdate>
-              2021-06-15
+            <time datetime="2021-05-29 19:18" pubdate>
+              2021-05-29
             </time>
           </div>
         
@@ -516,7 +516,7 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+              <a href="/categories/TF-M/">TF-M</a>
             
           </div>
         
@@ -524,9 +524,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+              <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a>
             
-              <a href="/tags/mbedtls/">mbedtls</a>
+              <a href="/tags/Security/">Security</a>
             
           </div>
         
@@ -539,16 +539,16 @@
     
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
-        <a href="/2021/06/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94mbedtls%E5%AD%A6%E4%B9%A0-%E6%B6%88%E6%81%AF%E8%AE%A4%E8%AF%81%E7%A0%81/">Mbedtls学习--消息认证码</a>
+        <a href="/2021/05/29/TF-M%E2%80%94%E2%80%94TF-M-PSA-Interface/">TF-M PSA Interface</a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2021/06/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94mbedtls%E5%AD%A6%E4%B9%A0-%E6%B6%88%E6%81%AF%E8%AE%A4%E8%AF%81%E7%A0%81/">
+        <a href="/2021/05/29/TF-M%E2%80%94%E2%80%94TF-M-PSA-Interface/">
           
           
             
           
-          MAC，Message Authentication Code，帮助接收者判断消息是否被第三方篡改，确保消息的完整性和真实性。常使用单向散列函数实现，称为HMAC-SHA1和HMAC-SHA256。也可以使用分组加密构建，称为CMAC、GCM和CCM。MAC和Hash的不同在于输入多一个密钥。
+          PSA InterfacePSA接口完成从NS的client到secure服务的调用。
         </a>
       </p>
 
@@ -556,8 +556,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-06-13 13:50" pubdate>
-              2021-06-13
+            <time datetime="2021-05-29 11:48" pubdate>
+              2021-05-29
             </time>
           </div>
         
@@ -565,7 +565,7 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+              <a href="/categories/TF-M/">TF-M</a>
             
           </div>
         
@@ -573,9 +573,69 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
+              <a href="/tags/arm/">arm</a>
             
-              <a href="/tags/mbedtls/">mbedtls</a>
+              <a href="/tags/firmware/">firmware</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/05/28/TF-M%E2%80%94%E2%80%94ARM-Trusted-Firmware/" target="_self">
+          <img src="/img/post_pics/index_img/tfm_logo.png" alt="ARM Trusted Firmware">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        <a href="/2021/05/28/TF-M%E2%80%94%E2%80%94ARM-Trusted-Firmware/">ARM Trusted Firmware</a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/05/28/TF-M%E2%80%94%E2%80%94ARM-Trusted-Firmware/">
+          
+          
+            
+          
+          
+
+The steps of Threat Modeling:
+Model System: Model the system you’re building, deploying, or changing
+Find Threats: Find threats using that model and the approaches
+Address Threats: Address threats u
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-28 20:59" pubdate>
+              2021-05-28
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/TF-M/">TF-M</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/arm/">arm</a>
+            
+              <a href="/tags/firmware/">firmware</a>
             
           </div>
         
@@ -588,16 +648,16 @@
     
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
-        <a href="/2021/06/10/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94mbedtls%E5%AD%A6%E4%B9%A0-%E5%B9%B3%E5%8F%B0%E5%AE%89%E5%85%A8%E6%9E%B6%E6%9E%84%E5%BA%93%E5%87%BD%E6%95%B0%E6%8E%A5%E5%8F%A3/">Mbedtls学习--平台安全架构库函数接口</a>
+        <a href="/2021/03/31/%E8%BD%AF%E4%BB%B6%E2%80%94%E2%80%94git%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/">git工具使用指北</a>
       </h1>
 
       <p class="index-excerpt">
-        <a href="/2021/06/10/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94mbedtls%E5%AD%A6%E4%B9%A0-%E5%B9%B3%E5%8F%B0%E5%AE%89%E5%85%A8%E6%9E%B6%E6%9E%84%E5%BA%93%E5%87%BD%E6%95%B0%E6%8E%A5%E5%8F%A3/">
+        <a href="/2021/03/31/%E8%BD%AF%E4%BB%B6%E2%80%94%E2%80%94git%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8C%97/">
           
           
             
           
-          平台安全架构PSA，全称Platform Secure Architecture，平台安全架构，是ARM公司在物联网安全领域联合众多芯片厂商推出的一个重要的软件实现架构，主要内容包括：
+          Git常用命令
         </a>
       </p>
 
@@ -605,8 +665,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-06-10 13:50" pubdate>
-              2021-06-10
+            <time datetime="2021-03-31 21:40" pubdate>
+              2021-03-31
             </time>
           </div>
         
@@ -614,7 +674,7 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-category"></i>
             
-              <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+              <a href="/categories/%E8%BD%AF%E4%BB%B6/">软件</a>
             
           </div>
         
@@ -622,58 +682,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
-            
-              <a href="/tags/mbedtls/">mbedtls</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        <a href="/2021/06/02/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94mbedtls%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/">Mbedtls学习--对称加密算法</a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/06/02/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94mbedtls%E5%AD%A6%E4%B9%A0-%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/">
-          
-          
-            
-          
-          Alice和Bob持有相同的共享秘钥，通过秘钥加解密数据。对称加密算法包括AES、DES和3DES等多种算法。对称加密算法需要对数据进行分组。
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-06-02 13:48" pubdate>
-              2021-06-02
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%AE%97%E6%B3%95/">算法</a>
-            
-              <a href="/tags/mbedtls/">mbedtls</a>
+              <a href="/tags/git/">git</a>
             
           </div>
         
@@ -685,7 +694,7 @@
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/3/"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
   

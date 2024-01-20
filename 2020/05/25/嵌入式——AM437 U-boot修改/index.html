@@ -229,7 +229,6 @@
               <p>为了让ARM启动时从SD-card搬运数据然后转NAND Flash启动，需要重新配置创龙提供的2014版本的Uboot源码文件.</p>
 <span id="more"></span>  
 
-
 <p>主要思路包括：  </p>
 <ul>
 <li><a href="#u-boot%E6%B7%BB%E5%8A%A0ubi%E5%92%8Cubifs%E5%91%BD%E4%BB%A4">U-boot添加Ubi和Ubifs命令</a></li>
@@ -311,6 +310,7 @@ nand write <span class="hljs-number">0x88000000</span> <span class="hljs-number"
 //烧写ubifs镜像，UBI分区的步骤需要先做一遍。
 load mmc <span class="hljs-number">0</span>:<span class="hljs-number">2</span> <span class="hljs-number">0x88080000</span> /boot/ubifs.img
 ubi write <span class="hljs-number">0x88080000</span> NAND.file-system <span class="hljs-number">0x12414000</span></code></pre></div>
+
 <p>设置nandboot：  </p>
 <div class="hljs"><pre><code class="hljs apache"><span class="hljs-attribute"><span class="hljs-nomarkup">setenv</span></span> bootcmd nand read <span class="hljs-number">0</span>x<span class="hljs-number">88000000</span> NAND.u-boot-spl-os\;nand read <span class="hljs-number">0</span>x<span class="hljs-number">82000000</span> NAND.kernel\;bootz <span class="hljs-number">0</span>x<span class="hljs-number">82000000</span> - <span class="hljs-number">0</span>x<span class="hljs-number">88000000</span></code></pre></div>
 <p>主要从相关分区读取文件并保存到内存相应地址中，0x88000000和0x82000000也在环境变量中定义的。不赘述。<br>保存环境变量：  </p>
@@ -321,23 +321,23 @@ ubi write <span class="hljs-number">0x88080000</span> NAND.file-system <span cla
 </ul>
 <div class="hljs"><pre><code class="hljs C"><span class="hljs-comment">/*</span>
 <span class="hljs-comment">nandinit-- cmd name </span>
-<span class="hljs-comment">6		-- arvc</span>
-<span class="hljs-comment">0		-- DONOT repeat cmd while Enter</span>
+<span class="hljs-comment">6  -- arvc</span>
+<span class="hljs-comment">0  -- DONOT repeat cmd while Enter</span>
 <span class="hljs-comment">*/</span>
 U_BOOT_CMD(
-	nandinit, <span class="hljs-number">6</span>, <span class="hljs-number">0</span>, do_nandinit,
-	<span class="hljs-string">&quot;2-out-of-3-voting commands\n&quot;</span>,
-	<span class="hljs-string">&quot;[devname] [part] [filename] [flag] [nand_addr]&quot;</span>);</code></pre></div>
+ nandinit, <span class="hljs-number">6</span>, <span class="hljs-number">0</span>, do_nandinit,
+ <span class="hljs-string">&quot;2-out-of-3-voting commands\n&quot;</span>,
+ <span class="hljs-string">&quot;[devname] [part] [filename] [flag] [nand_addr]&quot;</span>);</code></pre></div>
 <p>表示命令名称为nandinit，包括本身一共最多6个参数，0表示按Enter键不重复命令，do_nandinit表示要执行的主体函数，后面信息为输入nandinit时弹出的帮助信息，一般由命令含义和命令使用说明组成。<br>函数执行的主体为do_nandinit函数，形式如下：</p>
 <div class="hljs"><pre><code class="hljs C"><span class="hljs-comment">/* the main function of NANDINIT CMD */</span>
 <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">do_nandinit</span><span class="hljs-params">(<span class="hljs-keyword">cmd_tbl_t</span> *cmdtp, <span class="hljs-keyword">int</span> flag, <span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span> *<span class="hljs-keyword">const</span> argv[])</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-keyword">if</span> (argc &lt; <span class="hljs-number">2</span>)
-		<span class="hljs-keyword">return</span> CMD_RET_USAGE;
+ <span class="hljs-keyword">if</span> (argc &lt; <span class="hljs-number">2</span>)
+  <span class="hljs-keyword">return</span> CMD_RET_USAGE;
 
-	<span class="hljs-comment">//函数将执行的内容</span>
+ <span class="hljs-comment">//函数将执行的内容</span>
 
-	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
 &#125;</code></pre></div>
 <p>上面函数的参数，cmd_tbl_t是默认定义的，flag是重复标志，后面是命令行输入命令后紧跟的参数，与C语言命令行使用一致。  </p>
 <ul>
@@ -392,266 +392,266 @@ U_BOOT_CMD(
 <span class="hljs-comment">/*load file from eMMC*/</span>
 <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">load_file</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *dev_name, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *part, <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> addr, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *filename)</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> bytes = <span class="hljs-number">0</span>;
-	<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> pos = <span class="hljs-number">0</span>;
-	<span class="hljs-keyword">int</span> len_read;
-	<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> time;
-	fs_set_blk_dev(dev_name, part, FS_TYPE_ANY);   <span class="hljs-comment">//judge the mmc part</span>
-	time = get_timer(<span class="hljs-number">0</span>);
-	len_read = fs_read(filename, addr, pos, bytes);
-	time = get_timer(time);
-	<span class="hljs-keyword">if</span> (len_read &lt;= <span class="hljs-number">0</span>)
-		<span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
-	<span class="hljs-keyword">return</span> len_read;
+ <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> bytes = <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> pos = <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">int</span> len_read;
+ <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> time;
+ fs_set_blk_dev(dev_name, part, FS_TYPE_ANY);   <span class="hljs-comment">//judge the mmc part</span>
+ time = get_timer(<span class="hljs-number">0</span>);
+ len_read = fs_read(filename, addr, pos, bytes);
+ time = get_timer(time);
+ <span class="hljs-keyword">if</span> (len_read &lt;= <span class="hljs-number">0</span>)
+  <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+ <span class="hljs-keyword">return</span> len_read;
 &#125;
 
 
 <span class="hljs-comment">/*read 4 bytes  data from base_addr + addr, addr is the offset */</span>
 <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">uint32_t</span> <span class="hljs-title">mem_read</span><span class="hljs-params">(uint addr, uint base_address)</span></span>
 <span class="hljs-function"></span>&#123;
-	ulong bytes = <span class="hljs-number">4</span>;
-	<span class="hljs-keyword">uint32_t</span> x;
-	<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span> *buf = map_sysmem(base_address + addr, bytes);
-	x = *(<span class="hljs-keyword">volatile</span> <span class="hljs-keyword">uint32_t</span> *)buf;
-	unmap_sysmem(buf);
-	<span class="hljs-keyword">return</span> x;
+ ulong bytes = <span class="hljs-number">4</span>;
+ <span class="hljs-keyword">uint32_t</span> x;
+ <span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span> *buf = map_sysmem(base_address + addr, bytes);
+ x = *(<span class="hljs-keyword">volatile</span> <span class="hljs-keyword">uint32_t</span> *)buf;
+ unmap_sysmem(buf);
+ <span class="hljs-keyword">return</span> x;
 &#125;
 
 
 <span class="hljs-comment">/* write 4 bytes data to base_addr + addr, addr is the offset */</span>
 <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">mem_write</span><span class="hljs-params">(uint addr, uint base_address, <span class="hljs-keyword">uint32_t</span> value)</span></span>
 <span class="hljs-function"></span>&#123;
-	ulong writeval, bytes = <span class="hljs-number">4</span>;
-	<span class="hljs-keyword">void</span> *buf;
-	writeval = (ulong)value;
-	buf = map_sysmem(addr + base_address, bytes);
-	*((u32 *)buf) = (u32)writeval;
-	unmap_sysmem(buf);
-	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+ ulong writeval, bytes = <span class="hljs-number">4</span>;
+ <span class="hljs-keyword">void</span> *buf;
+ writeval = (ulong)value;
+ buf = map_sysmem(addr + base_address, bytes);
+ *((u32 *)buf) = (u32)writeval;
+ unmap_sysmem(buf);
+ <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
 &#125;
 
 <span class="hljs-comment">/* nand write data into addr + offset of NAND flash */</span>
 <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">nandwrite</span><span class="hljs-params">(<span class="hljs-keyword">int</span> addr, <span class="hljs-keyword">loff_t</span> offset, <span class="hljs-keyword">size_t</span> length)</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-keyword">nand_info_t</span> *nand;
-	<span class="hljs-keyword">int</span> dev = nand_curr_device;
-	nand = &amp;nand_info[dev];
-	<span class="hljs-keyword">return</span> nand_write_skip_bad(nand, offset, &amp;length, <span class="hljs-literal">NULL</span>, length, (u_char *)addr, <span class="hljs-number">0</span>);
+ <span class="hljs-keyword">nand_info_t</span> *nand;
+ <span class="hljs-keyword">int</span> dev = nand_curr_device;
+ nand = &amp;nand_info[dev];
+ <span class="hljs-keyword">return</span> nand_write_skip_bad(nand, offset, &amp;length, <span class="hljs-literal">NULL</span>, length, (u_char *)addr, <span class="hljs-number">0</span>);
 &#125;
 
 <span class="hljs-comment">/* function copied from cmd_ubi.c */</span>
 <span class="hljs-function"><span class="hljs-keyword">static</span> struct ubi_volume *<span class="hljs-title">ubi_findvolume</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *volume)</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ubi_volume</span> *<span class="hljs-title">vol</span> =</span> <span class="hljs-literal">NULL</span>;
-	<span class="hljs-keyword">int</span> i;
+ <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ubi_volume</span> *<span class="hljs-title">vol</span> =</span> <span class="hljs-literal">NULL</span>;
+ <span class="hljs-keyword">int</span> i;
 
-	<span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; ubi-&gt;vtbl_slots; i++)
-	&#123;
-		vol = ubi-&gt;volumes[i];
-		<span class="hljs-keyword">if</span> (vol &amp;&amp; !<span class="hljs-built_in">strcmp</span>(vol-&gt;name, volume))
-			<span class="hljs-keyword">return</span> vol;
-	&#125;
+ <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; ubi-&gt;vtbl_slots; i++)
+ &#123;
+  vol = ubi-&gt;volumes[i];
+  <span class="hljs-keyword">if</span> (vol &amp;&amp; !<span class="hljs-built_in">strcmp</span>(vol-&gt;name, volume))
+   <span class="hljs-keyword">return</span> vol;
+ &#125;
 
-	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Volume %s not found!\n&quot;</span>, volume);
-	<span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+ <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Volume %s not found!\n&quot;</span>, volume);
+ <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
 &#125;
 
 <span class="hljs-comment">/* function copied from cmd_ubi.c */</span>
 <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">ubi_continue_write</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *volume, <span class="hljs-keyword">void</span> *buf, <span class="hljs-keyword">size_t</span> size)</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-keyword">int</span> err = <span class="hljs-number">1</span>;
-	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ubi_volume</span> *<span class="hljs-title">vol</span>;</span>
+ <span class="hljs-keyword">int</span> err = <span class="hljs-number">1</span>;
+ <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ubi_volume</span> *<span class="hljs-title">vol</span>;</span>
 
-	vol = ubi_findvolume(volume);
-	<span class="hljs-keyword">if</span> (vol == <span class="hljs-literal">NULL</span>)
-		<span class="hljs-keyword">return</span> ENODEV;
+ vol = ubi_findvolume(volume);
+ <span class="hljs-keyword">if</span> (vol == <span class="hljs-literal">NULL</span>)
+  <span class="hljs-keyword">return</span> ENODEV;
 
-	err = ubi_more_update_data(ubi, vol, buf, size);
-	<span class="hljs-keyword">if</span> (err &lt; <span class="hljs-number">0</span>)
-	&#123;
-		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Couldnt or partially wrote data\n&quot;</span>);
-		<span class="hljs-keyword">return</span> -err;
-	&#125;
+ err = ubi_more_update_data(ubi, vol, buf, size);
+ <span class="hljs-keyword">if</span> (err &lt; <span class="hljs-number">0</span>)
+ &#123;
+  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Couldnt or partially wrote data\n&quot;</span>);
+  <span class="hljs-keyword">return</span> -err;
+ &#125;
 
-	<span class="hljs-keyword">if</span> (err)
-	&#123;
-		size = err;
+ <span class="hljs-keyword">if</span> (err)
+ &#123;
+  size = err;
 
-		err = ubi_check_volume(ubi, vol-&gt;vol_id);
-		<span class="hljs-keyword">if</span> (err &lt; <span class="hljs-number">0</span>)
-			<span class="hljs-keyword">return</span> -err;
+  err = ubi_check_volume(ubi, vol-&gt;vol_id);
+  <span class="hljs-keyword">if</span> (err &lt; <span class="hljs-number">0</span>)
+   <span class="hljs-keyword">return</span> -err;
 
-		<span class="hljs-keyword">if</span> (err)
-		&#123;
-			ubi_warn(<span class="hljs-string">&quot;volume %d on UBI device %d is corrupted&quot;</span>,
-					 vol-&gt;vol_id, ubi-&gt;ubi_num);
-			vol-&gt;corrupted = <span class="hljs-number">1</span>;
-		&#125;
+  <span class="hljs-keyword">if</span> (err)
+  &#123;
+   ubi_warn(<span class="hljs-string">&quot;volume %d on UBI device %d is corrupted&quot;</span>,
+      vol-&gt;vol_id, ubi-&gt;ubi_num);
+   vol-&gt;corrupted = <span class="hljs-number">1</span>;
+  &#125;
 
-		vol-&gt;checked = <span class="hljs-number">1</span>;
-		ubi_gluebi_updated(vol);
-	&#125;
+  vol-&gt;checked = <span class="hljs-number">1</span>;
+  ubi_gluebi_updated(vol);
+ &#125;
 
-	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
 &#125;
 
 <span class="hljs-comment">/* function copied from cmd_ubi.c */</span>
 <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">ubi_beginwrite</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *volume, <span class="hljs-keyword">void</span> *buf, <span class="hljs-keyword">size_t</span> size, <span class="hljs-keyword">size_t</span> full_size)</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-keyword">int</span> err = <span class="hljs-number">1</span>;
-	<span class="hljs-keyword">int</span> rsvd_bytes = <span class="hljs-number">0</span>;
-	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ubi_volume</span> *<span class="hljs-title">vol</span>;</span>
+ <span class="hljs-keyword">int</span> err = <span class="hljs-number">1</span>;
+ <span class="hljs-keyword">int</span> rsvd_bytes = <span class="hljs-number">0</span>;
+ <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ubi_volume</span> *<span class="hljs-title">vol</span>;</span>
 
-	vol = ubi_findvolume(volume);
-	<span class="hljs-keyword">if</span> (vol == <span class="hljs-literal">NULL</span>)
-		<span class="hljs-keyword">return</span> ENODEV;
+ vol = ubi_findvolume(volume);
+ <span class="hljs-keyword">if</span> (vol == <span class="hljs-literal">NULL</span>)
+  <span class="hljs-keyword">return</span> ENODEV;
 
-	rsvd_bytes = vol-&gt;reserved_pebs * (ubi-&gt;leb_size - vol-&gt;data_pad);
-	<span class="hljs-keyword">if</span> (size &lt; <span class="hljs-number">0</span> || size &gt; rsvd_bytes)
-	&#123;
-		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;size &gt; volume size! Aborting!\n&quot;</span>);
-		<span class="hljs-keyword">return</span> EINVAL;
-	&#125;
+ rsvd_bytes = vol-&gt;reserved_pebs * (ubi-&gt;leb_size - vol-&gt;data_pad);
+ <span class="hljs-keyword">if</span> (size &lt; <span class="hljs-number">0</span> || size &gt; rsvd_bytes)
+ &#123;
+  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;size &gt; volume size! Aborting!\n&quot;</span>);
+  <span class="hljs-keyword">return</span> EINVAL;
+ &#125;
 
-	err = ubi_start_update(ubi, vol, full_size);
-	<span class="hljs-keyword">if</span> (err &lt; <span class="hljs-number">0</span>)
-	&#123;
-		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Cannot start volume update\n&quot;</span>);
-		<span class="hljs-keyword">return</span> -err;
-	&#125;
+ err = ubi_start_update(ubi, vol, full_size);
+ <span class="hljs-keyword">if</span> (err &lt; <span class="hljs-number">0</span>)
+ &#123;
+  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Cannot start volume update\n&quot;</span>);
+  <span class="hljs-keyword">return</span> -err;
+ &#125;
 
-	<span class="hljs-keyword">return</span> ubi_continue_write(volume, buf, size);
+ <span class="hljs-keyword">return</span> ubi_continue_write(volume, buf, size);
 &#125;
 
 <span class="hljs-comment">/*equal the cmd in uboot: ubi wirte ADDR(buf) UBI:volume_name(*volume) size */</span>
 <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">ubiwrite</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *volume, <span class="hljs-keyword">void</span> *buf, <span class="hljs-keyword">size_t</span> size)</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-keyword">return</span> ubi_beginwrite(volume, buf, size, size);
+ <span class="hljs-keyword">return</span> ubi_beginwrite(volume, buf, size, size);
 &#125;
 
 <span class="hljs-comment">/* the main function of NANDINIT CMD */</span>
 <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">do_nandinit</span><span class="hljs-params">(<span class="hljs-keyword">cmd_tbl_t</span> *cmdtp, <span class="hljs-keyword">int</span> flag, <span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span> *<span class="hljs-keyword">const</span> argv[])</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-keyword">if</span> (argc &lt; <span class="hljs-number">2</span>)
-		<span class="hljs-keyword">return</span> CMD_RET_USAGE;
+ <span class="hljs-keyword">if</span> (argc &lt; <span class="hljs-number">2</span>)
+  <span class="hljs-keyword">return</span> CMD_RET_USAGE;
 
-	<span class="hljs-keyword">int</span> file_length = <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">int</span> file_length = <span class="hljs-number">0</span>;
 
-	<span class="hljs-comment">/* </span>
-<span class="hljs-comment">	U-BOOT: nandinit mmc 0:1 /MLO 0 0x00000000</span>
-<span class="hljs-comment">	# argv[1] = &quot;mmc&quot;				--flash device name</span>
-<span class="hljs-comment">	# argv[2] = &quot;0:1&quot;				--the part of eMMC</span>
-<span class="hljs-comment">	# argv[3] = &quot;/MLO&quot;				--path and name</span>
-<span class="hljs-comment">	# argv[4] = &quot;0&quot;					--flag,0-&gt;use nand write;1-&gt;use ubi write</span>
-<span class="hljs-comment">	# argv[5] = &quot;0x00000000&quot;		--the beginning address of mtd part</span>
-<span class="hljs-comment">				&quot;NAND.file-system&quot;	--the name of ubi volume</span>
-<span class="hljs-comment">	*/</span>
+ <span class="hljs-comment">/* </span>
+<span class="hljs-comment"> U-BOOT: nandinit mmc 0:1 /MLO 0 0x00000000</span>
+<span class="hljs-comment"> # argv[1] = &quot;mmc&quot;    --flash device name</span>
+<span class="hljs-comment"> # argv[2] = &quot;0:1&quot;    --the part of eMMC</span>
+<span class="hljs-comment"> # argv[3] = &quot;/MLO&quot;    --path and name</span>
+<span class="hljs-comment"> # argv[4] = &quot;0&quot;     --flag,0-&gt;use nand write;1-&gt;use ubi write</span>
+<span class="hljs-comment"> # argv[5] = &quot;0x00000000&quot;  --the beginning address of mtd part</span>
+<span class="hljs-comment">    &quot;NAND.file-system&quot; --the name of ubi volume</span>
+<span class="hljs-comment"> */</span>
 
-	<span class="hljs-comment">/*load file into three different address of DDRAM	*/</span>
-	file_length = load_file(argv[<span class="hljs-number">1</span>], argv[<span class="hljs-number">2</span>], ADDR1, argv[<span class="hljs-number">3</span>]);
-	load_file(argv[<span class="hljs-number">1</span>], argv[<span class="hljs-number">2</span>], ADDR2, argv[<span class="hljs-number">3</span>]);
-	load_file(argv[<span class="hljs-number">1</span>], argv[<span class="hljs-number">2</span>], ADDR3, argv[<span class="hljs-number">3</span>]);
+ <span class="hljs-comment">/*load file into three different address of DDRAM */</span>
+ file_length = load_file(argv[<span class="hljs-number">1</span>], argv[<span class="hljs-number">2</span>], ADDR1, argv[<span class="hljs-number">3</span>]);
+ load_file(argv[<span class="hljs-number">1</span>], argv[<span class="hljs-number">2</span>], ADDR2, argv[<span class="hljs-number">3</span>]);
+ load_file(argv[<span class="hljs-number">1</span>], argv[<span class="hljs-number">2</span>], ADDR3, argv[<span class="hljs-number">3</span>]);
 
-	ulong data1 = <span class="hljs-number">0</span>, data2 = <span class="hljs-number">0</span>, data3 = <span class="hljs-number">0</span>;
-	ulong data_out = <span class="hljs-number">0</span>;
-	uint offset = <span class="hljs-number">0</span>;
-	<span class="hljs-keyword">int</span> count, count_2k = <span class="hljs-number">0</span>;
-	count = file_length / <span class="hljs-number">4</span> + <span class="hljs-number">1</span>;
+ ulong data1 = <span class="hljs-number">0</span>, data2 = <span class="hljs-number">0</span>, data3 = <span class="hljs-number">0</span>;
+ ulong data_out = <span class="hljs-number">0</span>;
+ uint offset = <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">int</span> count, count_2k = <span class="hljs-number">0</span>;
+ count = file_length / <span class="hljs-number">4</span> + <span class="hljs-number">1</span>;
 
-	<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> time = <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> time = <span class="hljs-number">0</span>;
 
-	<span class="hljs-comment">/*flag = 0 ,start nand write file into mtd*/</span>
-	<span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strcmp</span>(argv[<span class="hljs-number">4</span>], <span class="hljs-string">&quot;0&quot;</span>))
-	&#123;
-		<span class="hljs-keyword">loff_t</span> nand_off = simple_strtoul(argv[<span class="hljs-number">5</span>], <span class="hljs-literal">NULL</span>, <span class="hljs-number">16</span>);
-		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;start\t3-to-2 [%s]\t\t\t\n&quot;</span>, argv[<span class="hljs-number">3</span>]);
-		time = get_timer(<span class="hljs-number">0</span>);
-		<span class="hljs-keyword">while</span> (count &gt; <span class="hljs-number">0</span>)
-		&#123;
-			data1 = mem_read(offset, ADDR1);
-			data2 = mem_read(offset, ADDR2);
-			data3 = mem_read(offset, ADDR3);
-			data_out = (data1 &amp; data2) | (data1 &amp; data3) | (data2 &amp; data3);
-			mem_write(offset, ADDR_OUT, data_out);
-			offset += <span class="hljs-number">4</span>;
-			<span class="hljs-keyword">if</span> ((offset % <span class="hljs-number">2048</span> == <span class="hljs-number">0</span>) &amp;&amp; (offset &gt; <span class="hljs-number">0</span>))
-			&#123;
-				nandwrite(ADDR_OUT + offset - <span class="hljs-number">2048</span>, (<span class="hljs-keyword">loff_t</span>)(nand_off + offset - <span class="hljs-number">2048</span>), <span class="hljs-number">2048</span>);
-			&#125;
-			count--;
-		&#125;
-		count_2k = file_length / <span class="hljs-number">2048</span>;
-		nandwrite(ADDR_OUT + <span class="hljs-number">2048</span> * count_2k, (<span class="hljs-keyword">loff_t</span>)(nand_off + <span class="hljs-number">2048</span> * count_2k), file_length - count_2k * <span class="hljs-number">2048</span>);
-		time = get_timer(time);
-		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;end\t3-to-2 [%s]\t\t\tin %lu ms\n&quot;</span>, argv[<span class="hljs-number">3</span>],time);
-	&#125;
-	<span class="hljs-comment">/*flag = 1 ,start ubi write file into NAND.file-system*/</span>
-	<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strcmp</span>(argv[<span class="hljs-number">4</span>], <span class="hljs-string">&quot;1&quot;</span>))
-	&#123;
-		ubi = ubi_devices[<span class="hljs-number">0</span>];
-		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;start\t3-to-2 [%s]\t\t\t\n&quot;</span>, argv[<span class="hljs-number">3</span>]);
-		time = get_timer(<span class="hljs-number">0</span>);
-		<span class="hljs-keyword">while</span> (count &gt; <span class="hljs-number">0</span>)
-		&#123;
-			data1 = mem_read(offset, ADDR1);
-			data2 = mem_read(offset, ADDR2);
-			data3 = mem_read(offset, ADDR3);
-			data_out = (data1 &amp; data2) | (data1 &amp; data3) | (data2 &amp; data3);
-			mem_write(offset, ADDR_OUT, data_out);
-			offset += <span class="hljs-number">4</span>;
-			count--;
-		&#125;
+ <span class="hljs-comment">/*flag = 0 ,start nand write file into mtd*/</span>
+ <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strcmp</span>(argv[<span class="hljs-number">4</span>], <span class="hljs-string">&quot;0&quot;</span>))
+ &#123;
+  <span class="hljs-keyword">loff_t</span> nand_off = simple_strtoul(argv[<span class="hljs-number">5</span>], <span class="hljs-literal">NULL</span>, <span class="hljs-number">16</span>);
+  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;start\t3-to-2 [%s]\t\t\t\n&quot;</span>, argv[<span class="hljs-number">3</span>]);
+  time = get_timer(<span class="hljs-number">0</span>);
+  <span class="hljs-keyword">while</span> (count &gt; <span class="hljs-number">0</span>)
+  &#123;
+   data1 = mem_read(offset, ADDR1);
+   data2 = mem_read(offset, ADDR2);
+   data3 = mem_read(offset, ADDR3);
+   data_out = (data1 &amp; data2) | (data1 &amp; data3) | (data2 &amp; data3);
+   mem_write(offset, ADDR_OUT, data_out);
+   offset += <span class="hljs-number">4</span>;
+   <span class="hljs-keyword">if</span> ((offset % <span class="hljs-number">2048</span> == <span class="hljs-number">0</span>) &amp;&amp; (offset &gt; <span class="hljs-number">0</span>))
+   &#123;
+    nandwrite(ADDR_OUT + offset - <span class="hljs-number">2048</span>, (<span class="hljs-keyword">loff_t</span>)(nand_off + offset - <span class="hljs-number">2048</span>), <span class="hljs-number">2048</span>);
+   &#125;
+   count--;
+  &#125;
+  count_2k = file_length / <span class="hljs-number">2048</span>;
+  nandwrite(ADDR_OUT + <span class="hljs-number">2048</span> * count_2k, (<span class="hljs-keyword">loff_t</span>)(nand_off + <span class="hljs-number">2048</span> * count_2k), file_length - count_2k * <span class="hljs-number">2048</span>);
+  time = get_timer(time);
+  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;end\t3-to-2 [%s]\t\t\tin %lu ms\n&quot;</span>, argv[<span class="hljs-number">3</span>],time);
+ &#125;
+ <span class="hljs-comment">/*flag = 1 ,start ubi write file into NAND.file-system*/</span>
+ <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strcmp</span>(argv[<span class="hljs-number">4</span>], <span class="hljs-string">&quot;1&quot;</span>))
+ &#123;
+  ubi = ubi_devices[<span class="hljs-number">0</span>];
+  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;start\t3-to-2 [%s]\t\t\t\n&quot;</span>, argv[<span class="hljs-number">3</span>]);
+  time = get_timer(<span class="hljs-number">0</span>);
+  <span class="hljs-keyword">while</span> (count &gt; <span class="hljs-number">0</span>)
+  &#123;
+   data1 = mem_read(offset, ADDR1);
+   data2 = mem_read(offset, ADDR2);
+   data3 = mem_read(offset, ADDR3);
+   data_out = (data1 &amp; data2) | (data1 &amp; data3) | (data2 &amp; data3);
+   mem_write(offset, ADDR_OUT, data_out);
+   offset += <span class="hljs-number">4</span>;
+   count--;
+  &#125;
 
-		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;start ubi_write filesystem to [%s]\n&quot;</span>, argv[<span class="hljs-number">5</span>]);
-		<span class="hljs-keyword">int</span> ret;
-		ret = ubiwrite(argv[<span class="hljs-number">5</span>], (<span class="hljs-keyword">void</span> *)ADDR_OUT, (<span class="hljs-keyword">size_t</span>)file_length);
-		<span class="hljs-keyword">if</span> (!ret)
-		&#123;
-			<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d MB written to volume %s\n&quot;</span>, file_length / <span class="hljs-number">1024</span> / <span class="hljs-number">1024</span>, <span class="hljs-string">&quot;NAND.file-system&quot;</span>);
-		&#125;
-		time = get_timer(time);
-		<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;end\t3-to-2 [%s]\t\t\tin %lu ms\n&quot;</span>, argv[<span class="hljs-number">3</span>],time);
-	&#125;
-	<span class="hljs-keyword">else</span>
-	&#123;
-		<span class="hljs-keyword">return</span> CMD_RET_USAGE;
-	&#125;
+  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;start ubi_write filesystem to [%s]\n&quot;</span>, argv[<span class="hljs-number">5</span>]);
+  <span class="hljs-keyword">int</span> ret;
+  ret = ubiwrite(argv[<span class="hljs-number">5</span>], (<span class="hljs-keyword">void</span> *)ADDR_OUT, (<span class="hljs-keyword">size_t</span>)file_length);
+  <span class="hljs-keyword">if</span> (!ret)
+  &#123;
+   <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d MB written to volume %s\n&quot;</span>, file_length / <span class="hljs-number">1024</span> / <span class="hljs-number">1024</span>, <span class="hljs-string">&quot;NAND.file-system&quot;</span>);
+  &#125;
+  time = get_timer(time);
+  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;end\t3-to-2 [%s]\t\t\tin %lu ms\n&quot;</span>, argv[<span class="hljs-number">3</span>],time);
+ &#125;
+ <span class="hljs-keyword">else</span>
+ &#123;
+  <span class="hljs-keyword">return</span> CMD_RET_USAGE;
+ &#125;
 
-	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
 &#125;
 
 <span class="hljs-comment">/*</span>
 <span class="hljs-comment">nandinit-- cmd name </span>
-<span class="hljs-comment">6		-- arvc</span>
-<span class="hljs-comment">0		-- DONOT repeat cmd while Enter</span>
+<span class="hljs-comment">6  -- arvc</span>
+<span class="hljs-comment">0  -- DONOT repeat cmd while Enter</span>
 <span class="hljs-comment">*/</span>
 U_BOOT_CMD(
-	nandinit, <span class="hljs-number">6</span>, <span class="hljs-number">0</span>, do_nandinit,
-	<span class="hljs-string">&quot;2-out-of-3-voting commands\n&quot;</span>,
-	<span class="hljs-string">&quot;[devname] [part] [filename] [flag] [nand_addr]&quot;</span>);
+ nandinit, <span class="hljs-number">6</span>, <span class="hljs-number">0</span>, do_nandinit,
+ <span class="hljs-string">&quot;2-out-of-3-voting commands\n&quot;</span>,
+ <span class="hljs-string">&quot;[devname] [part] [filename] [flag] [nand_addr]&quot;</span>);
 </code></pre></div>
 </details>
 上面的源码包括内存读写函数、ubi读写命令、nand读命令等，在do_nandinit()中进行三取二操作。  
   
 <h2><span id="修改uboot初始化配置">修改Uboot初始化配置</span></h2><p>在am43xx_evm.h中重新配置自定义命令进行三取二操作，首先添加一个自定义的NAND_INIT命令，再将NAND_INIT命令加入到CONFIG_BOOTCOMMAND中。  </p>
 <div class="hljs"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> CONFIG_BOOTCOMMAND \</span>
-<span class="hljs-meta">	<span class="hljs-meta-string">&quot;if mmc rescan; then &quot;</span> \</span>
-<span class="hljs-meta">		<span class="hljs-meta-string">&quot;echo SD/MMC found on device $&#123;devnum&#125;;&quot;</span> \</span>
-<span class="hljs-meta">		NAND_INIT \</span>
-<span class="hljs-meta">	<span class="hljs-meta-string">&quot;fi; &quot;</span> \</span>
-<span class="hljs-meta">	<span class="hljs-meta-string">&quot;run nandboot;&quot;</span> </span>
+<span class="hljs-meta"> <span class="hljs-meta-string">&quot;if mmc rescan; then &quot;</span> \</span>
+<span class="hljs-meta">  <span class="hljs-meta-string">&quot;echo SD/MMC found on device $&#123;devnum&#125;;&quot;</span> \</span>
+<span class="hljs-meta">  NAND_INIT \</span>
+<span class="hljs-meta"> <span class="hljs-meta-string">&quot;fi; &quot;</span> \</span>
+<span class="hljs-meta"> <span class="hljs-meta-string">&quot;run nandboot;&quot;</span> </span>
 
 <span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> NAND_INIT <span class="hljs-meta-string">&quot;nand erase.chip;&quot;</span> \</span>
-<span class="hljs-meta">	<span class="hljs-meta-string">&quot;ubi part NAND.file-system 2048 ;&quot;</span> \</span>
-<span class="hljs-meta">	<span class="hljs-meta-string">&quot;ubi create NAND.file-system ;&quot;</span> \</span>
-<span class="hljs-meta">	<span class="hljs-meta-string">&quot;nandinit mmc 0:1 /MLO 0 0x00000000;&quot;</span> \</span>
-<span class="hljs-meta">	<span class="hljs-meta-string">&quot;nandinit mmc 0:1 /MLO 0 0x00040000;&quot;</span> \</span>
-<span class="hljs-meta">	<span class="hljs-meta-string">&quot;nandinit mmc 0:1 /MLO 0 0x00080000;&quot;</span> \</span>
-<span class="hljs-meta">	<span class="hljs-meta-string">&quot;nandinit mmc 0:1 /MLO 0 0x000c0000;&quot;</span> \</span>
-<span class="hljs-meta">	<span class="hljs-meta-string">&quot;nandinit mmc 0:1 /u-boot.img 0 0x00180000; &quot;</span> \</span>
-<span class="hljs-meta">	<span class="hljs-meta-string">&quot;nandinit mmc 0:2 /boot/am437x-gp-evm.dtb 0 0x00100000; &quot;</span> \</span>
-<span class="hljs-meta">	<span class="hljs-meta-string">&quot;nandinit mmc 0:2 /boot/zImage 0 0x00300000; &quot;</span> \</span>
-<span class="hljs-meta">	<span class="hljs-meta-string">&quot;nandinit mmc 0:2 /boot/ubifs.img 1 NAND.file-system ; &quot;</span> \</span></code></pre></div>
+<span class="hljs-meta"> <span class="hljs-meta-string">&quot;ubi part NAND.file-system 2048 ;&quot;</span> \</span>
+<span class="hljs-meta"> <span class="hljs-meta-string">&quot;ubi create NAND.file-system ;&quot;</span> \</span>
+<span class="hljs-meta"> <span class="hljs-meta-string">&quot;nandinit mmc 0:1 /MLO 0 0x00000000;&quot;</span> \</span>
+<span class="hljs-meta"> <span class="hljs-meta-string">&quot;nandinit mmc 0:1 /MLO 0 0x00040000;&quot;</span> \</span>
+<span class="hljs-meta"> <span class="hljs-meta-string">&quot;nandinit mmc 0:1 /MLO 0 0x00080000;&quot;</span> \</span>
+<span class="hljs-meta"> <span class="hljs-meta-string">&quot;nandinit mmc 0:1 /MLO 0 0x000c0000;&quot;</span> \</span>
+<span class="hljs-meta"> <span class="hljs-meta-string">&quot;nandinit mmc 0:1 /u-boot.img 0 0x00180000; &quot;</span> \</span>
+<span class="hljs-meta"> <span class="hljs-meta-string">&quot;nandinit mmc 0:2 /boot/am437x-gp-evm.dtb 0 0x00100000; &quot;</span> \</span>
+<span class="hljs-meta"> <span class="hljs-meta-string">&quot;nandinit mmc 0:2 /boot/zImage 0 0x00300000; &quot;</span> \</span>
+<span class="hljs-meta"> <span class="hljs-meta-string">&quot;nandinit mmc 0:2 /boot/ubifs.img 1 NAND.file-system ; &quot;</span> \</span></code></pre></div>
 <p>上述CONFIG_BOOTCOMMAN中首先扫描eMMC设备是否存在，如果存在SD卡，则运行NAND_INIT，主要是先加载再运行三取二命令；如果未连接eMMC设备，则直接nandboot启动。</p>
 
             </div>

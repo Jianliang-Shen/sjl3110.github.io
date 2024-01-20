@@ -247,11 +247,14 @@
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage -j16
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- distclean</code></pre></div>
+
 <p>生成的zImage替换/rootfs/boot下的zImage文件。</p>
 <h3><span id="内核源码">内核源码</span></h3><h3><span id="内核功能裁剪思路">内核功能裁剪思路</span></h3><h2><span id="设备树改写">设备树改写</span></h2><h3><span id="命令">命令</span></h3><div class="hljs"><pre><code class="hljs s">make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- am57xx-evm-reva3.dtb -j8</code></pre></div>
+
 <p>源码位置：$tisdk/arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi等。生成的am57xx-evm-reva3.dtb替换/rootfs/boot下的设备树文件。  </p>
 <h2><span id="编译模块">编译模块</span></h2><div class="hljs"><pre><code class="hljs s">make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- modules -j16
 sudo make ARCH=arm INSTALL_MOD_PATH=../rootfs modules_install</code></pre></div>
+
 <p>模块的版本要与内核一致，所以要编译模块。加载模块指令：insmod。卸载模块指令。</p>
 
             </div>

@@ -229,7 +229,6 @@
               <p>记录华为云的上云操作及OBS对象上传文件等操作，大部分操作在WSL Ubuntu中完成，与树莓派环境基本一致。</p>
 <span id="more"></span>  
 
-
 <ul>
 <li><a href="#linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91">linux操作系统连接华为云</a><ul>
 <li><a href="#%E4%B8%8A%E4%BC%A0topic">上传TOPIC</a></li>
@@ -257,10 +256,10 @@
 <span class="hljs-comment">Topic: $oc/devices/&#123;device_id&#125;/sys/messages/up  </span>
 <span class="hljs-comment">数据格式：</span>
 <span class="hljs-comment">&#123;</span>
-<span class="hljs-comment">	&quot;object_device_id&quot;: &quot;&#123;object_device_id&#125;&quot;,</span>
-<span class="hljs-comment">	&quot;name&quot;: &quot;name&quot;,</span>
-<span class="hljs-comment">	&quot;id&quot;: &quot;id&quot;,</span>
-<span class="hljs-comment">	&quot;content&quot;: &quot;hello&quot;</span>
+<span class="hljs-comment"> &quot;object_device_id&quot;: &quot;&#123;object_device_id&#125;&quot;,</span>
+<span class="hljs-comment"> &quot;name&quot;: &quot;name&quot;,</span>
+<span class="hljs-comment"> &quot;id&quot;: &quot;id&quot;,</span>
+<span class="hljs-comment"> &quot;content&quot;: &quot;hello&quot;</span>
 <span class="hljs-comment">&#125;</span>
 <span class="hljs-comment">&quot;&#123;\&quot;object_device_id\&quot;: \&quot;&#123;object_device_id&#125;\&quot;,\&quot;name\&quot;: \&quot;name\&quot;,\&quot;id\&quot;: \&quot;id\&quot;,\&quot;content\&quot;: \&quot;hello\&quot;&#125;&quot;</span>
 <span class="hljs-comment">*/</span>
@@ -272,12 +271,15 @@ ret = mqtt_publish(cmd_topic, payload);
 cmd_topic = <span class="hljs-literal">NULL</span>;
 <span class="hljs-keyword">if</span> (ret &lt; <span class="hljs-number">0</span>)
 &#123;
-	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;subscribe topic error, result %d\n&quot;</span>, ret);
+ <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;subscribe topic error, result %d\n&quot;</span>, ret);
 &#125;</code></pre></div>
+
 <h3><span id="接收云端下发的命令">接收云端下发的命令</span></h3><p>首先在<code>产品-&gt;功能定义-&gt;添加命令</code>中设置一个命令，再在<code>设备-&gt;所有设备-&gt;设备详情-&gt;命令-&gt;命令下发</code>中发送命令。</p>
 <h3><span id="bug">BUG</span></h3><ul>
-<li>树莓派上传属性有时间无法读取bug</li>
-<li>数据解析有问题</li>
+<li><p>树莓派上传属性有时间无法读取bug</p>
+</li>
+<li><p>数据解析有问题</p>
+</li>
 </ul>
 <h2><span id="obs对象创建">OBS对象创建</span></h2><h3><span id="windows安装obs-browser">Windows安装OBS Browser+</span></h3><p>在使用OBS前，首先申请一个捅，并在<a target="_blank" rel="noopener" href="https://console.huaweicloud.com/iam/?region=cn-east-3#/mine/accessKey">查看密钥</a>这里申请访问的AK和SK以便之后登陆使用。<a target="_blank" rel="noopener" href="https://support.huaweicloud.com/browsertg-obs/obs_03_1003.html">下载</a>安装，登陆时账号可以任意配置，填上AK和SK即可。<br><img src="/img/post_pics/huawei_yun/login.png"></p>
 <h3><span id="linux安装obsutil">linux安装obsutil</span></h3><p>下载和初始化配置参考：<a target="_blank" rel="noopener" href="https://support.huaweicloud.com/utiltg-obs/obs_11_0005.html">初始化配置</a><br>以本人创建的sjlbowl为例，主要运行步骤：</p>
@@ -348,6 +350,7 @@ go run obsutil                                                          <span cl
 ./obsutil ls -s
 ./obsutil ls obs://my-bucket-input -s
 ./obsutil cp ../../face_from_raspberry.jpg obs://my-bucket-input        <span class="hljs-comment"># 上传文件</span></code></pre></div>
+
 <h2><span id="树莓派传输视频流">树莓派传输视频流</span></h2><h3><span id="硬件连接">硬件连接</span></h3><p>红外摄像头：<br><img src="/img/post_pics/huawei_yun/hardware.jpg"><br>更新Picamera驱动并使用下面文件测试：</p>
 <div class="hljs"><pre><code class="hljs py"><span class="hljs-keyword">from</span> picamera <span class="hljs-keyword">import</span> PiCamera
 <span class="hljs-keyword">from</span> time <span class="hljs-keyword">import</span> sleep
@@ -373,6 +376,7 @@ take_photo()  <span class="hljs-comment"># 拍一次</span></code></pre></div>
 
 <h3><span id="云端设置rtmp推流地址">云端设置RTMP推流地址</span></h3><p>打开控制台，搜索视频接入服务，开通后创建RTMP视频流，激活后可以查看到RTMP推流地址：</p>
 <div class="hljs"><pre><code class="hljs bash">rtmp://121.36.222.36:25021/vis/raspberry</code></pre></div>
+
 <p>参考：<a target="_blank" rel="noopener" href="https://support.huaweicloud.com/usermanual-vis/vis_02_0012.html">创建RTMP视频流</a></p>
 <h3><span id="树莓派安装ffmpeg和nginx工具">树莓派安装ffmpeg和nginx工具</span></h3><p>安装ffmpeg：</p>
 <div class="hljs"><pre><code class="hljs bash">sudo apt-get update
@@ -382,6 +386,7 @@ sudo tar jxvf ffmpeg-4.1.tar.bz2
 <span class="hljs-built_in">cd</span> ffmpeg-4.1/
 sudo ./configure --prefix=/opt/ffmpeg --enable-shared --enable-pthreads --enable-gpl  --enable-avresample --enable-libx264 --disable-yasm
 sudo make &amp;&amp; sudo make install</code></pre></div>
+
 <p>安装和配置nginx：</p>
 <div class="hljs"><pre><code class="hljs bash"><span class="hljs-comment"># 下载解压nginx-rtmp-module模块</span>
 <span class="hljs-built_in">cd</span> ~
@@ -408,13 +413,14 @@ sudo ln -s /opt/openresty/nginx/sbin/nginx /usr/sbin/nginx
 sudo vim /opt/openresty/nginx/conf/nginx.conf    
 <span class="hljs-comment"># 添加：</span>
 rtmp &#123;
-	server &#123;
-		listen 1935;
-		application videotest&#123;
-			live on;
-		&#125;
-	&#125;
+ server &#123;
+  listen 1935;
+  application videotest&#123;
+   live on;
+  &#125;
+ &#125;
 &#125;</code></pre></div>
+
 <h3><span id="推流实现">推流实现</span></h3><div class="hljs"><pre><code class="hljs bash"><span class="hljs-comment"># 命令：</span>
 raspivid -w 640 -h 480 -b 15000000 -t 0 -a 12 -a 1024 -a <span class="hljs-string">&quot;CAM-1 %Y-%m-%d %X&quot;</span> -ae 18,0xff,0x808000 -o - | ffmpeg -re -i - -s 640x480 -vcodec copy -acodec copy -b:v 800k -b:a 32k -f flv rtmp://121.36.222.36:25021/vis/raspberry
 
@@ -435,6 +441,7 @@ Stream mapping:
 [flv @ 0xae96e0] Failed to update header with correct filesize.
 frame= 2154 fps= 25 q=-1.0 Lsize=   18220kB time=00:01:26.12 bitrate=1733.1kbits/s speed=   1x    
 video:18178kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.232961%</code></pre></div>
+
 <p>实际测试延迟在15s-20s之间（4G热点网络）：<br><img src="/img/post_pics/huawei_yun/html.PNG"></p>
 <p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42534940/article/details/89302092">【树莓派】ffmpeg + nginx 推 rtmp 视频流实现远程监控</a></p>
 <h3><span id="安装opencv指北"><del>安装opencv指北</del></span></h3><p><del>本来打算用opencv做视频流，发现树莓派开启cv后就很卡，遂放弃，但安装opencv的痛苦历程值得记录，不过只要参考下面两个就够了，如果遇到头文件错误就复制一下改路径，如果遇到make -j4卡死到99%，切换成make就行，并提高swap的交换分区大小，缺少bmi类型文件去网上搜一下就行，这些困难不是大事，等cpu编译完才是望眼欲穿。</del></p>

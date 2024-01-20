@@ -1239,7 +1239,7 @@ exection -&gt; execution (插入 <span class="hljs-string">&#x27;u&#x27;</span>)
 &#125;;</code></pre></div>
 
 <h3><span id="93-复原-ip-地址">93. 复原 IP 地址</span></h3><p>有效 IP 地址 正好由四个整数（每个整数位于 0 到 255 之间组成，且不能含有前导 0），整数之间用 ‘.’ 分隔。</p>
-<p>例如：”0.1.2.201” 和 “192.168.1.1” 是 有效 IP 地址，但是 “0.011.255.245”、”192.168.1.312” 和 “<a href="mailto:&#49;&#x39;&#x32;&#46;&#49;&#x36;&#56;&#64;&#x31;&#x2e;&#49;">&#49;&#x39;&#x32;&#46;&#49;&#x36;&#56;&#64;&#x31;&#x2e;&#49;</a>“ 是 无效 IP 地址。<br>给定一个只包含数字的字符串 s ，用以表示一个 IP 地址，返回所有可能的有效 IP 地址，这些地址可以通过在 s 中插入 ‘.’ 来形成。你 不能 重新排序或删除 s 中的任何数字。你可以按 任何 顺序返回答案。</p>
+<p>例如：”0.1.2.201” 和 “192.168.1.1” 是 有效 IP 地址，但是 “0.011.255.245”、”192.168.1.312” 和 “<a href="mailto:&#x31;&#x39;&#50;&#x2e;&#x31;&#54;&#56;&#64;&#x31;&#x2e;&#49;">&#x31;&#x39;&#50;&#x2e;&#x31;&#54;&#56;&#64;&#x31;&#x2e;&#49;</a>“ 是 无效 IP 地址。<br>给定一个只包含数字的字符串 s ，用以表示一个 IP 地址，返回所有可能的有效 IP 地址，这些地址可以通过在 s 中插入 ‘.’ 来形成。你 不能 重新排序或删除 s 中的任何数字。你可以按 任何 顺序返回答案。</p>
 <p>示例 1：</p>
 <div class="hljs"><pre><code class="hljs bash">输入：s = <span class="hljs-string">&quot;25525511135&quot;</span>
 输出：[<span class="hljs-string">&quot;255.255.11.135&quot;</span>,<span class="hljs-string">&quot;255.255.111.35&quot;</span>]</code></pre></div>
@@ -1455,19 +1455,18 @@ exection -&gt; execution (插入 <span class="hljs-string">&#x27;u&#x27;</span>)
 <p>左括号必须用相同类型的右括号闭合。<br>左括号必须以正确的顺序闭合。<br>每个右括号都有一个对应的相同类型的左括号。</p>
 <div class="hljs"><pre><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> &#123;</span>
 <span class="hljs-keyword">public</span>:
-    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">maxArea</span><span class="hljs-params">(vector&lt;<span class="hljs-keyword">int</span>&gt;&amp; height)</span> </span>&#123;
-        <span class="hljs-keyword">int</span> ret = <span class="hljs-number">0</span>;
-        <span class="hljs-keyword">int</span> n = height.<span class="hljs-built_in">size</span>();
-        <span class="hljs-keyword">int</span> left = <span class="hljs-number">0</span>, right = n - <span class="hljs-number">1</span>;
-        <span class="hljs-keyword">while</span> (left &lt; right)&#123;
-            ret = <span class="hljs-built_in">max</span>(ret, <span class="hljs-built_in">min</span>(height[right], height[left]) * (right - left));
-            <span class="hljs-keyword">if</span> (height[right] &gt; height[left])&#123;
-                left ++;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">isValid</span><span class="hljs-params">(string s)</span> </span>&#123;
+        <span class="hljs-keyword">int</span> n = s.<span class="hljs-built_in">size</span>();
+        stack&lt;<span class="hljs-keyword">char</span>&gt; st;
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; n; i++)&#123;
+            <span class="hljs-keyword">if</span> (!st.<span class="hljs-built_in">empty</span>() &amp;&amp; ((st.<span class="hljs-built_in">top</span>() == <span class="hljs-string">&#x27;&#123;&#x27;</span> &amp;&amp; s[i] == <span class="hljs-string">&#x27;&#125;&#x27;</span>) || (st.<span class="hljs-built_in">top</span>() == <span class="hljs-string">&#x27;(&#x27;</span> &amp;&amp; s[i] == <span class="hljs-string">&#x27;)&#x27;</span>) || (st.<span class="hljs-built_in">top</span>() == <span class="hljs-string">&#x27;[&#x27;</span> &amp;&amp; s[i] == <span class="hljs-string">&#x27;]&#x27;</span>)))&#123;
+                st.<span class="hljs-built_in">pop</span>();
             &#125; <span class="hljs-keyword">else</span> &#123;
-                right --;
+                st.<span class="hljs-built_in">push</span>(s[i]);
             &#125;
         &#125;
-        <span class="hljs-keyword">return</span> ret;
+
+        <span class="hljs-keyword">return</span> st.<span class="hljs-built_in">empty</span>();
     &#125;
 &#125;;</code></pre></div>
 

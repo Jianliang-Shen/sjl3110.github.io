@@ -278,21 +278,22 @@
 <p><img src="/img/post_pics/ram/pic2.png"></p>
 <h3><span id="u-boot配置寄存器">U-BOOT配置寄存器</span></h3><p>在TI-SDK的U-BOOT源码board/ti/board.c中，以下程序完成了对TI AM5728 EVM的内存配置：  </p>
 <div class="hljs"><pre><code class="hljs CPP"><span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">dmm_lisa_map_regs</span> <span class="hljs-title">beagle_x15_lisa_regs</span> =</span> &#123;
-	.dmm_lisa_map_3 = <span class="hljs-number">0x80740300</span>,
-	.is_ma_present  = <span class="hljs-number">0x1</span>
+ .dmm_lisa_map_3 = <span class="hljs-number">0x80740300</span>,
+ .is_ma_present  = <span class="hljs-number">0x1</span>
 &#125;;
 
 <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">emif_get_dmm_regs</span><span class="hljs-params">(<span class="hljs-keyword">const</span> struct dmm_lisa_map_regs **dmm_lisa_regs)</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-keyword">if</span> (<span class="hljs-built_in">board_is_am571x_idk</span>())
-		*dmm_lisa_regs = &amp;am571x_idk_lisa_regs;
-	<span class="hljs-keyword">else</span>
-		*dmm_lisa_regs = &amp;beagle_x15_lisa_regs;
+ <span class="hljs-keyword">if</span> (<span class="hljs-built_in">board_is_am571x_idk</span>())
+  *dmm_lisa_regs = &amp;am571x_idk_lisa_regs;
+ <span class="hljs-keyword">else</span>
+  *dmm_lisa_regs = &amp;beagle_x15_lisa_regs;
 &#125;
 </code></pre></div>
 
 <p>根据原设置使用寄存器3的内容0x8074 0300可以看出内存的配置如下：<br><img src="/img/post_pics/ram/pic3.png"></p>
-<p>根据硬件配置，我们的内存设置如下：<br><img src="/img/post_pics/ram/pic4.png"><br>参考：<a target="_blank" rel="noopener" href="http://processors.wiki.ti.com/index.php?oldid=127545&title=EZSDK_Memory_Map&keyMatch=MEMORY%20MAP&tisearch=Search-CN-everything">TI wiki</a></p>
+<p>根据硬件配置，我们的内存设置如下：<br><img src="/img/post_pics/ram/pic4.png"></p>
+<p>参考：<a target="_blank" rel="noopener" href="http://processors.wiki.ti.com/index.php?oldid=127545&title=EZSDK_Memory_Map&keyMatch=MEMORY%20MAP&tisearch=Search-CN-everything">TI wiki</a></p>
 
             </div>
             <hr>

@@ -252,8 +252,9 @@
 <li><a href="#%E6%B5%8B%E8%AF%95%E6%96%B9%E6%A1%88%E5%92%8C%E7%BB%93%E6%9E%9C">测试方案和结果</a></li>
 </ul>
 <h2><span id="fpu基本介绍">FPU基本介绍</span></h2><p>Float point unit，浮点计运算元，在ARM Cortex-M同样广泛应用。C语言中浮点数有单精度和双精度之分：</p>
-<div class="hljs"><pre><code class="hljs apache"><span class="hljs-attribute">float</span> pi = <span class="hljs-number">3</span>.<span class="hljs-number">141592</span>F;
-<span class="hljs-attribute">double</span> pi = <span class="hljs-number">3</span>.<span class="hljs-number">1415926535897932384626433832795</span>;</code></pre></div>
+<div class="hljs"><pre><code class="hljs bash"><span class="hljs-built_in">float</span> pi = 3.141592F;
+double pi = 3.1415926535897932384626433832795;</code></pre></div>
+
 <h3><span id="寄存器">寄存器</span></h3><h4><span id="cpacr">CPACR</span></h4><p>Coprocessor Access Control Register，指定协处理器和浮点扩展的访问权限。如果实现了MVE，则此寄存器指定MVE的访问权限。MVE是指基于M-Profile Vector Extension矢量扩充方案的Arm Helium技术。MVE可以分为2大类，MVE-I和MVE-F。MVE-I仅对整型向量提供支持，MVE-F则对浮点数据向量提供支持。要包含MVE-F那么处理器核心就需要支持MVE-I以及浮点扩展。<br>寄存器组成：</p>
 <table>
 <thead>
@@ -325,6 +326,7 @@
                   | FPU_FPCCR_CLRONRETS_Msk
                   | FPU_FPCCR_LSPENS_Msk;
 </code></pre></div>
+
 <ul>
 <li><code>ASPEN</code>：置位时，使能<code>CONTROL.FPCA</code>，caller saved（S0-S15，FPSR和VPR）寄存器在异常入口和推出时的状态自动保存</li>
 <li><code>LSPEN</code>：置位时，异常流程使用惰性压栈特性以保持中断等待</li>
@@ -337,6 +339,7 @@
 <h4><span id="fpdscr">FPDSCR</span></h4><p>Float point default status control register，存放默认浮点状态控制数据的配置信息，这些数据在异常入口处被复制到了FPSCR。</p>
 <h3><span id="编译命令">编译命令</span></h3><p>gcc:</p>
 <div class="hljs"><pre><code class="hljs bash">-mfloat-abi=hard -mfpu=fpv5-d16 -march=cortex-m55 -mcpu=armv8.1-m.main</code></pre></div>
+
 <p>hard和soft abi（应用程序二进制接口）的影响：</p>
 <ul>
 <li>是否使用浮点单元进行计算</li>
