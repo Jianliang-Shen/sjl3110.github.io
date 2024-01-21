@@ -183,7 +183,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      22.3k 字
+      31.9k 字
     </span>
   
 
@@ -193,7 +193,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      248
+      351
        分钟
     </span>
   
@@ -232,7 +232,9 @@
 <ul>
 <li><a href="#c%E8%AF%AD%E8%A8%80">C语言</a><ul>
 <li><a href="#%E7%A8%8B%E5%BA%8F%E7%BC%96%E8%AF%91%E7%9A%84%E8%BF%87%E7%A8%8B">程序编译的过程？</a></li>
+<li><a href="#%E5%8A%A8%E6%80%81%E5%BA%93%E5%92%8C%E9%9D%99%E6%80%81%E5%BA%93%E7%9A%84%E5%8C%BA%E5%88%AB%E5%90%8E%E7%BC%80%E6%A0%BC%E5%BC%8F%E4%BB%A5%E5%8F%8A%E5%87%BD%E6%95%B0%E7%9A%84%E7%9B%B8%E5%AF%B9%E5%9C%B0%E5%9D%80%E5%8C%BA%E5%88%AB">动态库和静态库的区别，后缀格式，以及函数的相对地址区别</a></li>
 <li><a href="#c%E5%92%8Cc%E7%9A%84%E5%8C%BA%E5%88%AB">C和C++的区别？</a></li>
+<li><a href="#int%E7%9A%84%E9%95%BF%E5%BA%A6%E7%94%B1%E4%BB%80%E4%B9%88%E5%86%B3%E5%AE%9A">int的长度由什么决定</a></li>
 <li><a href="#%E6%8C%87%E9%92%88">指针</a><ul>
 <li><a href="#%E6%8C%87%E9%92%88%E5%92%8C%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB">指针和引用的区别？</a></li>
 <li><a href="#%E5%BC%95%E7%94%A8%E5%8D%A0%E7%94%A8%E5%86%85%E5%AD%98%E7%A9%BA%E9%97%B4%E5%90%97">引用占用内存空间吗？</a></li>
@@ -266,11 +268,27 @@
 <li><a href="#%E5%A0%86%E5%92%8C%E8%87%AA%E7%94%B1%E5%AD%98%E5%82%A8%E5%8C%BA%E7%9A%84%E5%8C%BA%E5%88%AB">堆和自由存储区的区别？</a></li>
 <li><a href="#c%E4%B8%AD%E6%9C%89%E4%BA%86malloc--free--%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81-new--delete">C++中有了malloc / free , 为什么还需要 new / delete？</a></li>
 <li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E9%9D%A2%E5%AF%B9%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E5%92%8C%E6%8C%87%E9%92%88%E8%B6%8A%E7%95%8C%E4%BD%A0%E6%9C%89%E5%93%AA%E4%BA%9B%E6%96%B9%E6%B3%95%E4%BD%A0%E9%80%9A%E5%B8%B8%E9%87%87%E7%94%A8%E5%93%AA%E4%BA%9B%E6%96%B9%E6%B3%95%E6%9D%A5%E9%81%BF%E5%85%8D%E5%92%8C%E5%87%8F%E5%B0%91%E8%BF%99%E7%B1%BB%E9%94%99%E8%AF%AF">什么是内存泄漏？面对内存泄漏和指针越界，你有哪些方法？你通常采用哪些方法来避免和减少这类错误？</a></li>
+<li><a href="#%E5%86%85%E6%A0%B8%E5%A6%82%E4%BD%95%E5%88%86%E9%85%8D%E5%86%85%E5%AD%98%E7%BB%99%E8%BF%9B%E7%A8%8B">内核如何分配内存给进程</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81mmu">为什么需要MMU</a></li>
+<li><a href="#tlb%E6%98%AF%E4%BB%80%E4%B9%88">TLB是什么</a></li>
+<li><a href="#cache%E6%98%AF%E4%BB%80%E4%B9%88%E6%9C%89%E4%BB%80%E4%B9%88%E4%BD%9C%E7%94%A8">cache是什么，有什么作用</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F">操作系统</a><ul>
+<li><a href="#%E9%9D%A2%E7%BB%8F%E9%97%AE%E9%A2%98">面经问题</a><ul>
+<li><a href="#%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B%E4%B8%AD%E6%96%AD%E7%9A%84%E7%8E%B0%E5%9C%BA%E4%BF%9D%E6%8A%A4%E4%BF%9D%E6%8A%A4%E4%BB%80%E4%B9%88">中断处理流程，中断的现场保护保护什么</a></li>
+<li><a href="#%E4%B8%AD%E6%96%AD%E7%9A%84%E4%BC%A0%E9%80%92%E8%BF%87%E7%A8%8B%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%9B%91%E5%90%AC%E7%9A%84%E5%87%BD%E6%95%B0">中断的传递过程，信号量监听的函数</a></li>
+<li><a href="#risc-vs-cisc">RISC VS CISC</a></li>
+<li><a href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E6%9E%B6%E6%9E%84%E6%8C%89%E6%8C%87%E4%BB%A4%E5%88%86%E7%B1%BB">计算机组成，架构按指令分类</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFsdlc">什么是SDLC</a></li>
+<li><a href="#%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%88%B6%E4%BD%9C%E5%92%8C%E4%BC%98%E5%8C%96%E6%96%B9%E5%BC%8F%E4%B8%8D%E5%90%8C%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%BC%E5%BC%8F%E5%86%85%E6%A0%B8%E6%98%AF%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E7%9A%84">文件系统的制作和优化方式，不同文件系统格式内核是如何管理的</a></li>
+<li><a href="#nice%E7%9A%84%E9%BB%98%E8%AE%A4%E4%BC%98%E5%85%88%E7%BA%A7%E5%A4%A7%E5%B0%8F%E5%8F%96%E5%80%BC%E8%8C%83%E5%9B%B4">nice的默认优先级大小，取值范围</a></li>
+<li><a href="#linux%E5%86%85%E6%A0%B8%E6%8A%A2%E5%8D%A0%E6%9C%BA%E5%88%B6preempt%E5%8E%9F%E7%90%86">Linux内核抢占机制(preempt)原理</a></li>
+</ul>
+</li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9F%A5%E8%AF%86%E7%82%B9">操作系统知识点</a><ul>
 <li><a href="#%E5%9F%BA%E6%9C%AC%E7%89%B9%E5%BE%81">基本特征</a></li>
 <li><a href="#%E5%9F%BA%E6%9C%AC%E5%8A%9F%E8%83%BD">基本功能</a></li>
 <li><a href="#%E5%A4%A7%E5%86%85%E6%A0%B8%E5%92%8C%E5%BE%AE%E5%86%85%E6%A0%B8">大内核和微内核</a></li>
@@ -323,6 +341,16 @@
 </li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a href="#linux%E9%A9%B1%E5%8A%A8%E7%9A%84%E5%BC%80%E5%8F%91%E8%BF%87%E7%A8%8B">Linux驱动的开发过程</a><ul>
+<li><a href="#%E7%BC%96%E5%86%99%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F%E5%88%9D%E5%A7%8B%E5%8C%96%E5%87%BD%E6%95%B0">编写驱动程序初始化函数</a></li>
+<li><a href="#%E6%9E%84%E9%80%A0file_operations%E7%BB%93%E6%9E%84%E4%B8%AD%E8%A6%81%E7%94%A8%E5%88%B0%E7%9A%84%E5%90%84%E4%B8%AA%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0">构造file_operations结构中要用到的各个成员函数</a></li>
+<li><a href="#%E8%AE%BE%E5%A4%87%E7%9A%84%E4%B8%AD%E6%96%AD%E5%92%8C%E8%BD%AE%E8%AF%A2%E5%A4%84%E7%90%86">设备的中断和轮询处理</a></li>
+<li><a href="#%E9%A9%B1%E5%8A%A8%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%B5%8B%E8%AF%95">驱动程序的测试</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+</li>
 <li><a href="#%E6%83%B3%E6%88%90%E4%B8%BA%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%A8%8B%E5%BA%8F%E5%91%98%E5%BA%94%E7%9F%A5%E9%81%93%E7%9A%840x10%E4%B8%AA%E5%9F%BA%E6%9C%AC%E9%97%AE%E9%A2%98">想成为嵌入式程序员应知道的0x10个基本问题</a><ul>
 <li><a href="#%E9%A2%84%E5%A4%84%E7%90%86%E5%99%A8preprocessor">预处理器（Preprocessor）</a></li>
 <li><a href="#%E6%AD%BB%E5%BE%AA%E7%8E%AFinfinite-loops">死循环（Infinite loops）</a></li>
@@ -350,10 +378,27 @@
 </ul>
 </li>
 </ul>
+<h3><span id="动态库和静态库的区别后缀格式以及函数的相对地址区别">动态库和静态库的区别，后缀格式，以及函数的相对地址区别</span></h3><p>区别</p>
+<ol>
+<li><p>命名方式不同：<br>静态库libxxx.a：库名前加”lib”，后缀用”.a”，“xxx”为静态库名。<br>动态库libxxx.so：库名前加”lib”，后缀变为“.so”。</p>
+</li>
+<li><p>链接时间不同：<br>静态库的代码是在编译过程中被载入程序中。<br>动态库的代码是当程序运行到相关函数才调用动态库的相应函数</p>
+</li>
+<li><p>链接方式不同：<br>静态库的链接是将整个函数库的所有数据在编译时都整合进了目标代码。<br>动态库的链接是程序执行到哪个函数链接哪个函数的库。（用哪个链接哪个）</p>
+</li>
+</ol>
+<p>优缺点？</p>
+<ul>
+<li><p>静态库：<br>优点是，在编译后的执行程序不再需要外部的函数库支持，运行速度相对快些；<br>缺点是，如果所使用的静态库发生更新改变，你的程序必须重新编译。</p>
+</li>
+<li><p>动态库 ：<br>优点是，动态库的改变并不影响你的程序，所以动态函数库升级比较方便；<br>缺点是，因为函数库并没有整合进程序，所以程序的运行环境必须提供相应的库。</p>
+</li>
+</ul>
 <h3><span id="c和c的区别">C和C++的区别？</span></h3><ul>
 <li>C++是C的超集;</li>
 <li>C是一个结构化语言，它的重点在于算法和数据结构。C程序的设计首要考虑的是如何通过一个过程，对输入（或环境条件）进行运算处理得到输出（或实现过程（事务）控制），而对于C++，首要考虑的是如何构造一个对象模型，让这个模型能够契合与之对应的问题域，这样就可以通过获取对象的状态信息得到输出或实现过程（事务）控制。</li>
 </ul>
+<h3><span id="int的长度由什么决定">int的长度由什么决定</span></h3><p>int 的字节长度是由CPU和操作系统编译器共同决定的，一般情况下，主要是由操作系统决定，比如，你在64位AMD的机器上安装的是32位操作系统，那 么，int默认是32位的；如果是64位操作系统，64位操作系统分为两种，1种是int为32位long为64位，2种int long均为64位。之所以说int同时也与编译器有关，编译器完全可以在32位系统模拟64位整数，例如Unix/Linux下的long long和Windows下的__int64均为64位整数。</p>
 <h3><span id="指针">指针</span></h3><h4><span id="指针和引用的区别">指针和引用的区别？</span></h4><p>相同点：</p>
 <ul>
 <li>都是地址的概念；</li>
@@ -669,7 +714,182 @@ Test* pm = (Test*)<span class="hljs-built_in">malloc</span>(<span class="hljs-bu
 <li>动态分配内存的指针最好不要再次赋值.</li>
 <li>在C++中应该优先考虑使用智能指针.</li>
 </ul>
-<h2><span id="操作系统">操作系统</span></h2><h3><span id="基本特征">基本特征</span></h3><ul>
+<h4><span id="内核如何分配内存给进程">内核如何分配内存给进程</span></h4><p>参考<a target="_blank" rel="noopener" href="https://www.cnblogs.com/wangliangblog/p/9109384.html">Linux内存分配机制</a><br>Linux 的虚拟内存管理有几个关键概念：</p>
+<ol>
+<li>每个进程都有独立的虚拟地址空间，进程访问的虚拟地址并不是真正的物理地址；</li>
+<li>虚拟地址可通过每个进程上的页表(在每个进程的内核虚拟地址空间)与物理地址进行映射，获得真正物理地址；</li>
+<li>如果虚拟地址对应物理地址不在物理内存中，则产生缺页中断，真正分配物理地址，同时更新进程的页表；如果此时物理内存已耗尽，则根据内存替换算法淘汰部分页面至物理磁盘中。</li>
+</ol>
+<h4><span id="为什么需要mmu">为什么需要MMU</span></h4><p>MMU是Memory Management Unit的缩写，中文名是内存管理单元，有时称作分页内存管理单元（英语：paged memory management unit，缩写为PMMU）。它是一种负责处理中央处理器（CPU）的内存访问请求的计算机硬件。它的功能包括<code>虚拟地址到物理地址的转换（即虚拟内存管理）、内存保护、中央处理器高速缓存的控制</code>，在较为简单的计算机体系结构中，负责总线的仲裁以及存储体切换（bank switching，尤其是在8位的系统上）。<br>TLB(Translation Lookaside Buffer)传输后备缓冲器是一个内存管理单元用于改进虚拟地址到物理地址转换速度的缓存。TLB是一个小的，虚拟寻址的缓存，其中每一行都保存着一个由单个PTE组成的块。如果没有TLB，则每次取数据都需要两次访问内存，即查页表获得物理地址和取数据。<br>多进程间频繁切换对TLB有什么影响？现代的处理器是如何面对这个问题的？<br>在现代处理器中,软件使用虚拟地址访问内存,而处理器的MMU单元负责把虚拟地址转换成物理地址,为了完成这个映射过程,软件和硬件共同来维护一个多级映射的页表。当处理器发现页表中无法映射到对应的物理地址时,会触发一个缺页异常,挂起出错的进程,操作系统软件需要处理这个缺页异常。我们之前有提到过二级页表的查询过程,为了完成虚拟地址到物理地址的转换,查询页表需要两次访问内存,即一级页表和二级页表都是存放在内存中的。<br>TLB( Translation Look- aside buffer)专门用于缓存内存中的页表项,一般在MMU单元内部。TLB是一个很小的 cache,TLB表项( TLB entry)数量比较少,每个TLB表项包含一个页面的相关信息,例如有效位、虚拟页号、修改位、物理页帧号等。当处理器要访问一个虚拟地址时,首先会在TLB中查询。如果TLB表项中没有相应的表项,称为TLB Miss,那么就需要访问页表来计算出相应的物理地址。如果TLB表项中有相应的表项,那么直接从TLB表项中获取物理地址,称为TLB命中。<br>TLB内部存放的基本单位是TLB表项,TLB容量越大,所能存放的TLB表项就越多,TLB命中率就越高,但是TLB的容量是有限的。目前 Linux内核默认采用4KB大小的小页面,如果一个程序使用512个小页面,即2MB大小,那么至少需要512个TLB表项才能保证不会出现 TLB Miss的情况。但是如果使用2MB大小的大页,那么只需要一个TLB表项就可以保证不会出现 TLB Miss的情况。对于消耗内存以GB为单位的大型应用程序,还可以使用以1GB为单位的大页,从而减少 TLB Miss的情况。</p>
+<h4><span id="tlb是什么">TLB是什么</span></h4><p>根据功能可以译为快表，直译可以翻译为旁路转换缓冲，也可以把它理解成页表缓冲。里面存放的是一些页表文件（虚拟地址到物理地址的转换表）。当处理 器要在主内存寻址时，不是直接在内存的物理地址里查找的，而是通过一组虚拟地址转换到主内存的物理地址，TLB就是负责将虚拟内存地址翻译成实际的物理内 存地址，而CPU寻址时会优先在TLB中进行寻址。处理器的性能就和寻址的命中率有很大的关系。<br>参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/dahailantian1/article/details/78584816">TLB</a></p>
+<h4><span id="cache是什么有什么作用">cache是什么，有什么作用</span></h4><p>Cache存储器，电脑中为高速缓冲存储器，是位于CPU和主存储器DRAM（Dynamic Random Access Memory）之间，规模较小，但速度很高的存储器，通常由SRAM（Static Random Access Memory 静态存储器）组成。它是位于CPU与内存间的一种容量较小但速度很高的存储器。CPU的速度远高于内存，当CPU直接从内存中存取数据时要等待一定时间周期，而Cache则可以保存CPU刚用过或循环使用的一部分数据，如果CPU需要再次使用该部分数据时可从Cache中直接调用，这样就避免了重复存取数据，减少了CPU的等待时间，因而提高了系统的效率。Cache又分为L1Cache（一级缓存）和L2Cache（二级缓存），L1Cache主要是集成在CPU内部，而L2Cache集成在主板上或是CPU上。</p>
+<h2><span id="操作系统">操作系统</span></h2><h3><span id="面经问题">面经问题</span></h3><h4><span id="中断处理流程中断的现场保护保护什么">中断处理流程，中断的现场保护保护什么</span></h4><p>响应中断-关中断-根据中断源跳转服务程序-现场保护-中断服务-恢复现场-开中断</p>
+<p>CPU开始利用栈保护被暂停执行的程序的现场：依次压入当前程序使用的eflags，cs，eip，errorCode（如果是有错误码的异常）信息护现场就是：当出现中断时，把CPU的状态，也就是中断的入口地址保存在寄存器中，随后转向执行其他任务，当任务完成，从寄存器中取出地址继续执行。保护现场其实就是保存中断前一时刻的状态不被破坏。</p>
+<h4><span id="中断的传递过程信号量监听的函数">中断的传递过程，信号量监听的函数</span></h4><p>当linux内核空间发生中断后怎么使用户空间的应用程序运行相应的函数呢，当芯片有数据到来时内核会产生一个中断，但是怎样通知应用程序来取数据?linux中有异步通知机制，在用户程序中用signal注册一个响应SIGIO信号的回调函数，然后在驱动程序中向该进程发出SIGIO信号便完成该功能，下面是该功能具体实施方法：</p>
+<ul>
+<li>在驱动中定义一个static struct fasync_struct * async;</li>
+<li>在fasync系统调用中注册fasync_helper(fd, filp, mode, &amp;async);</li>
+<li>在中断服务程序（顶半部、底半部都可以）发出信号kill_fasync(&amp;async, SIGIO, POLL_IN);</li>
+<li>在用户应用程序中用signal注册一个响应SIGIO的回调函数signal(SIGIO, sig_handler);</li>
+<li>通过fcntl(fd, F_SETOWN, getpid())将将进程pid传入内核6.通过fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | FASYNC)设置异步通知</li>
+</ul>
+<p>参考代码</p>
+<div class="hljs"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">sig_handler</span><span class="hljs-params">(<span class="hljs-keyword">int</span> sig)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (sig == SIGUSR1) &#123;
+        <span class="hljs-comment">// printf(&quot;Receive io signal from kernel!\n&quot;);</span>
+        <span class="hljs-built_in">spi_test</span>(spifd);
+    &#125;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span> *argv[])</span> </span>&#123;
+    <span class="hljs-comment">//......</span>
+    <span class="hljs-built_in">signal</span>(SIGUSR1, sig_handler);
+    <span class="hljs-built_in">parse_opts</span>(argc, argv);
+    spifd = <span class="hljs-built_in">open</span>(device, O_RDWR);
+    <span class="hljs-built_in">fcntl</span>(spifd, F_SETSIG, SIGUSR1);
+    <span class="hljs-built_in">fcntl</span>(spifd, F_SETOWN, <span class="hljs-built_in">getpid</span>());
+    <span class="hljs-comment">//fcntl(spifd, F_GETOWN, getpid());</span>
+    <span class="hljs-built_in">fcntl</span>(spifd, F_SETFL, <span class="hljs-built_in">fcntl</span>(spifd, F_GETFL) | FASYNC);
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;waiting key interrupt:\n&quot;</span>);
+    <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);
+&#125;</code></pre></div>
+
+<p>在驱动中注册模块时，需要注册中断，中断的回调函数发送信号，即可完成信号的传递。<br>补充:<br>我们在使用request_irq申请中断的时候注册的中断服务函数属于中断处理的上半部，只要中断触发，那么中断处理函数就会执行。我们都知道中断处理函数一定要快点执行完毕，越短越好，但是现实往往是残酷的，有些中断处理过程就是比较费时间，我们必须要对其进行处理，缩小中断处理函数的执行时间。比如电容触摸屏通过中断通知 SOC 有触摸事件发生，SOC 响应中断，然后通过 IIC 接口读取触摸坐标值并将其上报给系统。但是我们都知道 IIC 的速度最高也只有400Kbit/S，所以在中断中通过 IIC 读取数据就会浪费时间。我们可以将通过 IIC 读取触摸数据的操作暂后执行，中断处理函数仅仅相应中断，然后清除中断标志位即可。这个时候中断处理过程就分为了两部分：</p>
+<ul>
+<li>上半部：上半部就是中断处理函数，那些处理过程比较快，不会占用很长时间的处理就可以放在上半部完成。</li>
+<li>下半部：如果中断处理过程比较耗时，那么就将这些比较耗时的代码提出来，交给下半部去执行，这样中断处理函数就会快进快出。</li>
+</ul>
+<p>因此，Linux 内核将中断分为上半部和下半部的主要目的就是实现中断处理函数的快进快出，那些对时间敏感、执行速度快的操作可以放到中断处理函数中，也就是上半部。剩下的所有工作都可以放到下半部去执行，比如在上半部将数据拷贝到内存中，关于数据的具体处理就可以放到下半部去执行。至于哪些代码属于上半部，哪些代码属于下半部并没有明确的规定，一切根据实际使用情况去判断，这个就很考验驱动编写人员的功底了。这里有一些可以借鉴的参考点：</p>
+<ul>
+<li>如果要处理的内容不希望被其他中断打断，那么可以放到上半部。</li>
+<li>如果要处理的任务对时间敏感，可以放到上半部。</li>
+<li>如果要处理的任务与硬件有关，可以放到上半部</li>
+<li>除了上述三点以外的其他任务，优先考虑放到下半部。</li>
+</ul>
+<p>上半部处理很简单，直接编写中断处理函数就行了，关键是下半部该怎么做呢？Linux 内核提供了多种下半部机制。例如软中断、tasklet、工作队列等。</p>
+<h4><span id="risc-vs-cisc">RISC VS CISC</span></h4><p>软件维护是软件生命周期中持续时间最长的阶段。在软件开发完成并投入使用后，由于多方面的原因，软件不能继续适应用户的要求。要延续软件的使用寿命，就必须对软件进行维护。软件的维护包括纠错性维护和改进性维护两个方面。<br>区别参考：<br>从硬件角度来看CISC处理的是不等长指令集，它必须对不等长指令进行分割，因此在执行单一指令的时候需要进行较多的处理工作。而RISC执行的是等长精简指令集，CPU在执行指令的时候速度较快且性能稳定。因此在并行处理方面RISC明显优于CISC，RISC可同时执行多条指令，它可将一条指令分割成若干个进程或线程，交由多个处理器同时执行。由于RISC执行的是精简指令集，所以它的制造工艺简单且成本低廉。<br>从软件角度来看，CISC运行的则是我们所熟识的DOS、Windows操作系统。而且它拥有大量的应用程序。因为全世界有65%以上的软件厂商都理为基于CISC体系结构的PC及其兼容机服务的，象赫赫有名的Microsoft就是其中的一家。而RISC在此方面却显得有些势单力薄。虽然在RISC上也可运行DOS、Windows，但是需要一个翻译过程，所以运行速度要慢许多。</p>
+<h4><span id="计算机组成架构按指令分类">计算机组成，架构按指令分类</span></h4><p>计算机组成指的是系统结构的逻辑实现，包括机器机内的数据流和控制流的组成及逻辑设计等。主要分为五个部分：控制器，运算器，存储器，输入设备，输出设备。</p>
+<p>哈佛结构(Harvard architecture)是一种将程序指令储存和数据储存分开的存储器结构。中央处理器首先到程序指令储存器中读取程序指令内容，解码后得到数据地址，再到相应的数据储存器中读取数据，并进行下一步的操作（通常是执行）。程序指令储存和数据储存分开，数据和指令的储存可以同时进行，可以使指令和数据有不同的数据宽度，如Microchip公司的PIC16芯片的程序指令是14位宽度，而数据是8位宽度。哈佛结构的微处理器通常具有较高的执行效率。其程序指令和数据指令分开组织和储存的，执行时可以预先读取下一条指令。目前使用哈佛结构的中央处理器和微控制器有很多，除了上面提到的Microchip公司的PIC系列芯片，还有摩托罗拉公司的MC68系列、Zilog公司的Z8系列、ATMEL公司的AVR系列和安谋公司的ARM9、ARM10和ARM11。大多数DSP是哈佛结构的。</p>
+<p>冯.诺伊曼结构（von Neumann architecture），也称普林斯顿结构，是一种将程序指令存储器和数据存储器合并在一起的电脑设计概念结构。该结构隐约指导了将储存装置与中央处理器分开的概念，因此依该结构设计出的计算机又称储存程式型电脑。<br>ARM架构过去称作进阶精简指令集机器（AdvancedRISCMachine，更早称作：AcornRISCMachine），是一个32位精简指令集（RISC）处理器架构，其广泛地使用在许多嵌入式系统设计。由于节能的特点，ARM处理器非常适用于移动通讯领域，符合其主要设计目标为低耗电的特性。</p>
+<p>目前的PC架构绝大多数都是Intel的X86架构，貌似也是因为INTEL的这个X86架构早就了目前INTEL如日中天的地位。X86架构（The X86 architecture）是微处理器执行的计算机语言指令集，指一个intel通用计算机系列的标准编号缩写，也标识一套通用的计算机指令集合。</p>
+<h4><span id="什么是sdlc">什么是SDLC</span></h4><p>SDLC:sdlc（系统生命周期，系统生存周期）是软件的产生直到报废的生命周期，是软件工程中的一种思想原则，即按部就班、逐步推进，每个阶段都要有定义、工作、审查、形成文档以供交流或备查，以提高软件的质量。<br>包括：</p>
+<ul>
+<li>问题定义及规划<br>此阶段是软件开发方与需求方共同讨论，主要确定软件的开发目标及其可行性。</li>
+<li>需求分析<br>在确定软件开发可行的情况下，对软件需要实现的各个功能进行详细分析。需求分析阶段是一个很重要的阶段，这一阶段做得好，将为整个软件开发项目的成功打下良好的基础。“唯一不变的是变化本身。”，同样需求也是在整个软件开发过程中不断变化和深入的，因此我们必须制定需求变更计划来应付这种变化，以保护整个项目的顺利进行。</li>
+<li>软件设计<br>此阶段主要根据需求分析的结果，对整个软件系统进行设计，如系统框架设计，数据库设计等等。软件设计一般分为总体设计和详细设计。好的软件设计将为软件程序编写打下良好的基础。</li>
+<li>程序编码<br>此阶段是将软件设计的结果转换成计算机可运行的程序代码。在程序编码中必须要制定统一，符合标准的编写规范。以保证程序的可读性，易维护性，提高程序的运行效率。</li>
+<li>软件测试<br>在软件设计完成后要经过严密的测试，以发现软件在整个设计过程中存在的问题并加以纠正。整个测试过程分单元测试、组装测试以及系统测试三个阶段进行。测试的方法主要有白盒测试和黑盒测试两种。在测试过程中需要建立详细的测试计划并严格按照测试计划进行测试，以减少测试的随意性。</li>
+<li>运行维护</li>
+</ul>
+<h4><span id="文件系统的制作和优化方式不同文件系统格式内核是如何管理的">文件系统的制作和优化方式，不同文件系统格式内核是如何管理的</span></h4><ul>
+<li><p>根文件系统之所以在前面加一个”根“，说明它是加载其它文件系统的”根“，既然是根的话，那么如果没有这个根，其它的文件系统也就没有办法进行加载的。它包含系统引导和使其他文件系统得以挂载（mount）所必要的文件。根文件系统包括Linux启动时所必须的目录和关键性的文件，例如Linux启动时都需要有init目录下的相关文件，在 Linux挂载分区时Linux一定会找/etc/fstab这个挂载文件等，根文件系统中还包括了许多的应用程序bin目录等，任何包括这些Linux 系统启动所必须的文件都可以成为根文件系统。Linux启动时，第一个必须挂载的是根文件系统；若系统不能从指定设备上挂载根文件系统，则系统会出错而退出启动。成功之后可以自动或手动挂载其他的文件系统。因此，一个系统中可以同时存在不同的文件系统。在 Linux 中将一个文件系统与一个存储设备关联起来的过程称为挂载（mount）。使用 mount 命令将一个文件系统附着到当前文件系统层次结构中（根）。在执行挂装时，要提供文件系统类型、文件系统和一个挂装点。根文件系统被挂载到根目录下“/”上后，在根目录下就有根文件系统的各个目录，文件：/bin /sbin /mnt等，再将其他分区挂接到/mnt目录上，/mnt目录下就有这个分区的各个目录，文件。</p>
+</li>
+<li><p>技术上说Linux是一个内核。“内核”指的是一个提供硬件抽象层、磁盘及文件系统控制、多任务等功能的系统软件。一个内核不是一套完整的操作系统。一套基于Linux内核的完整操作系统叫作Linux操作系统，或是GNU/Linux。</p>
+</li>
+<li><p>文件系统是kernel的一部分。文件系统实现了系统上存储介质和其他资源的交互。kernel tree中的fs目录都是关于文件系统的，可以说它是kernel的一个大子系统。</p>
+</li>
+<li><p>嵌入式系统在flash中分配了存放内核、根文件系统的区域。bootloader加载了内核，内核启动，加载文件系统，进入Linux系统。</p>
+</li>
+<li><p>整个嵌入式系统而言，可以分为三个部分1.uboot 2.kernel 3.文件系统。其中kernel中以VFS去支持各种文件系统，如yaffs，ext3，cramfs等等。yaffs/yaffs2是专为嵌入式系统使用NAND型闪存而设计的一种日志型文件系统。在内核中以VFS来屏蔽各种文件系统的接口不同，以VFS向kernel提供一个统一的接口。如打开一个文件时统一使用open，写时采用write，而不用去考虑是那种文件系统，也不用去考虑文件系统是如何将数据写入物理介质的。其中 kernel中的配置，只是让VFS支持这种接口。</p>
+</li>
+</ul>
+<p>参考 <a target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/cn/linux/l-vfs/">vfs</a>，<a target="_blank" rel="noopener" href="https://www.linuxprobe.com/linux-vfs.html">vfs</a>，<a target="_blank" rel="noopener" href="https://www.cnblogs.com/jimbo17/p/10107318.html">vfs</a></p>
+<h4><span id="nice的默认优先级大小取值范围">nice的默认优先级大小，取值范围</span></h4><p>Linux内核实现了两种不同的优先级范围。第一种是用nice值，它的范围是[-20, 19]，默认值是0。越大的nice值意味着优先级越低–你对系统中的别的进程”nice”。相比于那些高nice值(低优先级)的进程来说，低nice值(高优先级)的进程可以获得更多的处理器时间。<br>Linux nice命令以更改过的优先序来执行程序，如果未指定程序，则会印出目前的排程优先序，内定的 adjustment 为 10，范围为 -20（最高优先序）到 19（最低优先序）。</p>
+<h4><span id="linux内核抢占机制preempt原理">Linux内核抢占机制(preempt)原理</span></h4><p>早期的Linux核心是不可抢占的。它的调度方法是：一个进程可以通过schedule()函数自愿地启动一次调度。非自愿的强制性调度只能发生在每次从系统调用返回的前夕以及每次从中断或异常处理返回到用户空间的前夕。但是，如果在系统空间发生中断或异常是不会引起调度的。这种方式使内核实现得以简化。但常存在下面两个问题：</p>
+<ul>
+<li>如果这样的中断发生在内核中,本次中断返回是不会引起调度的,而要到最初使CPU从用户空间进入内核空间的那次系统调用或中断(异常)返回时才会发生调度。</li>
+<li>另外一个问题是优先级反转。在Linux中，在核心态运行的任何操作都要优先于用户态进程，这就有可能导致优先级反转问题的出现。例如，一个低优先级的用户进程由于执行软/硬中断等原因而导致一个高优先级的任务得不到及时响应。</li>
+</ul>
+<p>当前的Linux内核加入了内核抢占(preempt)机制。内核抢占指用户程序在执行系统调用期间可以被抢占，该进程暂时挂起，使新唤醒的高优先级进程能够运行。这种抢占并非可以在内核中任意位置都能安全进行，比如在临界区中的代码就不能发生抢占。临界区是指同一时间内不可以有超过一个进程在其中执行的指令序列。在Linux内核中这些部分需要用自旋锁保护。</p>
+<p>内核抢占要求内核中所有可能为一个以上进程共享的变量和数据结构就都要通过互斥机制加以保护，或者说都要放在临界区中。在抢占式内核中，认为如果内核不是在一个中断处理程序中，并且不在被 spinlock等互斥机制保护的临界代码中，就认为可以”安全”地进行进程切换。</p>
+<p>Linux内核将临界代码都加了互斥机制进行保护，同时，还在运行时间过长的代码路径上插入调度检查点，打断过长的执行路径，这样，任务可快速切换进程状态，也为内核抢占做好了准备。</p>
+<p>Linux内核抢占只有在内核正在执行例外处理程序（通常指系统调用）并且允许内核抢占时，才能进行抢占内核。禁止内核抢占的情况列出如下：</p>
+<p>（1）内核执行中断处理例程时不允许内核抢占，中断返回时再执行内核抢占。<br>（2）当内核执行软中断或tasklet时，禁止内核抢占，软中断返回时再执行内核抢占。<br>（3）在临界区禁止内核抢占，临界区保护函数通过抢占计数宏控制抢占，计数大于0，表示禁止内核抢占。</p>
+<p>抢占式内核实现的原理是在释放自旋锁时或从中断返回时，如果当前执行进程的 need_resched 被标记，则进行抢占式调度。</p>
+<p>Linux内核在线程信息结构上增加了成员preempt_count作为内核抢占锁，为0表示可以进行内核高度，它随spinlock和rwlock等一起加锁和解锁。线程信息结构thread_info列出如下（在include/asm-x86/thread_info.h中）：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">thread_info</span> &#123;</span>
+    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">task_struct</span> *<span class="hljs-title">task</span>;</span>           <span class="hljs-comment">/*主任务结构 */</span>
+    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">exec_domain</span> *<span class="hljs-title">exec_domain</span>;</span>    <span class="hljs-comment">/* 执行的域*/</span>
+    __u32               flags;          <span class="hljs-comment">/* low level flags */</span>
+    __u32               status;         <span class="hljs-comment">/* 线程同步标识*/</span>
+    __u32               cpu;            <span class="hljs-comment">/* 当前的CPU */</span>
+    <span class="hljs-keyword">int</span>                 preempt_count;  <span class="hljs-comment">/* 0 =&gt; 可以抢占（preemptable）,</span>
+<span class="hljs-comment">                                           &lt;0 =&gt; BUG */</span>
+    <span class="hljs-keyword">mm_segment_t</span>  addr_limit;
+    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">restart_block</span>    <span class="hljs-title">restart_block</span>;</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">ifdef</span> CONFIG_IA32_EMULATION</span>
+    <span class="hljs-keyword">void</span> __user  *sysenter_return;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+&#125;;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span></code></pre></div>
+
+<p>内核调度器的入口为preempt_schedule()，他将当前进程标记为TASK_PREEMPTED状态再调用schedule()，在TASK_PREEMPTED状态，schedule()不会将进程从运行队列中删除。</p>
+<p>内核抢占API函数</p>
+<p>在中断或临界区代码中，线程需要关闭内核抢占，因此，互斥机制（如：自旋锁（spinlock）、RCU等）、中断代码、链表数据遍历等需要关闭内核抢占，临界代码运行完时，需要开启内核抢占。关闭/开启内核抢占需要使用内核抢占API函数preempt_disable和preempt_enable。</p>
+<p>内核抢占API函数说明如下（在include/linux/preempt.h中）：</p>
+<p>preempt_enable() //内核抢占计数preempt_count减1<br>preempt_disable() //内核抢占计数preempt_count加1<br>preempt_enable_no_resched()　 //内核抢占计数preempt_count减1，但不立即抢占式调度<br>preempt_check_resched () //如果必要进行调度<br>preempt_count() //返回抢占计数<br>preempt_schedule() //核抢占时的调度程序的入口点</p>
+<p>内核抢占API函数的实现宏定义列出如下（在include/linux/preempt.h中）：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-meta"># <span class="hljs-meta-keyword">define</span> preempt_disable() /</span>
+<span class="hljs-keyword">do</span> &#123; /
+    inc_preempt_count(); /
+    barrier(); /       <span class="hljs-comment">//加内存屏障，阻止gcc编译器对内存进行优化</span>
+&#125; <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span>)
+
+<span class="hljs-meta"># <span class="hljs-meta-keyword">define</span> inc_preempt_count() /</span>
+<span class="hljs-keyword">do</span> &#123; /
+    preempt_count()++; /
+&#125; <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span>)
+<span class="hljs-meta"># <span class="hljs-meta-keyword">define</span> preempt_count() (current_thread_info()-&gt;preempt_count)</span></code></pre></div>
+
+<p>内核抢占调度<br>Linux内核在硬中断或软中断返回时会检查执行抢占调度。分别说明如下：</p>
+<p>（1）硬中断返回执行抢占调度</p>
+<p>Linux内核在硬中断或出错退出时执行函数retint_kernel，运行抢占函数，函数retint_kernel列出如下（在arch/x86/entry_64.S中）：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-meta"># <span class="hljs-meta-keyword">ifdef</span> CONFIG_PREEMPT</span>
+    <span class="hljs-comment">/*返回到内核空间，检查是否需要执行抢占*/</span>
+    <span class="hljs-comment">/*寄存器rcx存放threadinfo地址，此时，中断关闭*/</span>
+ENTRY(retint_kernel)
+    cmpl $<span class="hljs-number">0</span>,threadinfo_preempt_count(%rcx)
+    jnz  retint_restore_args
+    bt   $TIF_NEED_RESCHED,threadinfo_flags(%rcx)
+    jnc  retint_restore_args
+    bt   $<span class="hljs-number">9</span>,EFLAGS-ARGOFFSET(%rsp) <span class="hljs-comment">/*中断是否关闭?*/</span>
+    jnc  retint_restore_args
+    call preempt_schedule_irq
+    jmp exit_intr
+<span class="hljs-meta"># <span class="hljs-meta-keyword">endif</span></span></code></pre></div>
+
+<p>函数preempt_schedule_irq是出中断上下文时内核抢占调度的入口点，该函数被调用和返回时中断应关闭，保护此函数从中断递归调用。该函数列出如下（在kernel/sched.c中）：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function">asmlinkage <span class="hljs-keyword">void</span> __sched <span class="hljs-title">preempt_schedule_irq</span><span class="hljs-params">(<span class="hljs-keyword">void</span>)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">thread_info</span> *<span class="hljs-title">ti</span> =</span> current_thread_info();
+
+    <span class="hljs-comment">/* 用于捕捉需要修补的调用者 */</span>
+    BUG_ON(ti-&gt;preempt_count || !irqs_disabled());
+ 
+    <span class="hljs-keyword">do</span> &#123;
+        <span class="hljs-comment">/*内核抢占计数加一个较大的值PREEMPT_ACTIVE，表示正在处理抢占，由于计数值较大，基本上不会再进行抢占调度*/</span>
+        add_preempt_count(PREEMPT_ACTIVE); 
+        local_irq_enable();   <span class="hljs-comment">/*开启中断*/</span>
+        schedule();           <span class="hljs-comment">/*内核调度，用于内核抢占，即运行优先级较高的任务*/</span>
+        local_irq_disable();  <span class="hljs-comment">/*关闭中断*/</span>
+        sub_preempt_count(PREEMPT_ACTIVE);
+ 
+        <span class="hljs-comment">/*再次检查，避免在调度与现在时刻之间失去抢占机会*/</span>
+        barrier();   <span class="hljs-comment">/*加内存屏障*/</span>
+    &#125; <span class="hljs-keyword">while</span> (unlikely(test_thread_flag(TIF_NEED_RESCHED)));
+&#125;</code></pre></div>
+
+<p>调度函数schedule会检测进程的 preempt_counter 是否很大，避免普通调度时又执行内核抢占调度。</p>
+<p>（2）软中断返回执行抢占调度</p>
+<p>在打开页出错函数pagefault_enable和软中断底半部开启函数local_bh_enable中，会调用函数preempt_check_resched检查是否需要执行内核抢占。如果不是并能调度，进程才可执行内核抢占调度。函数preempt_check_resched列出如下：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-meta"># <span class="hljs-meta-keyword">define</span> preempt_check_resched() /</span>
+<span class="hljs-keyword">do</span> &#123; /     <span class="hljs-comment">/*如果不是普通调度，才可执行抢占调度*/</span>
+    <span class="hljs-keyword">if</span> (unlikely(test_thread_flag(TIF_NEED_RESCHED))) /
+        preempt_schedule(); /
+&#125; <span class="hljs-keyword">while</span> (<span class="hljs-number">0</span>)</code></pre></div>
+
+<p>函数preempt_schedule源代码与函数preempt_schedule_irq基本上一样，对进程进行调度，这里不再分析。</p>
+<h3><span id="操作系统知识点">操作系统知识点</span></h3><h4><span id="基本特征">基本特征</span></h4><ul>
 <li><p>并发</p>
 <ul>
 <li>并发是指宏观上在一段时间内能同时运行多个程序，而并行则指同一时刻能运行多个指令。</li>
@@ -698,7 +918,7 @@ Test* pm = (Test*)<span class="hljs-built_in">malloc</span>(<span class="hljs-bu
 </ul>
 </li>
 </ul>
-<h3><span id="基本功能">基本功能</span></h3><ul>
+<h4><span id="基本功能">基本功能</span></h4><ul>
 <li><p>进程管理</p>
 <ul>
 <li>进程控制、进程同步、进程通信、死锁处理、处理机调度等。</li>
@@ -759,13 +979,13 @@ Test* pm = (Test*)<span class="hljs-built_in">malloc</span>(<span class="hljs-bu
 <td>chmod(); umask(); chown();</td>
 </tr>
 </tbody></table>
-<h3><span id="大内核和微内核">大内核和微内核</span></h3><ul>
+<h4><span id="大内核和微内核">大内核和微内核</span></h4><ul>
 <li><p>大内核<br>大内核是将操作系统功能作为一个紧密结合的整体放到内核。由于各模块共享信息，因此有很高的性能。</p>
 </li>
 <li><p>微内核<br>由于操作系统不断复杂，因此将一部分操作系统功能移出内核，从而降低内核的复杂性。移出的部分根据分层的原则划分成若干服务，相互独立。在微内核结构下，操作系统被划分成小的、定义良好的模块，只有微内核这一个模块运行在内核态，其余模块运行在用户态。因为需要频繁地在用户态和核心态之间进行切换，所以会有一定的性能损失。</p>
 </li>
 </ul>
-<h3><span id="中断分类">中断分类</span></h3><ul>
+<h4><span id="中断分类">中断分类</span></h4><ul>
 <li><p>外中断<br>由CPU执行指令以外的事件引起，如I/O完成中断，表示设备输入/输出处理已经完成，处理器能够发送下一个输入/输出请求。此外还有时钟中断、控制台中断等。</p>
 </li>
 <li><p>异常<br>由CPU执行指令的内部事件引起，如非法操作码、地址越界、算术溢出等。</p>
@@ -773,12 +993,12 @@ Test* pm = (Test*)<span class="hljs-built_in">malloc</span>(<span class="hljs-bu
 <li><p>陷入<br>在用户程序中使用系统调用。</p>
 </li>
 </ul>
-<h3><span id="进程管理">进程管理</span></h3><p>进程与线程</p>
+<h4><span id="进程管理">进程管理</span></h4><p>进程与线程</p>
 <ul>
 <li>进程<br>进程是资源分配的基本单位。<br>进程控制块 (Process Control Block, PCB) 描述进程的基本信息和运行状态，所谓的创建进程和撤销进程，都是指对 PCB 的操作。</li>
 <li>线程<br>线程是独立调度的基本单位。一个进程中可以有多个线程，它们共享进程资源。QQ 和浏览器是两个进程，浏览器进程里面有很多线程，例如 HTTP 请求线程、事件响应线程、渲染线程等等，线程的并发执行使得在浏览器中点击一个新链接从而发起 HTTP 请求时，浏览器还可以响应用户的其它事件。</li>
 </ul>
-<h4><span id="区别">区别</span></h4><ul>
+<h5><span id="区别">区别</span></h5><ul>
 <li><p>拥有资源<br>进程是资源分配的基本单位，但是线程不拥有资源，线程可以访问隶属进程的资源。</p>
 </li>
 <li><p>调度<br>线程是独立调度的基本单位，在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换。</p>
@@ -788,7 +1008,7 @@ Test* pm = (Test*)<span class="hljs-built_in">malloc</span>(<span class="hljs-bu
 <li><p>通信方面<br>线程间可以通过直接读写同一进程中的数据进行通信，但是进程通信需要借助 IPC。</p>
 </li>
 </ul>
-<h4><span id="进程状态的切换">进程状态的切换</span></h4><ul>
+<h5><span id="进程状态的切换">进程状态的切换</span></h5><ul>
 <li><p>就绪状态（ready）：等待被调度</p>
 </li>
 <li><p>运行状态（running）</p>
@@ -801,7 +1021,7 @@ Test* pm = (Test*)<span class="hljs-built_in">malloc</span>(<span class="hljs-bu
 <li>只有就绪态和运行态可以相互转换，其它的都是单向转换。就绪状态的进程通过调度算法从而获得 CPU 时间，转为运行状态；而运行状态的进程，在分配给它的 CPU 时间片用完之后就会转为就绪状态，等待下一次调度。</li>
 <li>阻塞状态是缺少需要的资源从而由运行状态转换而来，但是该资源不包括 CPU 时间，缺少 CPU 时间会从运行态转换为就绪态。</li>
 </ul>
-<h4><span id="进程调度算法">进程调度算法</span></h4><p>不同环境的调度算法目标不同，因此需要针对不同环境来讨论调度算法。</p>
+<h5><span id="进程调度算法">进程调度算法</span></h5><p>不同环境的调度算法目标不同，因此需要针对不同环境来讨论调度算法。</p>
 <ul>
 <li><p>批处理系统<br>批处理系统没有太多的用户操作，在该系统中，调度算法目标是保证吞吐量和周转时间（从提交到终止的时间）。</p>
 <ul>
@@ -827,7 +1047,7 @@ Test* pm = (Test*)<span class="hljs-built_in">malloc</span>(<span class="hljs-bu
 <li><p>实时系统<br>实时系统要求一个请求在一个确定时间内得到响应。分为硬实时和软实时，前者必须满足绝对的截止时间，后者可以容忍一定的超时。</p>
 </li>
 </ul>
-<h4><span id="进程同步">进程同步</span></h4><ul>
+<h5><span id="进程同步">进程同步</span></h5><ul>
 <li>临界区<br>对临界资源进行访问的那段代码称为临界区。为了互斥访问临界资源，每个进程在进入临界区之前，需要先进行检查。</li>
 </ul>
 <div class="hljs"><pre><code class="hljs bash">// entry section
@@ -949,7 +1169,7 @@ begin
     end
 end;</code></pre></div>
 
-<h4><span id="经典同步问题">经典同步问题</span></h4><p>生产者和消费者问题前面已经讨论过了。</p>
+<h5><span id="经典同步问题">经典同步问题</span></h5><p>生产者和消费者问题前面已经讨论过了。</p>
 <ul>
 <li>读者-写者问题<br>允许多个进程同时对数据进行读操作，但是不允许读和写以及写和写操作同时发生。<br>一个整型变量 count 记录在对数据进行读操作的进程数量，一个互斥量 count_mutex 用于对 count 加锁，一个互斥量 data_mutex 用于对读写的数据加锁。</li>
 </ul>
@@ -1142,7 +1362,7 @@ semaphore s[N];              <span class="hljs-comment">// 每个哲学家一个
         up(&amp;s[i]);
     &#125;
 &#125;</code></pre></div>
-<h4><span id="进程通信">进程通信</span></h4><p>进程同步与进程通信很容易混淆，它们的区别在于：进程同步：控制多个进程按一定顺序执行；进程通信：进程间传输信息。<br>进程通信是一种手段，而进程同步是一种目的。也可以说，为了能够达到进程同步的目的，需要让进程进行通信，传输一些进程同步所需要的信息。</p>
+<h5><span id="进程通信">进程通信</span></h5><p>进程同步与进程通信很容易混淆，它们的区别在于：进程同步：控制多个进程按一定顺序执行；进程通信：进程间传输信息。<br>进程通信是一种手段，而进程同步是一种目的。也可以说，为了能够达到进程同步的目的，需要让进程进行通信，传输一些进程同步所需要的信息。</p>
 <ul>
 <li>管道<br>管道是通过调用 pipe 函数创建的，<code>fd[0]</code>用于读，<code>fd[1]</code>用于写。</li>
 </ul>
@@ -1173,7 +1393,7 @@ semaphore s[N];              <span class="hljs-comment">// 每个哲学家一个
 <li><p>套接字<br>与其它通信机制不同的是，它可用于不同机器间的进程通信。</p>
 </li>
 </ul>
-<h3><span id="死锁">死锁</span></h3><h4><span id="必要条件">必要条件</span></h4><ul>
+<h4><span id="死锁">死锁</span></h4><h5><span id="必要条件">必要条件</span></h5><ul>
 <li><p>互斥：每个资源要么已经分配给了一个进程，要么就是可用的。</p>
 </li>
 <li><p>占有和等待：已经得到了某个资源的进程可以再请求新的资源。</p>
@@ -1183,31 +1403,31 @@ semaphore s[N];              <span class="hljs-comment">// 每个哲学家一个
 <li><p>环路等待：有两个或者两个以上的进程组成一条环路，该环路中的每个进程都在等待下一个进程所占有的资源。</p>
 </li>
 </ul>
-<h4><span id="处理方法">处理方法</span></h4><p>主要有以下四种方法：</p>
+<h5><span id="处理方法">处理方法</span></h5><p>主要有以下四种方法：</p>
 <ul>
 <li>鸵鸟策略</li>
 <li>死锁检测与死锁恢复</li>
 <li>死锁预防</li>
 <li>死锁避免</li>
 </ul>
-<h5><span id="鸵鸟策略">鸵鸟策略</span></h5><p>把头埋在沙子里，假装根本没发生问题。因为解决死锁问题的代价很高，因此鸵鸟策略这种不采取任务措施的方案会获得更高的性能。当发生死锁时不会对用户造成多大影响，或发生死锁的概率很低，可以采用鸵鸟策略。大多数操作系统，包括 Unix，Linux 和 Windows，处理死锁问题的办法仅仅是忽略它。<br>死锁检测与死锁恢复<br>不试图阻止死锁，而是当检测到死锁发生时，采取措施进行恢复。</p>
+<h6><span id="鸵鸟策略">鸵鸟策略</span></h6><p>把头埋在沙子里，假装根本没发生问题。因为解决死锁问题的代价很高，因此鸵鸟策略这种不采取任务措施的方案会获得更高的性能。当发生死锁时不会对用户造成多大影响，或发生死锁的概率很低，可以采用鸵鸟策略。大多数操作系统，包括 Unix，Linux 和 Windows，处理死锁问题的办法仅仅是忽略它。<br>死锁检测与死锁恢复<br>不试图阻止死锁，而是当检测到死锁发生时，采取措施进行恢复。</p>
 <ul>
 <li>每种类型一个资源的死锁检测<br>每种类型一个资源的死锁检测算法是通过检测有向图是否存在环来实现，从一个节点出发进行深度优先搜索，对访问过的节点进行标记，如果访问了已经标记的节点，就表示有向图存在环，也就是检测到死锁的发生。</li>
 <li>每种类型多个资源的死锁检测<br>每个进程最开始时都不被标记，执行过程有可能被标记。当算法结束时，任何没有被标记的进程都是死锁进程。寻找一个没有标记的进程 Pi，它所请求的资源小于等于 A。如果找到了这样一个进程，那么将 C 矩阵的第 i 行向量加到 A 中，标记该进程，并转回 1。如果没有这样一个进程，算法终止。</li>
 </ul>
-<h5><span id="死锁恢复">死锁恢复</span></h5><ul>
+<h6><span id="死锁恢复">死锁恢复</span></h6><ul>
 <li>利用抢占恢复</li>
 <li>利用回滚恢复</li>
 <li>通过杀死进程恢复</li>
 </ul>
-<h5><span id="死锁预防">死锁预防</span></h5><p>在程序运行之前预防发生死锁。</p>
+<h6><span id="死锁预防">死锁预防</span></h6><p>在程序运行之前预防发生死锁。</p>
 <ul>
 <li>破坏互斥条件<br>例如假脱机打印机技术允许若干个进程同时输出，唯一真正请求物理打印机的进程是打印机守护进程。</li>
 <li>破坏占有和等待条件<br>一种实现方式是规定所有进程在开始执行前请求所需要的全部资源。</li>
 <li>破坏不可抢占条件</li>
 <li>破坏环路等待<br>给资源统一编号，进程只能按编号顺序来请求资源。</li>
 </ul>
-<h5><span id="死锁避免">死锁避免</span></h5><p>在程序运行时避免发生死锁。</p>
+<h6><span id="死锁避免">死锁避免</span></h6><p>在程序运行时避免发生死锁。</p>
 <ul>
 <li>安全状态<ul>
 <li>定义：如果没有死锁发生，并且即使所有进程突然请求对资源的最大需求，也仍然存在某种调度次序能够使得每一个进程运行完毕，则称该状态是安全的。安全状态的检测与死锁的检测类似，因为安全状态必须要求不能发生死锁。</li>
@@ -1216,9 +1436,9 @@ semaphore s[N];              <span class="hljs-comment">// 每个哲学家一个
 <li>单个资源的银行家算法</li>
 <li>多个资源的银行家算法</li>
 </ul>
-<h3><span id="内存管理">内存管理</span></h3><h4><span id="虚拟内存">虚拟内存</span></h4><p>虚拟内存的目的是为了让物理内存扩充成更大的逻辑内存，从而让程序获得更多的可用内存。<br>为了更好的管理内存，操作系统将内存抽象成地址空间。每个程序拥有自己的地址空间，这个地址空间被分割成多个块，每一块称为一页。这些页被映射到物理内存，但不需要映射到连续的物理内存，也不需要所有页都必须在物理内存中。当程序引用到不在物理内存中的页时，由硬件执行必要的映射，将缺失的部分装入物理内存并重新执行失败的指令。<br>从上面的描述中可以看出，虚拟内存允许程序不用将地址空间中的每一页都映射到物理内存，也就是说一个程序不需要全部调入内存就可以运行，这使得有限的内存运行大程序成为可能。例如有一台计算机可以产生 16 位地址，那么一个程序的地址空间范围是 0~64K。该计算机只有 32KB 的物理内存，虚拟内存技术允许该计算机运行一个 64K 大小的程序。<br><img src="/img/post_pics/c/1.png"></p>
-<h4><span id="分页系统地址映射">分页系统地址映射</span></h4><p>内存管理单元（MMU）管理着地址空间和物理内存的转换，其中的页表（Page table）存储着页（程序地址空间）和页框（物理内存空间）的映射表。<br>一个虚拟地址分成两个部分，一部分存储页面号，一部分存储偏移量。<br>下图的页表存放着 16 个页，这 16 个页需要用 4 个比特位来进行索引定位。例如对于虚拟地址（0010 000000000100），前 4 位是存储页面号 2，读取表项内容为（110 1），页表项最后一位表示是否存在于内存中，1 表示存在。后 12 位存储偏移量。这个页对应的页框的地址为 （110 000000000100）。<br><img src="/img/post_pics/c/2.png"></p>
-<h4><span id="页面置换算法">页面置换算法</span></h4><p>在程序运行过程中，如果要访问的页面不在内存中，就发生缺页中断从而将该页调入内存中。此时如果内存已无空闲空间，系统必须从内存中调出一个页面到磁盘对换区中来腾出空间。<br>页面置换算法和缓存淘汰策略类似，可以将内存看成磁盘的缓存。在缓存系统中，缓存的大小有限，当有新的缓存到达时，需要淘汰一部分已经存在的缓存，这样才有空间存放新的缓存数据。页面置换算法的主要目标是使页面置换频率最低（也可以说缺页率最低）。</p>
+<h4><span id="内存管理">内存管理</span></h4><h5><span id="虚拟内存">虚拟内存</span></h5><p>虚拟内存的目的是为了让物理内存扩充成更大的逻辑内存，从而让程序获得更多的可用内存。<br>为了更好的管理内存，操作系统将内存抽象成地址空间。每个程序拥有自己的地址空间，这个地址空间被分割成多个块，每一块称为一页。这些页被映射到物理内存，但不需要映射到连续的物理内存，也不需要所有页都必须在物理内存中。当程序引用到不在物理内存中的页时，由硬件执行必要的映射，将缺失的部分装入物理内存并重新执行失败的指令。<br>从上面的描述中可以看出，虚拟内存允许程序不用将地址空间中的每一页都映射到物理内存，也就是说一个程序不需要全部调入内存就可以运行，这使得有限的内存运行大程序成为可能。例如有一台计算机可以产生 16 位地址，那么一个程序的地址空间范围是 0~64K。该计算机只有 32KB 的物理内存，虚拟内存技术允许该计算机运行一个 64K 大小的程序。<br><img src="/img/post_pics/c/1.png"></p>
+<h5><span id="分页系统地址映射">分页系统地址映射</span></h5><p>内存管理单元（MMU）管理着地址空间和物理内存的转换，其中的页表（Page table）存储着页（程序地址空间）和页框（物理内存空间）的映射表。<br>一个虚拟地址分成两个部分，一部分存储页面号，一部分存储偏移量。<br>下图的页表存放着 16 个页，这 16 个页需要用 4 个比特位来进行索引定位。例如对于虚拟地址（0010 000000000100），前 4 位是存储页面号 2，读取表项内容为（110 1），页表项最后一位表示是否存在于内存中，1 表示存在。后 12 位存储偏移量。这个页对应的页框的地址为 （110 000000000100）。<br><img src="/img/post_pics/c/2.png"></p>
+<h5><span id="页面置换算法">页面置换算法</span></h5><p>在程序运行过程中，如果要访问的页面不在内存中，就发生缺页中断从而将该页调入内存中。此时如果内存已无空闲空间，系统必须从内存中调出一个页面到磁盘对换区中来腾出空间。<br>页面置换算法和缓存淘汰策略类似，可以将内存看成磁盘的缓存。在缓存系统中，缓存的大小有限，当有新的缓存到达时，需要淘汰一部分已经存在的缓存，这样才有空间存放新的缓存数据。页面置换算法的主要目标是使页面置换频率最低（也可以说缺页率最低）。</p>
 <ul>
 <li><p>最佳OPT, Optimal replacement algorithm</p>
 <ul>
@@ -1256,19 +1476,15 @@ semaphore s[N];              <span class="hljs-comment">// 每个哲学家一个
 <li><p>时钟Clock<br>第二次机会算法需要在链表中移动页面，降低了效率。时钟算法使用环形链表将页面连接起来，再使用一个指针指向最老的页面。</p>
 </li>
 </ul>
-<h4><span id="分段">分段</span></h4><p>虚拟内存采用的是分页技术，也就是将地址空间划分成固定大小的页，每一页再与内存进行映射。<br>下图为一个编译器在编译过程中建立的多个表，有 4 个表是动态增长的，如果使用分页系统的一维地址空间，动态增长的特点会导致覆盖问题的出现。<br><img src="/img/post_pics/c/3.png"><br>分段的做法是把每个表分成段，一个段构成一个独立的地址空间。每个段的长度可以不同，并且可以动态增长。<br><img src="/img/post_pics/c/4.png"></p>
-<h4><span id="段页式">段页式</span></h4><p>程序的地址空间划分成多个拥有独立地址空间的段，每个段上的地址空间划分成大小相同的页。这样既拥有分段系统的共享和保护，又拥有分页系统的虚拟内存功能。</p>
-<h4><span id="分页与分段的比较">分页与分段的比较</span></h4><ul>
-<li><p>对程序员的透明性：分页透明，但是分段需要程序员显示划分每个段。</p>
-</li>
-<li><p>地址空间的维度：分页是一维地址空间，分段是二维的。</p>
-</li>
-<li><p>大小是否可以改变：页的大小不可变，段的大小可以动态改变。</p>
-</li>
-<li><p>出现的原因：分页主要用于实现虚拟内存，从而获得更大的地址空间；分段主要是为了使程序和数据可以被划分为逻辑上独立的地址空间并且有助于共享和保护。</p>
-</li>
+<h5><span id="分段">分段</span></h5><p>虚拟内存采用的是分页技术，也就是将地址空间划分成固定大小的页，每一页再与内存进行映射。<br>下图为一个编译器在编译过程中建立的多个表，有 4 个表是动态增长的，如果使用分页系统的一维地址空间，动态增长的特点会导致覆盖问题的出现。<br><img src="/img/post_pics/c/3.png"><br>分段的做法是把每个表分成段，一个段构成一个独立的地址空间。每个段的长度可以不同，并且可以动态增长。<br><img src="/img/post_pics/c/4.png"></p>
+<h5><span id="段页式">段页式</span></h5><p>程序的地址空间划分成多个拥有独立地址空间的段，每个段上的地址空间划分成大小相同的页。这样既拥有分段系统的共享和保护，又拥有分页系统的虚拟内存功能。</p>
+<h5><span id="分页与分段的比较">分页与分段的比较</span></h5><ul>
+<li>对程序员的透明性：分页透明，但是分段需要程序员显示划分每个段。</li>
+<li>地址空间的维度：分页是一维地址空间，分段是二维的。</li>
+<li>大小是否可以改变：页的大小不可变，段的大小可以动态改变。</li>
+<li>出现的原因：分页主要用于实现虚拟内存，从而获得更大的地址空间；分段主要是为了使程序和数据可以被划分为逻辑上独立的地址空间并且有助于共享和保护。</li>
 </ul>
-<h3><span id="设备管理">设备管理</span></h3><h4><span id="磁盘结构">磁盘结构</span></h4><ul>
+<h4><span id="设备管理">设备管理</span></h4><h5><span id="磁盘结构">磁盘结构</span></h5><ul>
 <li><p>盘面（Platter）：一个磁盘有多个盘面；</p>
 </li>
 <li><p>磁道（Track）：盘面上的圆形带状区域，一个盘面可以有多个磁道；</p>
@@ -1282,29 +1498,29 @@ semaphore s[N];              <span class="hljs-comment">// 每个哲学家一个
 <li><p>主轴（Spindle）：使整个盘面转动。</p>
 </li>
 </ul>
-<h4><span id="磁盘调度算法">磁盘调度算法</span></h4><p>读写一个磁盘块的时间的影响因素有：</p>
+<h5><span id="磁盘调度算法">磁盘调度算法</span></h5><p>读写一个磁盘块的时间的影响因素有：</p>
 <ul>
 <li>主旋转时间（主轴转动盘面，使得磁头移动到适当的扇区上）</li>
 <li>主寻道时间（制动手臂移动，使得磁头移动到适当的磁道上）</li>
 <li>主实际的数据传输时间</li>
 </ul>
 <p>其中，寻道时间最长，因此磁盘调度的主要目标是使磁盘的平均寻道时间最短。</p>
-<h5><span id="先来先服务fcfs-first-come-first-serve">先来先服务FCFS, First Come First Serve</span></h5><p>按照磁盘请求的顺序进行调度。优点是公平和简单。缺点也很明显，因为未对寻道做任何优化，使平均寻道时间可能较长。</p>
-<h5><span id="最短寻道时间优先sstf-shortest-seek-time-first">最短寻道时间优先SSTF, Shortest Seek Time First</span></h5><p>优先调度与当前磁头所在磁道距离最近的磁道。虽然平均寻道时间比较低，但是不够公平。如果新到达的磁道请求总是比一个在等待的磁道请求近，那么在等待的磁道请求会一直等待下去，也就是出现饥饿现象。具体来说，两端的磁道请求更容易出现饥饿现象。</p>
-<h5><span id="电梯算法scan">电梯算法SCAN</span></h5><p>电梯总是保持一个方向运行，直到该方向没有请求为止，然后改变运行方向。<br>电梯算法（扫描算法）和电梯的运行过程类似，总是按一个方向来进行磁盘调度，直到该方向上没有未完成的磁盘请求，然后改变方向。<br>因为考虑了移动方向，因此所有的磁盘请求都会被满足，解决了 SSTF 的饥饿问题。</p>
-<h3><span id="链接">链接</span></h3><h4><span id="编译系统">编译系统</span></h4><p><img src="/img/post_pics/c/5.png"></p>
+<h6><span id="先来先服务fcfs-first-come-first-serve">先来先服务FCFS, First Come First Serve</span></h6><p>按照磁盘请求的顺序进行调度。优点是公平和简单。缺点也很明显，因为未对寻道做任何优化，使平均寻道时间可能较长。</p>
+<h6><span id="最短寻道时间优先sstf-shortest-seek-time-first">最短寻道时间优先SSTF, Shortest Seek Time First</span></h6><p>优先调度与当前磁头所在磁道距离最近的磁道。虽然平均寻道时间比较低，但是不够公平。如果新到达的磁道请求总是比一个在等待的磁道请求近，那么在等待的磁道请求会一直等待下去，也就是出现饥饿现象。具体来说，两端的磁道请求更容易出现饥饿现象。</p>
+<h6><span id="电梯算法scan">电梯算法SCAN</span></h6><p>电梯总是保持一个方向运行，直到该方向没有请求为止，然后改变运行方向。<br>电梯算法（扫描算法）和电梯的运行过程类似，总是按一个方向来进行磁盘调度，直到该方向上没有未完成的磁盘请求，然后改变方向。<br>因为考虑了移动方向，因此所有的磁盘请求都会被满足，解决了 SSTF 的饥饿问题。</p>
+<h4><span id="链接">链接</span></h4><h5><span id="编译系统">编译系统</span></h5><p><img src="/img/post_pics/c/5.png"></p>
 <ul>
 <li>预处理阶段：处理以 # 开头的预处理命令；</li>
 <li>编译阶段：翻译成汇编文件；</li>
 <li>汇编阶段：将汇编文件翻译成可重定向目标文件；</li>
 <li>链接阶段：将可重定向目标文件和 printf.o 等单独预编译好的目标文件进行合并，得到最终的可执行目标文件。</li>
 </ul>
-<h4><span id="静态链接">静态链接</span></h4><p>静态链接器以一组可重定向目标文件为输入，生成一个完全链接的可执行目标文件作为输出。链接器主要完成以下两个任务：</p>
+<h5><span id="静态链接">静态链接</span></h5><p>静态链接器以一组可重定向目标文件为输入，生成一个完全链接的可执行目标文件作为输出。链接器主要完成以下两个任务：</p>
 <ul>
 <li>符号解析：每个符号对应于一个函数、一个全局变量或一个静态变量，符号解析的目的是将每个符号引用与一个符号定义关联起来。</li>
 <li>重定位：链接器通过把每个符号定义与一个内存位置关联起来，然后修改所有对这些符号的引用，使得它们指向这个内存位置。</li>
 </ul>
-<h4><span id="目标文件">目标文件</span></h4><ul>
+<h5><span id="目标文件">目标文件</span></h5><ul>
 <li><p>可执行目标文件：可以直接在内存中执行；</p>
 </li>
 <li><p>可重定向目标文件：可与其它可重定向目标文件在链接阶段合并，创建一个可执行目标文件；</p>
@@ -1312,7 +1528,7 @@ semaphore s[N];              <span class="hljs-comment">// 每个哲学家一个
 <li><p>共享目标文件：这是一种特殊的可重定向目标文件，可以在运行时被动态加载进内存并链接；</p>
 </li>
 </ul>
-<h4><span id="动态链接">动态链接</span></h4><p>静态库有以下两个问题：</p>
+<h5><span id="动态链接">动态链接</span></h5><p>静态库有以下两个问题：</p>
 <ul>
 <li>当静态库更新时那么整个程序都要重新进行链接；</li>
 <li>对于 printf 这种标准函数库，如果每个程序都要有代码，这会极大浪费资源。</li>
@@ -1322,6 +1538,85 @@ semaphore s[N];              <span class="hljs-comment">// 每个哲学家一个
 <li>在给定的文件系统中一个库只有一个文件，所有引用该库的可执行目标文件都共享这个文件，它不会被复制到引用它的可执行文件中；</li>
 <li>在内存中，一个共享库的 .text 节（已编译程序的机器代码）的一个副本可以被不同的正在运行的进程共享。</li>
 </ul>
+<h2><span id="linux驱动的开发过程">Linux驱动的开发过程</span></h2><p>嵌入式系统中，操作系统是通过各种驱动程序来驾驭硬件设备的。设备驱动程序是操作系统内核和硬件设备之间的接口，它为应用程序屏蔽了硬件的细节，这样在应用程序看来，硬件设备只是一个设备文件，可以像操作普通文件一样对硬件设备进行操作。设备驱动程序是内核的一部分，完成以下功能：<br>驱动程序的注册和注销。</p>
+<ul>
+<li>设备的打开和释放。</li>
+<li>设备的读写操作。</li>
+<li>设备的控制操作。</li>
+<li>设备的中断和轮询处理。</li>
+</ul>
+<p>Linux主要将设备分为三类：字符设备、块设备和网络设备。字符设备是指发送和接收数据以字符的形式进行，没有缓冲区的设备；块设备是指发送和接收数据以整个数据缓冲区的形式进行的设备；网络设备是指网络设备访问的BSD socket 接口。下面以字符设备为例，写出其驱动编写框架：</p>
+<h3><span id="编写驱动程序初始化函数">编写驱动程序初始化函数</span></h3><p>驱动程序的初始化在函数xxx_init()中完成，包括对硬件初始化、中断函数、向内核注册驱动程序等。</p>
+<ul>
+<li>首先理解硬件结构，搞清楚其功能，接口寄存器以及CPU怎么访问控制这些寄存器等。</li>
+<li>其次向内核注册驱动程序。设备驱动程序可以直接编译进内核，在系统启动的时候初始化，也可以在需要的时候以模块的方式动态加载到内核中去。每个字符设备或是块设备都是通过register_chrdev()函数注册，调用该函数后就可以向系统申请主设备号，操作成功，设备名就会出现在/proc/devices里。</li>
+<li>此外，在关闭设备时，需要先解除原先设备的注册，需要有清除函数，在xxx_exit()中通过unregister_chrdev()函数在实现，此后设备就会从/proc/devices里消失。</li>
+<li>当驱动程序被编译成模块时，使用insmod加载模块，模块的初始化函数xxx_init()被调用，向内核注册驱动程序；使用rmmod卸载模块，模块的清除函数xxx_exit()被调用。</li>
+</ul>
+<h3><span id="构造file_operations结构中要用到的各个成员函数">构造file_operations结构中要用到的各个成员函数</span></h3><p>Linux操作系统将所有的设备都看成文件，以操作文件的方式访问设备。应用程序不能直接操作硬件，使用统一的接口函数调用硬件驱动程序，这组接口被成为系统调用。每个系统调用中都有一个与之对应的函数（open、release、read、write、ioctl等），在字符驱动程序中，这些函数集合在一个file_operations类型的数据结构中。以一个键盘驱动程序为例：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">Key7279_fops</span> =</span>  
+&#123;
+    .open = Key7279_Open,  
+    .ioctl = Key7279_Ioctl,  
+    .release = Key7279_Close,
+    .read = Key7279_Read,
+&#125;;</code></pre></div>
+
+<ol>
+<li>设备的打开和释放<ul>
+<li>打开设备是由open()函数来完成，在大部分设备驱动中open完成如下工作：<ul>
+<li>递增计数器</li>
+<li>检查特定设备的特殊情况</li>
+<li>初始化设备</li>
+<li>识别次设备号</li>
+</ul>
+</li>
+<li>释放设备由release()函数来完成。当一个进程释放设备时，其它进程还能继续使用该设备，只是该进程暂时停止对该设备的的使用，而当一个进程关闭设备时，其它进程必须重新打开此设备才能使用。Release完成如下工作：<ul>
+<li>递减计数</li>
+<li>在最后一次释放设备操作时关闭设备</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>设备的读写操作<br>读写设备的主要任务就是把内核空间的数据复制到用户空间，或者是从用户空间复制到内核空间，也就是将内核空间缓冲区里的数据复制到用户空间的缓冲区中或者相反。字符设备使用各自的read()函数和write()函数来进行数据读写。</li>
+<li>设备的控制操作<br>大部分设备除了读写能力，还可进行超出简单的数据传输之外的操作，所以设备驱动也必须具备进行各种硬件控制操作的能力. 这些操作常常通过 ioctl 方法来支持。与读写操作不同，ioctl()的用法与具体设备密切相关。以键盘Key7279_Ioctl为例：</li>
+</ol>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">Key7279_Ioctl</span><span class="hljs-params">(struct inode *inode,struct file *file,<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> cmd, <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> arg)</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-keyword">switch</span>(cmd)  
+    &#123;
+        <span class="hljs-keyword">case</span> Key7279_GETKEY:
+            <span class="hljs-keyword">return</span> key7279_getkey();
+        <span class="hljs-keyword">default</span>:
+        printk(<span class="hljs-string">&quot;Unkown Keyboard Command ID.\n&quot;</span>);
+    &#125;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
+<p>cmd的取值及含义都与具体的设备有关，除了ioctl()，设备驱动程序还可能有其他控制函数，比如llseek()等。当应用程序使用open、release等函数打开某个设备时，设备驱动程序的file_operations结构中的相应成员就会被调用。</p>
+<h3><span id="设备的中断和轮询处理">设备的中断和轮询处理</span></h3><p>对于不支持中断的设备，读写时需要轮询设备状态，以及是否需要继续进行数据传输。例如，打印机。如果设备支持中断，则可按照中断方式进行。模块在使用中断前要先请求一个中断通道(或者 IRQ中断请求)，并在使用后释放它。通过request_irq()函数来注册中断，free_irq()函数来释放。</p>
+<h3><span id="驱动程序的测试">驱动程序的测试</span></h3><p>对驱动程序的调试可以通过打印的方式来进行，就是通过在驱动程序中添加printk()打印函数，来跟踪驱动程序的执行过程，以此来判断问题。  以上是我根据自己的学习总结的，可能写的比较简单，对于比较复杂的驱动函数，会添加更多的函数，但是大体的框架就是这样了。<br>基于操作系统的驱动就是在无操作系统下的硬件接口函数加上操作系统的接口</p>
+<h3><span id="总结">总结</span></h3><p>实现一个嵌入式Linux设备驱动程序的大致流程如下:</p>
+<ul>
+<li>查看原理图，理解设备的工作原理。</li>
+<li>定义主设备号。设备由一个主设备号和一个次设备号来标识。主设备号唯一标识了设备类型，即设备驱动程序类型，它是块设备表或字符设备表中设备表项的索引。次设备号仅由设备驱动程序解释，区分被一个设备驱动控制下的某个独立的设备。</li>
+<li>实现初始化函数。在驱动程序中实现驱动的注册和卸载。</li>
+<li>设计所要实现的文件操作，定义file–operations结构。</li>
+<li>实现所需的文件操作调用，如read，write等。</li>
+<li>实现中断服务，并用request–irq向内核注册，中断并不是每个设备驱动所必需的。</li>
+<li>编译该驱动程序到内核中，或者用insmod命令加载模块。</li>
+<li>测试该设备，编写应用程序，对驱动程序进行测试。</li>
+</ul>
+<p>典型字符设备驱动编写框架：</p>
+<ol>
+<li>编写硬件接口函数</li>
+<li>建立文件系统与设备驱动程序间的接口，如：struct file_operations结构体</li>
+<li>注册设备到chrdevfs全局数组中，注册或注销设备可以在任何时候，但一般在模块加载时注册设备，在模块退出时注销设备。module_init()/module_exit()</li>
+<li>以模块方式编译驱动源码，并将其加载到内核中</li>
+<li>创建设备节点，mknode</li>
+<li>编写应用程序访问底层设备</li>
+<li></li>
+</ol>
 <h2><span id="想成为嵌入式程序员应知道的0x10个基本问题">想成为嵌入式程序员应知道的0x10个基本问题</span></h2><p>这是嵌入式C程序员的基本知识。作者（<code>Jones Nigel</code>）在Embedded Systems Programming杂志上发表了很多嵌入式系统开发方面的文章。</p>
 <p>C语言测试是招聘嵌入式系统程序员过程中必须而且有效的方法。这些年，我既参加也组织了许多这种测试，在这过程中我意识到这些测试能为面试者和被面试者提供许多有用信息，此外，撇开面试的压力不谈，这种测试也是相当有趣的。从被面试者的角度来讲，你能了解许多关于出题者或监考者的情况。这个测试只是出题者为显示其对ANSI标准细节的知识而不是技术技巧而设计吗？这是个愚蠢的问题吗？如要你答出某个字符的ASCII值。这些问题着重考察你的系统调用和内存分配策略方面的能力吗？这标志着出题者也许花时间在微机上而不是在嵌入式系统上。如果上述任何问题的答案是”是”的话，那么我知道我得认真考虑我是否应该去做这份工作。从面试者的角度来讲，一个测试也许能从多方面揭示应试者的素质：最基本的，你能了解应试者C语言的水平。不管怎么样，看一下这人如何回答他不会的问题也是满有趣。应试者是以好的直觉做出明智的选择，还是只是瞎蒙呢？当应试者在某个问题上卡住时是找借口呢，还是表现出对问题的真正的好奇心，把这看成学习的机会呢？我发现这些信息与他们的测试成绩一样有用。有了这些想法，我决定出一些真正针对嵌入式系统的考题，希望这些令人头痛的考题能给正在找工作的人一点帮助。这些问题都是我这些年实际碰到的。其中有些题很难，但它们应该都能给你一点启迪。这个测试适于不同水平的应试者，大多数初级水平的应试者的成绩会很差，经验丰富的程序员应该有很好的成绩。为了让你能自己决定某些问题的偏好，每个问题没有分配分数，如果选择这些考题为你所用，请自行按你的意思分配分数。</p>
 <h3><span id="预处理器preprocessor">预处理器（Preprocessor）</span></h3><ul>
