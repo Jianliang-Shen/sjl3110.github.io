@@ -356,16 +356,14 @@
 </ul>
 </li>
 </ul>
-<h2><span id="链表">链表</span></h2><div class="hljs"><pre><code class="hljs cpp"><span class="hljs-comment">/**</span>
-<span class="hljs-comment"> * Definition for singly-linked list.</span>
-<span class="hljs-comment"> * struct ListNode &#123;</span>
-<span class="hljs-comment"> *     int val;</span>
-<span class="hljs-comment"> *     ListNode *next;</span>
-<span class="hljs-comment"> *     ListNode() : val(0), next(nullptr) &#123;&#125;</span>
-<span class="hljs-comment"> *     ListNode(int x) : val(x), next(nullptr) &#123;&#125;</span>
-<span class="hljs-comment"> *     ListNode(int x, ListNode *next) : val(x), next(next) &#123;&#125;</span>
-<span class="hljs-comment"> * &#125;;</span>
-<span class="hljs-comment"> */</span></code></pre></div>
+<h2><span id="链表">链表</span></h2><div class="hljs"><pre><code class="hljs cpp"><span class="hljs-comment">// Definition for singly-linked list.</span>
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ListNode</span> &#123;</span>
+    <span class="hljs-keyword">int</span> val;
+    ListNode *next;
+    <span class="hljs-built_in">ListNode</span>() : <span class="hljs-built_in">val</span>(<span class="hljs-number">0</span>), <span class="hljs-built_in">next</span>(<span class="hljs-literal">nullptr</span>) &#123;&#125;
+    <span class="hljs-built_in">ListNode</span>(<span class="hljs-keyword">int</span> x) : <span class="hljs-built_in">val</span>(x), <span class="hljs-built_in">next</span>(<span class="hljs-literal">nullptr</span>) &#123;&#125;
+    <span class="hljs-built_in">ListNode</span>(<span class="hljs-keyword">int</span> x, ListNode *next) : <span class="hljs-built_in">val</span>(x), <span class="hljs-built_in">next</span>(next) &#123;&#125;
+ &#125;;</code></pre></div>
 
 <h3><span id="19-删除链表的倒数第-n-个结点">19. 删除链表的倒数第 N 个结点</span></h3><p>给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。</p>
 <div class="hljs"><pre><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> &#123;</span>
@@ -1577,17 +1575,15 @@ exection -&gt; execution (插入 <span class="hljs-string">&#x27;u&#x27;</span>)
     &#125;
 &#125;;</code></pre></div>
 
-<h2><span id="二叉树">二叉树</span></h2><div class="hljs"><pre><code class="hljs cpp"><span class="hljs-comment">/**</span>
-<span class="hljs-comment"> * Definition for a binary tree node.</span>
-<span class="hljs-comment"> * struct TreeNode &#123;</span>
-<span class="hljs-comment"> *     int val;</span>
-<span class="hljs-comment"> *     TreeNode *left;</span>
-<span class="hljs-comment"> *     TreeNode *right;</span>
-<span class="hljs-comment"> *     TreeNode() : val(0), left(nullptr), right(nullptr) &#123;&#125;</span>
-<span class="hljs-comment"> *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) &#123;&#125;</span>
-<span class="hljs-comment"> *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) &#123;&#125;</span>
-<span class="hljs-comment"> * &#125;;</span>
-<span class="hljs-comment"> */</span></code></pre></div>
+<h2><span id="二叉树">二叉树</span></h2><div class="hljs"><pre><code class="hljs cpp"><span class="hljs-comment">//Definition for a binary tree node.</span>
+ <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">TreeNode</span> &#123;</span>
+    <span class="hljs-keyword">int</span> val;
+    TreeNode *left;
+    TreeNode *right;
+    <span class="hljs-built_in">TreeNode</span>() : <span class="hljs-built_in">val</span>(<span class="hljs-number">0</span>), <span class="hljs-built_in">left</span>(<span class="hljs-literal">nullptr</span>), <span class="hljs-built_in">right</span>(<span class="hljs-literal">nullptr</span>) &#123;&#125;
+    <span class="hljs-built_in">TreeNode</span>(<span class="hljs-keyword">int</span> x) : <span class="hljs-built_in">val</span>(x), <span class="hljs-built_in">left</span>(<span class="hljs-literal">nullptr</span>), <span class="hljs-built_in">right</span>(<span class="hljs-literal">nullptr</span>) &#123;&#125;
+    <span class="hljs-built_in">TreeNode</span>(<span class="hljs-keyword">int</span> x, TreeNode *left, TreeNode *right) : <span class="hljs-built_in">val</span>(x), <span class="hljs-built_in">left</span>(left), <span class="hljs-built_in">right</span>(right) &#123;&#125;
+&#125;;</code></pre></div>
 
 <h3><span id="144-二叉树的前序遍历">144. 二叉树的前序遍历</span></h3><p>给你二叉树的根节点 root ，返回它节点值的 前序 遍历</p>
 <div class="hljs"><pre><code class="hljs cpp"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span> &#123;</span>
@@ -2339,7 +2335,7 @@ exection -&gt; execution (插入 <span class="hljs-string">&#x27;u&#x27;</span>)
 &#125;;</code></pre></div>
 
 <h3><span id="93-复原-ip-地址">93. 复原 IP 地址</span></h3><p>有效 IP 地址 正好由四个整数（每个整数位于 0 到 255 之间组成，且不能含有前导 0），整数之间用 ‘.’ 分隔。</p>
-<p>例如：”0.1.2.201” 和 “192.168.1.1” 是 有效 IP 地址，但是 “0.011.255.245”、”192.168.1.312” 和 “<a href="mailto:&#x31;&#x39;&#50;&#x2e;&#x31;&#54;&#56;&#x40;&#49;&#x2e;&#49;">&#x31;&#x39;&#50;&#x2e;&#x31;&#54;&#56;&#x40;&#49;&#x2e;&#49;</a>“ 是 无效 IP 地址。<br>给定一个只包含数字的字符串 s ，用以表示一个 IP 地址，返回所有可能的有效 IP 地址，这些地址可以通过在 s 中插入 ‘.’ 来形成。你 不能 重新排序或删除 s 中的任何数字。你可以按 任何 顺序返回答案。</p>
+<p>例如：”0.1.2.201” 和 “192.168.1.1” 是 有效 IP 地址，但是 “0.011.255.245”、”192.168.1.312” 和 “<a href="mailto:&#x31;&#57;&#x32;&#x2e;&#49;&#x36;&#56;&#64;&#49;&#46;&#x31;">&#x31;&#57;&#x32;&#x2e;&#49;&#x36;&#56;&#64;&#49;&#46;&#x31;</a>“ 是 无效 IP 地址。<br>给定一个只包含数字的字符串 s ，用以表示一个 IP 地址，返回所有可能的有效 IP 地址，这些地址可以通过在 s 中插入 ‘.’ 来形成。你 不能 重新排序或删除 s 中的任何数字。你可以按 任何 顺序返回答案。</p>
 <p>示例 1：</p>
 <div class="hljs"><pre><code class="hljs bash">输入：s = <span class="hljs-string">&quot;25525511135&quot;</span>
 输出：[<span class="hljs-string">&quot;255.255.11.135&quot;</span>,<span class="hljs-string">&quot;255.255.111.35&quot;</span>]</code></pre></div>
