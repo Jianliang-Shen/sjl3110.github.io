@@ -1,0 +1,819 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>华为云物联网设备接入及OBS使用 - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-16 14:01" pubdate>
+      2020年6月16日 下午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      24
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">华为云物联网设备接入及OBS使用</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>记录华为云的上云操作及OBS对象上传文件等操作，大部分操作在WSL Ubuntu中完成，与树莓派环境基本一致。</p>
+<a id="more"></a>  
+
+<ul>
+<li><a href="#linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%BF%9E%E6%8E%A5%E5%8D%8E%E4%B8%BA%E4%BA%91">linux操作系统连接华为云</a><ul>
+<li><a href="#%E4%B8%8A%E4%BC%A0topic">上传TOPIC</a></li>
+<li><a href="#%E6%8E%A5%E6%94%B6%E4%BA%91%E7%AB%AF%E4%B8%8B%E5%8F%91%E7%9A%84%E5%91%BD%E4%BB%A4">接收云端下发的命令</a></li>
+<li><a href="#bug">BUG</a></li>
+</ul>
+</li>
+<li><a href="#obs%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA">OBS对象创建</a><ul>
+<li><a href="#windows%E5%AE%89%E8%A3%85obs-browser">Windows安装OBS Browser+</a></li>
+<li><a href="#linux%E5%AE%89%E8%A3%85obsutil">linux安装obsutil</a></li>
+<li><a href="#%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85obsutil%E7%8E%AF%E5%A2%83">树莓派安装obsutil环境</a></li>
+</ul>
+</li>
+<li><a href="#%E6%A0%91%E8%8E%93%E6%B4%BE%E4%BC%A0%E8%BE%93%E8%A7%86%E9%A2%91%E6%B5%81">树莓派传输视频流</a><ul>
+<li><a href="#%E7%A1%AC%E4%BB%B6%E8%BF%9E%E6%8E%A5">硬件连接</a></li>
+<li><a href="#%E4%BA%91%E7%AB%AF%E8%AE%BE%E7%BD%AErtmp%E6%8E%A8%E6%B5%81%E5%9C%B0%E5%9D%80">云端设置RTMP推流地址</a></li>
+<li><a href="#%E6%A0%91%E8%8E%93%E6%B4%BE%E5%AE%89%E8%A3%85ffmpeg%E5%92%8Cnginx%E5%B7%A5%E5%85%B7">树莓派安装ffmpeg和nginx工具</a></li>
+<li><a href="#%E6%8E%A8%E6%B5%81%E5%AE%9E%E7%8E%B0">推流实现</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85opencv%E6%8C%87%E5%8C%97"><del>安装opencv指北</del></a></li>
+</ul>
+</li>
+</ul>
+<h2><span id="linux操作系统连接华为云">linux操作系统连接华为云</span></h2><p>参考这篇文档：<a href="https://support.huaweicloud.com/devg-iothub/iot_02_2131.html" target="_blank" rel="noopener">Linux配置上云环境及demo</a></p>
+<h3><span id="上传topic">上传TOPIC</span></h3><div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">/*</span>
+<span class="hljs-comment">Topic: $oc/devices/&#123;device_id&#125;/sys/messages/up  </span>
+<span class="hljs-comment">数据格式：</span>
+<span class="hljs-comment">&#123;</span>
+<span class="hljs-comment"> "object_device_id": "&#123;object_device_id&#125;",</span>
+<span class="hljs-comment"> "name": "name",</span>
+<span class="hljs-comment"> "id": "id",</span>
+<span class="hljs-comment"> "content": "hello"</span>
+<span class="hljs-comment">&#125;</span>
+<span class="hljs-comment">"&#123;\"object_device_id\": \"&#123;object_device_id&#125;\",\"name\": \"name\",\"id\": \"id\",\"content\": \"hello\"&#125;"</span>
+<span class="hljs-comment">*/</span>
+payload = <span class="hljs-string">"&#123;\"object_device_id\": \"5ed4fd4c41f4fc02c74fdd27_0\",\"name\": \"massage_test\",\"id\": \"0xffffff\",\"content\": \"Hello, Huawei Yun\"&#125;"</span>;
+<span class="hljs-keyword">char</span> *cmd_topic = combine_strings(<span class="hljs-number">3</span>, <span class="hljs-string">"$oc/devices/"</span>, username, <span class="hljs-string">"/sys/messages/up"</span>);
+<span class="hljs-comment">// ret = mqtt_subscribe(cmd_topic);</span>
+ret = mqtt_publish(cmd_topic, payload);
+<span class="hljs-built_in">free</span>(cmd_topic);
+cmd_topic = <span class="hljs-literal">NULL</span>;
+<span class="hljs-keyword">if</span> (ret &lt; <span class="hljs-number">0</span>)
+&#123;
+ <span class="hljs-built_in">printf</span>(<span class="hljs-string">"subscribe topic error, result %d\n"</span>, ret);
+&#125;</code></pre></div>
+
+<h3><span id="接收云端下发的命令">接收云端下发的命令</span></h3><p>首先在<code>产品-&gt;功能定义-&gt;添加命令</code>中设置一个命令，再在<code>设备-&gt;所有设备-&gt;设备详情-&gt;命令-&gt;命令下发</code>中发送命令。</p>
+<h3><span id="bug">BUG</span></h3><ul>
+<li><p>树莓派上传属性有时间无法读取bug</p>
+</li>
+<li><p>数据解析有问题</p>
+</li>
+</ul>
+<h2><span id="obs对象创建">OBS对象创建</span></h2><h3><span id="windows安装obs-browser">Windows安装OBS Browser+</span></h3><p>在使用OBS前，首先申请一个捅，并在<a href="https://console.huaweicloud.com/iam/?region=cn-east-3#/mine/accessKey" target="_blank" rel="noopener">查看密钥</a>这里申请访问的AK和SK以便之后登陆使用。<a href="https://support.huaweicloud.com/browsertg-obs/obs_03_1003.html" target="_blank" rel="noopener">下载</a>安装，登陆时账号可以任意配置，填上AK和SK即可。<br><img src="/img/post_pics/huawei_yun/login.png"></p>
+<h3><span id="linux安装obsutil">linux安装obsutil</span></h3><p>下载和初始化配置参考：<a href="https://support.huaweicloud.com/utiltg-obs/obs_11_0005.html" target="_blank" rel="noopener">初始化配置</a><br>以本人创建的sjlbowl为例，主要运行步骤：</p>
+<div class="hljs"><pre><code class="hljs bash">➜  Huawei_cloud_demo tar xvf obsutil_linux_amd64.tar.gz
+obsutil_linux_amd64_3.1.15/
+obsutil_linux_amd64_3.1.15/setup.sh
+obsutil_linux_amd64_3.1.15/obsutil
+
+➜  Huawei_cloud_demo <span class="hljs-built_in">cd</span> obsutil_linux_amd64_3.1.15
+
+➜  obsutil_linux_amd64_3.1.15 chmod 755 obsutil
+
+➜  obsutil_linux_amd64_3.1.15 ls
+obsutil  setup.sh
+➜  obsutil_linux_amd64_3.1.15 ./obsutil config -i=********************** -k=********************** -e=**********************
+Config file url:
+  /home/sjl/.obsutilconfig
+
+Update config file successfully!
+
+➜  obsutil_linux_amd64_3.1.15 ./obsutil ls -s
+Start at 2020-06-16 05:53:26.3593567 +0000 UTC
+
+obs://sjlbowl
+Bucket number is: 1
+➜  obsutil_linux_amd64_3.1.15 ./obsutil ls obs://sjlbowl -s
+Start at 2020-06-16 05:53:48.4628515 +0000 UTC
+
+Listing objects .
+
+Object list:
+obs://sjlbowl/63254f37ca35ea6e8b5e803c86705367.jpg
+
+Total size of bucket is: 2.56MB
+Folder number is: 0
+File number is: 1
+➜  obsutil_linux_amd64_3.1.15 ls
+obsutil  setup.sh
+
+➜  obsutil_linux_amd64_3.1.15 touch test.txt
+➜  obsutil_linux_amd64_3.1.15 vim test.txt
+
+➜  obsutil_linux_amd64_3.1.15 ./obsutil cp test.txt obs://sjlbowl
+Start at 2020-06-16 05:55:42.5142311 +0000 UTC
+
+
+Parallel:      5                   Jobs:          5
+Threshold:     50.00MB             PartSize:      auto
+VerifyLength:  <span class="hljs-literal">false</span>               VerifyMd5:     <span class="hljs-literal">false</span>
+CheckpointDir: /home/sjl/.obsutil_checkpoint
+
+[------------------------------------------------] 100.00% 137B/s 33B/33B 442ms
+
+Upload successfully, 33B, n/a, /mnt/f/Huawei_cloud_demo/obsutil_linux_amd64_3.1.15/test.txt --&gt; obs://sjlbowl/test.txt, cost [442], status [200], request id [00000172BBB2983E681D6BC627C5CB01]</code></pre></div>
+
+<h3><span id="树莓派安装obsutil环境">树莓派安装obsutil环境</span></h3><p>需要安装golang环境及编译obsutil文件：</p>
+<div class="hljs"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/huaweicloud/huaweicloud-obs-obsutil.git    <span class="hljs-comment"># 下载源码</span>
+<span class="hljs-built_in">cd</span> huaweicloud-obs-obsutil/
+sudo apt-get install golang                                             <span class="hljs-comment"># 安装golang</span>
+<span class="hljs-built_in">export</span> GOPATH=/home/pi/huawei/huaweicloud-obs-obsutil                   <span class="hljs-comment"># 设置路径</span>
+<span class="hljs-built_in">export</span> CGO_ENABLED=0
+<span class="hljs-built_in">export</span> GOOS=linux                                                       <span class="hljs-comment"># 设置目标系统</span>
+<span class="hljs-built_in">export</span> GOARCH=arm                                                       <span class="hljs-comment"># 设置目标处理器</span>
+go install -ldflags <span class="hljs-string">"-X main.AesKey=&lt;your aes key of which the length must be 16&gt; -X main.AesIv=&lt;your aes iv of which the length must be 16&gt; -X main.CloudType=dt"</span> obsutil
+go build obsutil                                                        <span class="hljs-comment"># 编译文件</span>
+go run obsutil                                                          <span class="hljs-comment"># 生成当前环境可执行版本</span>
+./obsutil config -i=********************** -k=********************** -e=**********************
+./obsutil ls -s
+./obsutil ls obs://my-bucket-input -s
+./obsutil cp ../../face_from_raspberry.jpg obs://my-bucket-input        <span class="hljs-comment"># 上传文件</span></code></pre></div>
+
+<h2><span id="树莓派传输视频流">树莓派传输视频流</span></h2><h3><span id="硬件连接">硬件连接</span></h3><p>红外摄像头：<br><img src="/img/post_pics/huawei_yun/hardware.jpg"><br>更新Picamera驱动并使用下面文件测试：</p>
+<div class="hljs"><pre><code class="hljs py"><span class="hljs-keyword">from</span> picamera <span class="hljs-keyword">import</span> PiCamera
+<span class="hljs-keyword">from</span> time <span class="hljs-keyword">import</span> sleep
+<span class="hljs-keyword">import</span> time
+
+camera = PiCamera()
+camera.resolution=(<span class="hljs-number">720</span>,<span class="hljs-number">480</span>)
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">take_photo</span><span class="hljs-params">()</span>:</span>
+    ticks=int(time.time())
+    fileName=<span class="hljs-string">'raspi%s.jpg'</span>%ticks
+    filePath=<span class="hljs-string">'/home/pi/iot/photos/%s'</span>%fileName
+    camera.start_preview()
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">10</span>,<span class="hljs-number">0</span>,<span class="hljs-number">-1</span>):    <span class="hljs-comment"># 10s倒计时</span>
+        camera.annotate_text=<span class="hljs-string">'%d'</span>%i
+        <span class="hljs-comment"># camera.annotate_text='%s'%filePath</span>
+        sleep(<span class="hljs-number">1</span>)
+    camera.annotate_text=<span class="hljs-string">''</span>
+    camera.capture(filePath)
+    camera.stop_preview()
+
+take_photo()  <span class="hljs-comment"># 拍一次</span></code></pre></div>
+
+<h3><span id="云端设置rtmp推流地址">云端设置RTMP推流地址</span></h3><p>打开控制台，搜索视频接入服务，开通后创建RTMP视频流，激活后可以查看到RTMP推流地址：</p>
+<div class="hljs"><pre><code class="hljs bash">rtmp://121.36.222.36:25021/vis/raspberry</code></pre></div>
+
+<p>参考：<a href="https://support.huaweicloud.com/usermanual-vis/vis_02_0012.html" target="_blank" rel="noopener">创建RTMP视频流</a></p>
+<h3><span id="树莓派安装ffmpeg和nginx工具">树莓派安装ffmpeg和nginx工具</span></h3><p>安装ffmpeg：</p>
+<div class="hljs"><pre><code class="hljs bash">sudo apt-get update
+sudo apt-get install libx264-dev
+wget http://ffmpeg.org/releases/ffmpeg-4.1.tar.bz2
+sudo tar jxvf ffmpeg-4.1.tar.bz2
+<span class="hljs-built_in">cd</span> ffmpeg-4.1/
+sudo ./configure --prefix=/opt/ffmpeg --<span class="hljs-built_in">enable</span>-shared --<span class="hljs-built_in">enable</span>-pthreads --<span class="hljs-built_in">enable</span>-gpl  --<span class="hljs-built_in">enable</span>-avresample --<span class="hljs-built_in">enable</span>-libx264 --<span class="hljs-built_in">disable</span>-yasm
+sudo make &amp;&amp; sudo make install</code></pre></div>
+
+<p>安装和配置nginx：</p>
+<div class="hljs"><pre><code class="hljs bash"><span class="hljs-comment"># 下载解压nginx-rtmp-module模块</span>
+<span class="hljs-built_in">cd</span> ~
+wget https://github.com/arut/nginx-rtmp-module/archive/master.zip
+unzip  master.zip  
+
+<span class="hljs-comment"># 下载解压openresty模块</span>
+<span class="hljs-built_in">cd</span> ~
+wget https://openresty.org/download/openresty-1.13.6.2.tar.gz
+tar xvf openresty-1.13.6.2.tar.gz
+mv openresty-1.13.6.2 openresty   
+
+<span class="hljs-built_in">cd</span> openresty
+sudo ./configure --prefix=/opt/openresty --add-module=/home/pi/nginx-rtmp-module-master
+
+<span class="hljs-comment"># 安装编译nginx</span>
+sudo make     
+sudo make install
+
+<span class="hljs-comment"># 创建快捷方式</span>
+sudo ln -s /opt/openresty/nginx/sbin/nginx /usr/sbin/nginx   
+
+<span class="hljs-comment"># 修改配置文件</span>
+sudo vim /opt/openresty/nginx/conf/nginx.conf    
+<span class="hljs-comment"># 添加：</span>
+rtmp &#123;
+ server &#123;
+  listen 1935;
+  application videotest&#123;
+   live on;
+  &#125;
+ &#125;
+&#125;</code></pre></div>
+
+<h3><span id="推流实现">推流实现</span></h3><div class="hljs"><pre><code class="hljs bash"><span class="hljs-comment"># 命令：</span>
+raspivid -w 640 -h 480 -b 15000000 -t 0 -a 12 -a 1024 -a <span class="hljs-string">"CAM-1 %Y-%m-%d %X"</span> -ae 18,0xff,0x808000 -o - | ffmpeg -re -i - -s 640x480 -vcodec copy -acodec copy -b:v 800k -b:a 32k -f flv rtmp://121.36.222.36:25021/vis/raspberry
+
+<span class="hljs-comment"># 结果：</span>
+Input <span class="hljs-comment">#0, h264, from 'pipe:':</span>
+  Duration: N/A, bitrate: N/A
+    Stream <span class="hljs-comment">#0:0: Video: h264 (High), yuv420p(progressive), 640x480, 25 fps, 25 tbr, 1200k tbn, 50 tbc</span>
+Output <span class="hljs-comment">#0, flv, to 'rtmp://121.36.222.36:25021/vis/raspberry':</span>
+  Metadata:
+    encoder         : Lavf58.20.100
+    Stream <span class="hljs-comment">#0:0: Video: h264 (High) ([7][0][0][0] / 0x0007), yuv420p(progressive), 640x480, q=2-31, 800 kb/s, 25 fps, 25 tbr, 1k tbn, 1200k tbc</span>
+Stream mapping:
+  Stream <span class="hljs-comment">#0:0 -&gt; #0:0 (copy)</span>
+[flv @ 0xae96e0] Timestamps are <span class="hljs-built_in">unset</span> <span class="hljs-keyword">in</span> a packet <span class="hljs-keyword">for</span> stream 0. This is deprecated and will stop working <span class="hljs-keyword">in</span> the future. Fix your code to <span class="hljs-built_in">set</span> the timestamps properly
+^Cmmal: Aborting program.0 size=   18177kB time=00:01:25.72 bitrate=1737.1kbits/s speed=   1x    
+
+[flv @ 0xae96e0] Failed to update header with correct duration.
+[flv @ 0xae96e0] Failed to update header with correct filesize.
+frame= 2154 fps= 25 q=-1.0 Lsize=   18220kB time=00:01:26.12 bitrate=1733.1kbits/s speed=   1x    
+video:18178kB audio:0kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.232961%</code></pre></div>
+
+<p>实际测试延迟在15s-20s之间（4G热点网络）：<br><img src="/img/post_pics/huawei_yun/html.PNG"></p>
+<p>参考：<a href="https://blog.csdn.net/weixin_42534940/article/details/89302092" target="_blank" rel="noopener">【树莓派】ffmpeg + nginx 推 rtmp 视频流实现远程监控</a></p>
+<h3><span id="安装opencv指北"><del>安装opencv指北</del></span></h3><p><del>本来打算用opencv做视频流，发现树莓派开启cv后就很卡，遂放弃，但安装opencv的痛苦历程值得记录，不过只要参考下面两个就够了，如果遇到头文件错误就复制一下改路径，如果遇到make -j4卡死到99%，切换成make就行，并提高swap的交换分区大小，缺少bmi类型文件去网上搜一下就行，这些困难不是大事，等cpu编译完才是望眼欲穿。</del></p>
+<p><a href="https://www.cnblogs.com/gghy/p/11916830.html" target="_blank" rel="noopener"><del>树莓派3B/3B+和4B安装OpenCV教程 (详细教程)</del></a><br><a href="https://www.lizenghai.com/archives/27486.html" target="_blank" rel="noopener"><del>教你在树莓派上安装OpenCV</del></a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/20/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94SQLite3-BLOB%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5%E7%BC%96%E5%86%99/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SQLite3 BLOB增删改查编写</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/15/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E2%80%94%E2%80%94C%E8%AF%AD%E8%A8%80%E8%AF%BB%E5%85%A5cjson%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">
+                        <span class="hidden-mobile">C语言读入cjson配置文件</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Blog Loving</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2024</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "华为云物联网设备接入及OBS使用&nbsp;",
+      ],
+      cursorChar: "|",
+      typeSpeed: 50,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>

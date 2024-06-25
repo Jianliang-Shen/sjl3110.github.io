@@ -1,0 +1,1123 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>PCI设备命令 - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2024-05-27 19:11" pubdate>
+      2024年5月27日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      67
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">PCI设备命令</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>分享：读取GPU设备信息的常用指令</p>
+<a id="more"></a>
+
+<h2><span id="目录">目录</span></h2><ul>
+<li><a href="#%E7%9B%AE%E5%BD%95">目录</a></li>
+<li><a href="#lspci">lspci</a></li>
+<li><a href="#devmem2">devmem2</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E4%BF%A1%E6%81%AF">查看内存信息</a></li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFpcie%E7%9A%84bar">什么是PCIe的BAR？</a><ul>
+<li><a href="#pcie-bar%E7%9A%84%E5%8A%9F%E8%83%BD">PCIe BAR的功能</a></li>
+<li><a href="#%E4%B8%8D%E5%90%8C%E7%9A%84bar%E7%B1%BB%E5%9E%8B%E5%8F%8A%E5%85%B6%E5%B7%AE%E5%BC%82">不同的BAR类型及其差异</a><ul>
+<li><a href="#1-%E5%86%85%E5%AD%98%E7%A9%BA%E9%97%B4barmemory-space-bar">1. 内存空间BAR（Memory Space BAR）</a></li>
+<li><a href="#2-io%E7%A9%BA%E9%97%B4bario-space-bar">2. I/O空间BAR（I/O Space BAR）</a></li>
+</ul>
+</li>
+<li><a href="#bar%E7%9A%84%E5%88%86%E9%85%8D%E5%92%8C%E4%BD%BF%E7%94%A8">BAR的分配和使用</a><ul>
+<li><a href="#1-%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8%E5%92%8C%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">1. 系统启动和资源分配</a></li>
+<li><a href="#2-%E4%B8%BB%E6%9C%BA%E4%B8%8E%E8%AE%BE%E5%A4%87%E9%80%9A%E4%BF%A1">2. 主机与设备通信</a></li>
+</ul>
+</li>
+<li><a href="#%E7%A4%BA%E4%BE%8B">示例</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93">总结</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFnbif">什么是NBIF？</a><ul>
+<li><a href="#1-nbif%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E4%BD%9C%E7%94%A8">1. NBIF的定义和作用</a></li>
+<li><a href="#2-nbif%E7%9A%84%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD">2. NBIF的主要功能</a></li>
+<li><a href="#3-nbif%E5%9C%A8gpu%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8">3. NBIF在GPU中的应用</a></li>
+<li><a href="#4-nbif%E7%9A%84%E4%BC%98%E5%8A%BF">4. NBIF的优势</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93-1">总结</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8C%97%E6%A1%A5%E5%92%8C%E5%8D%97%E6%A1%A5">北桥和南桥</a><ul>
+<li><a href="#1-%E5%8C%97%E6%A1%A5northbridge">1. 北桥（Northbridge）</a><ul>
+<li><a href="#%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD">主要功能：</a></li>
+<li><a href="#%E6%BC%94%E5%8F%98">演变：</a></li>
+</ul>
+</li>
+<li><a href="#2-%E5%8D%97%E6%A1%A5southbridge">2. 南桥（Southbridge）</a><ul>
+<li><a href="#%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD-1">主要功能：</a></li>
+<li><a href="#%E6%BC%94%E5%8F%98-1">演变：</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8C%97%E6%A1%A5%E5%92%8C%E5%8D%97%E6%A1%A5%E7%9A%84%E5%8C%BA%E5%88%AB">北桥和南桥的区别</a></li>
+<li><a href="#%E7%8E%B0%E4%BB%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%9E%B6%E6%9E%84%E7%9A%84%E5%8F%98%E5%8C%96">现代计算机架构的变化</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93-2">总结</a></li>
+</ul>
+</li>
+<li><a href="#rdma%E7%9A%84bdf">RDMA的BDF</a><ul>
+<li><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AFbdf">1. 什么是BDF？</a><ul>
+<li><a href="#bdf%E7%9A%84%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86">BDF的组成部分：</a></li>
+<li><a href="#bdf%E6%A0%BC%E5%BC%8F">BDF格式：</a></li>
+</ul>
+</li>
+<li><a href="#2-bdf%E5%9C%A8rdma%E4%B8%AD%E7%9A%84%E4%BD%9C%E7%94%A8">2. BDF在RDMA中的作用</a></li>
+<li><a href="#3-bdf%E5%9C%A8%E7%B3%BB%E7%BB%9F%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8">3. BDF在系统中的使用</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93-3">总结</a></li>
+</ul>
+</li>
+</ul>
+<h2><span id="lspci">lspci</span></h2><ul>
+<li>-v,–verbose选项开启后，将提供更为详尽的信息，其中涵盖了每个设备的内存地址区间以及相应的IRQ信息。 </li>
+<li>-nn：揭示设备的硬件标识符（供应商ID与设备ID），助您辨识未知设备。 </li>
+<li>-s&lt;槽位号&gt;:仅显示指定槽位号对应的设备信息。</li>
+<li>-t:以树状结构显示PCI设备之间的连接关系。</li>
+<li>-k:显示每个设备所使用的内核模块名称。</li>
+<li>-xxx:显示更加详细的寄存器级别信息。</li>
+</ul>
+<div class="hljs"><pre><code class="hljs bash">lspci -t
+-[0000:00]-+-00.0
+           +-01.0-[01-03]----00.0-[02-03]----00.0-[03]--+-00.0
+           |                                            \-00.1
+           +-02.0
+           +-14.0
+           +-16.0
+           +-17.0
+           +-1b.0-[04]--
+           +-1c.0-[05]--
+           +-1c.2-[06]----00.0
+           +-1c.7-[07]----00.0
+           +-1d.0-[08]--
+           +-1f.0
+           +-1f.2
+           +-1f.3
+           +-1f.4
+           \-1f.6
+
+lspci -nn
+03:00.0 VGA compatible controller [0300]: Advanced Micro Devices, Inc. [AMD/ATI] Vega 20 [Radeon VII] [1002:66af] (rev c1)
+03:00.1 Audio device [0403]: Advanced Micro Devices, Inc. [AMD/ATI] Vega 20 HDMI Audio [Radeon VII] [1002:ab20]
+
+<span class="hljs-comment"># 显示设备上所以pcie设备的vendor id 和device id</span>
+lspci -n -s 03:00.0
+03:00.0 0300: 1002:66af (rev c1)
+
+<span class="hljs-comment"># 显示相当详细的信息，所有能够解析出来的pcie信息都会显示出来</span>
+lspci -vvv -s 03:00.0
+<span class="hljs-comment"># 或者</span>
+lspci -vvv -d 1002:66af
+03:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Vega 20 [Radeon VII] (rev c1) (prog-if 00 [VGA controller])
+        Subsystem: Advanced Micro Devices, Inc. [AMD/ATI] Vega 20 [Radeon VII]
+        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast &gt;TAbort- &lt;TAbort- &lt;MAbort- &gt;SERR- &lt;PERR- INTx-
+        Latency: 0, Cache Line Size: 64 bytes
+        Interrupt: pin A routed to IRQ 144
+        Region 0: Memory at 2400000000 (64-bit, prefetchable) [size=16G]
+        Region 2: Memory at 2200000000 (64-bit, prefetchable) [size=2M]
+        Region 4: I/O ports at e000 [size=256]
+        Region 5: Memory at f7b00000 (32-bit, non-prefetchable) [size=512K]
+        Expansion ROM at f7b80000 [disabled] [size=128K]
+        Capabilities: &lt;access denied&gt;
+        Kernel driver <span class="hljs-keyword">in</span> use: amdgpu
+        Kernel modules: amdgpu
+
+lspci -k -s 03:00.0
+03:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Vega 20 [Radeon VII] (rev c1)
+        Subsystem: Advanced Micro Devices, Inc. [AMD/ATI] Vega 20 [Radeon VII]
+        Kernel driver <span class="hljs-keyword">in</span> use: amdgpu
+        Kernel modules: amdgpu
+
+<span class="hljs-comment"># 显示设备上所有pcie设备的配置空间的标准部分（前 64 字节或 CardBus 桥接器的 128 字节）</span>
+lspci -x -s 03:00.0
+03:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Vega 20 [Radeon VII] (rev c1)
+00: 02 10 af 66 07 04 10 00 c1 00 00 03 10 00 80 00
+10: 0c 00 00 00 24 00 00 00 0c 00 00 00 22 00 00 00
+20: 01 e0 00 00 00 00 b0 f7 00 00 00 00 02 10 1e 08
+30: 00 00 b8 f7 48 00 00 00 00 00 00 00 0b 01 00 00
+
+<span class="hljs-comment"># 显示更加详细的寄存器级别信息</span>
+lspci -xxx -s 03:00.0
+03:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Vega 20 [Radeon VII] (rev c1)
+00: 02 10 af 66 07 04 10 00 c1 00 00 03 10 00 80 00
+10: 0c 00 00 00 24 00 00 00 0c 00 00 00 22 00 00 00
+20: 01 e0 00 00 00 00 b0 f7 00 00 00 00 02 10 1e 08
+30: 00 00 b8 f7 48 00 00 00 00 00 00 00 0b 01 00 00</code></pre></div>
+
+<p>在运用lspci指令得出的结果中，含有诸多复杂字段，故需具备相关经验与知识方能准确理解。 </p>
+<ul>
+<li>设备编号：每个PCI设备都有唯一编号。 </li>
+<li>型式：标注此装置归属的类别linux lspci命令详解，例如VGA控制器、网络适配器、音频接口等等。</li>
+<li>厂商：制造商名称。 </li>
+<li>设备：具体产品型号名称。 </li>
+<li>描述：对设备功能的简要描述。 </li>
+</ul>
+<p>透彻剖析与解读以上字段后，可迅速查找到所需要的PCI设备相关信息及做出相应对策。</p>
+<h2><span id="devmem2">devmem2</span></h2><p>直接访问PCI设备地址空间</p>
+<div class="hljs"><pre><code class="hljs bash">sudo devmem2 0xf7b00000
+/dev/mem opened.
+Memory mapped at address 0x7fc181384000.
+Value at address 0xF7B00000 (0x7fc181384000): 0x54
+
+sudo cat /proc/iomem
+00000000-00000fff : Reserved
+00001000-0009c3ff : System RAM
+0009c400-0009ffff : Reserved
+000a0000-000bffff : PCI Bus 0000:00
+000c0000-000cffff : Video ROM
+000e0000-000fffff : Reserved
+  000f0000-000fffff : System ROM
+00100000-a2ce0fff : System RAM
+a2ce1000-a2d1afff : ACPI Tables
+a2d1b000-a30bdfff : System RAM
+a30be000-a30befff : ACPI Non-volatile Storage
+a30bf000-a30bffff : Reserved
+a30c0000-afe2ffff : System RAM
+afe30000-b16ebfff : Reserved
+b16ec000-b1700fff : ACPI Tables
+b1701000-b17fefff : System RAM
+b17ff000-b1b26fff : ACPI Non-volatile Storage
+b1b27000-b2ffefff : Reserved
+b2fff000-b2ffffff : System RAM
+b3000000-b7ffffff : Reserved
+  b4000000-b7ffffff : Graphics Stolen Memory
+b8000000-f7ffffff : PCI Bus 0000:00
+  b8000000-b81fffff : PCI Bus 0000:08
+  d0000000-dfffffff : 0000:00:02.0
+  f7b00000-f7cfffff : PCI Bus 0000:01
+    f7b00000-f7bfffff : PCI Bus 0000:02
+      f7b00000-f7bfffff : PCI Bus 0000:03
+        f7b00000-f7b7ffff : 0000:03:00.0   <span class="hljs-comment"># GPU设备物理地址空间</span>
+        f7b80000-f7b9ffff : 0000:03:00.0
+        f7ba0000-f7ba3fff : 0000:03:00.1
+...</code></pre></div>
+
+<h2><span id="查看内存信息">查看内存信息</span></h2><div class="hljs"><pre><code class="hljs txt">sudo cat &#x2F;proc&#x2F;meminfo
+MemTotal:       32738388 kB
+MemFree:        19459800 kB
+MemAvailable:   30920932 kB
+Buffers:         1230120 kB
+Cached:         10143732 kB
+SwapCached:          280 kB
+Active:          7116292 kB
+Inactive:        5155544 kB
+Active(anon):     804940 kB
+Inactive(anon):    97316 kB
+Active(file):    6311352 kB
+Inactive(file):  5058228 kB
+Unevictable:         260 kB
+Mlocked:               0 kB
+SwapTotal:       2097148 kB
+SwapFree:        2096368 kB
+Dirty:               588 kB
+Writeback:             0 kB
+AnonPages:        898004 kB
+Mapped:           421580 kB
+Shmem:              4320 kB
+KReclaimable:     557620 kB
+Slab:             879912 kB
+SReclaimable:     557620 kB
+SUnreclaim:       322292 kB
+KernelStack:       11456 kB
+PageTables:        17284 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:    18466340 kB
+Committed_AS:    3800676 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:       37656 kB
+VmallocChunk:          0 kB
+Percpu:            19520 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+ShmemHugePages:        0 kB
+ShmemPmdMapped:        0 kB
+FileHugePages:         0 kB
+FilePmdMapped:         0 kB
+CmaTotal:              0 kB
+CmaFree:               0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+Hugetlb:               0 kB
+DirectMap4k:      629708 kB
+DirectMap2M:    15998976 kB
+DirectMap1G:    17825792 kB</code></pre></div>
+
+<h2><span id="什么是pcie的bar">什么是PCIe的BAR？</span></h2><p><strong>BAR（Base Address Register，基址寄存器）</strong> 是PCI Express（PCIe）设备的重要组成部分，用于指定设备在系统内存地址空间或I/O地址空间中的基址。每个PCIe设备可以有多个BAR，每个BAR定义了设备的一部分内存或I/O空间。主机（Host）使用这些地址与设备进行通信。</p>
+<h3><span id="pcie-bar的功能">PCIe BAR的功能</span></h3><ol>
+<li><strong>地址映射</strong>：<ul>
+<li>BAR用于映射设备的内存或I/O空间到系统地址空间，使主机能够访问设备的寄存器和内存。</li>
+</ul>
+</li>
+<li><strong>资源分配</strong>：<ul>
+<li>在系统启动时，操作系统或BIOS会扫描PCIe设备，读取BAR寄存器，并为每个BAR分配一个唯一的地址范围。</li>
+</ul>
+</li>
+<li><strong>设备通信</strong>：<ul>
+<li>主机通过读取和写入BAR映射的地址空间，与PCIe设备进行通信，控制设备的操作和传输数据。</li>
+</ul>
+</li>
+</ol>
+<h3><span id="不同的bar类型及其差异">不同的BAR类型及其差异</span></h3><p>每个PCIe设备可以有多个BAR，每个BAR的类型和用途可能有所不同。以下是常见的BAR类型及其差异：</p>
+<h4><span id="1-内存空间barmemory-space-bar">1. 内存空间BAR（Memory Space BAR）</span></h4><p><strong>内存空间BAR</strong> 映射设备的内存空间，使主机能够访问设备的寄存器和内存缓冲区。</p>
+<ul>
+<li><strong>32位内存空间BAR</strong>：<ul>
+<li>地址范围：0x00000000到0xFFFFFFFF。</li>
+<li>用于映射设备的小容量内存空间。</li>
+</ul>
+</li>
+<li><strong>64位内存空间BAR</strong>：<ul>
+<li>地址范围：64位地址空间。</li>
+<li>由两个连续的BAR寄存器组成（低32位和高32位），用于映射设备的大容量内存空间。</li>
+</ul>
+</li>
+</ul>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>适用于需要高带宽访问的大容量存储区域，如图形显存、网络缓冲区等。</li>
+<li>支持内存映射I/O（MMIO），主机通过直接内存访问（DMA）高效读取和写入数据。</li>
+</ul>
+<h4><span id="2-io空间bario-space-bar">2. I/O空间BAR（I/O Space BAR）</span></h4><p><strong>I/O空间BAR</strong> 映射设备的I/O端口，使主机能够访问设备的I/O寄存器。</p>
+<ul>
+<li><strong>I/O地址范围</strong>：0x0000到0xFFFF（16位地址空间）。</li>
+</ul>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>适用于简单的设备寄存器访问，如控制寄存器、状态寄存器。</li>
+<li>通常用于低带宽设备，如串口、并口、键盘控制器等。</li>
+</ul>
+<h3><span id="bar的分配和使用">BAR的分配和使用</span></h3><h4><span id="1-系统启动和资源分配">1. 系统启动和资源分配</span></h4><ul>
+<li>在系统启动时，BIOS或操作系统扫描PCIe总线上的设备，读取每个设备的配置空间，找到BAR寄存器。</li>
+<li>根据设备的需求，BIOS或操作系统为每个BAR分配一个唯一的地址范围，并将分配结果写回BAR寄存器。</li>
+<li>这使得每个设备在系统地址空间中有一个固定的映射地址，主机可以通过这些地址与设备通信。</li>
+</ul>
+<h4><span id="2-主机与设备通信">2. 主机与设备通信</span></h4><ul>
+<li>主机通过读取和写入BAR映射的地址空间，与设备进行数据交换。</li>
+<li>内存空间BAR通常用于高速数据传输，通过DMA操作提高效率。</li>
+<li>I/O空间BAR用于低速控制和状态寄存器访问，通过I/O指令进行读写。</li>
+</ul>
+<h3><span id="示例">示例</span></h3><p>假设有一个PCIe设备具有两个BAR：</p>
+<ol>
+<li><strong>BAR0（32位内存空间BAR）</strong>：<ul>
+<li>地址范围：0x80000000到0x8000FFFF（64KB）。</li>
+<li>用于映射设备的控制寄存器和状态寄存器。</li>
+</ul>
+</li>
+<li><strong>BAR1（64位内存空间BAR）</strong>：<ul>
+<li>地址范围：0x900000000000到0x9000000FFFFF（1MB）。</li>
+<li>用于映射设备的大容量数据缓冲区。</li>
+</ul>
+</li>
+</ol>
+<p>在系统启动时，操作系统扫描PCIe设备，并为这两个BAR分配地址。主机可以通过这些地址与设备进行通信。例如，主机可以通过读取和写入0x80000000到0x8000FFFF的地址范围来配置设备的寄存器，或通过0x900000000000到0x9000000FFFFF的地址范围来传输数据。</p>
+<h3><span id="总结">总结</span></h3><ul>
+<li><strong>BAR（Base Address Register）</strong> 是PCIe设备用于定义其内存或I/O空间基址的寄存器。</li>
+<li><strong>内存空间BAR</strong> 用于映射设备的内存区域，适合高速数据传输。</li>
+<li><strong>I/O空间BAR</strong> 用于映射设备的I/O端口，适合低速控制和状态访问。</li>
+<li>BIOS或操作系统在系统启动时为每个BAR分配唯一的地址范围，确保主机能够与设备进行有效通信。</li>
+</ul>
+<p>通过理解BAR的类型和作用，可以更好地设计和调试PCIe设备的通信和数据传输。</p>
+<h2><span id="什么是nbif">什么是NBIF？</span></h2><p><strong>NBIF（Northbridge Interconnect Fabric）</strong> 是一种用于连接和管理CPU、GPU、内存和其他关键系统组件的互连架构。NBIF通常用于高性能计算系统、服务器和图形处理单元（GPU）中，以提供高带宽、低延迟的数据传输通道。以下是关于NBIF的详细解释：</p>
+<h3><span id="1-nbif的定义和作用">1. NBIF的定义和作用</span></h3><p><strong>NBIF（Northbridge Interconnect Fabric）</strong> 是一种先进的互连架构，负责在系统的不同处理单元（如CPU、GPU）和内存之间进行高效的数据传输和通信。它作为北桥的一部分或替代北桥功能，提供了连接CPU和其他系统组件的高性能数据路径。</p>
+<h3><span id="2-nbif的主要功能">2. NBIF的主要功能</span></h3><ol>
+<li><p><strong>高带宽数据传输</strong>：</p>
+<ul>
+<li>NBIF提供高带宽的数据通道，支持大量数据在CPU、GPU和内存之间的快速传输。</li>
+<li>这种高带宽能力对于处理复杂的计算任务和高分辨率图形渲染至关重要。</li>
+</ul>
+</li>
+<li><p><strong>低延迟通信</strong>：</p>
+<ul>
+<li>NBIF设计为低延迟架构，确保数据在不同系统组件之间快速传输，减少通信延迟。</li>
+<li>低延迟通信提高了系统的整体响应速度和性能。</li>
+</ul>
+</li>
+<li><p><strong>多设备互连</strong>：</p>
+<ul>
+<li>NBIF支持连接多个CPU、GPU、内存模块和其他外设，形成一个高效的互连网络。</li>
+<li>这种多设备互连能力使得系统能够扩展和集成更多的处理单元，提高计算和处理能力。</li>
+</ul>
+</li>
+<li><p><strong>内存一致性</strong>：</p>
+<ul>
+<li>NBIF维护系统内存的一致性，确保所有处理单元访问的内存数据是最新的。</li>
+<li>内存一致性机制对于多核处理和并行计算环境尤为重要。</li>
+</ul>
+</li>
+<li><p><strong>数据路由和调度</strong>：</p>
+<ul>
+<li>NBIF智能路由和调度数据传输，优化数据流，避免瓶颈和冲突。</li>
+<li>这种智能路由功能提高了数据传输的效率和可靠性。</li>
+</ul>
+</li>
+</ol>
+<h3><span id="3-nbif在gpu中的应用">3. NBIF在GPU中的应用</span></h3><p>在现代GPU架构中，NBIF用于连接GPU与CPU、内存和其他外设，提供高效的数据传输和通信通道。以下是具体的应用场景：</p>
+<ol>
+<li><p><strong>CPU-GPU通信</strong>：</p>
+<ul>
+<li>NBIF提供高带宽、低延迟的通道，用于CPU与GPU之间的数据交换。</li>
+<li>这种高效通信对于图形渲染、科学计算和机器学习任务尤为关键。</li>
+</ul>
+</li>
+<li><p><strong>内存访问</strong>：</p>
+<ul>
+<li>NBIF管理GPU对系统内存的访问，确保GPU能够快速读取和写入内存数据。</li>
+<li>高效的内存访问提高了GPU处理大规模数据集的能力。</li>
+</ul>
+</li>
+<li><p><strong>多GPU互连</strong>：</p>
+<ul>
+<li>在多GPU系统中，NBIF提供多个GPU之间的高效互连，支持并行计算和任务分配。</li>
+<li>多GPU互连提高了系统的计算能力和处理速度。</li>
+</ul>
+</li>
+</ol>
+<h3><span id="4-nbif的优势">4. NBIF的优势</span></h3><ol>
+<li><p><strong>高性能</strong>：</p>
+<ul>
+<li>NBIF的高带宽和低延迟特性使得系统能够处理复杂的计算和图形任务，提高整体性能。</li>
+</ul>
+</li>
+<li><p><strong>扩展性</strong>：</p>
+<ul>
+<li>NBIF支持多设备互连，系统可以轻松扩展，增加更多的处理单元和内存资源。</li>
+</ul>
+</li>
+<li><p><strong>可靠性</strong>：</p>
+<ul>
+<li>智能路由和调度功能确保数据传输的可靠性和效率，减少数据传输中的瓶颈和冲突。</li>
+</ul>
+</li>
+</ol>
+<h3><span id="总结">总结</span></h3><p><strong>NBIF（Northbridge Interconnect Fabric）</strong> 是一种高性能的互连架构，负责连接和管理CPU、GPU、内存及其他关键系统组件。它提供高带宽、低延迟的数据传输通道，支持多设备互连，确保系统内存的一致性，并优化数据传输的路由和调度。NBIF在高性能计算、图形处理和并行计算环境中发挥着重要作用，显著提高了系统的整体性能和扩展性。</p>
+<p>通过了解NBIF的功能和应用，可以更好地理解现代计算系统和GPU架构的高效数据管理和通信机制。</p>
+<h2><span id="北桥和南桥">北桥和南桥</span></h2><p>在传统的PC架构中，<strong>北桥（Northbridge）</strong> 和 <strong>南桥（Southbridge）</strong> 是两个重要的芯片，它们负责连接和管理不同的系统组件。这两个桥在计算机的主板上分别处理不同类型的数据传输和通信。以下是对北桥和南桥的详细解释：</p>
+<h3><span id="1-北桥northbridge">1. 北桥（Northbridge）</span></h3><p><strong>北桥</strong> 是主板上的一个关键芯片，负责连接CPU、内存和高速图形接口（如AGP或PCIe）。它主要处理高速和高带宽的通信任务。</p>
+<h4><span id="主要功能">主要功能：</span></h4><ol>
+<li><p><strong>CPU连接</strong>：</p>
+<ul>
+<li>连接CPU并处理其与系统内存和其他高速设备（如显卡）之间的数据传输。</li>
+<li>管理系统总线，确保CPU能够高效访问内存和外部设备。</li>
+</ul>
+</li>
+<li><p><strong>内存控制</strong>：</p>
+<ul>
+<li>连接和管理系统内存（RAM），处理内存地址的映射和数据传输。</li>
+<li>现代北桥通常集成了内存控制器，支持DDR、DDR2、DDR3等不同类型的内存。</li>
+</ul>
+</li>
+<li><p><strong>高速图形接口</strong>：</p>
+<ul>
+<li>连接显卡，通过AGP或PCIe接口提供高带宽的数据传输通道。</li>
+<li>处理图形数据的传输和管理，支持高性能图形渲染。</li>
+</ul>
+</li>
+</ol>
+<h4><span id="演变">演变：</span></h4><ul>
+<li>在现代计算机系统中，北桥的功能逐渐被集成到CPU中，特别是内存控制器和PCIe控制器，减少了芯片的数量和系统的复杂性。</li>
+</ul>
+<h3><span id="2-南桥southbridge">2. 南桥（Southbridge）</span></h3><p><strong>南桥</strong> 是主板上的另一个关键芯片，负责连接和管理低速设备和外设。它处理较低带宽的通信任务，并管理系统中的输入输出设备。</p>
+<h4><span id="主要功能">主要功能：</span></h4><ol>
+<li><p><strong>外围设备接口</strong>：</p>
+<ul>
+<li>连接和管理低速外设，如硬盘（通过SATA或IDE接口）、光驱、USB设备、音频设备等。</li>
+<li>提供多种接口，支持各种外设的连接和数据传输。</li>
+</ul>
+</li>
+<li><p><strong>I/O控制</strong>：</p>
+<ul>
+<li>管理系统中的I/O设备，包括键盘、鼠标、串口和并口。</li>
+<li>提供GPIO（通用输入输出）接口，用于连接和控制各种I/O设备。</li>
+</ul>
+</li>
+<li><p><strong>系统管理</strong>：</p>
+<ul>
+<li>处理系统管理相关的功能，如电源管理、系统时钟、BIOS等。</li>
+<li>提供CMOS和RTC（实时时钟）支持，管理系统设置和时间。</li>
+</ul>
+</li>
+</ol>
+<h4><span id="演变">演变：</span></h4><ul>
+<li>随着技术的发展，南桥的功能也逐渐被集成到单一的芯片组（如PCH，Platform Controller Hub）中，进一步简化了主板设计。</li>
+</ul>
+<h3><span id="北桥和南桥的区别">北桥和南桥的区别</span></h3><ol>
+<li><p><strong>功能划分</strong>：</p>
+<ul>
+<li><strong>北桥</strong> 主要处理高速通信，连接CPU、内存和显卡。</li>
+<li><strong>南桥</strong> 主要处理低速通信，管理外围设备和I/O接口。</li>
+</ul>
+</li>
+<li><p><strong>位置和连接</strong>：</p>
+<ul>
+<li>北桥通常位于靠近CPU的位置，通过高速总线直接连接CPU。</li>
+<li>南桥通过北桥与CPU连接，负责连接其他外围设备。</li>
+</ul>
+</li>
+</ol>
+<h3><span id="现代计算机架构的变化">现代计算机架构的变化</span></h3><p>在现代计算机系统中，传统的北桥和南桥架构逐渐被整合和简化。以下是一些关键变化：</p>
+<ol>
+<li><p><strong>北桥功能集成</strong>：</p>
+<ul>
+<li>现代CPU通常集成了北桥的主要功能，如内存控制器和PCIe控制器，减少了系统芯片的数量。</li>
+<li>这种集成提高了系统的性能和效率，减少了延迟。</li>
+</ul>
+</li>
+<li><p><strong>PCH（Platform Controller Hub）</strong>：</p>
+<ul>
+<li>南桥的功能被整合到PCH中，PCH集成了所有I/O控制和外围设备管理功能。</li>
+<li>PCH通过DMI（Direct Media Interface）或类似接口与CPU连接，简化了系统架构。</li>
+</ul>
+</li>
+</ol>
+<h3><span id="总结">总结</span></h3><ul>
+<li><strong>北桥（Northbridge）</strong> 和 <strong>南桥（Southbridge）</strong> 是传统PC架构中的两个关键芯片，分别处理高速和低速的系统通信任务。</li>
+<li>北桥负责连接CPU、内存和显卡，处理高带宽的数据传输；南桥负责管理外围设备和I/O接口。</li>
+<li>随着技术的发展，这两个功能逐渐被集成到现代CPU和PCH中，简化了主板设计，提高了系统性能和效率。</li>
+</ul>
+<p>通过理解北桥和南桥的角色和演变，可以更好地理解计算机系统的架构及其发展方向。</p>
+<h2><span id="rdma的bdf">RDMA的BDF</span></h2><p><strong>RDMA（Remote Direct Memory Access）</strong> 是一种允许计算机直接通过网络访问另一台计算机内存的技术，极大地提高了数据传输的效率。RDMA消除了对CPU的干扰、缓存拷贝和上下文切换，因此在高性能计算和数据中心应用中非常流行。</p>
+<p><strong>BDF（Bus, Device, Function）</strong> 是一个标识PCIe设备的地址命名格式，用于唯一标识系统中的每个PCIe设备。以下是对BDF在RDMA环境中的详细解释：</p>
+<h3><span id="1-什么是bdf">1. 什么是BDF？</span></h3><p><strong>BDF</strong> 代表了PCIe设备的总线号、设备号和功能号，是一个三元组，用于唯一标识系统中的每个PCIe设备。</p>
+<h4><span id="bdf的组成部分">BDF的组成部分：</span></h4><ul>
+<li><strong>Bus（总线号）</strong>：一个系统中可以有多个PCIe总线，每个总线都有一个唯一的编号。</li>
+<li><strong>Device（设备号）</strong>：每个PCIe总线上可以连接多个设备，每个设备在该总线上有一个唯一的编号。</li>
+<li><strong>Function（功能号）</strong>：每个设备可以有多个功能，每个功能在该设备中有一个唯一的编号。通常，功能号为0表示主功能，其他功能号表示设备的其他功能。</li>
+</ul>
+<h4><span id="bdf格式">BDF格式：</span></h4><ul>
+<li><strong>标准表示</strong>：Bus:Device.Function，例如<code>02:00.0</code>表示总线号为2，设备号为0，功能号为0的PCIe设备。</li>
+</ul>
+<h3><span id="2-bdf在rdma中的作用">2. BDF在RDMA中的作用</span></h3><p>在RDMA环境中，BDF用于识别和管理网络适配器（如NIC，Network Interface Controller），这些适配器支持RDMA操作。以下是BDF在RDMA中的几个关键作用：</p>
+<ol>
+<li><p><strong>设备识别</strong>：</p>
+<ul>
+<li>在配置RDMA网络时，系统需要识别支持RDMA功能的网络适配器。BDF用于唯一标识和选择这些设备。</li>
+<li>管理工具和软件使用BDF来识别和管理RDMA适配器，确保数据传输路径的正确性。</li>
+</ul>
+</li>
+<li><p><strong>资源分配</strong>：</p>
+<ul>
+<li>RDMA操作需要高效地分配和管理硬件资源（如内存和网络带宽）。BDF用于分配和管理这些资源，确保每个RDMA适配器能够获得所需的资源。</li>
+<li>在多租户环境中，BDF用于分配和隔离不同租户的RDMA资源，确保资源的公平和安全使用。</li>
+</ul>
+</li>
+<li><p><strong>故障排除</strong>：</p>
+<ul>
+<li>在RDMA网络中发生故障时，BDF用于精确定位故障设备，便于快速诊断和修复问题。</li>
+<li>管理工具可以通过BDF查看设备的状态和性能指标，帮助管理员优化网络配置和性能。</li>
+</ul>
+</li>
+<li><p><strong>性能优化</strong>：</p>
+<ul>
+<li>使用BDF，系统可以针对不同的RDMA设备进行性能调优，确保每个设备在其特定环境中的最佳性能。</li>
+<li>在多设备环境中，通过BDF进行负载均衡和路径优化，提高整体网络性能。</li>
+</ul>
+</li>
+</ol>
+<h3><span id="3-bdf在系统中的使用">3. BDF在系统中的使用</span></h3><p>在实际操作中，系统管理员和RDMA配置工具使用BDF来进行设备配置和管理。例如：</p>
+<ul>
+<li><p><strong>查看设备BDF</strong>：使用工具如<code>lspci</code>查看系统中所有PCIe设备的BDF：</p>
+<div class="hljs"><pre><code class="hljs sh">lspci</code></pre></div>
+<p>输出示例：</p>
+<div class="hljs"><pre><code class="hljs routeros">02:00.0<span class="hljs-built_in"> Ethernet </span>controller: Mellanox Technologies MT27620 Family [ConnectX-3 Pro]</code></pre></div></li>
+<li><p><strong>配置RDMA设备</strong>：使用BDF进行设备配置：</p>
+<div class="hljs"><pre><code class="hljs sh">rdma_configure -d 02:00.0</code></pre></div>
+<p>这条命令会配置BDF为<code>02:00.0</code>的RDMA设备。</p>
+</li>
+<li><p><strong>监控设备性能</strong>：使用BDF监控设备性能和状态：</p>
+<div class="hljs"><pre><code class="hljs sh">rdma_stat -d 02:00.0</code></pre></div></li>
+</ul>
+<h3><span id="总结">总结</span></h3><p><strong>BDF（Bus, Device, Function）</strong> 是用于唯一标识PCIe设备的地址命名格式。在RDMA环境中，BDF用于识别、配置和管理RDMA网络适配器，通过精确定位和管理这些设备，确保高效的数据传输和网络性能。理解BDF的作用及其在RDMA中的应用，对于配置和维护高性能计算和数据中心网络具有重要意义。</p>
+<p>参考<br><a href="https://blog.csdn.net/qq_28499879/article/details/123804789" target="_blank" rel="noopener">lspci 命令详解及常用命令</a><br><a href="https://www.linuxcool.com/srtslxtzlmld" target="_blank" rel="noopener">深入探索Linux系统中lspci命令的基本介绍、用法和实例讲解</a><br><a href="https://blog.csdn.net/weixin_43824344/article/details/121450879" target="_blank" rel="noopener">17.Linux驱动基础-devmem2工具调试工具使用</a><br><a href="https://blog.csdn.net/happen23/article/details/113700200" target="_blank" rel="noopener">用devmem2读写设备IO内存</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%BD%AF%E4%BB%B6/">软件</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/06/24/AGI-Startup/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">AGI Startup</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/28/llm.c/">
+                        <span class="hidden-mobile">Karpathy llm.c测试与代码分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Blog Loving</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2024</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "PCI设备命令&nbsp;",
+      ],
+      cursorChar: "|",
+      typeSpeed: 50,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>

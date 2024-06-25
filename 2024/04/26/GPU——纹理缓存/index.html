@@ -1,0 +1,621 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/linux.png">
+  <link rel="icon" type="image/png" href="/img/linux.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="开发">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  <title>纹理缓存 - BLOGLOVIN</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/an-old-hope.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_6peoq002giu.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BLOGLOVIN</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                链接
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default_flight.jpeg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container page-header text-center fade-in-up">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2024-04-26 10:28" pubdate>
+      2024年4月26日 上午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.9k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      21
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto" id="post">
+            <!-- SEO header -->
+            <h1 style="display: none">纹理缓存</h1>
+            
+            <div class="markdown-body" id="post-body">
+              <p>纹理缓存是现代GPU的基础组件，是实现实时渲染的性能的重要部分。纹理缓存对GPU来说是<strong>Read-Only</strong>的。主要在<strong>texture-mapping</strong>阶段由GPU程序读取。纹理缓存有很高的命中率，因为相邻像素之间有大量的重用，而且通常位于<strong>着色器处理器</strong>附近，所以<strong>纹理数据具有高吞吐量和低读延迟</strong>。GPU的架构对程序员是不可见的，特备隐藏在API之下，这些架构包括纹理缓存被频繁的更新，基础的架构如图所示，L1和L2共同构成了GPU的分级内存：</p>
+<p><img src="/img/post_pics/gpu/tc.png"><br>关于上图的描述：紫色的部分是<strong>Texture Cache</strong>。 从最上边开始看，<strong>Thread Scheduler</strong>为不同的图形处理阶段收集任务。然后把任务安排到不同的<strong>Graphic Core</strong>上。<strong>Graphic Core</strong>有一些固定功能的图像逻辑（<strong>Geometr，Raster</strong>），包括了几个处理功能和光栅化功能。 接着是<strong>Shader</strong>，包括了逻辑控制和ALU单元阵列，用于以SIMD的方式处理shader程序。Shader执行阶段使用了L1 数据指令<strong>Cache</strong>、<strong>texture mapping</strong>和与其关联的<strong>L1 Texture Cache</strong>。Shader的输出和L1和L2之间需要通过<strong>crossbar</strong>来传输。 <strong>Crossbar</strong>连接了各种内存单元，包括<strong>L2Cache</strong>、ROP和内存控制器。内存控制器链接在了保存了<strong>framebuffer</strong>的外部内存上。大部分相邻的blocks是彼此链接的。</p>
+<p>为了理解对纹理缓存的需求，我们首先要了解影响纹理缓存的功能：<strong>texture mapping</strong>和<strong>rasterization</strong>.</p>
+<h2><span id="texture-mapping">Texture Mapping</span></h2><p>纹理映射指获取图像数据并将其填充到几何表面的过程。屏幕上的每一个像素需要在纹理当中找到对应的图像数据。在贴图上的一个像素称为一个纹素。模型每一个顶点保存了一个贴图上的2D位置。这些位置称为纹理坐标，uv表示。这个坐标用来查找纹理贴图上的像素位置，st坐标下的位置。</p>
+<p>通过整数坐标来查找单个颜色叫做<strong>nearestfiltering</strong>，并且可能产生走样。为了避免走样，通常使用邻域像素进行滤波，常用的滤波是<strong>bilinear</strong>。这个平滑操作可以解决纹理映射时产生的走样，但是无法解决纹理缩小时产生走样。</p>
+<p><img src="/img/post_pics/gpu/tc2.png"></p>
+<p>解决纹理所缩小的走样问题需要时用<strong>mipmap</strong>技术。<strong>Mipmap</strong>预先滤波是将纹理贴图生成一系列分辨率减半的贴图，构成一个图像金字塔。<strong>Trilinear mipmap</strong>是通过搜索金字塔相邻两层的贴图，然后在每个贴图上进行<strong>bilinear</strong>插值之后再用这两个值进行线性插值，最终会得到<strong>Trilinear</strong>滤波结果。下图可以看到在level0和level1上选择的<code>2*2</code>的像素进行<strong>bilinear</strong>滤波。为了选择这两张贴图，需要计算lod值。lod值的计算需要计算相邻<code>2*2</code>像素的所对应的纹理坐标的偏差。</p>
+<p><img src="/img/post_pics/gpu/tc3.png"></p>
+<h2><span id="rasterization">Rasterization</span></h2><p>光栅会是将三角形转换成屏幕像素的过程，三角形是GPU使用的基本图元，通过限制使用三角形进行光栅化，算法可以根据硬件实现优化。最简单的像素生成顺序就是从上到下进行水平臊面。这个方法很直观，但这个不是最有的方法，所以通常顺序会进行修改来改进效率。</p>
+<p><strong>GPU的光栅化会把屏幕像素分成2*2的block，通常也称作QUAD。每一个像素保存了uv坐标和纹理梯度，纹理梯度是 $ \frac{ \delta u }{ \delta x} $ 等内容，是通过计算邻域像素纹理坐标的差值得到的。这些纹理梯度，用于计算LOD。如果一个三角形没有覆盖完整的quad，GPU也会为空的像素产生开销，也就是会占据GPU计算引擎的空间。这回导致单一像素的三角形对于GPU来说十分低效，但是也有一些解决方案提出来。</strong></p>
+<p>有关Texture Mapping和光栅化的更多的细节可以参考：[9] T. Akenine-M¨oller, E. Haines, and N. Hoffman, Real-Time Rendering, 3rd ed. AK Peters Ltd., 2008</p>
+<h2><span id="texture-map-memory">Texture Map Memory</span></h2><p>纹素被访问的顺序可以是与光栅化顺序有关的任何方向（The order of texels accessed in a texture map can have any orientation with respect to the rasterization order，不是很理解，列出原文）。如果纹素在贴图中以简单的行主序存储，纹理映射是水平进行的。缓存会保存很长的一条水平纹素提高命中率，但是如果纹理映射顺序旋转了90度那么，每一个像素都会丢失，每次访问都需要一次新的访存，读取新的一行，为了避免这种依赖朝向的纹理，纹理在内存中是以tile为单位保存的，或者是blocked。每一个纹理被分成n*n的tile，并且所有的纹素成组保存的。</p>
+<p>研究显示如果要提高命中率，tile的尺寸需要和cacheline的尺寸一样大，128K或者256K，那么tile的大小就是8<em>8或者16</em>16</p>
+<p>另外一个重要的概念是工作集尺寸working set size。Working Set Size指的是渲染一帧的图像分辨率（ ’The Principle of Texture Thrift’ ）研究显示，如果工作集匹配Cache丢失率会降低。</p>
+<p><strong>纹理缓存是只读的，因为他典型的使用就是放入三角形。但是使用GPU将计算的值放入纹理是一个常用的操作（RTT）。所以尽管他是只读的，他仍然可以改成可写的。如果纹理map改成了可写的，那么所有on-chip的对纹理的引用都会失效，然后GPU就可以写写入纹理了。</strong>也可以使用一个更简单的方法：直接刷新GPU的所有缓存。缓存失效是为了保证所有的缓存在一个一致状态。</p>
+<h2><span id="tile-rasterization">Tile Rasterization</span></h2><p>和一个内存中保存的是tilling的纹素一样，同样在光栅阶段tiling技术改进了纹理数据的访问顺序。一个简单的光栅化过程以行主序的方式生成像素，从三角形左边按行处理到右侧。每一个大的三角形一个纹理缓存进行填充，伴随像素按照逐行生成，并且进入下一行的时候上一行的像素已经丢弃了。这个水平的光栅化会造成纹理读取随着三角形宽度宽度变化。为了改进空间局部性，使用了tiled-rasterization，他会将屏幕分成等大小的矩形，通常的2的指数大小。每个tile逐个光栅化。</p>
+<h2><span id="texture-cache-architecture">Texture Cache Architecture</span></h2><p>纹理缓存的角色在出现了L2Cache的时候发生了变化。就Cache的尺寸而言，现代GPU的L1缓存的大小一般为：12KB，16KB等。L2分布在每一个DRAM通道上，通过cross Bar和L1相连。把一个L2 Cache放在内存控制器上，能够方便GPU进行规模的变化。设计内存架构的时候L2通常是线性内存（相对于根据纹理定制格式来说更好）。它就匀速L2Cache不知能把纹理当做Client还能用作别的内容的缓存。</p>
+<p>其他的还有一些纹理并行和纹理压缩的问题。</p>
+<h2><span id="performance">Performance</span></h2><p>纹理缓存的设计主要是为了性能。如果纹理访问没有命中就需要重off-Chip的内存读取，会产生很大的延迟。为了隐藏延迟，需要需先计算需要的纹理地址，预先抓取缓存行。</p>
+<p><a href="https://liangz0707.github.io/whoimi/blogs/GPUAartch/%E7%BA%B9%E7%90%86%E7%BC%93%E5%AD%98.html#:~:text=%E7%BA%B9%E7%90%86%E7%BC%93%E5%AD%98%E6%98%AF%E7%8E%B0%E4%BB%A3GPU,%E9%87%8F%E5%92%8C%E4%BD%8E%E8%AF%BB%E5%BB%B6%E8%BF%9F%E3%80%82" target="_blank" rel="noopener">原文</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/GPU/">GPU</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Cache/">Cache</a>
+                    
+                      <a class="hover-with-bg" href="/tags/GPU/">GPU</a>
+                    
+                  </div>
+                
+              </div>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/04/28/llm.c/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Karpathy llm.c测试与代码分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/24/GPU%E2%80%94%E2%80%94note/">
+                        <span class="hidden-mobile">GPU Note</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a target="_blank" rel="nofollow noopener"><span>Blog Loving</span></a>
+      <i class="iconfont icon-love"></i>
+      <a target="_blank" rel="nofollow noopener">
+        <span>2024</span></a>
+    </div>
+    
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '#post-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 1,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "纹理缓存&nbsp;",
+      ],
+      cursorChar: "|",
+      typeSpeed: 50,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.staticfile.org/mathjax/3.0.5/es5/tex-svg.js" ></script>
+
+  
+
+
+
+  
+  
+    <script>
+      !function (e, t, a) {
+        function r() {
+          for (var e = 0; e < s.length; e++) s[e].alpha <= 0 ? (t.body.removeChild(s[e].el), s.splice(e, 1)) : (s[e].y--, s[e].scale += .004, s[e].alpha -= .013, s[e].el.style.cssText = "left:" + s[e].x + "px;top:" + s[e].y + "px;opacity:" + s[e].alpha + ";transform:scale(" + s[e].scale + "," + s[e].scale + ") rotate(45deg);background:" + s[e].color + ";z-index:99999");
+          requestAnimationFrame(r)
+        }
+
+        function n() {
+          var t = "function" == typeof e.onclick && e.onclick;
+          e.onclick = function (e) {
+            t && t(), o(e)
+          }
+        }
+
+        function o(e) {
+          var a = t.createElement("div");
+          a.className = "heart", s.push({
+            el: a,
+            x: e.clientX - 5,
+            y: e.clientY - 5,
+            scale: 1,
+            alpha: 1,
+            color: c()
+          }), t.body.appendChild(a)
+        }
+
+        function i(e) {
+          var a = t.createElement("style");
+          a.type = "text/css";
+          try {
+            a.appendChild(t.createTextNode(e))
+          } catch (t) {
+            a.styleSheet.cssText = e
+          }
+          t.getElementsByTagName("head")[0].appendChild(a)
+        }
+
+        function c() {
+          return "rgb(" + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + "," + ~~(255 * Math.random()) + ")"
+        }
+
+        var s = [];
+        e.requestAnimationFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (e) {
+          setTimeout(e, 1e3 / 60)
+        }, i(".heart{width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;}.heart:after{top: -5px;}.heart:before{left: -5px;}"), n(), r()
+      }(window, document);
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"react":{"opacityDefault":1,"opacityOnHover":1},"log":false,"tagMode":false});</script></body>
+</html>
