@@ -183,7 +183,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      4.3k 字
+      4.4k 字
     </span>
   
 
@@ -193,7 +193,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      65
+      66
        分钟
     </span>
   
@@ -238,11 +238,13 @@
 <li><a href="#github-%E8%B5%84%E6%BA%90">Github 资源</a></li>
 </ul>
 </li>
-<li><a href="#%E5%AE%89%E8%A3%85pytorch-16-%E7%8E%AF%E5%A2%83cpu%E7%89%88%E6%9C%AC">安装Pytorch 1.6 环境（CPU版本）</a></li>
-<li><a href="#%E5%AE%89%E8%A3%85pytorch-2x%E7%8E%AF%E5%A2%83gpu%E7%89%88%E6%9C%AC">安装Pytorch 2.x环境（GPU版本）</a></li>
-<li><a href="#vscode-pytorch-book-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">VScode Pytorch Book 环境配置</a></li>
-<li><a href="#cnn%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">CNN卷积神经网络</a><ul>
-<li><a href="#fashionmnist%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E5%88%86%E7%B1%BB">FashionMNIST手写数字分类</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-pytorch-16-%E7%8E%AF%E5%A2%83cpu%E7%89%88%E6%9C%AC">安装 Pytorch 1.6 环境（CPU版本）</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-pytorch-2x-%E7%8E%AF%E5%A2%83cuda%E7%89%88%E6%9C%AC">安装 Pytorch 2.x 环境（CUDA版本）</a></li>
+<li><a href="#pytorch-book-vscode-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">Pytorch Book VScode 环境配置</a></li>
+<li><a href="#pytorch-%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86">PyTorch 知识点整理</a></li>
+<li><a href="#examples">Examples</a><ul>
+<li><a href="#%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92">线性回归</a></li>
+<li><a href="#fashionmnist-%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E5%88%86%E7%B1%BB">FashionMNIST 手写数字分类</a></li>
 <li><a href="#cifar-10">Cifar-10</a></li>
 </ul>
 </li>
@@ -256,7 +258,7 @@
 </thead>
 <tbody><tr>
 <td><a href="https://github.com/chenyuntc/pytorch-book" target="_blank" rel="noopener"><strong>《深度学习框架PyTorch：入门与实战》代码</strong></a></td>
-<td>这个更基础，不过要安装1.6版本的pytorch，2.x版本的有一部分是不兼容的，最好电脑上安装Anaconda，然后创建一个torch的python虚拟环境，里面安装1.x的环境，用Jupyter打开里面的note，VScode也支持Jupyter插件，然后python解释器选择虚拟环境安装了torch的python，参考<a href="#%E5%AE%89%E8%A3%85pytorch-16-%E7%8E%AF%E5%A2%83cpu%E7%89%88%E6%9C%AC">安装Pytorch 1.6 环境（CPU版本）</a>和<a href="#vscode-pytorch-book-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">VScode Pytorch Book 环境配置</a></td>
+<td>这个更基础，不过要安装1.6版本的pytorch，2.x版本的有一部分是不兼容的，最好电脑上安装Anaconda，然后创建一个torch的python虚拟环境，里面安装1.x的环境，用Jupyter打开里面的note，VScode也支持Jupyter插件，然后python解释器选择虚拟环境安装了torch的python，参考<a href="#%E5%AE%89%E8%A3%85-pytorch-16-%E7%8E%AF%E5%A2%83cpu%E7%89%88%E6%9C%AC">安装 Pytorch 1.6 环境（CPU版本）</a>和<a href="#pytorch-book-vscode-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">Pytorch Book VScode 环境配置</a></td>
 </tr>
 <tr>
 <td><a href="https://pytorch.org/tutorials/beginner/basics/intro.html" target="_blank" rel="noopener">Pytorch 官方文档</a></td>
@@ -438,7 +440,7 @@
 </tbody></table>
 </details>
 
-<h2><span id="安装pytorch-16-环境cpu版本">安装Pytorch 1.6 环境（CPU版本）</span></h2><p><a href="https://pytorch.org/get-started/previous-versions/" target="_blank" rel="noopener">https://pytorch.org/get-started/previous-versions/</a></p>
+<h2><span id="安装-pytorch-16-环境cpu版本">安装 Pytorch 1.6 环境（CPU版本）</span></h2><p><a href="https://pytorch.org/get-started/previous-versions/" target="_blank" rel="noopener">https://pytorch.org/get-started/previous-versions/</a></p>
 <details>
 <summary>点击此处查看步骤</summary>
 
@@ -654,7 +656,7 @@ $ pip install torch==1.6.0+cpu torchvision==0.7.0+cpu -f https://download.pytorc
 
 </details>
 
-<h2><span id="安装pytorch-2x环境gpu版本">安装Pytorch 2.x环境（GPU版本）</span></h2><p>在RTX4070S windows中配置WSL相关的AI环境，包括CUDA，PyTorch，Cudnn等</p>
+<h2><span id="安装-pytorch-2x-环境cuda版本">安装 Pytorch 2.x 环境（CUDA版本）</span></h2><p>在RTX4070S windows中配置WSL相关的AI环境，包括CUDA，PyTorch，Cudnn等</p>
 <details>
 <summary>点击此处查看步骤</summary>
 
@@ -720,7 +722,7 @@ cat /usr/include/cudnn_version.h | grep CUDNN_MAJOR -A 2</code></pre></div>
 
 </details>
 
-<h2><span id="vscode-pytorch-book-环境配置">VScode Pytorch Book 环境配置</span></h2><details>
+<h2><span id="pytorch-book-vscode-环境配置">Pytorch Book VScode 环境配置</span></h2><details>
 <summary>点击此处查看步骤</summary>
 
 <div class="hljs"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> git@github.com:chenyuntc/pytorch-book.git</code></pre></div>
@@ -736,7 +738,28 @@ cat /usr/include/cudnn_version.h | grep CUDNN_MAJOR -A 2</code></pre></div>
 <p>再次点击左侧运行，弹出要安装pykernel包，点击安装完成后，可以在右上角看到环境和python版本，也可以点击此处继续更换环境。</p>
 </details>
 
-<h2><span id="cnn卷积神经网络">CNN卷积神经网络</span></h2><h3><span id="fashionmnist手写数字分类">FashionMNIST手写数字分类</span></h3><p>Pytorch: <a href="https://pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html" target="_blank" rel="noopener">Quick Start</a></p>
+<h2><span id="pytorch-知识点整理">PyTorch 知识点整理</span></h2><details>
+<summary>《深度学习框架PyTorch：入门与实战》</summary>
+
+<ul>
+<li>Chapter 2, 简单介绍tensor和构建训练模型</li>
+<li>Chapter 3, 介绍tensor<ul>
+<li>Tensor, tenor, from_numpy, clone</li>
+<li>shape, type, item<ul>
+<li>reshape, view</li>
+<li>squeeze 压缩维度, unsqueeze, cat 拼接</li>
+</ul>
+</li>
+<li>rand, randn, ones, zero</li>
+<li>add, add_, sum, zero_</li>
+<li>requires_grad_(True), backward</li>
+</ul>
+</li>
+</ul>
+</details>
+
+<h2><span id="examples">Examples</span></h2><h3><span id="线性回归">线性回归</span></h3><p>梯度下降算法和auto grad自动求解梯度函数，参考 <a href="https://github.com/chenyuntc/pytorch-book" target="_blank" rel="noopener"><strong>《深度学习框架PyTorch：入门与实战》代码</strong></a> ### 3.4.4 小试牛刀: 用autograd实现线性回归。</p>
+<h3><span id="fashionmnist-手写数字分类">FashionMNIST 手写数字分类</span></h3><p>参考Pytorch教程: <a href="https://pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html" target="_blank" rel="noopener">Quick Start</a></p>
 <details>
 <summary>训练测试步骤</summary>
 
