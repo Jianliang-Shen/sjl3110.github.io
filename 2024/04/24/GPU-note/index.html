@@ -296,11 +296,11 @@
 </li>
 <li><a href="#vf%E5%92%8Cpf%E7%9A%84%E5%8C%BA%E5%88%AB%E5%8F%8A%E4%BA%92%E7%9B%B8%E8%AE%BF%E9%97%AE%E5%92%8C%E8%B0%83%E7%94%A8">VF和PF的区别及互相访问和调用</a><ul>
 <li><a href="#1-pfphysical-function">1. PF（Physical Function）</a><ul>
-<li><a href="#%E4%B8%BB%E8%A6%81%E7%89%B9%E7%82%B9">主要特点：</a></li>
+<li><a href="#%E4%B8%BB%E8%A6%81%E7%89%B9%E7%82%B9">主要特点</a></li>
 </ul>
 </li>
 <li><a href="#2-vfvirtual-function">2. VF（Virtual Function）</a><ul>
-<li><a href="#%E4%B8%BB%E8%A6%81%E7%89%B9%E7%82%B9-1">主要特点：</a></li>
+<li><a href="#%E4%B8%BB%E8%A6%81%E7%89%B9%E7%82%B9-1">主要特点</a></li>
 </ul>
 </li>
 <li><a href="#3-pf%E5%92%8Cvf%E7%9A%84%E5%8C%BA%E5%88%AB">3. PF和VF的区别</a></li>
@@ -851,13 +851,16 @@
 </li>
 <li><p><strong>主机写入Doorbell地址</strong>：</p>
 <ul>
-<li>主机向Doorbell地址写入任务描述符的地址或任务标识。</li>
-<li>例如，假设Doorbell地址为<code>0x1234</code>，主机执行如下写操作：<div class="hljs"><pre><code class="hljs c">*(<span class="hljs-keyword">volatile</span> <span class="hljs-keyword">uint32_t</span> *)<span class="hljs-number">0x1234</span> = task_descriptor_address;</code></pre></div></li>
+<li><p>主机向Doorbell地址写入任务描述符的地址或任务标识。</p>
+</li>
+<li><p>例如，假设Doorbell地址为<code>0x1234</code>，主机执行如下写操作：</p>
+<div class="hljs"><pre><code class="hljs c">*(<span class="hljs-keyword">volatile</span> <span class="hljs-keyword">uint32_t</span> *)<span class="hljs-number">0x1234</span> = task_descriptor_address;</code></pre></div></li>
 </ul>
 </li>
 <li><p><strong>GPU检测Doorbell</strong>：</p>
 <ul>
-<li>GPU监控Doorbell地址，当检测到写操作时，读取写入的数据：<div class="hljs"><pre><code class="hljs c"><span class="hljs-keyword">uint32_t</span> task_descriptor_address = *(<span class="hljs-keyword">volatile</span> <span class="hljs-keyword">uint32_t</span> *)<span class="hljs-number">0x1234</span>;</code></pre></div></li>
+<li><p>GPU监控Doorbell地址，当检测到写操作时，读取写入的数据：</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-keyword">uint32_t</span> task_descriptor_address = *(<span class="hljs-keyword">volatile</span> <span class="hljs-keyword">uint32_t</span> *)<span class="hljs-number">0x1234</span>;</code></pre></div></li>
 </ul>
 </li>
 <li><p><strong>GPU处理任务</strong>：</p>
@@ -1069,8 +1072,10 @@ vkQueueWaitIdle(graphicsQueue);</code></pre></div>
 </li>
 <li><p><strong>初始化CR3寄存器</strong>：</p>
 <ul>
-<li>在虚拟机启动过程中，GPU驱动程序或VMM将根页表的物理地址写入CR3寄存器。</li>
-<li>例如，在x86架构的汇编代码中，初始化CR3寄存器的操作如下：<div class="hljs"><pre><code class="hljs assembly">mov eax, root_page_table_physical_address
+<li><p>在虚拟机启动过程中，GPU驱动程序或VMM将根页表的物理地址写入CR3寄存器。</p>
+</li>
+<li><p>例如，在x86架构的汇编代码中，初始化CR3寄存器的操作如下：</p>
+<div class="hljs"><pre><code class="hljs assembly">mov eax, root_page_table_physical_address
 mov cr3, eax</code></pre></div></li>
 </ul>
 </li>
@@ -1191,37 +1196,45 @@ mov cr3, eax</code></pre></div></li>
 </ol>
 <h4><span id="3-shub在系统架构中的位置">3. SHUB在系统架构中的位置</span></h4><p>在现代系统架构中，SHUB通常位于CPU和其他关键组件之间的核心位置，充当数据和控制信号的集中管理器。它通过高速总线或专用互连接口连接系统中的各个部分。</p>
 <h4><span id="4-shub的应用场景">4. SHUB的应用场景</span></h4><ol>
-<li><strong>高性能计算（HPC）</strong>：<ul>
+<li><p><strong>高性能计算（HPC）</strong>：</p>
+<ul>
 <li>在高性能计算系统中，SHUB用于管理和优化大量数据的传输和处理，提高计算效率。</li>
 </ul>
 </li>
-<li><strong>图形处理</strong>：<ul>
+<li><p><strong>图形处理</strong>：</p>
+<ul>
 <li>在图形处理单元（GPU）中，SHUB用于协调图形渲染和计算任务，支持高分辨率和复杂图形的实时处理。</li>
 </ul>
 </li>
-<li><strong>数据中心</strong>：<ul>
+<li><p><strong>数据中心</strong>：</p>
+<ul>
 <li>在数据中心架构中，SHUB用于管理服务器节点之间的通信和数据流，提高数据中心的整体性能和可靠性。</li>
 </ul>
 </li>
-<li><strong>嵌入式系统</strong>：<ul>
+<li><p><strong>嵌入式系统</strong>：</p>
+<ul>
 <li>在嵌入式系统中，SHUB用于简化系统设计，提供统一的数据管理和外设控制接口。</li>
 </ul>
 </li>
 </ol>
 <h4><span id="5-shub的优势">5. SHUB的优势</span></h4><ol>
-<li><strong>高效数据管理</strong>：<ul>
+<li><p><strong>高效数据管理</strong>：</p>
+<ul>
 <li>SHUB通过智能路由和调度功能，优化数据传输路径，提高系统数据管理效率。</li>
 </ul>
 </li>
-<li><strong>扩展性和灵活性</strong>：<ul>
+<li><p><strong>扩展性和灵活性</strong>：</p>
+<ul>
 <li>SHUB支持多处理单元和外设的互连，提供良好的系统扩展性和灵活性。</li>
 </ul>
 </li>
-<li><strong>性能提升</strong>：<ul>
+<li><p><strong>性能提升</strong>：</p>
+<ul>
 <li>通过高带宽、低延迟的互连和数据管理，SHUB显著提升系统的整体性能。</li>
 </ul>
 </li>
-<li><strong>简化设计</strong>：<ul>
+<li><p><strong>简化设计</strong>：</p>
+<ul>
 <li>统一的管理接口和外设控制简化了系统设计和集成，降低了开发复杂性。</li>
 </ul>
 </li>
@@ -1230,13 +1243,13 @@ mov cr3, eax</code></pre></div></li>
 <p>理解SHUB的功能和应用，有助于更好地设计和优化现代计算机系统架构。</p>
 <h3><span id="vf和pf的区别及互相访问和调用">VF和PF的区别及互相访问和调用</span></h3><p><strong>PF（Physical Function）</strong> 和 <strong>VF（Virtual Function）</strong> 是SR-IOV（Single Root I/O Virtualization，单根I/O虚拟化）技术中的两个关键概念。SR-IOV允许一个物理PCIe设备在硬件层面上实现多个虚拟设备，使得虚拟机能够直接访问物理设备，从而提高性能。</p>
 <h4><span id="1-pfphysical-function">1. PF（Physical Function）</span></h4><p><strong>PF（Physical Function）</strong> 是指物理PCIe设备的功能实体，提供完整的配置、管理和控制功能。每个物理设备至少有一个PF，用于执行设备的基本操作和管理任务。</p>
-<h5><span id="主要特点">主要特点：</span></h5><ul>
+<h5><span id="主要特点">主要特点</span></h5><ul>
 <li><strong>完整性</strong>：PF包含设备的完整功能集，能够执行设备的配置、管理和控制。</li>
 <li><strong>管理功能</strong>：PF用于配置和管理VF，包括创建、初始化和销毁VF。</li>
 <li><strong>直接访问</strong>：PF可以直接访问物理设备的所有资源，包括寄存器、内存和I/O空间。</li>
 </ul>
 <h4><span id="2-vfvirtual-function">2. VF（Virtual Function）</span></h4><p><strong>VF（Virtual Function）</strong> 是由PF创建的虚拟设备，提供物理设备的一部分功能。每个物理设备可以创建多个VF，使得多个虚拟机可以共享同一个物理设备。</p>
-<h5><span id="主要特点">主要特点：</span></h5><ul>
+<h5><span id="主要特点">主要特点</span></h5><ul>
 <li><strong>有限功能</strong>：VF提供物理设备的一部分功能，通常用于处理特定类型的工作负载。</li>
 <li><strong>隔离性</strong>：每个VF在硬件层面上是隔离的，多个VF可以独立运行，互不干扰。</li>
 <li><strong>性能</strong>：VF通过硬件直通技术（如Intel的VT-d或AMD的IOMMU）直接访问物理设备资源，具有接近原生的性能。</li>
@@ -1248,19 +1261,24 @@ mov cr3, eax</code></pre></div></li>
 </ul>
 <h4><span id="4-pf和vf之间的访问和调用">4. PF和VF之间的访问和调用</span></h4><p>在SR-IOV架构中，PF和VF之间的访问和调用机制主要涉及以下几个方面：</p>
 <h5><span id="1-pf管理vf">1. PF管理VF</span></h5><ul>
-<li><strong>创建和销毁</strong>：PF负责创建和销毁VF。创建VF时，PF分配所需的资源（如内存、I/O空间）并初始化VF。<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">// 伪代码示例</span>
+<li><p><strong>创建和销毁</strong>：PF负责创建和销毁VF。创建VF时，PF分配所需的资源（如内存、I/O空间）并初始化VF。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">// 伪代码示例</span>
 pf_create_vf(device_id, vf_id, resources);</code></pre></div></li>
-<li><strong>配置和初始化</strong>：PF初始化VF的配置空间和寄存器，使其能够正常工作。<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">// 伪代码示例</span>
+<li><p><strong>配置和初始化</strong>：PF初始化VF的配置空间和寄存器，使其能够正常工作。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">// 伪代码示例</span>
 pf_init_vf(vf_id, config);</code></pre></div></li>
 </ul>
 <h5><span id="2-vf访问设备资源">2. VF访问设备资源</span></h5><ul>
-<li><strong>直接资源访问</strong>：VF通过硬件直通技术直接访问物理设备的资源，如寄存器和内存。VF的访问权限由PF配置和管理。<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">// 伪代码示例</span>
+<li><p><strong>直接资源访问</strong>：VF通过硬件直通技术直接访问物理设备的资源，如寄存器和内存。VF的访问权限由PF配置和管理。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">// 伪代码示例</span>
 vf_access_resource(vf_id, resource_id);</code></pre></div></li>
 </ul>
 <h5><span id="3-中断和通知机制">3. 中断和通知机制</span></h5><ul>
-<li><strong>中断</strong>：VF可以生成中断，通知PF或主机操作系统（Hypervisor）某些事件的发生，如数据包到达或任务完成。PF或Hypervisor处理这些中断，并作出相应的响应。<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">// 伪代码示例</span>
+<li><p><strong>中断</strong>：VF可以生成中断，通知PF或主机操作系统（Hypervisor）某些事件的发生，如数据包到达或任务完成。PF或Hypervisor处理这些中断，并作出相应的响应。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">// 伪代码示例</span>
 vf_generate_interrupt(vf_id, event);</code></pre></div></li>
-<li><strong>通知机制</strong>：PF可以通过配置寄存器或消息传递通知VF执行特定操作。VF响应这些通知，执行相应任务。<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">// 伪代码示例</span>
+<li><p><strong>通知机制</strong>：PF可以通过配置寄存器或消息传递通知VF执行特定操作。VF响应这些通知，执行相应任务。</p>
+<div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">// 伪代码示例</span>
 pf_notify_vf(vf_id, command);</code></pre></div></li>
 </ul>
 <h4><span id="5-示例应用场景">5. 示例应用场景</span></h4><ul>
@@ -1365,7 +1383,7 @@ pf_notify_vf(vf_id, command);</code></pre></div></li>
 <li>Address space conversion (smaller endpoint address range to larger system virtual address space)</li>
 <li>Providing scatter/gather functionality</li>
 <li>Virtualization support</li>
-<li>The System Cache includes an ATC function with companion ATS to support virtual address handling. </li>
+<li>The System Cache includes an ATC function with companion ATS to support virtual address handling.</li>
 </ul>
 <h3><span id="drm">DRM</span></h3><p>DRM是Linux内核中负责与显卡交互的管理架构，用户空间很方便的利用DRM提供的API，实现3D渲染、视频解码和GPU计算等工作。</p>
 <p>Direct Rendering Manager 提供了一个抽象层，允许用户空间程序（如图形用户界面）直接访问和控制图形硬件，而无需通过 X Window System 或其他中间件。这样可以提高图形性能和响应速度，减少渲染的延迟。</p>
@@ -1499,10 +1517,10 @@ __<span class="hljs-function">global__ <span class="hljs-keyword">void</span> <s
 <p>综上所述，这段内联汇编代码通过 <code>ds_read_b32</code> 指令从本地数据共享内存中读取一个 32 位整数，并将结果存储到 <code>result</code> 变量中。然后使用 <code>s_waitcnt lgkmcnt(0)</code> 确保了前面的读取操作已经完成，然后程序继续执行。</p>
 <h4><span id="汇编">汇编</span></h4><p>这段代码是一个使用 AMD GPU 架构的 HIP 编写的内核函数 <code>ds_read_b32</code> 的汇编代码。让我们一行一行地解释并添加注释：</p>
 <div class="hljs"><pre><code class="hljs assembly">.text
-.protected	ds_read_b32     ; -- Begin function ds_read_b32
-.globl	ds_read_b32
-.p2align	8
-.type	ds_read_b32,@function
+.protected ds_read_b32     ; -- Begin function ds_read_b32
+.globl ds_read_b32
+.p2align 8
+.type ds_read_b32,@function
 ds_read_b32:                    ; @ds_read_b32</code></pre></div>
 
 <ul>
@@ -1513,22 +1531,22 @@ ds_read_b32:                    ; @ds_read_b32</code></pre></div>
 <li><code>.type ds_read_b32,@function</code>: 声明 <code>ds_read_b32</code> 是一个函数。</li>
 </ul>
 <div class="hljs"><pre><code class="hljs assembly">; %bb.0:                                ; %entry
-	s_load_dwordx2 s[0:1], s[4:5], 0x0
-	v_lshlrev_b32_e32 v1, 2, v0
-	v_add_u32_e32 v2, 0, v1
-	ds_write_b32 v2, v0
-	s_waitcnt lgkmcnt(0)
-	v_mov_b32_e32 v3, s1
-	v_add_co_u32_e32 v0, vcc, s0, v1
-	s_barrier
-	s_waitcnt lgkmcnt(0)
-	;;#ASMSTART
-	ds_read_b32 v2 ,v1
+ s_load_dwordx2 s[0:1], s[4:5], 0x0
+ v_lshlrev_b32_e32 v1, 2, v0
+ v_add_u32_e32 v2, 0, v1
+ ds_write_b32 v2, v0
+ s_waitcnt lgkmcnt(0)
+ v_mov_b32_e32 v3, s1
+ v_add_co_u32_e32 v0, vcc, s0, v1
+ s_barrier
+ s_waitcnt lgkmcnt(0)
+ ;;#ASMSTART
+ ds_read_b32 v2 ,v1
 s_waitcnt lgkmcnt(0)
-	;;#ASMEND
-	v_addc_co_u32_e32 v1, vcc, 0, v3, vcc
-	global_store_dword v[0:1], v2, off
-	s_endpgm</code></pre></div>
+ ;;#ASMEND
+ v_addc_co_u32_e32 v1, vcc, 0, v3, vcc
+ global_store_dword v[0:1], v2, off
+ s_endpgm</code></pre></div>
 
 <p>这里是核函数的主体部分。解释如下：</p>
 <ul>
@@ -1547,46 +1565,46 @@ s_waitcnt lgkmcnt(0)
 <li><code>global_store_dword v[0:1], v2, off</code>: 将 <code>v2</code> 中的值存储到全局内存中的 <code>v[0:1]</code> 地址偏移 <code>off</code> 处。</li>
 <li><code>s_endpgm</code>: 结束程序。</li>
 </ul>
-<div class="hljs"><pre><code class="hljs assembly">.section	.rodata,#alloc
-.p2align	6
+<div class="hljs"><pre><code class="hljs assembly">.section .rodata,#alloc
+.p2align 6
 .amdhsa_kernel ds_read_b32
-	.amdhsa_group_segment_fixed_size 0
-	.amdhsa_private_segment_fixed_size 0
-	.amdhsa_kernarg_size 64
-	.amdhsa_user_sgpr_private_segment_buffer 1
-	.amdhsa_user_sgpr_dispatch_ptr 0
-	.amdhsa_user_sgpr_queue_ptr 0
-	.amdhsa_user_sgpr_kernarg_segment_ptr 1
-	.amdhsa_user_sgpr_dispatch_id 0
-	.amdhsa_user_sgpr_flat_scratch_init 0
-	.amdhsa_user_sgpr_private_segment_size 0
-	.amdhsa_system_sgpr_private_segment_wavefront_offset 0
-	.amdhsa_system_sgpr_workgroup_id_x 1
-	.amdhsa_system_sgpr_workgroup_id_y 0
-	.amdhsa_system_sgpr_workgroup_id_z 0
-	.amdhsa_system_sgpr_workgroup_info 0
-	.amdhsa_system_vgpr_workitem_id 0
-	.amdhsa_next_free_vgpr 4
-	.amdhsa_next_free_sgpr 6
-	.amdhsa_reserve_vcc 0
-	.amdhsa_reserve_flat_scratch 0
-	.amdhsa_reserve_xnack_mask 1
-	.amdhsa_float_round_mode_32 0
-	.amdhsa_float_round_mode_16_64 0
-	.amdhsa_float_denorm_mode_32 3
-	.amdhsa_float_denorm_mode_16_64 3
-	.amdhsa_dx10_clamp 1
-	.amdhsa_ieee_mode 1
-	.amdhsa_fp16_overflow 0
-	.amdhsa_exception_fp_ieee_invalid_op 0
-	.amdhsa_exception_fp_denorm_src 0
-	.amdhsa_exception_fp_ieee_div_zero 0
-	.amdhsa_exception_fp_ieee_overflow 0
-	.amd
+ .amdhsa_group_segment_fixed_size 0
+ .amdhsa_private_segment_fixed_size 0
+ .amdhsa_kernarg_size 64
+ .amdhsa_user_sgpr_private_segment_buffer 1
+ .amdhsa_user_sgpr_dispatch_ptr 0
+ .amdhsa_user_sgpr_queue_ptr 0
+ .amdhsa_user_sgpr_kernarg_segment_ptr 1
+ .amdhsa_user_sgpr_dispatch_id 0
+ .amdhsa_user_sgpr_flat_scratch_init 0
+ .amdhsa_user_sgpr_private_segment_size 0
+ .amdhsa_system_sgpr_private_segment_wavefront_offset 0
+ .amdhsa_system_sgpr_workgroup_id_x 1
+ .amdhsa_system_sgpr_workgroup_id_y 0
+ .amdhsa_system_sgpr_workgroup_id_z 0
+ .amdhsa_system_sgpr_workgroup_info 0
+ .amdhsa_system_vgpr_workitem_id 0
+ .amdhsa_next_free_vgpr 4
+ .amdhsa_next_free_sgpr 6
+ .amdhsa_reserve_vcc 0
+ .amdhsa_reserve_flat_scratch 0
+ .amdhsa_reserve_xnack_mask 1
+ .amdhsa_float_round_mode_32 0
+ .amdhsa_float_round_mode_16_64 0
+ .amdhsa_float_denorm_mode_32 3
+ .amdhsa_float_denorm_mode_16_64 3
+ .amdhsa_dx10_clamp 1
+ .amdhsa_ieee_mode 1
+ .amdhsa_fp16_overflow 0
+ .amdhsa_exception_fp_ieee_invalid_op 0
+ .amdhsa_exception_fp_denorm_src 0
+ .amdhsa_exception_fp_ieee_div_zero 0
+ .amdhsa_exception_fp_ieee_overflow 0
+ .amd
 
 hsa_exception_fp_ieee_underflow 0
-	.amdhsa_exception_fp_ieee_inexact 0
-	.amdhsa_exception_int_div_zero 0
+ .amdhsa_exception_fp_ieee_inexact 0
+ .amdhsa_exception_int_div_zero 0
 .end_amdhsa_kernel</code></pre></div>
 
 <p>这部分是 <code>.rodata</code> 段，用于存放只读数据和常量。这里包含了对 <code>ds_read_b32</code> 核函数的一些元数据和参数设置，例如：</p>
@@ -1597,11 +1615,11 @@ hsa_exception_fp_ieee_underflow 0
 <li>设置了浮点数的舍入模式、IEEE 模式、异常处理等。</li>
 </ul>
 <div class="hljs"><pre><code class="hljs assembly">.Lfunc_end0:
-	.size	ds_read_b32, .Lfunc_end0-ds_read_b32
+ .size ds_read_b32, .Lfunc_end0-ds_read_b32
                                         ; -- End function</code></pre></div>
 
 <p>这是函数的结束标记，表示 <code>ds_read_b32</code> 函数的大小为 <code>.Lfunc_end0 - ds_read_b32</code>。</p>
-<div class="hljs"><pre><code class="hljs assembly">.section	.AMDGPU.csdata
+<div class="hljs"><pre><code class="hljs assembly">.section .AMDGPU.csdata
 ; Kernel info:
 ; codeLenInByte &#x3D; 76
 ; NumSgprs: 8
@@ -1624,13 +1642,13 @@ hsa_exception_fp_ieee_underflow 0
 ; COMPUTE_PGM_RSRC2:TGID_Y_EN: 0
 ; COMPUTE_PGM_RSRC2:TGID_Z_EN: 0
 ; COMPUTE_PGM_RSRC2:TIDIG_COMP_CNT: 0
-.protected	_ZN17__HIP_CoordinatesI15__HIP_ThreadIdxE1xE ; @_ZN17__HIP_CoordinatesI15__HIP_ThreadIdxE1xE
-.type	_ZN17__HIP_CoordinatesI15__HIP_ThreadIdxE1xE,@object
-.section	.rodata._ZN17__HIP_CoordinatesI15__HIP_ThreadIdxE1xE,#alloc
-.weak	_ZN17__HIP_CoordinatesI15__HIP_ThreadIdxE1xE
+.protected _ZN17__HIP_CoordinatesI15__HIP_ThreadIdxE1xE ; @_ZN17__HIP_CoordinatesI15__HIP_ThreadIdxE1xE
+.type _ZN17__HIP_CoordinatesI15__HIP_ThreadIdxE1xE,@object
+.section .rodata._ZN17__HIP_CoordinatesI15__HIP_ThreadIdxE1xE,#alloc
+.weak _ZN17__HIP_CoordinatesI15__HIP_ThreadIdxE1xE
 _ZN17__HIP_CoordinatesI15__HIP_ThreadIdxE1xE:
-	.zero	1
-	.size	_ZN17__HIP_CoordinatesI15__HIP_ThreadIdxE1xE, 1</code></pre></div>
+ .zero 1
+ .size _ZN17__HIP_CoordinatesI15__HIP_ThreadIdxE1xE, 1</code></pre></div>
 
 <p>这部分包含了 AMDGPU 的一些元数据，例如内核信息、寄存器使用情况、内存占用等信息。也包含了对一些 HIP 相关的符号和数据的定义。</p>
 <p>总的来说，这段代码是一个 AMD GPU 架构下的 HIP 内核函数 <code>ds_read_b32</code> 的汇编代码，用于在 GPU 上执行一些数据操作，包括从内存加载数据、进行计算、存储数据等。</p>
@@ -1758,392 +1776,392 @@ t2.c = <span class="hljs-number">3</span>
 t1.c = <span class="hljs-number">4</span></code></pre></div>
 
 <h2><span id="驱动">驱动</span></h2><h3><span id="amd-gpu是怎么创建queue的">AMD GPU是怎么创建queue的</span></h3><details>
-<summary>代码</summary> 
+<summary>代码</summary>
 
 <div class="hljs"><pre><code class="hljs c"><span class="hljs-comment">// ----------------------------------------------------------------------------------------------------------------------------------</span>
 <span class="hljs-comment">//                            kfdtest</span>
 <span class="hljs-comment">// ----------------------------------------------------------------------------------------------------------------------------------</span>
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BaseQueue</span></span>
 <span class="hljs-class">--&gt; <span class="hljs-title">HSAKMT_STATUS</span> <span class="hljs-title">Create</span>(<span class="hljs-title">unsigned</span> <span class="hljs-title">int</span> <span class="hljs-title">NodeId</span>, <span class="hljs-title">unsigned</span> <span class="hljs-title">int</span> <span class="hljs-title">size</span> = <span class="hljs-title">DEFAULT_QUEUE_SIZE</span>, <span class="hljs-title">HSAuint64</span> *<span class="hljs-title">pointers</span> = <span class="hljs-title">NULL</span>);</span>
-	--&gt; <span class="hljs-built_in">memset</span>(&amp;m_Resources, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(m_Resources));
-	--&gt; hsaKmtCreateQueue(NodeId, type, DEFAULT_QUEUE_PERCENTAGE, DEFAULT_PRIORITY, m_QueueBuf-&gt;As&lt;<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span>*&gt;(), m_QueueBuf-&gt;Size(), <span class="hljs-literal">NULL</span>, &amp;m_Resources);
+ --&gt; <span class="hljs-built_in">memset</span>(&amp;m_Resources, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(m_Resources));
+ --&gt; hsaKmtCreateQueue(NodeId, type, DEFAULT_QUEUE_PERCENTAGE, DEFAULT_PRIORITY, m_QueueBuf-&gt;As&lt;<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span>*&gt;(), m_QueueBuf-&gt;Size(), <span class="hljs-literal">NULL</span>, &amp;m_Resources);
 <span class="hljs-comment">// ----------------------------------------------------------------------------------------------------------------------------------</span>
 <span class="hljs-comment">//                            Thunk</span>
 <span class="hljs-comment">// ----------------------------------------------------------------------------------------------------------------------------------</span>
-		--&gt; <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kfd_ioctl_create_queue_args</span> <span class="hljs-title">args</span> = &#123;</span><span class="hljs-number">0</span>&#125;;
-		--&gt; handle_concrete_asic(q, &amp;args, NodeId, Event, QueueResource-&gt;ErrorReason);
-		--&gt; args.read_pointer_address = QueueResource-&gt;QueueRptrValue;
-			args.write_pointer_address = QueueResource-&gt;QueueWptrValue;
-			args.ring_base_address = (<span class="hljs-keyword">uintptr_t</span>)QueueAddress;
-			args.ring_size = QueueSizeInBytes;
-			args.queue_percentage = QueuePercentage;
-			args.queue_priority = priority_map[Priority+<span class="hljs-number">3</span>];
-		--&gt; err = kmtIoctl(kfd_fd, AMDKFD_IOC_CREATE_QUEUE, &amp;args);
+  --&gt; <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kfd_ioctl_create_queue_args</span> <span class="hljs-title">args</span> = &#123;</span><span class="hljs-number">0</span>&#125;;
+  --&gt; handle_concrete_asic(q, &amp;args, NodeId, Event, QueueResource-&gt;ErrorReason);
+  --&gt; args.read_pointer_address = QueueResource-&gt;QueueRptrValue;
+   args.write_pointer_address = QueueResource-&gt;QueueWptrValue;
+   args.ring_base_address = (<span class="hljs-keyword">uintptr_t</span>)QueueAddress;
+   args.ring_size = QueueSizeInBytes;
+   args.queue_percentage = QueuePercentage;
+   args.queue_priority = priority_map[Priority+<span class="hljs-number">3</span>];
+  --&gt; err = kmtIoctl(kfd_fd, AMDKFD_IOC_CREATE_QUEUE, &amp;args);
 <span class="hljs-comment">// ----------------------------------------------------------------------------------------------------------------------------------</span>
 <span class="hljs-comment">//                            Driver</span>
 <span class="hljs-comment">// ----------------------------------------------------------------------------------------------------------------------------------</span>
-			--&gt; <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">kfd_ioctl_create_queue</span><span class="hljs-params">(struct file *filep, struct kfd_process *p, <span class="hljs-keyword">void</span> *data)</span></span>
-				--&gt; set_queue_properties_from_user(&amp;q_properties, args);
-					--&gt; q_properties-&gt;is_interop = <span class="hljs-literal">false</span>;
-						q_properties-&gt;is_gws = <span class="hljs-literal">false</span>;
-						q_properties-&gt;queue_percent = args-&gt;queue_percentage;
-						q_properties-&gt;priority = args-&gt;queue_priority;
-						q_properties-&gt;queue_address = args-&gt;ring_base_address;
-						q_properties-&gt;queue_size = args-&gt;ring_size;
-						q_properties-&gt;read_ptr = (<span class="hljs-keyword">uint32_t</span> *) args-&gt;read_pointer_address;
-						q_properties-&gt;write_ptr = (<span class="hljs-keyword">uint32_t</span> *) args-&gt;write_pointer_address;
-						q_properties-&gt;eop_ring_buffer_address = args-&gt;eop_buffer_address;
-						q_properties-&gt;eop_ring_buffer_size = args-&gt;eop_buffer_size;
-						q_properties-&gt;ctx_save_restore_area_address = args-&gt;ctx_save_restore_address;
-						q_properties-&gt;ctx_save_restore_area_size = args-&gt;ctx_save_restore_size;
-						q_properties-&gt;ctl_stack_size = args-&gt;ctl_stack_size;
-						<span class="hljs-comment">//...</span>
-				--&gt; kfd_process_device_data_by_id()
-				--&gt; kfd_bind_process_to_device()
-				--&gt; pqm_create_queue(&amp;p-&gt;pqm, dev, filep, &amp;q_properties, &amp;queue_id, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, &amp;doorbell_offset_in_process);
-					--&gt; <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kfd_process_device</span> *<span class="hljs-title">pdd</span> = <span class="hljs-title">kfd_get_process_device_data</span>()</span>
-<span class="hljs-class">						// <span class="hljs-title">PM4Queue</span>.<span class="hljs-title">hpp</span>:</span> Type is  HSA_QUEUE_COMPUTE --&gt; KFD_IOC_QUEUE_TYPE_COMPUTE --&gt; KFD_QUEUE_TYPE_COMPUTE
-						<span class="hljs-comment">// SDMAQueue.hpp: Type is HSA_QUEUE_SDMA    --&gt; KFD_IOC_QUEUE_TYPE_SDMA    --&gt; KFD_QUEUE_TYPE_SDMA</span>
-					--&gt; init_user_queue(pqm, dev, &amp;q, properties, f, *qid);
-					--&gt; kfd_process_drain_interrupts(pdd);
-					--&gt; retval = dev-&gt;dqm-&gt;ops.create_queue(dev-&gt;dqm, q, &amp;pdd-&gt;qpd, q_data, restore_mqd, restore_ctl_stack);
-					    <span class="hljs-comment">// dqm-&gt;ops.create_queue = create_queue_cpsch;</span>
-						--&gt; create_queue_cpsch()
-							--&gt; allocate_doorbell()
-							--&gt; mqd_mgr-&gt;init_mqd(mqd_mgr, &amp;q-&gt;mqd, q-&gt;mqd_mem_obj, &amp;q-&gt;gart_mqd_addr, &amp;q-&gt;properties);
-							--&gt; list_add(&amp;q-&gt;<span class="hljs-built_in">list</span>, &amp;qpd-&gt;queues_list);
-							--&gt; increment_queue_count(dqm, qpd, q);
-							--&gt; execute_queues_cpsch(dqm, KFD_UNMAP_QUEUES_FILTER_DYNAMIC_QUEUES, <span class="hljs-number">0</span>, USE_DEFAULT_GRACE_PERIOD);
-								--&gt; retval = unmap_queues_cpsch(dqm, filter, filter_param, grace_period, <span class="hljs-literal">false</span>);
-									--&gt; retval = pm_send_unmap_queue(&amp;dqm-&gt;packet_mgr, filter, filter_param, reset);
-									--&gt; pm_send_query_status(&amp;dqm-&gt;packet_mgr, dqm-&gt;fence_gpu_addr, KFD_FENCE_COMPLETED);
-									--&gt; retval = amdkfd_fence_wait_timeout(dqm-&gt;fence_addr, KFD_FENCE_COMPLETED, queue_preemption_timeout_ms);
-									--&gt; pm_release_ib(&amp;dqm-&gt;packet_mgr);
-								--&gt; map_queues_cpsch(dqm);
-									--&gt; pm_send_runlist(&amp;dqm-&gt;packet_mgr, &amp;dqm-&gt;queues);
-										--&gt; retval = pm_create_runlist_ib(pm, dqm_queues, &amp;rl_gpu_ib_addr, &amp;rl_ib_size);
-										--&gt; retval = kq_acquire_packet_buffer(pm-&gt;priv_queue, ket_size_dwords, &amp;rl_buffer);
-										--&gt; retval = pm-&gt;pmf-&gt;runlist(pm, rl_buffer, rl_gpu_ib_addr, rl_ib_size / <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">uint32_t</span>), <span class="hljs-literal">false</span>);
-											--&gt; pm_runlist_v9()
-										--&gt; kq_submit_packet(pm-&gt;priv_queue);
-											--&gt; write_kernel_doorbell()
-												--&gt; writel(value, db);
-													--&gt; __io_bw();
-														__raw_writel((u32 __force)__cpu_to_le32(value), addr);
-														__io_aw();
-									--&gt; dqm-&gt;active_runlist = <span class="hljs-literal">true</span>;
-							--&gt; deallocate_doorbell(qpd, q);
+   --&gt; <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">kfd_ioctl_create_queue</span><span class="hljs-params">(struct file *filep, struct kfd_process *p, <span class="hljs-keyword">void</span> *data)</span></span>
+    --&gt; set_queue_properties_from_user(&amp;q_properties, args);
+     --&gt; q_properties-&gt;is_interop = <span class="hljs-literal">false</span>;
+      q_properties-&gt;is_gws = <span class="hljs-literal">false</span>;
+      q_properties-&gt;queue_percent = args-&gt;queue_percentage;
+      q_properties-&gt;priority = args-&gt;queue_priority;
+      q_properties-&gt;queue_address = args-&gt;ring_base_address;
+      q_properties-&gt;queue_size = args-&gt;ring_size;
+      q_properties-&gt;read_ptr = (<span class="hljs-keyword">uint32_t</span> *) args-&gt;read_pointer_address;
+      q_properties-&gt;write_ptr = (<span class="hljs-keyword">uint32_t</span> *) args-&gt;write_pointer_address;
+      q_properties-&gt;eop_ring_buffer_address = args-&gt;eop_buffer_address;
+      q_properties-&gt;eop_ring_buffer_size = args-&gt;eop_buffer_size;
+      q_properties-&gt;ctx_save_restore_area_address = args-&gt;ctx_save_restore_address;
+      q_properties-&gt;ctx_save_restore_area_size = args-&gt;ctx_save_restore_size;
+      q_properties-&gt;ctl_stack_size = args-&gt;ctl_stack_size;
+      <span class="hljs-comment">//...</span>
+    --&gt; kfd_process_device_data_by_id()
+    --&gt; kfd_bind_process_to_device()
+    --&gt; pqm_create_queue(&amp;p-&gt;pqm, dev, filep, &amp;q_properties, &amp;queue_id, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, &amp;doorbell_offset_in_process);
+     --&gt; <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kfd_process_device</span> *<span class="hljs-title">pdd</span> = <span class="hljs-title">kfd_get_process_device_data</span>()</span>
+<span class="hljs-class">      // <span class="hljs-title">PM4Queue</span>.<span class="hljs-title">hpp</span>:</span> Type is  HSA_QUEUE_COMPUTE --&gt; KFD_IOC_QUEUE_TYPE_COMPUTE --&gt; KFD_QUEUE_TYPE_COMPUTE
+      <span class="hljs-comment">// SDMAQueue.hpp: Type is HSA_QUEUE_SDMA    --&gt; KFD_IOC_QUEUE_TYPE_SDMA    --&gt; KFD_QUEUE_TYPE_SDMA</span>
+     --&gt; init_user_queue(pqm, dev, &amp;q, properties, f, *qid);
+     --&gt; kfd_process_drain_interrupts(pdd);
+     --&gt; retval = dev-&gt;dqm-&gt;ops.create_queue(dev-&gt;dqm, q, &amp;pdd-&gt;qpd, q_data, restore_mqd, restore_ctl_stack);
+         <span class="hljs-comment">// dqm-&gt;ops.create_queue = create_queue_cpsch;</span>
+      --&gt; create_queue_cpsch()
+       --&gt; allocate_doorbell()
+       --&gt; mqd_mgr-&gt;init_mqd(mqd_mgr, &amp;q-&gt;mqd, q-&gt;mqd_mem_obj, &amp;q-&gt;gart_mqd_addr, &amp;q-&gt;properties);
+       --&gt; list_add(&amp;q-&gt;<span class="hljs-built_in">list</span>, &amp;qpd-&gt;queues_list);
+       --&gt; increment_queue_count(dqm, qpd, q);
+       --&gt; execute_queues_cpsch(dqm, KFD_UNMAP_QUEUES_FILTER_DYNAMIC_QUEUES, <span class="hljs-number">0</span>, USE_DEFAULT_GRACE_PERIOD);
+        --&gt; retval = unmap_queues_cpsch(dqm, filter, filter_param, grace_period, <span class="hljs-literal">false</span>);
+         --&gt; retval = pm_send_unmap_queue(&amp;dqm-&gt;packet_mgr, filter, filter_param, reset);
+         --&gt; pm_send_query_status(&amp;dqm-&gt;packet_mgr, dqm-&gt;fence_gpu_addr, KFD_FENCE_COMPLETED);
+         --&gt; retval = amdkfd_fence_wait_timeout(dqm-&gt;fence_addr, KFD_FENCE_COMPLETED, queue_preemption_timeout_ms);
+         --&gt; pm_release_ib(&amp;dqm-&gt;packet_mgr);
+        --&gt; map_queues_cpsch(dqm);
+         --&gt; pm_send_runlist(&amp;dqm-&gt;packet_mgr, &amp;dqm-&gt;queues);
+          --&gt; retval = pm_create_runlist_ib(pm, dqm_queues, &amp;rl_gpu_ib_addr, &amp;rl_ib_size);
+          --&gt; retval = kq_acquire_packet_buffer(pm-&gt;priv_queue, ket_size_dwords, &amp;rl_buffer);
+          --&gt; retval = pm-&gt;pmf-&gt;runlist(pm, rl_buffer, rl_gpu_ib_addr, rl_ib_size / <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">uint32_t</span>), <span class="hljs-literal">false</span>);
+           --&gt; pm_runlist_v9()
+          --&gt; kq_submit_packet(pm-&gt;priv_queue);
+           --&gt; write_kernel_doorbell()
+            --&gt; writel(value, db);
+             --&gt; __io_bw();
+              __raw_writel((u32 __force)__cpu_to_le32(value), addr);
+              __io_aw();
+         --&gt; dqm-&gt;active_runlist = <span class="hljs-literal">true</span>;
+       --&gt; deallocate_doorbell(qpd, q);
 
 
 <span class="hljs-comment">/** Ioctl table */</span>
 <span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">amdkfd_ioctl_desc</span> <span class="hljs-title">amdkfd_ioctls</span>[] = &#123;</span>
-	<span class="hljs-comment">//...</span>
-	AMDKFD_IOCTL_DEF(AMDKFD_IOC_CREATE_QUEUE,
-			kfd_ioctl_create_queue, <span class="hljs-number">0</span>),
-	<span class="hljs-comment">//...</span>
+ <span class="hljs-comment">//...</span>
+ AMDKFD_IOCTL_DEF(AMDKFD_IOC_CREATE_QUEUE,
+   kfd_ioctl_create_queue, <span class="hljs-number">0</span>),
+ <span class="hljs-comment">//...</span>
 &#125;
 
 amdgpu_amdkfd_device_init()
 --&gt; adev-&gt;kfd.init_complete = kgd2kfd_device_init(adev-&gt;kfd.dev, adev_to_drm(adev), &amp;gpu_resources);
-	--&gt; kfd-&gt;dqm = device_queue_manager_init(kfd);
-		--&gt; <span class="hljs-keyword">case</span> KFD_SCHED_POLICY_HWS_NO_OVERSUBSCRIPTION:
-				<span class="hljs-comment">/* initialize dqm for cp scheduling */</span>
-				dqm-&gt;ops.create_queue = create_queue_cpsch;
-				dqm-&gt;ops.initialize = initialize_cpsch;
-				dqm-&gt;ops.start = start_cpsch;
-				dqm-&gt;ops.stop = stop_cpsch;
-				dqm-&gt;ops.pre_reset = pre_reset;
-				dqm-&gt;ops.destroy_queue = destroy_queue_cpsch;
-				dqm-&gt;ops.update_queue = update_queue;
-				dqm-&gt;ops.register_process = register_process;
-				dqm-&gt;ops.unregister_process = unregister_process;
-				dqm-&gt;ops.uninitialize = uninitialize;
-				dqm-&gt;ops.create_kernel_queue = create_kernel_queue_cpsch;
-				dqm-&gt;ops.destroy_kernel_queue = destroy_kernel_queue_cpsch;
-				dqm-&gt;ops.set_cache_memory_policy = set_cache_memory_policy;
-				dqm-&gt;ops.process_termination = process_termination_cpsch;
-				dqm-&gt;ops.evict_process_queues = evict_process_queues_cpsch;
-				dqm-&gt;ops.restore_process_queues = restore_process_queues_cpsch;
-				dqm-&gt;ops.get_wave_state = get_wave_state;
-				dqm-&gt;ops.reset_queues = reset_queues_cpsch;
-				dqm-&gt;ops.get_queue_checkpoint_info = get_queue_checkpoint_info;
-				dqm-&gt;ops.checkpoint_mqd = checkpoint_mqd;
-				<span class="hljs-keyword">break</span>;
-	--&gt; kfd_resume()
-		--&gt; kfd-&gt;dqm-&gt;ops.start(kfd-&gt;dqm);
-			--&gt; retval = pm_init(&amp;dqm-&gt;packet_mgr, dqm);
-				--&gt; pm-&gt;priv_queue = kernel_queue_init(dqm-&gt;dev, KFD_QUEUE_TYPE_HIQ);
-					--&gt; kq_initialize(kq, dev, type, KFD_KERNEL_QUEUE_SIZE)
-						--&gt; kq-&gt;mqd_mgr-&gt;init_mqd(kq-&gt;mqd_mgr, &amp;kq-&gt;<span class="hljs-built_in">queue</span>-&gt;mqd,
-													kq-&gt;<span class="hljs-built_in">queue</span>-&gt;mqd_mem_obj,
-													&amp;kq-&gt;<span class="hljs-built_in">queue</span>-&gt;gart_mqd_addr,
-													&amp;kq-&gt;<span class="hljs-built_in">queue</span>-&gt;properties);
-		--&gt; set_sched_resources(dqm)
-			--&gt; <span class="hljs-keyword">return</span> pm_send_set_resources(&amp;dqm-&gt;packet_mgr, &amp;res);
-				--&gt; retval = pm-&gt;pmf-&gt;set_resources(pm, buffer, res);
-					--&gt; pm_set_resources_v9()
+ --&gt; kfd-&gt;dqm = device_queue_manager_init(kfd);
+  --&gt; <span class="hljs-keyword">case</span> KFD_SCHED_POLICY_HWS_NO_OVERSUBSCRIPTION:
+    <span class="hljs-comment">/* initialize dqm for cp scheduling */</span>
+    dqm-&gt;ops.create_queue = create_queue_cpsch;
+    dqm-&gt;ops.initialize = initialize_cpsch;
+    dqm-&gt;ops.start = start_cpsch;
+    dqm-&gt;ops.stop = stop_cpsch;
+    dqm-&gt;ops.pre_reset = pre_reset;
+    dqm-&gt;ops.destroy_queue = destroy_queue_cpsch;
+    dqm-&gt;ops.update_queue = update_queue;
+    dqm-&gt;ops.register_process = register_process;
+    dqm-&gt;ops.unregister_process = unregister_process;
+    dqm-&gt;ops.uninitialize = uninitialize;
+    dqm-&gt;ops.create_kernel_queue = create_kernel_queue_cpsch;
+    dqm-&gt;ops.destroy_kernel_queue = destroy_kernel_queue_cpsch;
+    dqm-&gt;ops.set_cache_memory_policy = set_cache_memory_policy;
+    dqm-&gt;ops.process_termination = process_termination_cpsch;
+    dqm-&gt;ops.evict_process_queues = evict_process_queues_cpsch;
+    dqm-&gt;ops.restore_process_queues = restore_process_queues_cpsch;
+    dqm-&gt;ops.get_wave_state = get_wave_state;
+    dqm-&gt;ops.reset_queues = reset_queues_cpsch;
+    dqm-&gt;ops.get_queue_checkpoint_info = get_queue_checkpoint_info;
+    dqm-&gt;ops.checkpoint_mqd = checkpoint_mqd;
+    <span class="hljs-keyword">break</span>;
+ --&gt; kfd_resume()
+  --&gt; kfd-&gt;dqm-&gt;ops.start(kfd-&gt;dqm);
+   --&gt; retval = pm_init(&amp;dqm-&gt;packet_mgr, dqm);
+    --&gt; pm-&gt;priv_queue = kernel_queue_init(dqm-&gt;dev, KFD_QUEUE_TYPE_HIQ);
+     --&gt; kq_initialize(kq, dev, type, KFD_KERNEL_QUEUE_SIZE)
+      --&gt; kq-&gt;mqd_mgr-&gt;init_mqd(kq-&gt;mqd_mgr, &amp;kq-&gt;<span class="hljs-built_in">queue</span>-&gt;mqd,
+             kq-&gt;<span class="hljs-built_in">queue</span>-&gt;mqd_mem_obj,
+             &amp;kq-&gt;<span class="hljs-built_in">queue</span>-&gt;gart_mqd_addr,
+             &amp;kq-&gt;<span class="hljs-built_in">queue</span>-&gt;properties);
+  --&gt; set_sched_resources(dqm)
+   --&gt; <span class="hljs-keyword">return</span> pm_send_set_resources(&amp;dqm-&gt;packet_mgr, &amp;res);
+    --&gt; retval = pm-&gt;pmf-&gt;set_resources(pm, buffer, res);
+     --&gt; pm_set_resources_v9()
 
 
 <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">pm_map_process_v9</span><span class="hljs-params">(struct packet_manager *pm,</span></span>
-<span class="hljs-function"><span class="hljs-params">		<span class="hljs-keyword">uint32_t</span> *buffer, struct qcm_process_device *qpd)</span></span>
+<span class="hljs-function"><span class="hljs-params">  <span class="hljs-keyword">uint32_t</span> *buffer, struct qcm_process_device *qpd)</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pm4_mes_map_process</span> *<span class="hljs-title">packet</span>;</span>
-	<span class="hljs-keyword">uint64_t</span> vm_page_table_base_addr = qpd-&gt;page_table_base;
-	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kfd_dev</span> *<span class="hljs-title">kfd</span> = <span class="hljs-title">pm</span>-&gt;<span class="hljs-title">dqm</span>-&gt;<span class="hljs-title">dev</span>;</span>
-	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kfd_process_device</span> *<span class="hljs-title">pdd</span> =</span>
-<span class="hljs-class">			<span class="hljs-title">container_of</span>(<span class="hljs-title">qpd</span>, <span class="hljs-title">struct</span> <span class="hljs-title">kfd_process_device</span>, <span class="hljs-title">qpd</span>);</span>
+ <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pm4_mes_map_process</span> *<span class="hljs-title">packet</span>;</span>
+ <span class="hljs-keyword">uint64_t</span> vm_page_table_base_addr = qpd-&gt;page_table_base;
+ <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kfd_dev</span> *<span class="hljs-title">kfd</span> = <span class="hljs-title">pm</span>-&gt;<span class="hljs-title">dqm</span>-&gt;<span class="hljs-title">dev</span>;</span>
+ <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kfd_process_device</span> *<span class="hljs-title">pdd</span> =</span>
+<span class="hljs-class">   <span class="hljs-title">container_of</span>(<span class="hljs-title">qpd</span>, <span class="hljs-title">struct</span> <span class="hljs-title">kfd_process_device</span>, <span class="hljs-title">qpd</span>);</span>
 
-	packet = (struct pm4_mes_map_process *)buffer;
-	<span class="hljs-built_in">memset</span>(buffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(struct pm4_mes_map_process));
-	packet-&gt;header.u32All = pm_build_pm4_header(IT_MAP_PROCESS,
-					<span class="hljs-keyword">sizeof</span>(struct pm4_mes_map_process));
-	packet-&gt;bitfields2.diq_enable = (qpd-&gt;is_debug) ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
-	packet-&gt;bitfields2.process_quantum = <span class="hljs-number">10</span>;
-	packet-&gt;bitfields2.pasid = qpd-&gt;pqm-&gt;process-&gt;pasid;
-	packet-&gt;bitfields14.gds_size = qpd-&gt;gds_size &amp; <span class="hljs-number">0x3F</span>;
-	packet-&gt;bitfields14.gds_size_hi = (qpd-&gt;gds_size &gt;&gt; <span class="hljs-number">6</span>) &amp; <span class="hljs-number">0xF</span>;
-	packet-&gt;bitfields14.num_gws = (qpd-&gt;mapped_gws_queue) ? qpd-&gt;num_gws : <span class="hljs-number">0</span>;
-	packet-&gt;bitfields14.num_oac = qpd-&gt;num_oac;
-	packet-&gt;bitfields14.sdma_enable = <span class="hljs-number">1</span>;
-	packet-&gt;bitfields14.num_queues = (qpd-&gt;is_debug) ? <span class="hljs-number">0</span> : qpd-&gt;queue_count;
+ packet = (struct pm4_mes_map_process *)buffer;
+ <span class="hljs-built_in">memset</span>(buffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(struct pm4_mes_map_process));
+ packet-&gt;header.u32All = pm_build_pm4_header(IT_MAP_PROCESS,
+     <span class="hljs-keyword">sizeof</span>(struct pm4_mes_map_process));
+ packet-&gt;bitfields2.diq_enable = (qpd-&gt;is_debug) ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
+ packet-&gt;bitfields2.process_quantum = <span class="hljs-number">10</span>;
+ packet-&gt;bitfields2.pasid = qpd-&gt;pqm-&gt;process-&gt;pasid;
+ packet-&gt;bitfields14.gds_size = qpd-&gt;gds_size &amp; <span class="hljs-number">0x3F</span>;
+ packet-&gt;bitfields14.gds_size_hi = (qpd-&gt;gds_size &gt;&gt; <span class="hljs-number">6</span>) &amp; <span class="hljs-number">0xF</span>;
+ packet-&gt;bitfields14.num_gws = (qpd-&gt;mapped_gws_queue) ? qpd-&gt;num_gws : <span class="hljs-number">0</span>;
+ packet-&gt;bitfields14.num_oac = qpd-&gt;num_oac;
+ packet-&gt;bitfields14.sdma_enable = <span class="hljs-number">1</span>;
+ packet-&gt;bitfields14.num_queues = (qpd-&gt;is_debug) ? <span class="hljs-number">0</span> : qpd-&gt;queue_count;
 
-	<span class="hljs-keyword">if</span> (kfd-&gt;dqm-&gt;trap_debug_vmid &amp;&amp; pdd-&gt;process-&gt;debug_trap_enabled &amp;&amp;
-			pdd-&gt;process-&gt;runtime_info.runtime_state == DEBUG_RUNTIME_STATE_ENABLED) &#123;
-		packet-&gt;bitfields2.debug_vmid = kfd-&gt;dqm-&gt;trap_debug_vmid;
-		packet-&gt;bitfields2.new_debug = <span class="hljs-number">1</span>;
-	&#125;
+ <span class="hljs-keyword">if</span> (kfd-&gt;dqm-&gt;trap_debug_vmid &amp;&amp; pdd-&gt;process-&gt;debug_trap_enabled &amp;&amp;
+   pdd-&gt;process-&gt;runtime_info.runtime_state == DEBUG_RUNTIME_STATE_ENABLED) &#123;
+  packet-&gt;bitfields2.debug_vmid = kfd-&gt;dqm-&gt;trap_debug_vmid;
+  packet-&gt;bitfields2.new_debug = <span class="hljs-number">1</span>;
+ &#125;
 
-	packet-&gt;sh_mem_config = qpd-&gt;sh_mem_config;
-	packet-&gt;sh_mem_bases = qpd-&gt;sh_mem_bases;
-	<span class="hljs-keyword">if</span> (qpd-&gt;tba_addr) &#123;
-		packet-&gt;sq_shader_tba_lo = lower_32_bits(qpd-&gt;tba_addr &gt;&gt; <span class="hljs-number">8</span>);
-		<span class="hljs-comment">/* On GFX9, unlike GFX10, bit TRAP_EN of SQ_SHADER_TBA_HI is</span>
-<span class="hljs-comment">		 * not defined, so setting it won't do any harm.</span>
-<span class="hljs-comment">		 */</span>
-		packet-&gt;sq_shader_tba_hi = upper_32_bits(qpd-&gt;tba_addr &gt;&gt; <span class="hljs-number">8</span>)
-				| <span class="hljs-number">1</span> &lt;&lt; SQ_SHADER_TBA_HI__TRAP_EN__SHIFT;
+ packet-&gt;sh_mem_config = qpd-&gt;sh_mem_config;
+ packet-&gt;sh_mem_bases = qpd-&gt;sh_mem_bases;
+ <span class="hljs-keyword">if</span> (qpd-&gt;tba_addr) &#123;
+  packet-&gt;sq_shader_tba_lo = lower_32_bits(qpd-&gt;tba_addr &gt;&gt; <span class="hljs-number">8</span>);
+  <span class="hljs-comment">/* On GFX9, unlike GFX10, bit TRAP_EN of SQ_SHADER_TBA_HI is</span>
+<span class="hljs-comment">   * not defined, so setting it won't do any harm.</span>
+<span class="hljs-comment">   */</span>
+  packet-&gt;sq_shader_tba_hi = upper_32_bits(qpd-&gt;tba_addr &gt;&gt; <span class="hljs-number">8</span>)
+    | <span class="hljs-number">1</span> &lt;&lt; SQ_SHADER_TBA_HI__TRAP_EN__SHIFT;
 
-		packet-&gt;sq_shader_tma_lo = lower_32_bits(qpd-&gt;tma_addr &gt;&gt; <span class="hljs-number">8</span>);
-		packet-&gt;sq_shader_tma_hi = upper_32_bits(qpd-&gt;tma_addr &gt;&gt; <span class="hljs-number">8</span>);
-	&#125;
+  packet-&gt;sq_shader_tma_lo = lower_32_bits(qpd-&gt;tma_addr &gt;&gt; <span class="hljs-number">8</span>);
+  packet-&gt;sq_shader_tma_hi = upper_32_bits(qpd-&gt;tma_addr &gt;&gt; <span class="hljs-number">8</span>);
+ &#125;
 
-	packet-&gt;gds_addr_lo = lower_32_bits(qpd-&gt;gds_context_area);
-	packet-&gt;gds_addr_hi = upper_32_bits(qpd-&gt;gds_context_area);
+ packet-&gt;gds_addr_lo = lower_32_bits(qpd-&gt;gds_context_area);
+ packet-&gt;gds_addr_hi = upper_32_bits(qpd-&gt;gds_context_area);
 
-	packet-&gt;vm_context_page_table_base_addr_lo32 =
-			lower_32_bits(vm_page_table_base_addr);
-	packet-&gt;vm_context_page_table_base_addr_hi32 =
-			upper_32_bits(vm_page_table_base_addr);
+ packet-&gt;vm_context_page_table_base_addr_lo32 =
+   lower_32_bits(vm_page_table_base_addr);
+ packet-&gt;vm_context_page_table_base_addr_hi32 =
+   upper_32_bits(vm_page_table_base_addr);
 
-	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
 &#125;
 
 <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">pm_runlist_v9</span><span class="hljs-params">(struct packet_manager *pm, <span class="hljs-keyword">uint32_t</span> *buffer,</span></span>
-<span class="hljs-function"><span class="hljs-params">			<span class="hljs-keyword">uint64_t</span> ib, <span class="hljs-keyword">size_t</span> ib_size_in_dwords, <span class="hljs-keyword">bool</span> chain)</span></span>
+<span class="hljs-function"><span class="hljs-params">   <span class="hljs-keyword">uint64_t</span> ib, <span class="hljs-keyword">size_t</span> ib_size_in_dwords, <span class="hljs-keyword">bool</span> chain)</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pm4_mes_runlist</span> *<span class="hljs-title">packet</span>;</span>
+ <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pm4_mes_runlist</span> *<span class="hljs-title">packet</span>;</span>
 
-	<span class="hljs-keyword">int</span> concurrent_proc_cnt = <span class="hljs-number">0</span>;
-	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kfd_dev</span> *<span class="hljs-title">kfd</span> = <span class="hljs-title">pm</span>-&gt;<span class="hljs-title">dqm</span>-&gt;<span class="hljs-title">dev</span>;</span>
+ <span class="hljs-keyword">int</span> concurrent_proc_cnt = <span class="hljs-number">0</span>;
+ <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kfd_dev</span> *<span class="hljs-title">kfd</span> = <span class="hljs-title">pm</span>-&gt;<span class="hljs-title">dqm</span>-&gt;<span class="hljs-title">dev</span>;</span>
 
-	<span class="hljs-comment">/* Determine the number of processes to map together to HW:</span>
-<span class="hljs-comment">	 * it can not exceed the number of VMIDs available to the</span>
-<span class="hljs-comment">	 * scheduler, and it is determined by the smaller of the number</span>
-<span class="hljs-comment">	 * of processes in the runlist and kfd module parameter</span>
-<span class="hljs-comment">	 * hws_max_conc_proc.</span>
-<span class="hljs-comment">	 * Note: the arbitration between the number of VMIDs and</span>
-<span class="hljs-comment">	 * hws_max_conc_proc has been done in</span>
-<span class="hljs-comment">	 * kgd2kfd_device_init().</span>
-<span class="hljs-comment">	 */</span>
-	concurrent_proc_cnt = min(pm-&gt;dqm-&gt;processes_count,
-			kfd-&gt;max_proc_per_quantum);
+ <span class="hljs-comment">/* Determine the number of processes to map together to HW:</span>
+<span class="hljs-comment">  * it can not exceed the number of VMIDs available to the</span>
+<span class="hljs-comment">  * scheduler, and it is determined by the smaller of the number</span>
+<span class="hljs-comment">  * of processes in the runlist and kfd module parameter</span>
+<span class="hljs-comment">  * hws_max_conc_proc.</span>
+<span class="hljs-comment">  * Note: the arbitration between the number of VMIDs and</span>
+<span class="hljs-comment">  * hws_max_conc_proc has been done in</span>
+<span class="hljs-comment">  * kgd2kfd_device_init().</span>
+<span class="hljs-comment">  */</span>
+ concurrent_proc_cnt = min(pm-&gt;dqm-&gt;processes_count,
+   kfd-&gt;max_proc_per_quantum);
 
-	packet = (struct pm4_mes_runlist *)buffer;
+ packet = (struct pm4_mes_runlist *)buffer;
 
-	<span class="hljs-built_in">memset</span>(buffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(struct pm4_mes_runlist));
-	packet-&gt;header.u32All = pm_build_pm4_header(IT_RUN_LIST,
-						<span class="hljs-keyword">sizeof</span>(struct pm4_mes_runlist));
+ <span class="hljs-built_in">memset</span>(buffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(struct pm4_mes_runlist));
+ packet-&gt;header.u32All = pm_build_pm4_header(IT_RUN_LIST,
+      <span class="hljs-keyword">sizeof</span>(struct pm4_mes_runlist));
 
-	packet-&gt;bitfields4.ib_size = ib_size_in_dwords;
-	packet-&gt;bitfields4.chain = chain ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
-	packet-&gt;bitfields4.offload_polling = <span class="hljs-number">0</span>;
-	packet-&gt;bitfields4.chained_runlist_idle_disable = chain ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
-	packet-&gt;bitfields4.valid = <span class="hljs-number">1</span>;
-	packet-&gt;bitfields4.process_cnt = concurrent_proc_cnt;
-	packet-&gt;ordinal2 = lower_32_bits(ib);
-	packet-&gt;ib_base_hi = upper_32_bits(ib);
+ packet-&gt;bitfields4.ib_size = ib_size_in_dwords;
+ packet-&gt;bitfields4.chain = chain ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
+ packet-&gt;bitfields4.offload_polling = <span class="hljs-number">0</span>;
+ packet-&gt;bitfields4.chained_runlist_idle_disable = chain ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
+ packet-&gt;bitfields4.valid = <span class="hljs-number">1</span>;
+ packet-&gt;bitfields4.process_cnt = concurrent_proc_cnt;
+ packet-&gt;ordinal2 = lower_32_bits(ib);
+ packet-&gt;ib_base_hi = upper_32_bits(ib);
 
-	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
 &#125;
 
 <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">pm_set_resources_v9</span><span class="hljs-params">(struct packet_manager *pm, <span class="hljs-keyword">uint32_t</span> *buffer,</span></span>
-<span class="hljs-function"><span class="hljs-params">				struct scheduling_resources *res)</span></span>
+<span class="hljs-function"><span class="hljs-params">    struct scheduling_resources *res)</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pm4_mes_set_resources</span> *<span class="hljs-title">packet</span>;</span>
+ <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pm4_mes_set_resources</span> *<span class="hljs-title">packet</span>;</span>
 
-	packet = (struct pm4_mes_set_resources *)buffer;
-	<span class="hljs-built_in">memset</span>(buffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(struct pm4_mes_set_resources));
+ packet = (struct pm4_mes_set_resources *)buffer;
+ <span class="hljs-built_in">memset</span>(buffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(struct pm4_mes_set_resources));
 
-	packet-&gt;header.u32All = pm_build_pm4_header(IT_SET_RESOURCES,
-					<span class="hljs-keyword">sizeof</span>(struct pm4_mes_set_resources));
+ packet-&gt;header.u32All = pm_build_pm4_header(IT_SET_RESOURCES,
+     <span class="hljs-keyword">sizeof</span>(struct pm4_mes_set_resources));
 
-	packet-&gt;bitfields2.queue_type =
-			queue_type__mes_set_resources__hsa_interface_queue_hiq;
-	packet-&gt;bitfields2.vmid_mask = res-&gt;vmid_mask;
-	packet-&gt;bitfields2.unmap_latency = KFD_UNMAP_LATENCY_MS / <span class="hljs-number">100</span>;
-	packet-&gt;bitfields7.oac_mask = res-&gt;oac_mask;
-	packet-&gt;bitfields8.gds_heap_base = res-&gt;gds_heap_base;
-	packet-&gt;bitfields8.gds_heap_size = res-&gt;gds_heap_size;
+ packet-&gt;bitfields2.queue_type =
+   queue_type__mes_set_resources__hsa_interface_queue_hiq;
+ packet-&gt;bitfields2.vmid_mask = res-&gt;vmid_mask;
+ packet-&gt;bitfields2.unmap_latency = KFD_UNMAP_LATENCY_MS / <span class="hljs-number">100</span>;
+ packet-&gt;bitfields7.oac_mask = res-&gt;oac_mask;
+ packet-&gt;bitfields8.gds_heap_base = res-&gt;gds_heap_base;
+ packet-&gt;bitfields8.gds_heap_size = res-&gt;gds_heap_size;
 
-	packet-&gt;gws_mask_lo = lower_32_bits(res-&gt;gws_mask);
-	packet-&gt;gws_mask_hi = upper_32_bits(res-&gt;gws_mask);
+ packet-&gt;gws_mask_lo = lower_32_bits(res-&gt;gws_mask);
+ packet-&gt;gws_mask_hi = upper_32_bits(res-&gt;gws_mask);
 
-	packet-&gt;queue_mask_lo = lower_32_bits(res-&gt;queue_mask);
-	packet-&gt;queue_mask_hi = upper_32_bits(res-&gt;queue_mask);
+ packet-&gt;queue_mask_lo = lower_32_bits(res-&gt;queue_mask);
+ packet-&gt;queue_mask_hi = upper_32_bits(res-&gt;queue_mask);
 
-	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
 &#125;
 
 <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">pm_map_queues_v9</span><span class="hljs-params">(struct packet_manager *pm, <span class="hljs-keyword">uint32_t</span> *buffer,</span></span>
-<span class="hljs-function"><span class="hljs-params">		struct <span class="hljs-built_in">queue</span> *q, <span class="hljs-keyword">bool</span> is_static)</span></span>
+<span class="hljs-function"><span class="hljs-params">  struct <span class="hljs-built_in">queue</span> *q, <span class="hljs-keyword">bool</span> is_static)</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pm4_mes_map_queues</span> *<span class="hljs-title">packet</span>;</span>
-	<span class="hljs-keyword">bool</span> use_static = is_static;
+ <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pm4_mes_map_queues</span> *<span class="hljs-title">packet</span>;</span>
+ <span class="hljs-keyword">bool</span> use_static = is_static;
 
-	packet = (struct pm4_mes_map_queues *)buffer;
-	<span class="hljs-built_in">memset</span>(buffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(struct pm4_mes_map_queues));
+ packet = (struct pm4_mes_map_queues *)buffer;
+ <span class="hljs-built_in">memset</span>(buffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(struct pm4_mes_map_queues));
 
-	packet-&gt;header.u32All = pm_build_pm4_header(IT_MAP_QUEUES,
-					<span class="hljs-keyword">sizeof</span>(struct pm4_mes_map_queues));
-	packet-&gt;bitfields2.num_queues = <span class="hljs-number">1</span>;
-	packet-&gt;bitfields2.queue_sel =
-		queue_sel__mes_map_queues__map_to_hws_determined_queue_slots_vi;
+ packet-&gt;header.u32All = pm_build_pm4_header(IT_MAP_QUEUES,
+     <span class="hljs-keyword">sizeof</span>(struct pm4_mes_map_queues));
+ packet-&gt;bitfields2.num_queues = <span class="hljs-number">1</span>;
+ packet-&gt;bitfields2.queue_sel =
+  queue_sel__mes_map_queues__map_to_hws_determined_queue_slots_vi;
 
-	packet-&gt;bitfields2.engine_sel =
-		engine_sel__mes_map_queues__compute_vi;
-	packet-&gt;bitfields2.gws_control_queue = q-&gt;gws ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
-	packet-&gt;bitfields2.extended_engine_sel =
-		extended_engine_sel__mes_map_queues__legacy_engine_sel;
-	packet-&gt;bitfields2.queue_type =
-		queue_type__mes_map_queues__normal_compute_vi;
+ packet-&gt;bitfields2.engine_sel =
+  engine_sel__mes_map_queues__compute_vi;
+ packet-&gt;bitfields2.gws_control_queue = q-&gt;gws ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>;
+ packet-&gt;bitfields2.extended_engine_sel =
+  extended_engine_sel__mes_map_queues__legacy_engine_sel;
+ packet-&gt;bitfields2.queue_type =
+  queue_type__mes_map_queues__normal_compute_vi;
 
-	<span class="hljs-keyword">switch</span> (q-&gt;properties.type) &#123;
-	<span class="hljs-keyword">case</span> KFD_QUEUE_TYPE_COMPUTE:
-		<span class="hljs-keyword">if</span> (use_static)
-			packet-&gt;bitfields2.queue_type =
-		queue_type__mes_map_queues__normal_latency_static_queue_vi;
-		<span class="hljs-keyword">break</span>;
-	<span class="hljs-keyword">case</span> KFD_QUEUE_TYPE_DIQ:
-		packet-&gt;bitfields2.queue_type =
-			queue_type__mes_map_queues__debug_interface_queue_vi;
-		<span class="hljs-keyword">break</span>;
-	<span class="hljs-keyword">case</span> KFD_QUEUE_TYPE_SDMA:
-	<span class="hljs-keyword">case</span> KFD_QUEUE_TYPE_SDMA_XGMI:
-		use_static = <span class="hljs-literal">false</span>; <span class="hljs-comment">/* no static queues under SDMA */</span>
-		<span class="hljs-keyword">if</span> (q-&gt;properties.sdma_engine_id &lt; <span class="hljs-number">2</span> &amp;&amp; !pm_use_ext_eng(q-&gt;device))
-			packet-&gt;bitfields2.engine_sel = q-&gt;properties.sdma_engine_id +
-				engine_sel__mes_map_queues__sdma0_vi;
-		<span class="hljs-keyword">else</span> &#123;
-			packet-&gt;bitfields2.extended_engine_sel =
-				extended_engine_sel__mes_map_queues__sdma0_to_7_sel;
-			packet-&gt;bitfields2.engine_sel = q-&gt;properties.sdma_engine_id;
-		&#125;
-		<span class="hljs-keyword">break</span>;
-	<span class="hljs-keyword">default</span>:
-		WARN(<span class="hljs-number">1</span>, <span class="hljs-string">"queue type %d"</span>, q-&gt;properties.type);
-		<span class="hljs-keyword">return</span> -EINVAL;
-	&#125;
-	packet-&gt;bitfields3.doorbell_offset =
-			q-&gt;properties.doorbell_off;
+ <span class="hljs-keyword">switch</span> (q-&gt;properties.type) &#123;
+ <span class="hljs-keyword">case</span> KFD_QUEUE_TYPE_COMPUTE:
+  <span class="hljs-keyword">if</span> (use_static)
+   packet-&gt;bitfields2.queue_type =
+  queue_type__mes_map_queues__normal_latency_static_queue_vi;
+  <span class="hljs-keyword">break</span>;
+ <span class="hljs-keyword">case</span> KFD_QUEUE_TYPE_DIQ:
+  packet-&gt;bitfields2.queue_type =
+   queue_type__mes_map_queues__debug_interface_queue_vi;
+  <span class="hljs-keyword">break</span>;
+ <span class="hljs-keyword">case</span> KFD_QUEUE_TYPE_SDMA:
+ <span class="hljs-keyword">case</span> KFD_QUEUE_TYPE_SDMA_XGMI:
+  use_static = <span class="hljs-literal">false</span>; <span class="hljs-comment">/* no static queues under SDMA */</span>
+  <span class="hljs-keyword">if</span> (q-&gt;properties.sdma_engine_id &lt; <span class="hljs-number">2</span> &amp;&amp; !pm_use_ext_eng(q-&gt;device))
+   packet-&gt;bitfields2.engine_sel = q-&gt;properties.sdma_engine_id +
+    engine_sel__mes_map_queues__sdma0_vi;
+  <span class="hljs-keyword">else</span> &#123;
+   packet-&gt;bitfields2.extended_engine_sel =
+    extended_engine_sel__mes_map_queues__sdma0_to_7_sel;
+   packet-&gt;bitfields2.engine_sel = q-&gt;properties.sdma_engine_id;
+  &#125;
+  <span class="hljs-keyword">break</span>;
+ <span class="hljs-keyword">default</span>:
+  WARN(<span class="hljs-number">1</span>, <span class="hljs-string">"queue type %d"</span>, q-&gt;properties.type);
+  <span class="hljs-keyword">return</span> -EINVAL;
+ &#125;
+ packet-&gt;bitfields3.doorbell_offset =
+   q-&gt;properties.doorbell_off;
 
-	packet-&gt;mqd_addr_lo =
-			lower_32_bits(q-&gt;gart_mqd_addr);
+ packet-&gt;mqd_addr_lo =
+   lower_32_bits(q-&gt;gart_mqd_addr);
 
-	packet-&gt;mqd_addr_hi =
-			upper_32_bits(q-&gt;gart_mqd_addr);
+ packet-&gt;mqd_addr_hi =
+   upper_32_bits(q-&gt;gart_mqd_addr);
 
-	packet-&gt;wptr_addr_lo =
-			lower_32_bits((<span class="hljs-keyword">uint64_t</span>)q-&gt;properties.write_ptr);
+ packet-&gt;wptr_addr_lo =
+   lower_32_bits((<span class="hljs-keyword">uint64_t</span>)q-&gt;properties.write_ptr);
 
-	packet-&gt;wptr_addr_hi =
-			upper_32_bits((<span class="hljs-keyword">uint64_t</span>)q-&gt;properties.write_ptr);
+ packet-&gt;wptr_addr_hi =
+   upper_32_bits((<span class="hljs-keyword">uint64_t</span>)q-&gt;properties.write_ptr);
 
-	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
 &#125;
 
 <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">pm_unmap_queues_v9</span><span class="hljs-params">(struct packet_manager *pm, <span class="hljs-keyword">uint32_t</span> *buffer,</span></span>
-<span class="hljs-function"><span class="hljs-params">			<span class="hljs-keyword">enum</span> kfd_unmap_queues_filter filter,</span></span>
-<span class="hljs-function"><span class="hljs-params">			<span class="hljs-keyword">uint32_t</span> filter_param, <span class="hljs-keyword">bool</span> reset)</span></span>
+<span class="hljs-function"><span class="hljs-params">   <span class="hljs-keyword">enum</span> kfd_unmap_queues_filter filter,</span></span>
+<span class="hljs-function"><span class="hljs-params">   <span class="hljs-keyword">uint32_t</span> filter_param, <span class="hljs-keyword">bool</span> reset)</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pm4_mes_unmap_queues</span> *<span class="hljs-title">packet</span>;</span>
+ <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pm4_mes_unmap_queues</span> *<span class="hljs-title">packet</span>;</span>
 
-	packet = (struct pm4_mes_unmap_queues *)buffer;
-	<span class="hljs-built_in">memset</span>(buffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(struct pm4_mes_unmap_queues));
+ packet = (struct pm4_mes_unmap_queues *)buffer;
+ <span class="hljs-built_in">memset</span>(buffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(struct pm4_mes_unmap_queues));
 
-	packet-&gt;header.u32All = pm_build_pm4_header(IT_UNMAP_QUEUES,
-					<span class="hljs-keyword">sizeof</span>(struct pm4_mes_unmap_queues));
+ packet-&gt;header.u32All = pm_build_pm4_header(IT_UNMAP_QUEUES,
+     <span class="hljs-keyword">sizeof</span>(struct pm4_mes_unmap_queues));
 
-	packet-&gt;bitfields2.extended_engine_sel = pm_use_ext_eng(pm-&gt;dqm-&gt;dev) ?
-		extended_engine_sel__mes_unmap_queues__sdma0_to_7_sel :
-		extended_engine_sel__mes_unmap_queues__legacy_engine_sel;
+ packet-&gt;bitfields2.extended_engine_sel = pm_use_ext_eng(pm-&gt;dqm-&gt;dev) ?
+  extended_engine_sel__mes_unmap_queues__sdma0_to_7_sel :
+  extended_engine_sel__mes_unmap_queues__legacy_engine_sel;
 
-	packet-&gt;bitfields2.engine_sel =
-		engine_sel__mes_unmap_queues__compute;
+ packet-&gt;bitfields2.engine_sel =
+  engine_sel__mes_unmap_queues__compute;
 
-	<span class="hljs-keyword">if</span> (reset)
-		packet-&gt;bitfields2.action =
-			action__mes_unmap_queues__reset_queues;
-	<span class="hljs-keyword">else</span>
-		packet-&gt;bitfields2.action =
-			action__mes_unmap_queues__preempt_queues;
+ <span class="hljs-keyword">if</span> (reset)
+  packet-&gt;bitfields2.action =
+   action__mes_unmap_queues__reset_queues;
+ <span class="hljs-keyword">else</span>
+  packet-&gt;bitfields2.action =
+   action__mes_unmap_queues__preempt_queues;
 
-	<span class="hljs-keyword">switch</span> (filter) &#123;
-	<span class="hljs-keyword">case</span> KFD_UNMAP_QUEUES_FILTER_BY_PASID:
-		packet-&gt;bitfields2.queue_sel =
-			queue_sel__mes_unmap_queues__perform_request_on_pasid_queues;
-		packet-&gt;bitfields3a.pasid = filter_param;
-		<span class="hljs-keyword">break</span>;
-	<span class="hljs-keyword">case</span> KFD_UNMAP_QUEUES_FILTER_ALL_QUEUES:
-		packet-&gt;bitfields2.queue_sel =
-			queue_sel__mes_unmap_queues__unmap_all_queues;
-		<span class="hljs-keyword">break</span>;
-	<span class="hljs-keyword">case</span> KFD_UNMAP_QUEUES_FILTER_DYNAMIC_QUEUES:
-		<span class="hljs-comment">/* in this case, we do not preempt static queues */</span>
-		packet-&gt;bitfields2.queue_sel =
-			queue_sel__mes_unmap_queues__unmap_all_non_static_queues;
-		<span class="hljs-keyword">break</span>;
-	<span class="hljs-keyword">default</span>:
-		WARN(<span class="hljs-number">1</span>, <span class="hljs-string">"filter %d"</span>, filter);
-		<span class="hljs-keyword">return</span> -EINVAL;
-	&#125;
+ <span class="hljs-keyword">switch</span> (filter) &#123;
+ <span class="hljs-keyword">case</span> KFD_UNMAP_QUEUES_FILTER_BY_PASID:
+  packet-&gt;bitfields2.queue_sel =
+   queue_sel__mes_unmap_queues__perform_request_on_pasid_queues;
+  packet-&gt;bitfields3a.pasid = filter_param;
+  <span class="hljs-keyword">break</span>;
+ <span class="hljs-keyword">case</span> KFD_UNMAP_QUEUES_FILTER_ALL_QUEUES:
+  packet-&gt;bitfields2.queue_sel =
+   queue_sel__mes_unmap_queues__unmap_all_queues;
+  <span class="hljs-keyword">break</span>;
+ <span class="hljs-keyword">case</span> KFD_UNMAP_QUEUES_FILTER_DYNAMIC_QUEUES:
+  <span class="hljs-comment">/* in this case, we do not preempt static queues */</span>
+  packet-&gt;bitfields2.queue_sel =
+   queue_sel__mes_unmap_queues__unmap_all_non_static_queues;
+  <span class="hljs-keyword">break</span>;
+ <span class="hljs-keyword">default</span>:
+  WARN(<span class="hljs-number">1</span>, <span class="hljs-string">"filter %d"</span>, filter);
+  <span class="hljs-keyword">return</span> -EINVAL;
+ &#125;
 
-	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
 &#125;
 
 <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> <span class="hljs-title">pm_query_status_v9</span><span class="hljs-params">(struct packet_manager *pm, <span class="hljs-keyword">uint32_t</span> *buffer,</span></span>
-<span class="hljs-function"><span class="hljs-params">			<span class="hljs-keyword">uint64_t</span> fence_address,	<span class="hljs-keyword">uint64_t</span> fence_value)</span></span>
+<span class="hljs-function"><span class="hljs-params">   <span class="hljs-keyword">uint64_t</span> fence_address, <span class="hljs-keyword">uint64_t</span> fence_value)</span></span>
 <span class="hljs-function"></span>&#123;
-	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pm4_mes_query_status</span> *<span class="hljs-title">packet</span>;</span>
+ <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">pm4_mes_query_status</span> *<span class="hljs-title">packet</span>;</span>
 
-	packet = (struct pm4_mes_query_status *)buffer;
-	<span class="hljs-built_in">memset</span>(buffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(struct pm4_mes_query_status));
+ packet = (struct pm4_mes_query_status *)buffer;
+ <span class="hljs-built_in">memset</span>(buffer, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span>(struct pm4_mes_query_status));
 
 
-	packet-&gt;header.u32All = pm_build_pm4_header(IT_QUERY_STATUS,
-					<span class="hljs-keyword">sizeof</span>(struct pm4_mes_query_status));
+ packet-&gt;header.u32All = pm_build_pm4_header(IT_QUERY_STATUS,
+     <span class="hljs-keyword">sizeof</span>(struct pm4_mes_query_status));
 
-	packet-&gt;bitfields2.context_id = <span class="hljs-number">0</span>;
-	packet-&gt;bitfields2.interrupt_sel =
-			interrupt_sel__mes_query_status__completion_status;
-	packet-&gt;bitfields2.command =
-			command__mes_query_status__fence_only_after_write_ack;
+ packet-&gt;bitfields2.context_id = <span class="hljs-number">0</span>;
+ packet-&gt;bitfields2.interrupt_sel =
+   interrupt_sel__mes_query_status__completion_status;
+ packet-&gt;bitfields2.command =
+   command__mes_query_status__fence_only_after_write_ack;
 
-	packet-&gt;addr_hi = upper_32_bits((<span class="hljs-keyword">uint64_t</span>)fence_address);
-	packet-&gt;addr_lo = lower_32_bits((<span class="hljs-keyword">uint64_t</span>)fence_address);
-	packet-&gt;data_hi = upper_32_bits((<span class="hljs-keyword">uint64_t</span>)fence_value);
-	packet-&gt;data_lo = lower_32_bits((<span class="hljs-keyword">uint64_t</span>)fence_value);
+ packet-&gt;addr_hi = upper_32_bits((<span class="hljs-keyword">uint64_t</span>)fence_address);
+ packet-&gt;addr_lo = lower_32_bits((<span class="hljs-keyword">uint64_t</span>)fence_address);
+ packet-&gt;data_hi = upper_32_bits((<span class="hljs-keyword">uint64_t</span>)fence_value);
+ packet-&gt;data_lo = lower_32_bits((<span class="hljs-keyword">uint64_t</span>)fence_value);
 
-	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+ <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
 &#125;</code></pre></div>
 
 </details>
@@ -2177,9 +2195,9 @@ amdgpu_amdkfd_device_init()
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/04/26/GPU%E2%80%94%E2%80%94%E7%BA%B9%E7%90%86%E7%BC%93%E5%AD%98/">
+                      <a href="/2024/04/28/llm.c/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">纹理缓存</span>
+                        <span class="hidden-mobile">Karpathy llm.c测试与代码分析</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     

@@ -17,7 +17,7 @@
   <meta name="description" content="开发">
   <meta name="author" content="Jianliang·Shen">
   <meta name="keywords" content="">
-  <title>AGI Startup - BLOGLOVIN</title>
+  <title>GPU Computing Startup - BLOGLOVIN</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -183,7 +183,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      4.4k 字
+      5.2k 字
     </span>
   
 
@@ -193,7 +193,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      66
+      75
        分钟
     </span>
   
@@ -223,7 +223,7 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto" id="post">
             <!-- SEO header -->
-            <h1 style="display: none">AGI Startup</h1>
+            <h1 style="display: none">GPU Computing Startup</h1>
             
             <div class="markdown-body" id="post-body">
               <p>人类无法预知未来，但可以亡羊补牢。</p>
@@ -235,13 +235,14 @@
 <li><a href="#pytorch">Pytorch</a></li>
 <li><a href="#cuda">Cuda</a></li>
 <li><a href="#jetson-%E5%B5%8C%E5%85%A5%E5%BC%8Fai">Jetson 嵌入式AI</a></li>
+<li><a href="#gpu-driver">GPU driver</a></li>
 <li><a href="#github-%E8%B5%84%E6%BA%90">Github 资源</a></li>
 </ul>
 </li>
+<li><a href="#pytorch-%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86">PyTorch 知识点整理</a></li>
 <li><a href="#%E5%AE%89%E8%A3%85-pytorch-16-%E7%8E%AF%E5%A2%83cpu%E7%89%88%E6%9C%AC">安装 Pytorch 1.6 环境（CPU版本）</a></li>
 <li><a href="#%E5%AE%89%E8%A3%85-pytorch-2x-%E7%8E%AF%E5%A2%83cuda%E7%89%88%E6%9C%AC">安装 Pytorch 2.x 环境（CUDA版本）</a></li>
 <li><a href="#pytorch-book-vscode-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">Pytorch Book VScode 环境配置</a></li>
-<li><a href="#pytorch-%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86">PyTorch 知识点整理</a></li>
 <li><a href="#examples">Examples</a><ul>
 <li><a href="#%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92">线性回归</a></li>
 <li><a href="#fashionmnist-%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E5%88%86%E7%B1%BB">FashionMNIST 手写数字分类</a></li>
@@ -258,7 +259,7 @@
 </thead>
 <tbody><tr>
 <td><a href="https://github.com/chenyuntc/pytorch-book" target="_blank" rel="noopener"><strong>《深度学习框架PyTorch：入门与实战》代码</strong></a></td>
-<td>这个更基础，不过要安装1.6版本的pytorch，2.x版本的有一部分是不兼容的，最好电脑上安装Anaconda，然后创建一个torch的python虚拟环境，里面安装1.x的环境，用Jupyter打开里面的note，VScode也支持Jupyter插件，然后python解释器选择虚拟环境安装了torch的python，参考<a href="#%E5%AE%89%E8%A3%85-pytorch-16-%E7%8E%AF%E5%A2%83cpu%E7%89%88%E6%9C%AC">安装 Pytorch 1.6 环境（CPU版本）</a>和<a href="#pytorch-book-vscode-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">Pytorch Book VScode 环境配置</a></td>
+<td>这个适合开始阶段，参考<a href="#pytorch-%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86">PyTorch 知识点整理</a>。此书配套1.6版本的pytorch，参考<a href="#%E5%AE%89%E8%A3%85-pytorch-16-%E7%8E%AF%E5%A2%83cpu%E7%89%88%E6%9C%AC">安装 Pytorch 1.6 环境（CPU版本）</a>和<a href="#pytorch-book-vscode-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">Pytorch Book VScode 环境配置</a></td>
 </tr>
 <tr>
 <td><a href="https://pytorch.org/tutorials/beginner/basics/intro.html" target="_blank" rel="noopener">Pytorch 官方文档</a></td>
@@ -278,15 +279,16 @@
 </tr>
 <tr>
 <td><a href="https://github.com/pytorch/examples" target="_blank" rel="noopener">Pytorch Examples</a></td>
-<td>A set of examples around pytorch in Vision, Text, Reinforcement Learning, etc.</td>
+<td>围绕 pytorch 的视觉、文本、强化学习等方面的一组示例。</td>
 </tr>
 <tr>
 <td><a href="https://github.com/pytorch/pytorch" target="_blank" rel="noopener">Pytorch 源码仓库</a></td>
-<td>Tensors and Dynamic neural networks in Python with strong GPU acceleration</td>
+<td>具有强大 GPU 加速的 Python 张量和动态神经网络。</td>
 </tr>
 </tbody></table>
 <h3><span id="cuda">Cuda</span></h3><p><a href="https://docs.nvidia.com/cuda/" target="_blank" rel="noopener">CUDA 官方文档</a><br><a href="https://docs.nvidia.com/cuda/cuda-runtime-api/index.html" target="_blank" rel="noopener">CUDA Runtime API</a><br><a href="https://github.com/NVIDIA/cuda-samples" target="_blank" rel="noopener">CUDA Samples</a></p>
 <h3><span id="jetson-嵌入式ai">Jetson 嵌入式AI</span></h3><p><a href="https://developer.nvidia.com/embedded/community/jetson-projects" target="_blank" rel="noopener">NVIDIA Jetson-projects</a><br><a href="https://www.yahboom.com/study/Jetson-Orin-NANO" target="_blank" rel="noopener">Yahboom官方教程 提取码lguu</a></p>
+<h3><span id="gpu-driver">GPU driver</span></h3><p><a href="https://github.com/NVIDIA/open-gpu-kernel-modules" target="_blank" rel="noopener">Nvidia KMD driver</a><br><a href="https://github.com/torvalds/linux/tree/master/drivers/gpu/drm/amd/amdgpu" target="_blank" rel="noopener">AMD KMD driver</a></p>
 <h3><span id="github-资源">Github 资源</span></h3><details>
 <summary>点击此处查看资源汇总</summary>
 
@@ -307,7 +309,7 @@
 </tr>
 <tr>
 <td><a href="https://github.com/karpathy/llm.c" target="_blank" rel="noopener"><strong>Karpathy/llm.c<br>★★★★★</strong></a></td>
-<td>简单、纯 C/CUDA 的 LLM，无需 245MB 的 PyTorch 或 107MB 的 cPython。当前重点是预训练，特别是重现 GPT-2 和 GPT-3 迷你剧，以及 train_gpt2.py 中的并行 PyTorch 参考实现。</td>
+<td>简单、纯 C/CUDA 的 LLM，无需 245MB 的 PyTorch 或 107MB 的 cPython。当前重点是预训练，特别是重现 GPT-2 和 GPT-3 迷你剧，以及 train_gpt2.py 中的并行 PyTorch 参考实现。测试见：<a href="http://jianliang-shen.cn/2024/04/28/llm.c/" target="_blank" rel="noopener">llm.c</a></td>
 </tr>
 <tr>
 <td><a href="https://github.com/google-research/vision_transformer" target="_blank" rel="noopener"><strong>Google/Vision Transformer<br>★★★★★</strong></a></td>
@@ -440,6 +442,100 @@
 </tbody></table>
 </details>
 
+<h2><span id="pytorch-知识点整理">PyTorch 知识点整理</span></h2><p>《深度学习框架 PyTorch: 入门与实战》</p>
+<details>
+<summary>Chapter 2, 简单介绍 tensor 和构建 cifar-10 训练模型</summary>
+
+<ul>
+<li>安装Pytorch</li>
+<li>基本操作，如cat等</li>
+<li>准备一个cifar-10模型，并训练推理</li>
+</ul>
+</details>
+
+<details>
+<summary>Chapter 3, 介绍 tensor</summary>
+
+<table>
+<thead>
+<tr>
+<th>概要</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>基本操作</td>
+<td>Tensor(*sizes), tensor(data)<br>ones/zeros/eye(*sizes)<br>arrange(start, end, step), linspace(start, end, steps)<br>rand / randn(*sizes)<br>new_* / *_like()</td>
+</tr>
+<tr>
+<td>命名张量</td>
+<td>names, refine_names, rename, align_to</td>
+</tr>
+<tr>
+<td>类型</td>
+<td>set_default_tensor_type, type(new_type) == .float(), .long(), .half(), to(device)</td>
+</tr>
+<tr>
+<td>索引</td>
+<td>index_select(input, dim, index)<br>masked_select(input, mask)<br>gather(input, dim, index)<br>input.scatter_(dim, index)放回<br>non_zero(input)非零下标</td>
+</tr>
+<tr>
+<td>元素操作</td>
+<td>abs/sqrt/div/exp/fmod/log/pow, cos/sin/asin/atan2/cosh, ceil/round/floor/trunc, clamp(input,min,max), sigmod/tanh, cumsum/cumprod</td>
+</tr>
+<tr>
+<td>归并操作</td>
+<td>mean/sum/median/mode, norm/dist, std/var, keepdim=True<br>保留维度, 在哪个维度操作, 哪个维度变成1，或者消失</td>
+</tr>
+<tr>
+<td>比较</td>
+<td>gt/lt/ge/le/eq/ne, topk, sort, max/min</td>
+</tr>
+<tr>
+<td>线性代数</td>
+<td>trace, diag, triu/tril, mm/bmm, addmm/addbmm/addmv, t, dot/cross, inverse, svd</td>
+</tr>
+<tr>
+<td>Numpy</td>
+<td>from_numpy，共享内存<br>torch.tensor()只进行数据拷贝, 不会共享内存<br>torch.Tensor()在类型不一致时是复制而非共享内存</td>
+</tr>
+<tr>
+<td>Tensor基本结构</td>
+<td>storage()查看是否共享, contiguous()变成连续</td>
+</tr>
+<tr>
+<td>Tensor改变形状</td>
+<td>查看信息, size() = shape, dim() = len(tensor.shape), numel &lt;=&gt; numpy.size<br>改变维度, reshape(), view(), view_as()<br>增加减少维度, squeeze()压缩, unsqueeze()新建维度, flatten(start_dim, end_dim)<br>转置, transpose()仅限二维, t(), T, permute()</td>
+</tr>
+<tr>
+<td>线性回归实例</td>
+<td>手动计算求导函数</td>
+</tr>
+<tr>
+<td>autograd</td>
+<td>requires_grad=True, retain_graph=None, is_leaf, backward()</td>
+</tr>
+<tr>
+<td>用autograd实现线性回归</td>
+<td>自动backward, 梯度下降</td>
+</tr>
+</tbody></table>
+</details>
+
+<details>
+<summary>Chapter 4, 神经网络工具箱nn</summary>
+
+<p>torch.nn是专门为深度学习而设计的模块。torch.nn的核心数据结构是<code>Module</code>，它是一个抽象的概念，既可以表示神经网络中的某个层（layer），也可以表示一个包含很多层的神经网络。在实际使用中，最常见的做法是继承<code>nn.Module</code>，从而编写自己的网络/层。多层感知机的网络结构如图所示，它由两个全连接层组成，采用$sigmoid$函数作为激活函数（图中没有画出）。</p>
+<p><img src="/img/post_pics/ai/multi_perceptron.png"></p>
+<p>PyTorch内部实现了神经网络中绝大多数的layer，这些layer都继承于<code>nn.Module</code>，封装了可学习参数<code>parameter</code>，并实现了<code>forward</code>函数。同时，大部分layer都专门针对GPU运算进行了CuDNN优化，其速度和性能都十分优异。关注每一层的信息有：</p>
+<ol>
+<li>构造函数的参数，如nn.Linear(in_features, out_features, bias)，需关注这三个参数的作用；</li>
+<li>属性、可学习参数和子module。如nn.Linear中有<code>weight</code>和<code>bias</code>两个可学习参数，不包含子module；</li>
+<li>输入输出的形状，如nn.linear的输入形状是(N, input_features)，输出为(N，output_features)，其中N是batch_size。</li>
+</ol>
+<p>图像nn包括，卷积层（Conv）、池化层（Pool），池化方式又分为平均池化（AvgPool）、最大值池化（MaxPool）、自适应池化（AdaptiveAvgPool）等。而卷积层除了常用的前向卷积之外，还有逆卷积（TransposeConv）。卷积神经网络的本质就是卷积层、池化层、激活层以及其他层的叠加。池化层可以看作是一种特殊的卷积层，其主要用于下采样，增加池化层可以在保留主要特征的同时降低参数量，从而一定程度上防止了过拟合。池化层没有可学习参数，它的weight是固定的。在<code>torch.nn</code>工具箱中封装好了各种池化层，常见的有最大池化（MaxPool）和平均池化（AvgPool)。</p>
+</details>
+
 <h2><span id="安装-pytorch-16-环境cpu版本">安装 Pytorch 1.6 环境（CPU版本）</span></h2><p><a href="https://pytorch.org/get-started/previous-versions/" target="_blank" rel="noopener">https://pytorch.org/get-started/previous-versions/</a></p>
 <details>
 <summary>点击此处查看步骤</summary>
@@ -464,7 +560,7 @@ $ conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs
 $ conda config --<span class="hljs-built_in">set</span> show_channel_urls yes</code></pre></div>
 
 <p><strong>创建Pytorch虚拟环境</strong></p>
-<div class="hljs"><pre><code class="hljs bash">$ conda create -n torch-1.6  python=3.6.13</code></pre></div>
+<div class="hljs"><pre><code class="hljs bash">conda create -n torch-1.6  python=3.6.13</code></pre></div>
 
 <details>
 <summary>创建过程的log</summary>
@@ -544,10 +640,10 @@ Executing transaction: <span class="hljs-keyword">done</span>
 </details>
 
 <p><strong>激活环境</strong></p>
-<div class="hljs"><pre><code class="hljs bash">$ conda activate torch-1.6</code></pre></div>
+<div class="hljs"><pre><code class="hljs bash">conda activate torch-1.6</code></pre></div>
 
 <p><strong>安装Pytorch 1.6</strong></p>
-<div class="hljs"><pre><code class="hljs bash">$ conda install pytorch==1.6.0 torchvision==0.7.0 -c pytorch</code></pre></div>
+<div class="hljs"><pre><code class="hljs bash">conda install pytorch==1.6.0 torchvision==0.7.0 -c pytorch</code></pre></div>
 
 <details>
 <summary>安装的log</summary>
@@ -648,11 +744,11 @@ torch-1.6             *  /home/shenjianliang/anaconda3/envs/torch-1.6
 $ conda env remove -p /home/shenjianliang/anaconda3/envs/torch-1.6</code></pre></div>
 
 <p><strong>不用Anaconda，使用python虚拟env</strong></p>
-<div class="hljs"><pre><code class="hljs bash">$ sudo apt-get install python3-venv
-$ python3.6 -m venv myenv
-$ <span class="hljs-built_in">source</span> myenv/bin/activate
+<div class="hljs"><pre><code class="hljs bash">sudo apt-get install python3-venv
+python3.6 -m venv myenv
+<span class="hljs-built_in">source</span> myenv/bin/activate
 
-$ pip install torch==1.6.0+cpu torchvision==0.7.0+cpu -f https://download.pytorch.org/whl/torch_stable.html</code></pre></div>
+pip install torch==1.6.0+cpu torchvision==0.7.0+cpu -f https://download.pytorch.org/whl/torch_stable.html</code></pre></div>
 
 </details>
 
@@ -738,27 +834,7 @@ cat /usr/include/cudnn_version.h | grep CUDNN_MAJOR -A 2</code></pre></div>
 <p>再次点击左侧运行，弹出要安装pykernel包，点击安装完成后，可以在右上角看到环境和python版本，也可以点击此处继续更换环境。</p>
 </details>
 
-<h2><span id="pytorch-知识点整理">PyTorch 知识点整理</span></h2><details>
-<summary>《深度学习框架PyTorch：入门与实战》</summary>
-
-<ul>
-<li>Chapter 2, 简单介绍tensor和构建训练模型</li>
-<li>Chapter 3, 介绍tensor<ul>
-<li>Tensor, tenor, from_numpy, clone</li>
-<li>shape, type, item<ul>
-<li>reshape, view</li>
-<li>squeeze 压缩维度, unsqueeze, cat 拼接</li>
-</ul>
-</li>
-<li>rand, randn, ones, zero</li>
-<li>add, add_, sum, zero_</li>
-<li>requires_grad_(True), backward</li>
-</ul>
-</li>
-</ul>
-</details>
-
-<h2><span id="examples">Examples</span></h2><h3><span id="线性回归">线性回归</span></h3><p>梯度下降算法和auto grad自动求解梯度函数，参考 <a href="https://github.com/chenyuntc/pytorch-book" target="_blank" rel="noopener"><strong>《深度学习框架PyTorch：入门与实战》代码</strong></a> ### 3.4.4 小试牛刀: 用autograd实现线性回归。</p>
+<h2><span id="examples">Examples</span></h2><h3><span id="线性回归">线性回归</span></h3><p>梯度下降算法和auto grad自动求解梯度函数，参考 <a href="https://github.com/chenyuntc/pytorch-book" target="_blank" rel="noopener"><strong>《深度学习框架PyTorch：入门与实战》代码</strong></a> 小试牛刀: 用autograd实现线性回归。</p>
 <h3><span id="fashionmnist-手写数字分类">FashionMNIST 手写数字分类</span></h3><p>参考Pytorch教程: <a href="https://pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html" target="_blank" rel="noopener">Quick Start</a></p>
 <details>
 <summary>训练测试步骤</summary>
@@ -1060,7 +1136,7 @@ x, y = test_data[<span class="hljs-number">1</span>][<span class="hljs-number">0
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "AGI Startup&nbsp;",
+        "GPU Computing Startup&nbsp;",
       ],
       cursorChar: "|",
       typeSpeed: 50,
