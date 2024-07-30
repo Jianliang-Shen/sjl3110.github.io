@@ -1,0 +1,995 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="计算机网络学习笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机网络">
+<meta property="og:url" content="http://yoursite.com/2020/06/23/SW/Interview/Net/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="计算机网络学习笔记。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/post_pics/net/csnet_udp.PNG">
+<meta property="article:published_time" content="2020-06-23T12:09:29.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.415Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Net">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/post_pics/net/csnet_udp.PNG">
+  
+  
+  
+  <title>计算机网络 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="计算机网络"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-06-23 12:09" pubdate>
+          2020年6月23日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">计算机网络</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>计算机网络学习笔记。</p>
+<span id="more"></span>
+
+<ul>
+<li><a href="#%E5%9F%BA%E7%A1%80">基础</a></li>
+<li><a href="#%E5%88%86%E5%B1%82%E7%BB%93%E6%9E%84">分层结构</a></li>
+<li><a href="#%E7%89%A9%E7%90%86%E5%B1%82">物理层</a></li>
+<li><a href="#%E4%BC%A0%E8%BE%93%E5%B1%82%E5%8F%8A%E5%8D%8F%E8%AE%AE">传输层及协议</a></li>
+</ul>
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><ul>
+<li><code>计算机网络功能</code>：数据通信、资源共享、分布式处理(hadoop)、提高可靠性、负载均衡</li>
+<li><code>计算机网路组成</code>：硬件、软件、协议&#x2F;边缘部分、核心部分&#x2F;<code>通信子网、资源子网</code></li>
+<li><code>计算机网络分类</code>：广域网、城域网、局域网、个人区域网&#x2F;公用网、专用网&#x2F;电路交换、报文交换、分组交换&#x2F;<code>总线型、星型、环型、网状型</code>&#x2F;广播式网络、点对点网络</li>
+<li><code>法定标准OSI与事实标准TCP/IP</code></li>
+<li><code>传输速率</code>：单位10^3换算，单位b&#x2F;s</li>
+<li><code>传输带宽</code>：最高数据率</li>
+<li><code>传输吞吐量</code>：单位时间内通过的数据量，由链路上的总和</li>
+<li><code>时延</code>：<strong>发送时延（&#x3D;数据长度&#x2F;信道带宽）</strong>、<strong>传播时延（&#x3D;信道长度&#x2F;电磁波传输速率）</strong>、排队时延、处理时延</li>
+<li><code>时延带宽积</code>：单位bit，以比特为单位的链路长度，表示某段链路现在有多少比特。</li>
+<li><code>往返时延RTT</code>：<strong>越大可以发送数据越多，包括传播时延x2+末端处理时间</strong></li>
+<li><code>利用率</code>：信道利用率和网络利用率，当利用率接近1时，时延将急剧增大（堵车）</li>
+</ul>
+<h2 id="分层结构"><a href="#分层结构" class="headerlink" title="分层结构"></a>分层结构</h2><ul>
+<li><code>计算机网络的分层基本原则</code>：独立、清晰、可分割、下层对上层服务、标准化</li>
+<li><code>分层结构</code>：<ul>
+<li><code>实体</code>：对等实体处于同一层</li>
+<li><code>协议</code>：对等实体间的数据交换而建立的规则、标准或约定称为网络协议（语法、语义、同步）</li>
+<li><code>接口</code>：（访问服务点SAP）上层使用下层服务的入口</li>
+<li><code>服务</code>：下层为上层提供的功能调用（垂直）</li>
+<li><code>SDU</code>：服务数据单元</li>
+<li><code>PCI</code>：协议控制信息</li>
+<li><code>PDU</code>：协议数据单元，<code>PDU = PCI + SDU</code></li>
+</ul>
+</li>
+<li><code>分层形式</code>：7层OSI参考模型、TCP&#x2F;IP参考模型、方便记忆的5层参考模型</li>
+<li><code>ISO/OSI参考模型</code>：从下到上：<strong>物 联 网 输 会 示 用</strong>，信息从上到下再从下到上，在中间系统不经过上四层，上四层叫<code>端到端</code>通信，下三层叫点对点通信<ul>
+<li><code>应用层</code>：所有能和用户产生网络流量的程序，<strong>FTP、SMTP、HTTP</strong>等</li>
+<li><code>表示层</code>：用于处理在两个系统中交换信息的表示方式，<strong>JPEG、ASCII</strong><ul>
+<li>数据格式变换</li>
+<li>数据加密解密</li>
+<li>数据压缩与恢复</li>
+</ul>
+</li>
+<li><code>会话层</code>：建立同步，向表示层实体、用户进程提供建立连接并在连接上有序的传输数据，建立、管理、终止会话以及建立<code>同步点/校验点</code>实现同步，<strong>ADSP、ASP</strong></li>
+<li><code>传输层</code>：负责端到端通信，可靠传输、差错控制、流量控制、复用分用，<strong>TCP&#x2F;UDP</strong><ul>
+<li>复用：多个进程同时使用下层服务</li>
+<li>分用：下层（传输层）把收到的信息分别交付给上面应用层的相应进程</li>
+</ul>
+</li>
+<li><code>网络层</code>：路由控制（最佳路径）、流量控制、差错控制、拥塞控制，<strong>IP&#x2F;IPX&#x2F;ICMP&#x2F;IGMP&#x2F;ARP&#x2F;RARP&#x2F;OSPF</strong></li>
+<li><code>数据链路层</code>：上层的数据组装成帧、差错控制（帧错+位错）、流量控制、访问接入控制，<strong>SDLC&#x2F;HDLC&#x2F;PPP&#x2F;STP</strong></li>
+<li><code>物理层</code>：透明传输、物理媒体、单位比特，传输方式包括<strong>单工、半双工、双工</strong>，定义传输速率，比特同步，<strong>RJ45、802.3</strong></li>
+</ul>
+</li>
+<li><code>TCP/IP四层参考模型</code>：<ul>
+<li>应用层：HTTP&#x2F;FTP&#x2F;DNS</li>
+<li>传输层：TCP&#x2F;UDP</li>
+<li>网际层：IP</li>
+<li>网络接口层：Ethernet、ATM、Frame Relay</li>
+</ul>
+</li>
+<li><code>OSI和TCP/IP区别</code>：<ul>
+<li>相同：都分层，都有独立协议栈、都实现异构网络互联</li>
+<li>不同：<strong>网络层（都实现无连接），OSI无连接+面向连接，TCP&#x2F;IP无连接；传输层（都实现面向连接），OIS面向连接，TCP&#x2F;IP无连接+面向连接</strong></li>
+</ul>
+</li>
+<li><strong>五层参考模型：应用层（报文）、传输层（报文段）、网络层（数据报）、数据链路层（帧）、物理层（比特）</strong></li>
+</ul>
+<h2 id="物理层"><a href="#物理层" class="headerlink" title="物理层"></a>物理层</h2><ul>
+<li><code>物理层</code>：机械特性（引脚）、电气特性（电压、速率、距离）、功能特性（电平含义）、规程特性（规程和时序）</li>
+<li><code>典型数据通信模型</code>：信源-&gt;<code>数字信号</code>-&gt;调制解调器-&gt;<code>模拟信号</code>-&gt;广域网（传输系统）-&gt;<code>模拟信号</code>-&gt;调制解调器-&gt;<code>数字信号</code>-&gt;信宿</li>
+<li>数据：信息实体</li>
+<li>信号：数据在传输过程中的存在形式，包括数字信号和模拟信号</li>
+<li>信源&#x2F;信宿：起点，终点</li>
+<li><code>信道</code>：传输媒介，有方向，数字&#x2F;模拟、有线&#x2F;无线</li>
+<li>单工：1条信道，没有反向；半双工：2条信道，分时；全双工：两条信道，可同时</li>
+<li><code>串行传输（速度慢、远距离）与并行传输（速度快、近距离）</code></li>
+<li><strong>码元：一个固定时长的信号波形，二进制码元只包括0和1状态，除此之外还要M（2^n）进制码元；1码元可以携带多个比特的信息量</strong></li>
+<li><code>码元速率</code>：<strong>1 波特（baud） &#x3D; 1 码元&#x2F;s</strong>，表示一秒内可以向信道传输的码元数目，不同的传输速率可以有相同的码元速率（码元进制不同的情况下）</li>
+<li><code>信息传输速率</code>：表示单位时间内数字系统传输的二进制码元（等同于比特数）的个数。</li>
+<li><code>信息传输速率</code> &#x3D; 码元传输速率 x 码元携带的比特数 bit&#x2F;s</li>
+<li><code>奈氏准则</code>  – 解决内忧（码间串扰）<ul>
+<li>失真：码元传输速率越大、距离越远、遭受越大、传输介质差都会加强失真</li>
+<li><strong>码间串扰：接收端收到的信号波形失去了码元之间清晰界限的现象。</strong></li>
+<li><strong>奈氏准则：在理想（无噪声）低通条件下，为避免码间串扰，极限码元传输速率为2W Baud，W是信道带宽，单位Hz</strong></li>
+<li>传输速率上限<code> = 2Wlog2 (V) bit/s</code></li>
+<li>奈氏准则只给出码元传输速率的限制，提高码元携带的比特数可以进一步提高整体的传输速率</li>
+</ul>
+</li>
+<li><code>香农定理</code> – 解决外患（噪声）<ul>
+<li><code>信噪比</code>：衡量噪声对信号的影响 <code>= 10lg(S/N) dB</code></li>
+<li><strong>香农定理：在带宽受限且有噪声的信道中，为不产生误差，信息的传输速率的上限值</strong> <code>= Wlog2 (1 + S/N) bit/s</code>, <code>S/N</code> 为信噪比。</li>
+</ul>
+</li>
+<li><code>基带信号</code>：来自信源的（数字）信号，送到数字信道上传输；<code>宽带信号</code>：调制后，送到模拟信道上传输（远距离）</li>
+<li><strong>编码<code>：数据转数据信号；</code>调制&#96;：数据转模拟信号</strong><ul>
+<li>数字数据编码采用数字发送器，调制采用调制器</li>
+<li>模拟数据编码采用PCM编码器，调制采用放大器调制器</li>
+</ul>
+</li>
+<li><strong>数字数据编码为数字信号：</strong><ul>
+<li>非归零编码NRZ：难以保持同步，0低电平，1高电平</li>
+<li><strong>曼彻斯特编码</strong>：包括了时钟自同步，数据传输速率只有调制速率的一半。</li>
+<li>差分曼彻斯特编码：同1异0，主要增加了抗干扰性</li>
+</ul>
+</li>
+<li><strong>数字数据通过调制器转为模拟信号的原理：</strong><ul>
+<li>ASK：调幅</li>
+<li>FSK：调频</li>
+<li>PSK：调相</li>
+<li>QAM：调幅+调相</li>
+</ul>
+</li>
+<li>模拟数据PCM编码器转数字信号：<ul>
+<li>高保真：PCM</li>
+<li>包括：抽样、量化、编码</li>
+</ul>
+</li>
+<li>模拟数据调制为模拟信号：频分复用技术</li>
+<li><code>物理层传输介质</code>：导向型、非导向型传输介质<ul>
+<li>导向型：<ul>
+<li><code>双绞线</code>：非屏蔽双绞线UTP、屏蔽双绞线STP</li>
+<li><code>同轴电缆</code>：传输距离更远</li>
+<li><code>光纤</code>：光脉冲（全反射），损耗小</li>
+</ul>
+</li>
+<li>非导向型传输的信号：<ul>
+<li>无线电波，穿透强</li>
+<li>微波：频带范围高</li>
+<li>红外线、激光</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>物理层设备</code>：<ul>
+<li><strong>中继器</strong>：对信号再生还原（再生数字信号），延长传输距离</li>
+<li><strong>集线器</strong>：（多口中继器）：再生、放大信号（星型拓扑），广播</li>
+</ul>
+</li>
+</ul>
+<h2 id="传输层及协议"><a href="#传输层及协议" class="headerlink" title="传输层及协议"></a>传输层及协议</h2><ul>
+<li><code>传输层</code>：只有主机才有的层次，处于第四层<ul>
+<li>功能：<ul>
+<li>进程与进程之间的逻辑通信</li>
+<li>复用与分用</li>
+<li>对收到的报文进行差错检错</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>两大协议：<ul>
+<li><code>TCP</code>：面向连接的传输控制协议，<code>不提供广播、多播，可靠面向连接、时延大，适用于大文件</code></li>
+<li><code>UDP</code>：无连接的用户数据报协议，<code>不可靠，无连接，时延小，适用于小文件</code></li>
+</ul>
+</li>
+<li>寻址与端口：端口是传输层的SAP，标识主机的应用进程，只具有本地意义</li>
+<li><strong>端口长度16bit，共65536个，其中服务端使用0-1023作为熟知端口号，1024-49151作为登记端口号，客户端使用49152-65535作为客户进程动态选择的端口号</strong></li>
+<li>常用熟知端口号：<code>FTP 21,TELNET 23,SMTP 25,DNS 53,TFTP 69,HTTP 80,SNMP 161</code></li>
+<li><strong>套接字Socket &#x3D; 主机IP地址+端口号</strong>的组合，套接字唯一标识了网络中一个主机和它上面的进程。</li>
+<li>UDP协议：<ul>
+<li>特点：无连接、不保证可靠交付、面向报文，只增加UDP首部（开销小，8Byte），无拥塞控制适合实时应用</li>
+<li><code>首部格式：8B，包括16位源端口号2B，16位目的端口号2B，16位UDP长度2B，16位UDP检验和2B</code>，数据段（&gt;&#x3D;0）</li>
+<li>接收方分用时，找不到对应的目标端口，就丢弃报文，并给发送方发送ICMP“端口不可达”差错报告报文</li>
+<li>UDP校验：<ul>
+<li><code>伪首部：包括源IP，目的IP，0，17，UDP长度（UDP首部+UDP数据段长度）；伪首部只在计算时出现，不对外传送</code></li>
+<li>校验过程：</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/img/post_pics/net/csnet_udp.PNG" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>TCP协议：</p>
+<ul>
+<li>特点：<ul>
+<li>面向连接、点对点、可靠有序不丢不重、全双工通信的发送缓存与接收缓存、面向字节流</li>
+<li>TCP首部格式：</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>TCP连接传输三个阶段：连接建立、数据传送、连接释放，分为服务器与客户。</strong></p>
+</li>
+<li><p>TCP连接的 <strong>三次握手</strong>：</p>
+<ol>
+<li>客户端发送连接请求报文段，无应用层数据，<code>SYN = 1，seq = x（随机产生）</code></li>
+<li>服务器端为连接分配缓存与变量，并发送确认报文段，允许连接，无应用层数据，<code>SYN = 1，ACK = 1，seq = y（随机），ack = x+1</code></li>
+<li>客户端为该TCP连接分配缓存与变量，并向服务器端返回确认的确认，可以携带数据，<code>SYN = 0，ACK = 1，seq = x+1，ack = y+1</code></li>
+</ol>
+</li>
+<li><p><code>SYN洪泛攻击</code>：攻击者不确认TCP的回复，大量攻击使得服务器宕机，解决方法：SYN cookie</p>
+</li>
+<li><p>TCP连接的 <strong>四次挥手</strong>：</p>
+<ol>
+<li>客户端发送连接释放报文段，停止发送数据，主动关闭TCP连接。<code>FIN = 1,seq = u</code></li>
+<li>服务器端回送一个确认报文段，客户到服务器这个连接方向的连接就释放了–半关闭状态，<code>ACK = 1,seq = v，ack = u+1</code></li>
+<li>服务器端发完数据，就发出连接释放报文段，主动关闭TCP连接，<code>FIN = 1，ACK = 1，seq = w，ack = u+1</code></li>
+<li>客户端回送一个确认报文段，再等到时间等待计时器设置的2MSL（最长报文段寿命）后，连接彻底关闭。<code>ACK = 1，seq = u+1，ack = w+1</code></li>
+</ol>
+</li>
+<li><p>TCP<strong>可靠传输</strong>：</p>
+<ul>
+<li>实现机制：<strong>校验（与UDP伪首部反码计算方式类似）、序号、确认、重传</strong><ul>
+<li>序号：发送方发送一定字节后，接收方将向发送方发送确认接收报文，并告知发送方应当继续发送的字节序号，在某个报文异常时，就算后面的报文提前到达，接收方也会持续请求发送方发送最小累加的序号，直到重发接收到后，更新到最新要接收的报文的序号的确认报文（此时提前接收到的就相当于发送了确认，不用重新发送确认报文）</li>
+<li>确认与重传：TCP的发送方在规定的时间（重传时间）内没有收到确认就要重传已发送的报文段。（超时重传）<ul>
+<li>重传时间过短，增大网络负载，过长则空闲时间过大</li>
+<li><strong>自适应RTTs算法（加权平均往返时间）：持续计算第一次、第二次……的往返时间。</strong></li>
+</ul>
+</li>
+<li><strong>冗余ACK</strong>：<ul>
+<li>产生原因：部分报文段提前到达，而重传报文段持续等待重传时间过长</li>
+<li>原理：每当比期望序号大的失序报文段到达时，接收方发送一个冗余ACK，指向下一个期待字节的序号。当发送方接收到3个对于某个接收方没收到的报文段的前一个报文段的冗余ACK（这个ACK指向没收到的报文段），发送方认为该报文段已经丢失，重传这个没收到的报文段。（<strong>快速重传机制</strong>）</li>
+<li>结果：对于某个丢失的报文段，发送方不用一直等接收方确认，而可以接着发后面的报文段，降低重传等待时间。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>TCP的流量控制：</p>
+<ul>
+<li>目的：控制发送方的发送速率，防止过快而丢包</li>
+<li>滑动窗口：（类似链路层）</li>
+</ul>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Interview/" class="category-chain-item">Interview</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
+      
+        <a href="/tags/Net/" class="print-no-link">#Net</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/25/SW/Interview/Interview-Technology-IOT/" title="嵌入式软件基础知识-C/C++">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">嵌入式软件基础知识-C/C++</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/20/SW/OS/SQLite3-BLOB/" title="SQLite3 BLOB增删改查编写">
+                        <span class="hidden-mobile">SQLite3 BLOB增删改查编写</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

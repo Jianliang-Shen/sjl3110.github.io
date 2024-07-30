@@ -1,0 +1,826 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="GPU MEM3DCPY是怎么实现的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SDMA 3D 拷贝底层机理">
+<meta property="og:url" content="http://yoursite.com/2024/05/17/GPU/SDMA-3D-copy/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="GPU MEM3DCPY是怎么实现的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/post_pics/gpu/sdma/index.png">
+<meta property="article:published_time" content="2024-05-17T20:00:44.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.411Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="DMA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/post_pics/gpu/sdma/index.png">
+  
+  
+  
+  <title>SDMA 3D 拷贝底层机理 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="SDMA 3D 拷贝底层机理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-05-17 20:00" pubdate>
+          2024年5月17日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">SDMA 3D 拷贝底层机理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>GPU MEM3DCPY是怎么实现的。</p>
+<span id="more"></span>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#%E7%9B%AE%E5%BD%95">目录</a></li>
+<li><a href="#%E5%AE%9A%E4%B9%89">定义</a></li>
+<li><a href="#%E6%A1%88%E4%BE%8B">案例</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95">测试</a></li>
+</ul>
+<h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>这个操作主要依靠 SDMA Linear Sub-Window Copy。该命令用于在两个具有不同大小和起始点(应该是相同元素大小)的表面之间执行子窗口复制。</p>
+<p><img src="/img/post_pics/gpu/sdma/0.png" srcset="/img/loading.gif" lazyload><br><img src="/img/post_pics/gpu/sdma/0-1.png" srcset="/img/loading.gif" lazyload><br><img src="/img/post_pics/gpu/sdma/0-2.png" srcset="/img/loading.gif" lazyload></p>
+<p>其中主要涉及：</p>
+<ul>
+<li>像素大小：8~128</li>
+<li>源地址：以三维的形式展开</li>
+<li>源地址坐标XYZ，在大多数编程和图形上下文中，X和Y通常用来指代水平和垂直空间维度，而Z维则表示深度或从观察点向前的维度。在内存操作的场景中，X、Y和Z可以用来描述要操作的数据区域的三维范围或大小。</li>
+<li>源切片slice，用来描述沿Z轴（深度轴）的单个二维截面。例如，如果有一个3D图像或体积数据块，一个切片可能代表该数据块中的一个特定深度层。</li>
+<li>源间距pitch：在图像处理或内存管理中，”pitch”指的是存储单个图像行（二维数据）或切片（三维数据的一部分）所需的内存字节数。</li>
+<li>目标地址等同上</li>
+</ul>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p>HIP&#x2F;tests&#x2F;src&#x2F;runtimeApi&#x2F;memory&#x2F;hipMemset3D.cpp</p>
+<p>创建源，目标，存入hipMemcpy3D(&amp;myparms)的参数myparms中，其中地址分别为 0x7ffff3700000 和 0x7ffff7f2f010</p>
+<p><img src="/img/post_pics/gpu/sdma/1.png" srcset="/img/loading.gif" lazyload></p>
+<p>此参数结构体和内部重要参数结构体定义为</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">hipMemcpy3DParms</span> &#123;</span><br>    hipArray_t srcArray;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">hipPos</span> <span class="hljs-title">srcPos</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">hipPitchedPtr</span> <span class="hljs-title">srcPtr</span>;</span><br>    hipArray_t dstArray;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">hipPos</span> <span class="hljs-title">dstPos</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">hipPitchedPtr</span> <span class="hljs-title">dstPtr</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">hipExtent</span> <span class="hljs-title">extent</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">hipMemcpyKind</span> <span class="hljs-title">kind</span>;</span><br>&#125; hipMemcpy3DParms;<br><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">hipPitchedPtr</span> &#123;</span><br>    <span class="hljs-type">void</span>* ptr;<br>    <span class="hljs-type">size_t</span> pitch;<br>    <span class="hljs-type">size_t</span> xsize;<br>    <span class="hljs-type">size_t</span> ysize;<br>&#125;hipPitchedPtr;<br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">hipExtent</span> &#123;</span><br>    <span class="hljs-type">size_t</span> width;  <span class="hljs-comment">// Width in elements when referring to array memory, in bytes when referring to</span><br>                   <span class="hljs-comment">// linear memory</span><br>    <span class="hljs-type">size_t</span> height;<br>    <span class="hljs-type">size_t</span> depth;<br>&#125;hipExtent;<br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">hipPos</span> &#123;</span><br>    <span class="hljs-type">size_t</span> x;<br>    <span class="hljs-type">size_t</span> y;<br>    <span class="hljs-type">size_t</span> z;<br>&#125;hipPos;<br></code></pre></td></tr></table></figure>
+
+<p>跳转到函数 getDrvMemcpy3DDesc 中后，将入参转化为结构体 HIP_MEMCPY3D desc：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">const</span> HIP_MEMCPY3D desc = hip::getDrvMemcpy3DDesc(*p);<br></code></pre></td></tr></table></figure>
+
+<p><img src="/img/post_pics/gpu/sdma/2.png" srcset="/img/loading.gif" lazyload></p>
+<p>注意这是device到host的拷贝。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">HIP_MEMCPY3D</span> &#123;</span><br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> srcXInBytes;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> srcY;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> srcZ;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> srcLOD;<br>  hipMemoryType srcMemoryType;<br>  <span class="hljs-type">const</span> <span class="hljs-type">void</span>* srcHost;<br>  hipDeviceptr_t srcDevice;<br>  hipArray_t srcArray;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> srcPitch;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> srcHeight;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> dstXInBytes;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> dstY;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> dstZ;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> dstLOD;<br>  hipMemoryType dstMemoryType;<br>  <span class="hljs-type">void</span>* dstHost;<br>  hipDeviceptr_t dstDevice;<br>  hipArray_t dstArray;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> dstPitch;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> dstHeight;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> WidthInBytes;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> Height;<br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> Depth;<br>&#125; HIP_MEMCPY3D;<br></code></pre></td></tr></table></figure>
+
+<p>进入函数 ihipMemcpyParam3D，根据源地址类型和目标地址类型决策拷贝的方向：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">if</span> ((srcMemoryType == hipMemoryTypeHost) &amp;&amp; (dstMemoryType == hipMemoryTypeHost)) &#123;<br>    <span class="hljs-comment">//...</span><br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    amd::Command* command;<br>    status = ihipGetMemcpyParam3DCommand(command, pCopy, hip::getQueue(stream));<br>    <span class="hljs-keyword">if</span> (status != hipSuccess) <span class="hljs-keyword">return</span> status;<br>    <span class="hljs-keyword">return</span> ihipMemcpyCmdEnqueue(command, isAsync);<br>  &#125;<br></code></pre></td></tr></table></figure>
+
+<p>ihipGetMemcpyParam3DCommand 进一步决策方向：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c">  amd::Coord3D srcOrigin = &#123;pCopy-&gt;srcXInBytes, pCopy-&gt;srcY, pCopy-&gt;srcZ&#125;;<br>  amd::Coord3D dstOrigin = &#123;pCopy-&gt;dstXInBytes, pCopy-&gt;dstY, pCopy-&gt;dstZ&#125;;<br>  amd::Coord3D copyRegion = &#123;pCopy-&gt;WidthInBytes, pCopy-&gt;Height, pCopy-&gt;Depth&#125;;<br><span class="hljs-comment">// ...  </span><br><br>&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ((srcMemoryType == hipMemoryTypeDevice) &amp;&amp; (dstMemoryType == hipMemoryTypeHost)) &#123;<br>    <span class="hljs-comment">// Device to Host.</span><br>    <span class="hljs-keyword">return</span> ihipMemcpyDtoHCommand(command, pCopy-&gt;srcDevice, pCopy-&gt;dstHost, srcOrigin, dstOrigin,<br>                                 copyRegion, pCopy-&gt;srcPitch, pCopy-&gt;srcPitch * pCopy-&gt;srcHeight,<br>                                 pCopy-&gt;dstPitch, pCopy-&gt;dstPitch * pCopy-&gt;dstHeight, <span class="hljs-built_in">queue</span>);<br>  &#125;<br><span class="hljs-comment">// slicepitch = pitch * height</span><br></code></pre></td></tr></table></figure>
+
+<p>ihipMemcpyDtoHCommand → ihipMemcpyDtoHValidate</p>
+<p><img src="/img/post_pics/gpu/sdma/3.png" srcset="/img/loading.gif" lazyload></p>
+<p>这里构造了待拷贝的rect：</p>
+<p><img src="/img/post_pics/gpu/sdma/4.png" srcset="/img/loading.gif" lazyload></p>
+<p>这里创建了一个read memory 的command，并执行完 validatePeerMemory</p>
+<p>向下层传递数据至Runtime层，构造SDMA packet：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><code class="hljs c">template &lt;typename RingIndexTy, <span class="hljs-type">bool</span> HwIndexMonotonic, <span class="hljs-type">int</span> SizeToCountOffset, <span class="hljs-type">bool</span> useGCR&gt;<br><span class="hljs-type">void</span> BlitSdma&lt;RingIndexTy, HwIndexMonotonic, SizeToCountOffset, useGCR&gt;::BuildCopyRectCommand(<br>    <span class="hljs-type">const</span> <span class="hljs-built_in">std</span>::function&lt;<span class="hljs-type">void</span>*(<span class="hljs-type">size_t</span>)&gt;&amp; append, <span class="hljs-type">const</span> <span class="hljs-type">hsa_pitched_ptr_t</span>* dst,<br>    <span class="hljs-type">const</span> <span class="hljs-type">hsa_dim3_t</span>* dst_offset, <span class="hljs-type">const</span> <span class="hljs-type">hsa_pitched_ptr_t</span>* src, <span class="hljs-type">const</span> <span class="hljs-type">hsa_dim3_t</span>* src_offset,<br>    <span class="hljs-type">const</span> <span class="hljs-type">hsa_dim3_t</span>* range) &#123;<br>  <span class="hljs-comment">// Returns the index of the first set bit (ie log2 of the largest power of 2 that evenly divides</span><br>  <span class="hljs-comment">// width), the largest element that perfectly covers width.</span><br>  <span class="hljs-comment">// width | 16 ensures that we don&#x27;t return a higher element than is supported and avoids</span><br>  <span class="hljs-comment">// issues with 0.</span><br>  <span class="hljs-keyword">auto</span> maxAlignedElement = [](<span class="hljs-type">size_t</span> width) &#123;<br>    <span class="hljs-keyword">return</span> __builtin_ctz(width | <span class="hljs-number">16</span>);<br>  &#125;;<br><br>  <span class="hljs-comment">// Limits in terms of element count</span><br>  <span class="hljs-type">const</span> <span class="hljs-type">uint32_t</span> max_pitch = <span class="hljs-number">1</span> &lt;&lt; SDMA_PKT_COPY_LINEAR_RECT::pitch_bits;<br>  <span class="hljs-type">const</span> <span class="hljs-type">uint32_t</span> max_slice = <span class="hljs-number">1</span> &lt;&lt; SDMA_PKT_COPY_LINEAR_RECT::slice_bits;<br>  <span class="hljs-type">const</span> <span class="hljs-type">uint32_t</span> max_x = <span class="hljs-number">1</span> &lt;&lt; SDMA_PKT_COPY_LINEAR_RECT::rect_xy_bits;<br>  <span class="hljs-type">const</span> <span class="hljs-type">uint32_t</span> max_y = <span class="hljs-number">1</span> &lt;&lt; SDMA_PKT_COPY_LINEAR_RECT::rect_xy_bits;<br>  <span class="hljs-type">const</span> <span class="hljs-type">uint32_t</span> max_z = <span class="hljs-number">1</span> &lt;&lt; SDMA_PKT_COPY_LINEAR_RECT::rect_z_bits;<br><br>  <span class="hljs-comment">// Find maximum element that describes the pitch and slice.</span><br>  <span class="hljs-comment">// Pitch and slice must both be represented in units of elements.  No element larger than this</span><br>  <span class="hljs-comment">// may be used in any tile as the pitches would not be exactly represented.</span><br>  <span class="hljs-type">int</span> max_ele = Min(maxAlignedElement(src-&gt;pitch), maxAlignedElement(dst-&gt;pitch));<br>  <span class="hljs-keyword">if</span> (range-&gt;z != <span class="hljs-number">1</span>)  <span class="hljs-comment">// Only need to consider slice if HW will copy along Z.</span><br>    max_ele = Min(max_ele, maxAlignedElement(src-&gt;slice), maxAlignedElement(dst-&gt;slice));<br><br>  <span class="hljs-comment">/*</span><br><span class="hljs-comment">  Find the minimum element size that will be needed for any tile.</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">  No subdivision of a range admits a larger element size for the smallest element in any subdivision</span><br><span class="hljs-comment">  than the element size that covers the whole range, though some can be worse (this is easily model</span><br><span class="hljs-comment">  checked).  Subdividing with any element larger than the covering element won&#x27;t change the covering</span><br><span class="hljs-comment">  element of the remainder</span><br><span class="hljs-comment">  ( Range%Element = (Range-N*LargerElement)%Element since LargerElement%Element=0 ).</span><br><span class="hljs-comment">    Ex. range-&gt;x=71, assume max range is 16 elements:  We can break at 64 giving tiles:</span><br><span class="hljs-comment">    [0,63], [64-70] (width 64 &amp; 7).  64 is covered by element 4 (16B) and 7 is covered by element 0</span><br><span class="hljs-comment">    (1B).  Exactly covering 71 requires using element 0.</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">  Base addresses in each tile must be DWORD aligned, if not then the offset from an aligned address</span><br><span class="hljs-comment">  must be represented in elements.  This may reduce the size of the element, but since elements are</span><br><span class="hljs-comment">  integer multiples of each other this is harmless.</span><br><span class="hljs-comment"></span><br><span class="hljs-comment">  src and dst base has already been checked for DWORD alignment so we only need to consider the</span><br><span class="hljs-comment">  offset here.</span><br><span class="hljs-comment">  */</span><br>  <span class="hljs-type">int</span> min_ele = Min(max_ele, maxAlignedElement(range-&gt;x), maxAlignedElement(src_offset-&gt;x % <span class="hljs-number">4</span>),<br>                    maxAlignedElement(dst_offset-&gt;x % <span class="hljs-number">4</span>));<br><br>  <span class="hljs-comment">// Check that pitch and slice can be represented in the tile with the smallest element</span><br>  <span class="hljs-keyword">if</span> ((src-&gt;pitch &gt;&gt; min_ele) &gt; max_pitch || (dst-&gt;pitch &gt;&gt; min_ele) &gt; max_pitch)<br>    throw AMD::hsa_exception(HSA_STATUS_ERROR_INVALID_ARGUMENT, <span class="hljs-string">&quot;Copy rect pitch out of limits.\n&quot;</span>);<br>  <span class="hljs-keyword">if</span> (range-&gt;z != <span class="hljs-number">1</span>) &#123;  <span class="hljs-comment">// Only need to consider slice if HW will copy along Z.</span><br>    <span class="hljs-keyword">if</span> ((src-&gt;slice &gt;&gt; min_ele) &gt; max_slice || (dst-&gt;slice &gt;&gt; min_ele) &gt; max_slice)<br>      throw AMD::hsa_exception(HSA_STATUS_ERROR_INVALID_ARGUMENT,<br>                               <span class="hljs-string">&quot;Copy rect slice out of limits.\n&quot;</span>);<br>  &#125;<br><br>  <span class="hljs-comment">// Break copy into tiles</span><br>  <span class="hljs-keyword">for</span> (<span class="hljs-type">uint32_t</span> z = <span class="hljs-number">0</span>; z &lt; range-&gt;z; z += max_z) &#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">uint32_t</span> y = <span class="hljs-number">0</span>; y &lt; range-&gt;y; y += max_y) &#123;<br>      <span class="hljs-type">uint32_t</span> x = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">while</span> (x &lt; range-&gt;x) &#123;<br>        <span class="hljs-type">uint32_t</span> width = range-&gt;x - x;<br><br>        <span class="hljs-comment">// Get largest element which describes the start of this tile after its base address has</span><br>        <span class="hljs-comment">// been aligned.  Base addresses must be DWORD (4 byte) aligned.</span><br>        <span class="hljs-type">int</span> aligned_ele = Min(maxAlignedElement((src_offset-&gt;x + x) % <span class="hljs-number">4</span>),<br>                              maxAlignedElement((dst_offset-&gt;x + x) % <span class="hljs-number">4</span>), max_ele);<br><br>        <span class="hljs-comment">// Get largest permissible element which exactly covers width</span><br>        <span class="hljs-type">int</span> element = Min(maxAlignedElement(width), aligned_ele);<br>        <span class="hljs-type">int</span> xcount = width &gt;&gt; element;<br><br>        <span class="hljs-comment">// If width is too large then width is at least max_x bytes (bigger than any element) so</span><br>        <span class="hljs-comment">// drop the width restriction and clip element count to max_x.</span><br>        <span class="hljs-keyword">if</span> (xcount &gt; max_x) &#123;<br>          element = aligned_ele;<br>          xcount = Min(width &gt;&gt; element, max_x);<br>        &#125;<br><br>        <span class="hljs-comment">// Get base addresses and offsets for this tile.</span><br>        <span class="hljs-type">uintptr_t</span> sbase = (<span class="hljs-type">uintptr_t</span>)src-&gt;base + src_offset-&gt;x + x +<br>            (src_offset-&gt;y + y) * src-&gt;pitch + (src_offset-&gt;z + z) * src-&gt;slice;<br>        <span class="hljs-type">uintptr_t</span> dbase = (<span class="hljs-type">uintptr_t</span>)dst-&gt;base + dst_offset-&gt;x + x +<br>            (dst_offset-&gt;y + y) * dst-&gt;pitch + (dst_offset-&gt;z + z) * dst-&gt;slice;<br>        uint soff = (sbase % <span class="hljs-number">4</span>) &gt;&gt; element;<br>        uint doff = (dbase % <span class="hljs-number">4</span>) &gt;&gt; element;<br>        sbase &amp;= ~<span class="hljs-number">3ull</span>;<br>        dbase &amp;= ~<span class="hljs-number">3ull</span>;<br><br>        x += xcount &lt;&lt; element;<br><br>        SDMA_PKT_COPY_LINEAR_RECT* pkt =<br>            (SDMA_PKT_COPY_LINEAR_RECT*)append(<span class="hljs-keyword">sizeof</span>(SDMA_PKT_COPY_LINEAR_RECT));<br>        *pkt = &#123;&#125;;<br>        pkt-&gt;HEADER_UNION.op = SDMA_OP_COPY;<br>        pkt-&gt;HEADER_UNION.sub_op = SDMA_SUBOP_COPY_LINEAR_RECT;<br>        pkt-&gt;HEADER_UNION.element = element;<br>        pkt-&gt;SRC_ADDR_LO_UNION.src_addr_31_0 = sbase;<br>        pkt-&gt;SRC_ADDR_HI_UNION.src_addr_63_32 = sbase &gt;&gt; <span class="hljs-number">32</span>;<br>        pkt-&gt;SRC_PARAMETER_1_UNION.src_offset_x = soff;<br>        pkt-&gt;SRC_PARAMETER_2_UNION.src_pitch = (src-&gt;pitch &gt;&gt; element) - <span class="hljs-number">1</span>;<br>        pkt-&gt;SRC_PARAMETER_3_UNION.src_slice_pitch =<br>            (range-&gt;z == <span class="hljs-number">1</span>) ? <span class="hljs-number">0</span> : (src-&gt;slice &gt;&gt; element) - <span class="hljs-number">1</span>;<br>        pkt-&gt;DST_ADDR_LO_UNION.dst_addr_31_0 = dbase;<br>        pkt-&gt;DST_ADDR_HI_UNION.dst_addr_63_32 = dbase &gt;&gt; <span class="hljs-number">32</span>;<br>        pkt-&gt;DST_PARAMETER_1_UNION.dst_offset_x = doff;<br>        pkt-&gt;DST_PARAMETER_2_UNION.dst_pitch = (dst-&gt;pitch &gt;&gt; element) - <span class="hljs-number">1</span>;<br>        pkt-&gt;DST_PARAMETER_3_UNION.dst_slice_pitch =<br>            (range-&gt;z == <span class="hljs-number">1</span>) ? <span class="hljs-number">0</span> : (dst-&gt;slice &gt;&gt; element) - <span class="hljs-number">1</span>;<br>        pkt-&gt;RECT_PARAMETER_1_UNION.rect_x = xcount - <span class="hljs-number">1</span>;<br>        pkt-&gt;RECT_PARAMETER_1_UNION.rect_y = Min(range-&gt;y - y, max_y) - <span class="hljs-number">1</span>;<br>        pkt-&gt;RECT_PARAMETER_2_UNION.rect_z = Min(range-&gt;z - z, max_z) - <span class="hljs-number">1</span>;<br>      &#125;<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在包中，分别填入指定的数据。对其描述参考下述测试。</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>在KFDTest中直接构造待拷贝的数据结构，这里使用的是统一内存。</p>
+<ul>
+<li>源地址和目标地址为一维数组，大小为 128 x 128 x 128 bytes</li>
+<li>待拷贝的大小为 32 x 32 x 1 bytes</li>
+<li>目标相对偏移是居中</li>
+<li>注意：在填充包的时候，pitch, slice_picth，以及copy rect width都需要转换为pixel单位</li>
+<li>注意：picth和rect width大小不能小于一个像素的长度，例如element &#x3D; 4，表示一个像素为连续16bytes，则最小跨度为16 bytes</li>
+</ul>
+<p><img src="/img/post_pics/gpu/sdma/5.png" srcset="/img/loading.gif" lazyload></p>
+<p>对每个element测试，测试结果为：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs txt">[ RUN      ] SDMACopyDataRectTest.CopyRectMultiPixel/0<br>[          ] ************************************<br>[          ] *        SDMA Copy Rect Info       *<br>[          ] ************************************<br>[          ] One pixel size:    1 bytes<br>[          ] SRC rect size:     128 * 16384 bytes<br>[          ] DST rect size:     128 * 16384 bytes<br>[          ] Copy rect size:    32 * 32 * 1 bytes<br>[          ] SRC offset:        (0, 0, 0) pixels<br>[          ] DST offset:        (48, 48, 0) pixels<br>[       OK ] SDMACopyDataRectTest.CopyRectMultiPixel/0 (28 ms)<br>[ RUN      ] SDMACopyDataRectTest.CopyRectMultiPixel/1<br>[          ] ************************************<br>[          ] *        SDMA Copy Rect Info       *<br>[          ] ************************************<br>[          ] One pixel size:    2 bytes<br>[          ] SRC rect size:     128 * 16384 bytes<br>[          ] DST rect size:     128 * 16384 bytes<br>[          ] Copy rect size:    32 * 32 * 1 bytes<br>[          ] SRC offset:        (0, 0, 0) pixels<br>[          ] DST offset:        (24, 48, 0) pixels<br>[       OK ] SDMACopyDataRectTest.CopyRectMultiPixel/1 (8 ms)<br>[ RUN      ] SDMACopyDataRectTest.CopyRectMultiPixel/2<br>[          ] ************************************<br>[          ] *        SDMA Copy Rect Info       *<br>[          ] ************************************<br>[          ] One pixel size:    4 bytes<br>[          ] SRC rect size:     128 * 16384 bytes<br>[          ] DST rect size:     128 * 16384 bytes<br>[          ] Copy rect size:    32 * 32 * 1 bytes<br>[          ] SRC offset:        (0, 0, 0) pixels<br>[          ] DST offset:        (12, 48, 0) pixels<br>[       OK ] SDMACopyDataRectTest.CopyRectMultiPixel/2 (9 ms)<br>[ RUN      ] SDMACopyDataRectTest.CopyRectMultiPixel/3<br>[          ] ************************************<br>[          ] *        SDMA Copy Rect Info       *<br>[          ] ************************************<br>[          ] One pixel size:    8 bytes<br>[          ] SRC rect size:     128 * 16384 bytes<br>[          ] DST rect size:     128 * 16384 bytes<br>[          ] Copy rect size:    32 * 32 * 1 bytes<br>[          ] SRC offset:        (0, 0, 0) pixels<br>[          ] DST offset:        (6, 48, 0) pixels<br>[       OK ] SDMACopyDataRectTest.CopyRectMultiPixel/3 (8 ms)<br>[ RUN      ] SDMACopyDataRectTest.CopyRectMultiPixel/4<br>[          ] ************************************<br>[          ] *        SDMA Copy Rect Info       *<br>[          ] ************************************<br>[          ] One pixel size:    16 bytes<br>[          ] SRC rect size:     128 * 16384 bytes<br>[          ] DST rect size:     128 * 16384 bytes<br>[          ] Copy rect size:    32 * 32 * 1 bytes<br>[          ] SRC offset:        (0, 0, 0) pixels<br>[          ] DST offset:        (3, 48, 0) pixels<br>[       OK ] SDMACopyDataRectTest.CopyRectMultiPixel/4 (8 ms)<br></code></pre></td></tr></table></figure>
+
+<p>打印数组如下，阴影部分为目标拷贝区域。</p>
+<p><img src="/img/post_pics/gpu/sdma/6.png" srcset="/img/loading.gif" lazyload></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/GPU/" class="category-chain-item">GPU</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/DMA/" class="print-no-link">#DMA</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/05/27/SW/PCIe-Driver/" title="PCI设备命令">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">PCI设备命令</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/28/GPU/CUDA/llm.c/" title="Karpathy llm.c测试与代码分析">
+                        <span class="hidden-mobile">Karpathy llm.c测试与代码分析</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

@@ -1,0 +1,1729 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="包含密码学和Mbedtls的实现，以及在K210上的移植事例。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="密码学介绍和Mbedtls相关实现">
+<meta property="og:url" content="http://yoursite.com/2024/01/20/Security/Crypto-Mbedtls/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="包含密码学和Mbedtls的实现，以及在K210上的移植事例。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/post_pics/mbedtls/mbedtls_index.png">
+<meta property="article:published_time" content="2024-01-20T13:49:37.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.419Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="TEE">
+<meta property="article:tag" content="Confidential Compute">
+<meta property="article:tag" content="Security">
+<meta property="article:tag" content="Cryptography">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/post_pics/mbedtls/mbedtls_index.png">
+  
+  
+  
+  <title>密码学介绍和Mbedtls相关实现 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="密码学介绍和Mbedtls相关实现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-01-20 13:49" pubdate>
+          2024年1月20日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          91 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">密码学介绍和Mbedtls相关实现</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>包含密码学和Mbedtls的实现，以及在K210上的移植事例。</p>
+<span id="more"></span>
+
+<h2 id="1-密码"><a href="#1-密码" class="headerlink" title="1 密码"></a>1 密码</h2><ul>
+<li>加密encrypt、解密decrypt、明文plaintext、密文ciphertext、密码破译cryptanalysis、密钥key</li>
+<li>对称密码symmetric cryptography</li>
+<li>公钥密码public-key cryptography</li>
+<li>混合密码系统hybrid cryptography</li>
+</ul>
+<h2 id="2-历史上的密码"><a href="#2-历史上的密码" class="headerlink" title="2 历史上的密码"></a>2 历史上的密码</h2><ul>
+<li>凯撒密码–平移密码</li>
+<li>简单替换密码–频率分析破译</li>
+<li>Enigma</li>
+</ul>
+<h2 id="3-对称密码"><a href="#3-对称密码" class="headerlink" title="3 对称密码"></a>3 对称密码</h2><ul>
+<li>编码操作：转为二进制序列</li>
+<li>异或XOR：<ul>
+<li>加密：明文A 异或 密钥B &#x3D; 密文C</li>
+<li>解密：密文C 异或 密钥B &#x3D; 明文A</li>
+</ul>
+</li>
+<li>一次性密码本：绝对无法破译但效率低的密码，无法解决密钥配送问题</li>
+<li>DES：Data Encryption Standard<ul>
+<li>分组密码</li>
+<li>Feistel网络，轮</li>
+<li>选择明文攻击CPA<ul>
+<li>差分分析：改变一部分明文并分析密文如何随之改变</li>
+<li>线性分析：将明文和密文的一些对应比特位进行XOR并计算其结果为零的概率</li>
+</ul>
+</li>
+<li>三重DES，包括DES-EDE2和DES-EDE3</li>
+</ul>
+</li>
+<li>AES密码：advanced encryption standard<ul>
+<li>Rijndael</li>
+<li>竞争实现标准化</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-分组密码模式"><a href="#4-分组密码模式" class="headerlink" title="4 分组密码模式"></a>4 分组密码模式</h2><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>名称</th>
+<th align="left">优点</th>
+<th align="left">缺点</th>
+<th align="left">备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ECB</td>
+<td>电子密码本模式</td>
+<td align="left">简单<br />快速<br />支持并行运算</td>
+<td align="left">明文中的重复排列会反映在密文中<br />通过删除、替换密文分组可以对明文进行<br />对包含某些比特错误的密文进行解密时，对应的分组会出错<br />不能抵御重放攻击</td>
+<td align="left">不应使用</td>
+</tr>
+<tr>
+<td>CBC</td>
+<td>密文分组链接模式</td>
+<td align="left">明文的重复排列不会反映在密文中<br />支持并行计算（仅解密）<br />能够解密任意密文分组</td>
+<td align="left">对包含某些错误比特的密文进行解密时，第—个分组的全部比特以及后一个分组的相应比特会出错，<br />加密不支持并行计算</td>
+<td align="left">CRYPTREC推荐<br />《实用密码学》推荐</td>
+</tr>
+<tr>
+<td>CFB</td>
+<td>密文反馈模式</td>
+<td align="left">不需要填充<br />支持并行运算（仅解密）<br />能够解密任意密文分组</td>
+<td align="left">加密不支持并行计算<br />对包含某些错误比特的密文进行解密时，第一个分组的全部比特以及后一个分组的相应比特会出错<br />不能抵御重放攻击</td>
+<td align="left">CRYPTREC推荐</td>
+</tr>
+<tr>
+<td>OFB</td>
+<td>输出反馈模式</td>
+<td align="left">不需要填充<br />可事先进行加密解密的准备<br />加密解密使用相同的结构<br />对包含某些错误比特的密文进行解密时，只有明文中相应的比特会出错</td>
+<td align="left">不支持并行运算<br />主动攻击者反转密文分组中的某些比特时，明文分组中相应比特也会反转</td>
+<td align="left">CRYPTREC推荐</td>
+</tr>
+<tr>
+<td>CTR</td>
+<td>计数器模式</td>
+<td align="left">不需要填充<br />可事先进行加密解密的准备<br />加密解密使用相同的结构<br />对包含某些错误比特的密文进行解密时，只有明文中相应的比特会出错<br />支持加解密并行运算</td>
+<td align="left">主动攻击者反转密文分组中的某些比特时，明文分组中相应比特也会反转</td>
+<td align="left">CRYPTREC推荐<br />《实用密码学》推荐</td>
+</tr>
+</tbody></table>
+<p>Alice和Bob持有相同的共享秘钥，通过秘钥加解密数据。对称加密算法包括AES、DES和3DES等多种算法。对称加密算法需要对数据进行分组。</p>
+<h3 id="对称加密算法"><a href="#对称加密算法" class="headerlink" title="对称加密算法"></a>对称加密算法</h3><h3 id="分组密码模式"><a href="#分组密码模式" class="headerlink" title="分组密码模式"></a>分组密码模式</h3><h4 id="ECB-Electric-Codebook"><a href="#ECB-Electric-Codebook" class="headerlink" title="ECB Electric Codebook"></a>ECB Electric Codebook</h4><p>电子密码本模式，明文与密文一一对应，有明显缺陷。<br><img src="/img/post_pics/mbedtls/2.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="CBC-Cipher-Block-Chaining"><a href="#CBC-Cipher-Block-Chaining" class="headerlink" title="CBC Cipher Block Chaining"></a>CBC Cipher Block Chaining</h4><p>密码分组链接模式，每一组明文在加密前都与前面的密文分组进行<strong>异或</strong>操作。与第一个分组进行异或的“密文分组”称为初始化向量IV。初始化向量一般由伪随机数生成器派生，IV不可泄露。CBC模式无法抵御选择密文攻击，当密文遭到破坏时，后面的内容无法解密。</p>
+<p><img src="/img/post_pics/mbedtls/3.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="CTR"><a href="#CTR" class="headerlink" title="CTR"></a>CTR</h4><p>计数器模式，将累加的计数器与秘钥生成秘钥流，再进行异或。计数器值与分组长度相同，最后一个分组长度不满则截取有效部分。<br><img src="/img/post_pics/mbedtls/4.png" srcset="/img/loading.gif" lazyload></p>
+<p>CTR的优势：</p>
+<ul>
+<li>可以并行运算</li>
+<li>可以随机访问，部分密文破坏不影响整体</li>
+<li>简单，解密等同于加密，无需两套算法</li>
+</ul>
+<h3 id="AES"><a href="#AES" class="headerlink" title="AES"></a>AES</h3><p>AES是一个对称分组加密算法，分组大小为128bit，密钥长度为128（轮数10）、192（轮数12）、256（轮数14）位。<br><img src="/img/post_pics/mbedtls/5.png" srcset="/img/loading.gif" lazyload></p>
+<p>AES加密过程，<br><img src="/img/post_pics/mbedtls/6.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="AES计算过程"><a href="#AES计算过程" class="headerlink" title="AES计算过程"></a>AES计算过程</h4><ul>
+<li>字节替换–唯一非线性操作</li>
+<li>行移位</li>
+<li>列混合</li>
+<li>轮秘钥加法–异或</li>
+<li>轮秘钥生成</li>
+</ul>
+<h4 id="AES加密工具"><a href="#AES加密工具" class="headerlink" title="AES加密工具"></a>AES加密工具</h4><h5 id="aescrypt2"><a href="#aescrypt2" class="headerlink" title="aescrypt2"></a>aescrypt2</h5><p>主要调用<code>mbedtls_aes_init</code>，<code>mbedtls_aes_setkey_enc</code>，<code>mbedtls_aes_setkey_dec</code>等接口，使用方法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">### mode = 1解密， mode = 0加密</span><br>aescrypt2 &lt;mode&gt; &lt;input file&gt; &lt;output file&gt; &lt;hex:key&gt;<br></code></pre></td></tr></table></figure>
+
+<h5 id="crypt-and-hash"><a href="#crypt-and-hash" class="headerlink" title="crypt_and_hash"></a>crypt_and_hash</h5><p>支持加密算法和单项散列函数，将结果输出至文件。代码参考<code>programs/aes/crypt_and_hash.c</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">crypt_and_hash &lt;mode&gt; &lt;input file&gt; &lt;output file&gt; &lt;cipher-alg&gt; &lt;hash-alg&gt; &lt;key&gt;<br>crypt_and_hash 0 file file.aes AES-128-CBC SHA256 hex:xxxxxxxxxxxxx<br></code></pre></td></tr></table></figure>
+
+<h3 id="接口与代码示例"><a href="#接口与代码示例" class="headerlink" title="接口与代码示例"></a>接口与代码示例</h3><h4 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h4><table>
+<thead>
+<tr>
+<th align="left">算法</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">AES</td>
+<td align="left">支持ECB、CBC、CTR、CFB和GCM模式</td>
+</tr>
+<tr>
+<td align="left">DES</td>
+<td align="left">支持ECB、CBC模式</td>
+</tr>
+<tr>
+<td align="left">除此之外，还有ARCFOUR(RC4)、Blowfish、Camellia、XTEA等算法。</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<h4 id="宏定义"><a href="#宏定义" class="headerlink" title="宏定义"></a>宏定义</h4><table>
+<thead>
+<tr>
+<th align="left">宏定义</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">MBEDTLS_AES_C</td>
+<td align="left">开启AES算法</td>
+</tr>
+<tr>
+<td align="left">MBEDTLS_CIPHER_MODE_CBC</td>
+<td align="left">开启CBC模式</td>
+</tr>
+<tr>
+<td align="left">MBEDTLS_CIPHER_MODE_CTR</td>
+<td align="left">开启CTR模式</td>
+</tr>
+<tr>
+<td align="left">MBEDTLS_AES_ROM_TABLES</td>
+<td align="left">使用预定义S盒（字节替换使用，节省空间）</td>
+</tr>
+<tr>
+<td align="left">MBEDTLS_CIPHER_C</td>
+<td align="left">开启cipher接口</td>
+</tr>
+<tr>
+<td align="left">MBEDTLS_CIPHER_MODE_WITH_PADDING</td>
+<td align="left">开启填充</td>
+</tr>
+<tr>
+<td align="left">MBEDTLS_CIPHER_PADDING——PKCS7</td>
+<td align="left">开启PKCS7填充</td>
+</tr>
+</tbody></table>
+<h4 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h4><p>接口描述：</p>
+<table>
+<thead>
+<tr>
+<th align="left">接口</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">mbedtls_cipher_init</td>
+<td align="left">初始化cipher结构体</td>
+</tr>
+<tr>
+<td align="left">mbedtls_cipher_info_from_string</td>
+<td align="left">通过算法名称获取cipher信息结构体指针</td>
+</tr>
+<tr>
+<td align="left">mbedtls_cipher_setup</td>
+<td align="left">设置cipher结构体</td>
+</tr>
+<tr>
+<td align="left">mbedtls_cipher_get_name</td>
+<td align="left">获取算法名称</td>
+</tr>
+<tr>
+<td align="left">mbedtls_cipher_get_block_size</td>
+<td align="left">获取算法分组长度</td>
+</tr>
+<tr>
+<td align="left">mbedtls_cipher_setkey</td>
+<td align="left">设置解密密钥接口</td>
+</tr>
+<tr>
+<td align="left">mbedtls_cipher_set_iv</td>
+<td align="left">设置初始化向量接口</td>
+</tr>
+<tr>
+<td align="left">mbedtls_cipher_update</td>
+<td align="left">cipher更新接口</td>
+</tr>
+<tr>
+<td align="left">mbedtls_cipher_finish</td>
+<td align="left">cipher完成接口</td>
+</tr>
+<tr>
+<td align="left">mbedtls_cipher_free</td>
+<td align="left">释放cipher结构体</td>
+</tr>
+</tbody></table>
+<p>代码运行中需要提供明文、密钥和初始化向量。</p>
+<h5 id="main-c"><a href="#main-c" class="headerlink" title="main.c"></a>main.c</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbedtls/cipher.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbedtls/platform.h&quot;</span></span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">    ### padding with pkcs7 AES_128_CBC Encrypt</span><br><span class="hljs-comment">    ptx = &quot;CBC has been the most commonly used mode of operation.&quot;</span><br><span class="hljs-comment">    key = 06a9214036b8a15b512e03d534120006</span><br><span class="hljs-comment">    iv  = 3dafba429d9eb430b422da802c9fac41</span><br><span class="hljs-comment">    ctx = 4DDF9012D7B3898745A1ED9860EB0FA2</span><br><span class="hljs-comment">          FD2BBD80D27190D72A2F240C8F372A27</span><br><span class="hljs-comment">          63746296DDC2BFCE7C252B6CD7DD4BA8</span><br><span class="hljs-comment">          577E096DBD8024C8B4C5A1160CA2D3F9</span><br><span class="hljs-comment">*/</span><br><span class="hljs-type">char</span> *ptx = <span class="hljs-string">&quot;CBC has been the most commonly used mode of operation.&quot;</span>;<br><span class="hljs-type">uint8_t</span> key[<span class="hljs-number">16</span>] =<br>&#123;<br>    <span class="hljs-number">0x06</span>, <span class="hljs-number">0xa9</span>, <span class="hljs-number">0x21</span>, <span class="hljs-number">0x40</span>, <span class="hljs-number">0x36</span>, <span class="hljs-number">0xb8</span>, <span class="hljs-number">0xa1</span>, <span class="hljs-number">0x5b</span>,<br>    <span class="hljs-number">0x51</span>, <span class="hljs-number">0x2e</span>, <span class="hljs-number">0x03</span>, <span class="hljs-number">0xd5</span>, <span class="hljs-number">0x34</span>, <span class="hljs-number">0x12</span>, <span class="hljs-number">0x00</span>, <span class="hljs-number">0x06</span><br>&#125;;<br><br><span class="hljs-type">uint8_t</span> iv[<span class="hljs-number">16</span>] =<br>&#123;<br>    <span class="hljs-number">0x3d</span>, <span class="hljs-number">0xaf</span>, <span class="hljs-number">0xba</span>, <span class="hljs-number">0x42</span>, <span class="hljs-number">0x9d</span>, <span class="hljs-number">0x9e</span>, <span class="hljs-number">0xb4</span>, <span class="hljs-number">0x30</span>,<br>    <span class="hljs-number">0xb4</span>, <span class="hljs-number">0x22</span>, <span class="hljs-number">0xda</span>, <span class="hljs-number">0x80</span>, <span class="hljs-number">0x2c</span>, <span class="hljs-number">0x9f</span>, <span class="hljs-number">0xac</span>, <span class="hljs-number">0x41</span><br>&#125;;<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">dump_buf</span><span class="hljs-params">(<span class="hljs-type">char</span> *info, <span class="hljs-type">uint8_t</span> *buf, <span class="hljs-type">uint32_t</span> len)</span><br>&#123;<br>    mbedtls_printf(<span class="hljs-string">&quot;%s&quot;</span>, info);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; len; i++) &#123;<br>        mbedtls_printf(<span class="hljs-string">&quot;%s%02X%s&quot;</span>, i % <span class="hljs-number">16</span> == <span class="hljs-number">0</span> ? <span class="hljs-string">&quot;\n\t&quot;</span>:<span class="hljs-string">&quot; &quot;</span>, <br>                        buf[i], i == len - <span class="hljs-number">1</span> ? <span class="hljs-string">&quot;\n&quot;</span>:<span class="hljs-string">&quot;&quot;</span>);<br>    &#125;<br>    mbedtls_printf(<span class="hljs-string">&quot;\n&quot;</span>);<br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">cipher</span><span class="hljs-params">(<span class="hljs-type">int</span> type)</span><br>&#123;<br>    <span class="hljs-type">size_t</span> len;<br>    <span class="hljs-type">int</span> olen = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">uint8_t</span> buf[<span class="hljs-number">64</span>];<br><br>    <span class="hljs-type">mbedtls_cipher_context_t</span> ctx;<br>    <span class="hljs-type">const</span> <span class="hljs-type">mbedtls_cipher_info_t</span> *info;<br><br>    mbedtls_cipher_init(&amp;ctx);<br>    info = mbedtls_cipher_info_from_type(type);<br><br>    mbedtls_cipher_setup(&amp;ctx, info);<br>    mbedtls_printf(<span class="hljs-string">&quot;\n  cipher info setup, name: %s, block size: %d\n&quot;</span>, <br>                        mbedtls_cipher_get_name(&amp;ctx), <br>                        mbedtls_cipher_get_block_size(&amp;ctx));<br><br>    mbedtls_cipher_setkey(&amp;ctx, key, <span class="hljs-keyword">sizeof</span>(key)*<span class="hljs-number">8</span>, MBEDTLS_ENCRYPT);<br>    mbedtls_cipher_set_iv(&amp;ctx, iv, <span class="hljs-keyword">sizeof</span>(iv));<br>    mbedtls_cipher_update(&amp;ctx, ptx, <span class="hljs-built_in">strlen</span>(ptx), buf, &amp;len);<br>    olen += len;<br><br>    mbedtls_cipher_finish(&amp;ctx, buf + len, &amp;len);<br>    olen += len;<br><br>    dump_buf(<span class="hljs-string">&quot;\n  cipher aes encrypt:&quot;</span>, buf, olen);<br><br>    mbedtls_cipher_free(&amp;ctx);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    cipher(MBEDTLS_CIPHER_AES_128_CBC);<br>    cipher(MBEDTLS_CIPHER_AES_128_CTR);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>与单向散列函数计算过程相似，这里使用setkey和setiv代替start，而update可以多次调用形成数据流，在目标板内存受限时减小资源的压力，finish函数则可以结束运算。</p>
+<h5 id="mbedtls-config-h"><a href="#mbedtls-config-h" class="headerlink" title="mbedtls_config.h"></a>mbedtls_config.h</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> MBEDTLS_CONFIG_H</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_CONFIG_H</span><br><br><span class="hljs-comment">/* System support */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_C</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_MEMORY</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_MEMORY_BUFFER_ALLOC_C</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_NO_STD_FUNCTIONS</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_EXIT_ALT</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_NO_PLATFORM_ENTROPY</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_PRINTF_ALT</span><br><br><span class="hljs-comment">/* mbed TLS modules */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_AES_C</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_CIPHER_C</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_CIPHER_MODE_CBC</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_CIPHER_MODE_CTR</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_CIPHER_MODE_WITH_PADDING</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_CIPHER_PADDING_PKCS7</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_AES_ROM_TABLES</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbedtls/check_config.h&quot;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* MBEDTLS_CONFIG_H */</span></span><br><br></code></pre></td></tr></table></figure>
+
+<h5 id="CMakeLists-txt"><a href="#CMakeLists-txt" class="headerlink" title="CMakeLists.txt"></a>CMakeLists.txt</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake_minimum_required(VERSION 3.8)<br><br>project(<span class="hljs-string">&quot;aes&quot;</span>)<br><br>include_directories(./ <span class="hljs-variable">$ENV</span>&#123;MBEDTLS_BASE&#125;/include)<br>aux_source_directory(<span class="hljs-variable">$ENV</span>&#123;MBEDTLS_BASE&#125;/library MBEDTLS_SOURCES)<br><br><br><span class="hljs-built_in">set</span>(SOURCES <br> <span class="hljs-variable">$&#123;CMAKE_CURRENT_LIST_DIR&#125;</span>/main.c<br>    <span class="hljs-variable">$&#123;CMAKE_CURRENT_LIST_DIR&#125;</span>/mbedtls_config.h <br> <span class="hljs-variable">$&#123;MBEDTLS_SOURCES&#125;</span>)<br><br>add_executable(aes <span class="hljs-variable">$&#123;SOURCES&#125;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> -p build &amp;&amp; <span class="hljs-built_in">cd</span> build &amp;&amp; cmake .. &amp;&amp; make -j32<br>./aes               <br><br>  cipher info setup, name: AES-128-CBC, block size: 16<br><br>  cipher aes encrypt:<br>        4D DF 90 12 D7 B3 89 87 45 A1 ED 98 60 EB 0F A2<br>        FD 2B BD 80 D2 71 90 D7 2A 2F 24 0C 8F 37 2A 27<br>        63 74 62 96 DD C2 BF CE 7C 25 2B 6C D7 DD 4B A8<br>        57 7E 09 6D BD 80 24 C8 B4 C5 A1 16 0C A2 D3 F9<br><br><br>  cipher info setup, name: AES-128-CTR, block size: 16<br><br>  cipher aes encrypt:<br>        C4 1A 1D B1 56 C0 9B 59 E8 25 D9 5B 72 FD 97 BE<br>        F7 06 BA C1 B8 4F F5 4E 72 88 2D 17 0B DB 53 0A<br>        9B 0A FD 86 41 65 73 06 6B C1 F0 52 18 FC 1D 57<br>        9D F4 81 F7 08 CB<br></code></pre></td></tr></table></figure>
+
+<h5 id="cipher相关结构体"><a href="#cipher相关结构体" class="headerlink" title="cipher相关结构体"></a>cipher相关结构体</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">mbedtls_cipher_context_t</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-comment">/** Information about the associated cipher. */</span><br>    <span class="hljs-type">const</span> <span class="hljs-type">mbedtls_cipher_info_t</span> *cipher_info;<br><br>    <span class="hljs-comment">/** Key length to use. */</span><br>    <span class="hljs-type">int</span> key_bitlen;<br><br>    <span class="hljs-comment">/** Operation that the key of the context has been</span><br><span class="hljs-comment">     * initialized for.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">mbedtls_operation_t</span> operation;<br><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> defined(MBEDTLS_CIPHER_MODE_WITH_PADDING)</span><br>    <span class="hljs-comment">/** Padding functions to use, if relevant for</span><br><span class="hljs-comment">     * the specific cipher mode.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">void</span> (*add_padding)( <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *output, <span class="hljs-type">size_t</span> olen, <span class="hljs-type">size_t</span> data_len );<br>    <span class="hljs-type">int</span> (*get_padding)( <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *input, <span class="hljs-type">size_t</span> ilen, <span class="hljs-type">size_t</span> *data_len );<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br>    <span class="hljs-comment">/** Buffer for input that has not been processed yet. */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> unprocessed_data[MBEDTLS_MAX_BLOCK_LENGTH];<br><br>    <span class="hljs-comment">/** Number of Bytes that have not been processed yet. */</span><br>    <span class="hljs-type">size_t</span> unprocessed_len;<br><br>    <span class="hljs-comment">/** Current IV or NONCE_COUNTER for CTR-mode, data unit (or sector) number</span><br><span class="hljs-comment">     * for XTS-mode. */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> iv[MBEDTLS_MAX_IV_LENGTH];<br><br>    <span class="hljs-comment">/** IV size in Bytes, for ciphers with variable-length IVs. */</span><br>    <span class="hljs-type">size_t</span> iv_size;<br><br>    <span class="hljs-comment">/** The cipher-specific context. */</span><br>    <span class="hljs-type">void</span> *cipher_ctx;<br><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> defined(MBEDTLS_CMAC_C)</span><br>    <span class="hljs-comment">/** CMAC-specific context. */</span><br>    <span class="hljs-type">mbedtls_cmac_context_t</span> *cmac_ctx;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> defined(MBEDTLS_USE_PSA_CRYPTO)</span><br>    <span class="hljs-comment">/** Indicates whether the cipher operations should be performed</span><br><span class="hljs-comment">     *  by Mbed TLS&#x27; own crypto library or an external implementation</span><br><span class="hljs-comment">     *  of the PSA Crypto API.</span><br><span class="hljs-comment">     *  This is unset if the cipher context was established through</span><br><span class="hljs-comment">     *  mbedtls_cipher_setup(), and set if it was established through</span><br><span class="hljs-comment">     *  mbedtls_cipher_setup_psa().</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> psa_enabled;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* MBEDTLS_USE_PSA_CRYPTO */</span></span><br><br>&#125; <span class="hljs-type">mbedtls_cipher_context_t</span>;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">mbedtls_cipher_info_t</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-comment">/** Full cipher identifier. For example,</span><br><span class="hljs-comment">     * MBEDTLS_CIPHER_AES_256_CBC.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">mbedtls_cipher_type_t</span> type;<br><br>    <span class="hljs-comment">/** The cipher mode. For example, MBEDTLS_MODE_CBC. */</span><br>    <span class="hljs-type">mbedtls_cipher_mode_t</span> mode;<br><br>    <span class="hljs-comment">/** The cipher key length, in bits. This is the</span><br><span class="hljs-comment">     * default length for variable sized ciphers.</span><br><span class="hljs-comment">     * Includes parity bits for ciphers like DES.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> key_bitlen;<br><br>    <span class="hljs-comment">/** Name of the cipher. */</span><br>    <span class="hljs-type">const</span> <span class="hljs-type">char</span> * name;<br><br>    <span class="hljs-comment">/** IV or nonce size, in Bytes.</span><br><span class="hljs-comment">     * For ciphers that accept variable IV sizes,</span><br><span class="hljs-comment">     * this is the recommended size.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> iv_size;<br><br>    <span class="hljs-comment">/** Bitflag comprised of MBEDTLS_CIPHER_VARIABLE_IV_LEN and</span><br><span class="hljs-comment">     *  MBEDTLS_CIPHER_VARIABLE_KEY_LEN indicating whether the</span><br><span class="hljs-comment">     *  cipher supports variable IV or variable key sizes, respectively.</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">int</span> flags;<br><br>    <span class="hljs-comment">/** The block size, in Bytes. */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> block_size;<br><br>    <span class="hljs-comment">/** Struct for base cipher information and functions. */</span><br>    <span class="hljs-type">const</span> <span class="hljs-type">mbedtls_cipher_base_t</span> *base;<br><br>&#125; <span class="hljs-type">mbedtls_cipher_info_t</span>;<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-公钥密码"><a href="#5-公钥密码" class="headerlink" title="5 公钥密码"></a>5 公钥密码</h2><ul>
+<li>密钥配送问题解决方法：<ul>
+<li>事先共享</li>
+<li>密钥分配中心KDC</li>
+<li>密钥交换</li>
+<li>公钥密码</li>
+</ul>
+</li>
+<li>接收者将公钥发送给发送者，发送者使用公钥加密后将密文传递给接收者，接收者使用对应的私钥进行解密</li>
+<li>公钥密码存在的问题，公钥认证问题，中间人攻击：窃听者给发送者错误的公钥并获取明文，再将明文篡改后使用正确的公钥加密返回给接收者从而实现攻击</li>
+<li>RSA算法</li>
+</ul>
+<p>$$<br>密文&#x3D;明文^E mod N,(E,N)是公钥<br>$$</p>
+<p>$$<br>明文&#x3D;密文^D mod N,(D,N)是私钥<br>$$</p>
+<ul>
+<li>算法：生成密钥对，准备两个很大的质数p和q</li>
+</ul>
+<p>$$N&#x3D;p*q$$</p>
+<p>$$L&#x3D;lcm(p-1,q-1),lcm表示求最小公倍数$$</p>
+<p>$$1&lt;E&lt;L,gcd(E,L) &#x3D; 1,gcd表示求最大公约数（使用辗转相除法）$$</p>
+<p>$$1&lt;D&lt;L,E*DmodL&#x3D;1$$</p>
+<ul>
+<li>RSA攻击方法：一旦发现了对大整数进行质因数分解的高效算法， RSA 就能够被破译<ul>
+<li>中间人攻击</li>
+<li>选择密文攻击–RSA-OAEP</li>
+</ul>
+</li>
+<li>其他公钥密码<ul>
+<li>EIGamal</li>
+<li>Rabin</li>
+<li>ECC，椭圆曲线加密</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-混合密码系统"><a href="#6-混合密码系统" class="headerlink" title="6 混合密码系统"></a>6 混合密码系统</h2><ul>
+<li>背景：<ul>
+<li>公钥密码不足：计算效率低，但可以解决密钥配送问题</li>
+<li>对称密码不足：密钥配送麻烦，但是速度快</li>
+</ul>
+</li>
+<li>混合密码系统<ul>
+<li>概念：使用公钥密码保护对称密码密钥</li>
+<li>加密过程：明文使用对称密码密钥加密，对称密码密钥使用公钥加密，两者发送给接收者</li>
+<li>解密过程：对称密码密钥使用私钥解密，密文使用对称密码密钥解密</li>
+</ul>
+</li>
+</ul>
+<h2 id="7-单向散列函数"><a href="#7-单向散列函数" class="headerlink" title="7 单向散列函数"></a>7 单向散列函数</h2><ul>
+<li>文件、密文是否被篡改：完整性、一致性，integrity</li>
+<li>单向散列函数有一个输入和输出，输入称为消息，输出称为散列值<ul>
+<li>根据任意长度的消息计算出固定长度的散列值，无论消息的长度如何，散列值的大小应当不变</li>
+<li>能够快速计算出散列值</li>
+<li>消息不同散列值也不同，理论上消息变化一个比特，散列值应当有明显变化以确定消息是否被篡改</li>
+<li>两个不同的消息产生同一个散列值的情况称为<strong>碰撞</strong>(collision )，难以发现碰撞的性质称为抗碰撞性(collision resistance)</li>
+<li>单向散列函数必须确保要找到和该条消息具有相同散列值的另外一条消息是非常困难的。这一性质称为<strong>弱抗碰撞性</strong>。单向散列函数都必须具备弱抗碰撞性。</li>
+<li><strong>强抗碰撞性</strong>。所谓强抗碰撞性，是指要找到散列值相同的两条不同的消息是非常困难的这一性质。在这里，散列值可以是任意值。</li>
+<li>单向散列函数必须具备单向性(one-way )。单向性指的是无法通过散列值反算出消息的性质。</li>
+</ul>
+</li>
+<li>单向散列函数又称为哈希函数</li>
+<li>实际应用<ul>
+<li>检测软件是否被篡改</li>
+<li>基于口令的加密</li>
+<li>消息认证码</li>
+<li>数字签名</li>
+<li>伪随机数生成器</li>
+<li>一次性口令</li>
+</ul>
+</li>
+<li>常见的单向散列函数<ul>
+<li>MD4、MD5，强对抗性已被攻破</li>
+<li>SHA-1，不安全</li>
+<li>SHA-256、SHA-384、SHA-521（SHA-2）</li>
+<li>RIPEMD-160</li>
+<li>SHA-3：Keccak算法</li>
+</ul>
+</li>
+<li>对单向散列函数的攻击<ul>
+<li>暴力破解，针对弱抗碰撞性</li>
+<li>先准备两个散列值相同的不同消息，针对强抗碰撞性</li>
+</ul>
+</li>
+<li>单向散列函数无法解决的问题<ul>
+<li>无法验证伪装，只能识别是否篡改</li>
+<li>使用认证技术可以识破伪装，认证技术包括消息验证码和数字签名</li>
+</ul>
+</li>
+</ul>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>满足密码学算法安全属性的特殊散列函数，保证数据的完整性，抵御篡改攻击，原数据称作<strong>消息</strong>，计算后的输出称为<strong>摘要</strong>，在通信中，Bob接受Alice发来的消息及摘要，通过相同的算法计算摘要比对以验证消息是否被篡改。</p>
+<h3 id="性质"><a href="#性质" class="headerlink" title="性质"></a>性质</h3><p>输入长度可变，输出长度固定，计算过程应当高效率，具备单向性。</p>
+<ul>
+<li>抗弱碰撞性，对于给定$a$，能找到$b$使得$h(a)&#x3D;h(b)$不可行</li>
+<li>抗强碰撞性，给定一个输出$z$，能够找到$h(a)&#x3D;z$不可行</li>
+</ul>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><p>消息完整性检测、伪随机数生成器、数字签名、消息认证码</p>
+<h3 id="MD算法"><a href="#MD算法" class="headerlink" title="MD算法"></a>MD算法</h3><ul>
+<li>MD4：散列碰撞已被攻破</li>
+<li>MD5：抗碰撞性已被攻破</li>
+</ul>
+<h3 id="SHA算法"><a href="#SHA算法" class="headerlink" title="SHA算法"></a>SHA算法</h3><p>SHA0&#x2F;SHA1不再使用</p>
+<ul>
+<li>SHA2：包括SHA256，SHA384，SHA512</li>
+<li>SHA3：更为安全</li>
+</ul>
+<h4 id="SHA256"><a href="#SHA256" class="headerlink" title="SHA256"></a>SHA256</h4><p>处理步骤：</p>
+<ul>
+<li>预处理<ul>
+<li>消息填充</li>
+<li>消息分割</li>
+<li>设置初始摘要值 $H^{(0)}$</li>
+<li>准备常量$K^{256}_{i}$</li>
+</ul>
+</li>
+<li>哈希计算<ul>
+<li>消息调度</li>
+<li>初始化工作寄存器</li>
+<li>更新工作寄存器</li>
+<li>计算消息摘要</li>
+</ul>
+</li>
+</ul>
+<h3 id="generic-sum"><a href="#generic-sum" class="headerlink" title="generic_sum"></a>generic_sum</h3><p>计算散列值</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">generic_sum SHA256 &lt;file name&gt;<br></code></pre></td></tr></table></figure>
+
+<h3 id="头文件和函数接口"><a href="#头文件和函数接口" class="headerlink" title="头文件和函数接口"></a>头文件和函数接口</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbedtls/md.h&quot;</span></span><br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">接口</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">mbedtls_md_init</td>
+<td align="left">初始化md结构体</td>
+</tr>
+<tr>
+<td align="left">mbedtls_md_info_from_type</td>
+<td align="left">根据算法类型得到md信息结构体指针</td>
+</tr>
+<tr>
+<td align="left">mbedtls_md_setup</td>
+<td align="left">初始化md结构体</td>
+</tr>
+<tr>
+<td align="left">mbedtls_md_get_name</td>
+<td align="left">获得单向散列算法名称</td>
+</tr>
+<tr>
+<td align="left">mbedtls_md_get_size</td>
+<td align="left">获取单向散列算法输出消息摘要长度</td>
+</tr>
+<tr>
+<td align="left">mbedtls_md_starts</td>
+<td align="left">md启动接口</td>
+</tr>
+<tr>
+<td align="left">mbedtls_md_update</td>
+<td align="left">md更新接口，处理输入数据，包括预处理和计算</td>
+</tr>
+<tr>
+<td align="left">mbedtls_md_finish</td>
+<td align="left">md输出消息摘要结果</td>
+</tr>
+<tr>
+<td align="left">mbedtls_md_free</td>
+<td align="left">释放md结构体</td>
+</tr>
+</tbody></table>
+<h3 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_MD_C</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_SHA256_C</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="散列示例代码"><a href="#散列示例代码" class="headerlink" title="散列示例代码"></a>散列示例代码</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbedtls/md.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbedtls/platform.h&quot;</span></span><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">dump_buf</span><span class="hljs-params">(<span class="hljs-type">char</span> *info, <span class="hljs-type">uint8_t</span> *buf, <span class="hljs-type">uint32_t</span> len)</span><br>&#123;<br>    mbedtls_printf(<span class="hljs-string">&quot;%s&quot;</span>, info);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; len; i++) &#123;<br>        mbedtls_printf(<span class="hljs-string">&quot;%s%02X%s&quot;</span>, i % <span class="hljs-number">16</span> == <span class="hljs-number">0</span> ? <span class="hljs-string">&quot;\n\t&quot;</span>:<span class="hljs-string">&quot; &quot;</span>, <br>                        buf[i], i == len - <span class="hljs-number">1</span> ? <span class="hljs-string">&quot;\n&quot;</span>:<span class="hljs-string">&quot;&quot;</span>);<br>    &#125;<br>    mbedtls_printf(<span class="hljs-string">&quot;\n&quot;</span>);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    <span class="hljs-type">uint8_t</span> digest[<span class="hljs-number">32</span>];<br>    <span class="hljs-type">char</span> *msg = <span class="hljs-string">&quot;abc&quot;</span>;<br><br>    <span class="hljs-type">mbedtls_md_context_t</span> ctx;<br>    <span class="hljs-type">const</span> <span class="hljs-type">mbedtls_md_info_t</span> *info;<br><br>    mbedtls_md_init(&amp;ctx);<br>    info = mbedtls_md_info_from_type(MBEDTLS_MD_SHA256);<br><br>    mbedtls_md_setup(&amp;ctx, info, <span class="hljs-number">0</span>);<br>    mbedtls_printf(<span class="hljs-string">&quot;\n  md info setup, name: %s, digest size: %d\n&quot;</span>, <br>                   mbedtls_md_get_name(info), mbedtls_md_get_size(info));<br><br>    mbedtls_md_starts(&amp;ctx);<br>    mbedtls_md_update(&amp;ctx, msg, <span class="hljs-built_in">strlen</span>(msg));<br>    mbedtls_md_finish(&amp;ctx, digest);<br><br>    dump_buf(<span class="hljs-string">&quot;\n  md sha-256 digest:&quot;</span>, digest, <span class="hljs-keyword">sizeof</span>(digest));<br><br>    mbedtls_md_free(&amp;ctx); <br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>config头文件</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> MBEDTLS_CONFIG_H</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_CONFIG_H</span><br><br><span class="hljs-comment">/* System support */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_C</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_MEMORY</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_MEMORY_BUFFER_ALLOC_C</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_NO_STD_FUNCTIONS</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_EXIT_ALT</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_NO_PLATFORM_ENTROPY</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_PRINTF_ALT</span><br><br><span class="hljs-comment">/* mbed TLS modules */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_MD_C</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_SHA256_C</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbedtls/check_config.h&quot;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* MBEDTLS_CONFIG_H */</span></span><br></code></pre></td></tr></table></figure>
+
+<p>CMakeLists.txt</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c">cmake_minimum_required(VERSION <span class="hljs-number">3.8</span>)<br><br>project(<span class="hljs-string">&quot;hash&quot;</span>)<br><br>include_directories(./ $ENV&#123;MBEDTLS_BASE&#125;/include)<br>aux_source_directory($ENV&#123;MBEDTLS_BASE&#125;/library MBEDTLS_SOURCES)<br><br><br><span class="hljs-built_in">set</span>(SOURCES <br>    $&#123;CMAKE_CURRENT_LIST_DIR&#125;/main.c<br>    $&#123;CMAKE_CURRENT_LIST_DIR&#125;/mbedtls_config.h <br>    $&#123;MBEDTLS_SOURCES&#125;)<br><br>add_executable(hash $&#123;SOURCES&#125;)<br></code></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> -p build &amp;&amp; <span class="hljs-built_in">cd</span> build &amp;&amp; cmake .. &amp;&amp; make -j32<br>./hash    <br><br>  md info setup, name: SHA256, digest size: 32<br><br>  md sha-256 digest:<br>        BA 78 16 BF 8F 01 CF EA 41 41 40 DE 5D AE 22 23<br>        B0 03 61 A3 96 17 7A 9C B4 10 FF 61 F2 00 15 AD<br></code></pre></td></tr></table></figure>
+
+<p>实际应用中，<code>mbedtls_md_update</code>可以调用多次，不断填充数据。</p>
+<h2 id="8-消息认证码"><a href="#8-消息认证码" class="headerlink" title="8 消息认证码"></a>8 消息认证码</h2><ul>
+<li>概述：可以判断消息是否被篡改，并且发送者是否被伪装</li>
+<li>消息认证码，Message Authentication Code，MAC，是一种确认完整性并进行认证的技术<ul>
+<li>消息认证码的输入包括任意长度的<strong>消息</strong>和一个发送者与接收者之间<strong>共享的密钥</strong>，它可以输出固定长度的数据，这个数据称为MAC 值。</li>
+<li>要计算MAC 必须持有共享密钥，没有共享密钥的人就无法计算MAC 值，消息认证码正是利用这一性质来完成认证的。消息认证码是一种与密钥相关联的单向散列函数。</li>
+</ul>
+</li>
+<li>使用过程：发送者将密钥和消息计算得到消息认证码MAC，将消息和认证码发送给接收者，接收者根据消息和密钥计算MAC并与发送者提供的MAC进行比对，如果不一致则认证失败</li>
+<li>消息认证码需要解决共享密钥的配送问题</li>
+<li>常用消息认证码技术<ul>
+<li>SWIFT</li>
+<li>IPsec</li>
+<li>SSL&#x2F;TLS</li>
+</ul>
+</li>
+<li>实现手段：<ul>
+<li>SHA-2、HMAC等单向散列函数</li>
+<li>分组密码AES</li>
+</ul>
+</li>
+<li>认证加密AEAD，结合对称密码和消息认证码，同时满足CIA即，机密性、完整性和认证</li>
+<li>Encrypt-then-MAC，先加密再计算密文的MAC，除此之外还有Encrypt-and-MAC (将明文用对称密码加密，并对明文计算MAC 值）和MAC-then-Encrypt (先计算明文的MAC 值，然后将明文和MAC 值同时用对称密码加密）。</li>
+<li>HMAC，使用单向散列函数构造消息认证码的方法</li>
+<li>对消息认证码的攻击<ul>
+<li>重放攻击：攻击者将窃取的MAC值和密文进行重新发送<ul>
+<li>抵御方法：序号、时间戳、接收者提前发送nonce随机数并需要发送者将随机数包含在明文中</li>
+</ul>
+</li>
+<li>密钥推测攻击<ul>
+<li>根据单向散列值推测出对称密钥</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>消息认证码无法解决的问题<ul>
+<li>第三方证明，因为第三方不知道密钥所以无法验证，需要签名技术</li>
+<li>防止否认，发送者可以否认发送，接收者无法证明是否发送</li>
+</ul>
+</li>
+</ul>
+<p>MAC，Message Authentication Code，帮助接收者判断消息是否被第三方篡改，确保消息的完整性和真实性。常使用单向散列函数实现，称为HMAC-SHA1和HMAC-SHA256。也可以使用分组加密构建，称为CMAC、GCM和CCM。MAC和Hash的不同在于输入多一个密钥。</p>
+<h3 id="消息认证码"><a href="#消息认证码" class="headerlink" title="消息认证码"></a>消息认证码</h3><p><img src="/img/post_pics/mbedtls/7.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="实现形式"><a href="#实现形式" class="headerlink" title="实现形式"></a>实现形式</h3><ul>
+<li><p>HMAC：HMAC是基于单向散列函数的算法</p>
+</li>
+<li><p>CBC-MAC和CMAC</p>
+</li>
+<li><p>认证加密CCM，输入包括明文、一次性整数Nonce、相关数据A和密钥K，输出密文C和认证码T，使用的算法是CBC-MAC</p>
+</li>
+</ul>
+<p><img src="/img/post_pics/mbedtls/8.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>认证加密GCM：输入包括明文、初始化向量IV、相关数据A和密钥K，输出密文C和认证码T，使用的算法是CBC-MAC</li>
+</ul>
+<p><img src="/img/post_pics/mbedtls/9.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="HMAC示例"><a href="#HMAC示例" class="headerlink" title="HMAC示例"></a>HMAC示例</h3><h4 id="依赖的宏"><a href="#依赖的宏" class="headerlink" title="依赖的宏"></a>依赖的宏</h4><p>MBEDTLS_MD_C<br>MBEDTLS_SHA256_C</p>
+<h4 id="函数接口"><a href="#函数接口" class="headerlink" title="函数接口"></a>函数接口</h4><table>
+<thead>
+<tr>
+<th align="left"><strong>接口</strong></th>
+<th align="left"><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">mbedtls_md_hmac_starts</td>
+<td align="left">启动HMAC计算</td>
+</tr>
+<tr>
+<td align="left">mbedtls_md_hmac_update</td>
+<td align="left">更新输入数据</td>
+</tr>
+<tr>
+<td align="left">mbedtls_md_hmac_finish</td>
+<td align="left">完成计算</td>
+</tr>
+</tbody></table>
+<h4 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h4><p>运行平台K210，移植参考：<a href="https://blog.csdn.net/JackSparrow_sjl/article/details/118583913">mbedtls学习–移植库至K210平台</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><code class="hljs c"><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;pin_config.h&quot;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbed_platform.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;md.h&quot;</span></span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">hardware_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    <span class="hljs-comment">// fpioa映射</span><br>    fpioa_set_function(PIN_UART_USB_RX, FUNC_UART_USB_RX);<br>    fpioa_set_function(PIN_UART_USB_TX, FUNC_UART_USB_TX);<br>&#125;<br><span class="hljs-comment">//************************* Mbedtls code start *****************************</span><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">dump_buf</span><span class="hljs-params">(<span class="hljs-type">char</span> *info, <span class="hljs-type">uint8_t</span> *buf, <span class="hljs-type">uint32_t</span> len)</span><br>&#123;<br>    mbedtls_printf(<span class="hljs-string">&quot;%s&quot;</span>, info);<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; len; i++)<br>    &#123;<br>        mbedtls_printf(<span class="hljs-string">&quot;%s%02X%s&quot;</span>, i % <span class="hljs-number">16</span> == <span class="hljs-number">0</span> ? <span class="hljs-string">&quot;\n     &quot;</span> : <span class="hljs-string">&quot; &quot;</span>,<br>                       buf[i], i == len - <span class="hljs-number">1</span> ? <span class="hljs-string">&quot;\n&quot;</span> : <span class="hljs-string">&quot;&quot;</span>);<br>    &#125;<br>&#125;<br><br><span class="hljs-comment">//************************* Mbedtls code end *******************************</span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    hardware_init();<br>    <span class="hljs-comment">// 初始化串口3，设置波特率为115200</span><br>    uart_init(UART_USB_NUM);<br>    uart_configure(UART_USB_NUM, <span class="hljs-number">115200</span>, UART_BITWIDTH_8BIT, UART_STOP_1, UART_PARITY_NONE);<br><br>    <span class="hljs-comment">/* 开机发送hello yahboom! */</span><br>    <span class="hljs-type">char</span> *<span class="hljs-built_in">log</span> = &#123;<span class="hljs-string">&quot;Run mbedtls on K210\n&quot;</span>&#125;;<br>    uart_send_data(UART_USB_NUM, <span class="hljs-built_in">log</span>, <span class="hljs-built_in">strlen</span>(<span class="hljs-built_in">log</span>));<br><br>    <span class="hljs-comment">//******************************* mbedtls code start *******************</span><br><br>    <span class="hljs-type">uint8_t</span> mac[<span class="hljs-number">32</span>];<br>    <span class="hljs-type">char</span> *secret = <span class="hljs-string">&quot;Jefe&quot;</span>;<br>    <span class="hljs-type">char</span> *msg = <span class="hljs-string">&quot;what do ya want for nothing?&quot;</span>;<br><br>    <span class="hljs-type">mbedtls_md_context_t</span> ctx;<br>    <span class="hljs-type">const</span> <span class="hljs-type">mbedtls_md_info_t</span> *info;<br><br>    mbedtls_md_init(&amp;ctx);<br>    info = mbedtls_md_info_from_type(MBEDTLS_MD_SHA256);<br><br>    mbedtls_md_setup(&amp;ctx, info, <span class="hljs-number">1</span>);<br>    mbedtls_printf(<span class="hljs-string">&quot;\n  md info setup, name: %s, digest size: %d\n&quot;</span>,<br>                   mbedtls_md_get_name(info), mbedtls_md_get_size(info));<br><br>    mbedtls_md_hmac_starts(&amp;ctx, secret, <span class="hljs-built_in">strlen</span>(secret));<br>    mbedtls_md_hmac_update(&amp;ctx, msg, <span class="hljs-built_in">strlen</span>(msg));<br>    mbedtls_md_hmac_finish(&amp;ctx, mac);<br><br>    dump_buf(<span class="hljs-string">&quot;\n  md hmac-sha-256 mac:&quot;</span>, mac, <span class="hljs-keyword">sizeof</span>(mac));<br><br>    mbedtls_md_free(&amp;ctx);<br><br>    <span class="hljs-comment">//******************************* mbedtls code end **********************</span><br><br>    <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)<br>    &#123;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>运行结果：<br><img src="/img/post_pics/mbedtls/10.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="9-数字签名"><a href="#9-数字签名" class="headerlink" title="9 数字签名"></a>9 数字签名</h2><p>数字签名digital signature，是一种将相当于现实世界中的盖章、签字的功能在计算机世界中进行实现的技术。使用数字签名可以识别篡和伪装，还可以防止否认。</p>
+<ul>
+<li>主要行为：<ul>
+<li>发送者Alice生成消息签名，根据消息内容计算数字签名的值</li>
+<li>接收者Bob或者第三方Victor验证消息签，检查该消息的签名是否真的属于A lice ,</li>
+</ul>
+</li>
+<li>Alice 使用“签名密钥”来生成消息的签名，而Bob 和Victor 则使用“验证密钥”来验证消息的签名。数字签名对签名密钥和验证密钥进行了区分，使用验证密钥是无法生成签名的。这一点非常重要。此外，签名密钥只能由签名的人持有，而验证密钥则是任何需要验证签名的人都可以持有。数字签名的实现原理与公钥密码原理相反。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>私钥</th>
+<th>公钥</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>公钥密码</td>
+<td>接收者解密时使用</td>
+<td>发送者加密使用</td>
+</tr>
+<tr>
+<td>数字签名</td>
+<td>签名者生成签名时使用（发送者）</td>
+<td>验证者验证签名时使用（接收者）</td>
+</tr>
+<tr>
+<td>谁持有</td>
+<td>接收者&#x2F;签名者个人持有</td>
+<td>任何人持有</td>
+</tr>
+</tbody></table>
+<ul>
+<li>用公钥加密所得到的密文，只能用与该公钥配对的私钥才能解密；同样地，用私钥加密所得到的密文，也只能用与该私钥配对的公钥才能解密。也就是说，如果用某个公钥成功解密了密文，那么就能够证明这段密文是用与该公钥配对的私钥进行加密所得到的。</li>
+<li>Alice可以用私钥解密任何人用相对应的公钥加密的密文，相反，任何人都可以用公钥验证Alice用对应的私钥生成的签名。</li>
+<li>数字签名的方法：<ul>
+<li>直接对消息签名</li>
+<li>对消息的单向散列值签名<ul>
+<li>Alice 用单向散列函数计算消息的散列值。</li>
+<li>Alice 用自己的私钥对散列值进行加密。</li>
+<li>Alice 将消息（未加密）和签名发送给Bob 。</li>
+<li>Bob 用Alice 的公钥对收到的签名进行解密。</li>
+<li>Bob 将签名解密后得到的散列值与Al ice 直接发送的消息的散列值进行对比。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>数字签名不是为了保证Alice消息的机密性，而是确保其他人能认证该消息来自于Alice。无论签名被复制多少份，都能确定消息的来源。如果有人篡改签名和消息，至少会造成签名验证失败。</li>
+<li>应用实例：<ul>
+<li>安全信息公告</li>
+<li>软件下载</li>
+<li>对公钥进行签名，确认公钥的合法性</li>
+</ul>
+</li>
+<li>数字签名实现：RSA算法，ECDSA算法基于椭圆曲线密码</li>
+<li>对数字签名的攻击<ul>
+<li>中间人攻击，需要对公钥进行签名</li>
+<li>利用数字签名攻击公钥密码，将密文让私钥持有者签名从而获得明文</li>
+<li>潜在伪造</li>
+</ul>
+</li>
+<li>数字签名无法解决的问题：公钥认证问题</li>
+</ul>
+<h2 id="10-证书"><a href="#10-证书" class="headerlink" title="10 证书"></a>10 证书</h2><p>证书Public-Key Certificate, PKC，为公钥加上数字签名。认证机构就是能够认定“公钥确实属千此入”并能够生成数字签名的个人或者组织。认证机构中有国际性组织和政府所设立的组织，也有通过提供认证服务来盈利的一般企业，此外个人也可以成立认证机构。Bob在认证机构Trent注册自己的公钥，Alice使用经认证的公钥加密消息给Bob。对证书的攻击：</p>
+<ul>
+<li>在公钥注册前攻击</li>
+<li>注册相似人名</li>
+<li>窃取认证机构的私钥</li>
+<li>伪装成认证机构攻击</li>
+</ul>
+<h2 id="11-密钥"><a href="#11-密钥" class="headerlink" title="11 密钥"></a>11 密钥</h2><ul>
+<li>密钥长度决定密钥空间的大小</li>
+<li>密钥与明文是等价的</li>
+<li>密钥分为用于机密性的密钥和用于认证的密钥，会话密钥（一次性）和主密钥，加密内容的密钥和加密密钥的密钥</li>
+<li>密钥生成：<ul>
+<li>用随机数生成密钥，密码学用途的伪随机数生成器必须是专门针对密码学用途而设计的，必须具备不可预测性</li>
+<li>用口令（password）生成密钥</li>
+</ul>
+</li>
+<li>配送密钥：事先共享，密钥分配中心，公钥密码，Diffie-Hellman密钥交换</li>
+<li>更新密钥：（参考《信息安全工程》Anderson著）用当前密钥的散列值作为下一个密钥。</li>
+<li>密钥保存：将密钥加密后保存KEK</li>
+<li>Diffie-Hellman 密钥交换：基于有限域的离散对数难以计算所实现<ul>
+<li>Alic给Bob一个大质数P和生成元G</li>
+<li>Alice和Bob各在1~P-2的区间内生成一个随机数并保密</li>
+<li>Alic发送$G^A mod P$给Bob</li>
+<li>Bob发送$G^B mod P$给Alice</li>
+<li>Alice计算$(G^B mod P)^A mod P$作为密钥</li>
+<li>Bob计算$(G^A mod P)^B mod P$作为密钥，与Alice相同</li>
+<li>生成元的计算方法：<ul>
+<li>设13为P，则任取G在0-P-1内，A在1~P-1的范围内，生成元$G^A mod P$应当与A一一对应的关系</li>
+<li>例如2的1次方到12次方取13的模与1-12一一对应因此2是13的生成元</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>基于口令的密码Password Based Encryption<ul>
+<li>生成KEK，用口令和伪随机生成的盐计算单向散列函数值生成KEK</li>
+<li>生成会话密钥并加密，用KEK加密，加密后保存盐和加密后的会话密钥，并丢弃KEK（可根据口令和盐重新生成）</li>
+<li>加密消息</li>
+</ul>
+</li>
+<li>盐：盐是由伪随机数生成器生成的随机数，在生成密钥(KEK ) 时会和口令一起被输入单向散列函数。<ul>
+<li>盐用来抵御字典攻击</li>
+</ul>
+</li>
+<li>拉伸：使用多次单向散列函数计算KEK，增加攻击者的成本</li>
+</ul>
+<h2 id="12-随机数"><a href="#12-随机数" class="headerlink" title="12 随机数"></a>12 随机数</h2><ul>
+<li>应用场景：<ul>
+<li>生成密钥和密钥对</li>
+<li>在CBC、CFB、OFB中生成初始化向量</li>
+<li>生成nonce</li>
+<li>生成盐</li>
+</ul>
+</li>
+<li>随机数的分类<ul>
+<li>随机性–弱伪随机数<ul>
+<li>不存在统计学偏差</li>
+</ul>
+</li>
+<li>不可预测性–强伪随机数<ul>
+<li>在攻击者知道之前数据的情况下依旧无法预测下一个随机数</li>
+<li>不可预测性是通过使用其他的密码技术来实现</li>
+</ul>
+</li>
+<li>不可重现性–真随机数<ul>
+<li>计算机所有能产生的随机数会存在周期，就可以重现</li>
+<li>不可重现的随机数需要从不可重现的物理现象中获取信息</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>密码学中的随机数需要具备不可预测性，只具备随机性的随机数是不够的，”杂乱无章也可以被看穿“</li>
+<li>伪随机数生成器：从外部输入种子seed进入内部状态初始化<ul>
+<li>线性同余法–不具备不可预测性<ul>
+<li>将当前的伪随机数值乘以A 再加上C, 然后将除以M 得到的余数作为下一个伪随机数。</li>
+<li>可以根据内部状态推测下一个伪随机数，且具备周期性</li>
+<li>C语言的rand函数也是基于线性同余法</li>
+</ul>
+</li>
+<li>单向散列函数法<ul>
+<li>用种子初始化内部状态计数器</li>
+<li>根据计数器值计算散列值作为随机数</li>
+<li>计数值++</li>
+<li>继续输出随机数</li>
+<li>由于攻击者无法根据散列值推算出计数器的状态，因此无法预测下一个随机数，<strong>单向散列函数的单向性是支撑伪随机数生成器不可预测性的基础。</strong></li>
+</ul>
+</li>
+<li>密码法<ul>
+<li>将单向散列函数法中的函数计算过程改为密钥加密过程，<strong>密码的机密性是支撑伪随机数生成器不可预测性的基础。</strong></li>
+</ul>
+</li>
+<li>ANSI X9.17：PGP密码软件的基础</li>
+</ul>
+</li>
+<li>对伪随机数生成器的攻击：<ul>
+<li>对种子进行攻击</li>
+<li>对随机数池进行攻</li>
+</ul>
+</li>
+</ul>
+<h3 id="随机数应用"><a href="#随机数应用" class="headerlink" title="随机数应用"></a>随机数应用</h3><ul>
+<li>生成盐，用于基于口令的密码</li>
+<li>生成密钥，用于加密和认证</li>
+<li>生成一次性整数Nonce，防止重放攻击</li>
+<li>生成初始化向量IV</li>
+</ul>
+<h3 id="构成"><a href="#构成" class="headerlink" title="构成"></a>构成</h3><ul>
+<li>种子，真随机数生成器的种子来源于物理现象</li>
+<li>内部状态，种子用来初始化内部状态</li>
+</ul>
+<h3 id="随机数算法"><a href="#随机数算法" class="headerlink" title="随机数算法"></a>随机数算法</h3><table>
+<thead>
+<tr>
+<th align="left">算法</th>
+<th align="left">原理</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Hash_DRBG</td>
+<td align="left">使用单向散列函数</td>
+</tr>
+<tr>
+<td align="left">HMAC_DRBG</td>
+<td align="left">使用消息认证码</td>
+</tr>
+<tr>
+<td align="left">CTR_DRBG</td>
+<td align="left">使用分组密码算法</td>
+</tr>
+</tbody></table>
+<h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">gen_entropy file  <span class="hljs-comment"># 产生熵</span><br>gen_random_ctr_drbg file <span class="hljs-comment"># 生成随机数</span><br>gen_random_havege file <span class="hljs-comment"># 使用硬件时钟源生成伪随机数，依赖MBEDTLS_HAVEGE_C</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="CTR-DRBG"><a href="#CTR-DRBG" class="headerlink" title="CTR_DRBG"></a>CTR_DRBG</h3><p><img src="/img/post_pics/mbedtls/1.png" srcset="/img/loading.gif" lazyload alt="fig1"><br>攻击时，由于无法破解明文获取内部状态，得到计数值，因此无法预测下一个随机数。</p>
+<h2 id="PGP"><a href="#PGP" class="headerlink" title="PGP"></a>PGP</h2><p>Pretty Good Privacy密码软件</p>
+<h2 id="SSL-TLS"><a href="#SSL-TLS" class="headerlink" title="SSL&#x2F;TLS"></a>SSL&#x2F;TLS</h2><p>Secure Socket Layer和Transport Layer Security，用于安全通信的密码通信方法。</p>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><h3 id="大数运算"><a href="#大数运算" class="headerlink" title="大数运算"></a>大数运算</h3><p>大数计算，顾名思义，指超出64位的数的乘法运算、指数运算和模逆运算，其中模逆运算，特指求逆元，所谓乘法逆元，例如：<br>$$<br>2*9 mod 17 &#x3D; 1<br>$$<br>则9是2关于模17的逆元（余数为1的被除数）或者2 * 9 与 1 关于模17同余即：<br>$$<br>9 &#x3D; 2^{-1} mod 17<br>$$</p>
+<h4 id="库文件"><a href="#库文件" class="headerlink" title="库文件"></a>库文件</h4><p>mbedtls&#x2F;library&#x2F;bignum.c</p>
+<h4 id="依赖宏"><a href="#依赖宏" class="headerlink" title="依赖宏"></a>依赖宏</h4><p>MBEDTLS_BIGNUM_C<br>MBEDTLS_PLATFORM_C</p>
+<h4 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h4><table>
+<thead>
+<tr>
+<th align="left">接口</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">mbedtls_mpi_init</td>
+<td align="left">初始化大数结构体</td>
+</tr>
+<tr>
+<td align="left">mbedtls_mpi_read_string</td>
+<td align="left">读取字符串到大数结构体</td>
+</tr>
+<tr>
+<td align="left">mbedtls_mpi_write_string</td>
+<td align="left">大数结构体输出到字符串</td>
+</tr>
+<tr>
+<td align="left">mbedtls_mpi_mul_mpi</td>
+<td align="left">大数乘法</td>
+</tr>
+<tr>
+<td align="left">mbedtls_mpi_exp_mod</td>
+<td align="left">大数指数</td>
+</tr>
+<tr>
+<td align="left">mbedtls_mpi_inv_mod</td>
+<td align="left">大数模逆</td>
+</tr>
+<tr>
+<td align="left">mbedtls_mpi_free</td>
+<td align="left">释放大数结构体</td>
+</tr>
+</tbody></table>
+<h4 id="大数运算示例代码"><a href="#大数运算示例代码" class="headerlink" title="大数运算示例代码"></a>大数运算示例代码</h4><p>代码结构</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">.<br>├── build<br>├── CMakeLists.txt<br>├── main.c<br>└── mbedtls_config.h    <span class="hljs-comment">#对使用的库的裁剪，包含需要的库</span><br></code></pre></td></tr></table></figure>
+
+<p>main.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbedtls/bignum.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbedtls/platform.h&quot;</span></span><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">dump_buf</span><span class="hljs-params">(<span class="hljs-type">char</span> *buf, <span class="hljs-type">size_t</span> len)</span> <br>&#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; len; i++) &#123;<br>        mbedtls_printf(<span class="hljs-string">&quot;%c%s&quot;</span>, buf[i], <br>                        (i + <span class="hljs-number">1</span>) % <span class="hljs-number">32</span> ? <span class="hljs-string">&quot;&quot;</span> : <span class="hljs-string">&quot;\n\t&quot;</span>); <br>    &#125;<br>    mbedtls_printf(<span class="hljs-string">&quot;\n&quot;</span>);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    <span class="hljs-type">size_t</span> olen;<br>    <span class="hljs-type">char</span> buf[<span class="hljs-number">256</span>];<br>    mbedtls_mpi A, E, N, X;<br><br>    mbedtls_mpi_init(&amp;A); <br>    mbedtls_mpi_init(&amp;E); <br>    mbedtls_mpi_init(&amp;N); <br>    mbedtls_mpi_init(&amp;X);<br><br>    mbedtls_mpi_read_string(&amp;A, <span class="hljs-number">16</span>,     <span class="hljs-comment">//以16进制读取字符串，允许2-16进制</span><br>        <span class="hljs-string">&quot;EFE021C2645FD1DC586E69184AF4A31E&quot;</span> \<br>        <span class="hljs-string">&quot;D5F53E93B5F123FA41680867BA110131&quot;</span> \<br>        <span class="hljs-string">&quot;944FE7952E2517337780CB0DB80E61AA&quot;</span> \<br>        <span class="hljs-string">&quot;E7C8DDC6C5C6AADEB34EB38A2F40D5E6&quot;</span> );<br><br>    mbedtls_mpi_read_string(&amp;E, <span class="hljs-number">16</span>,<br>        <span class="hljs-string">&quot;B2E7EFD37075B9F03FF989C7C5051C20&quot;</span> \<br>        <span class="hljs-string">&quot;34D2A323810251127E7BF8625A4F49A5&quot;</span> \<br>        <span class="hljs-string">&quot;F3E27F4DA8BD59C47D6DAABA4C8127BD&quot;</span> \<br>        <span class="hljs-string">&quot;5B5C25763222FEFCCFC38B832366C29E&quot;</span> );<br><br>    mbedtls_mpi_read_string(&amp;N, <span class="hljs-number">16</span>,<br>        <span class="hljs-string">&quot;0066A198186C18C10B2F5ED9B522752A&quot;</span> \<br>        <span class="hljs-string">&quot;9830B69916E535C8F047518A889A43A5&quot;</span> \<br>        <span class="hljs-string">&quot;94B6BED27A168D31D4A52F88925AA8F5&quot;</span> );<br><br>    mbedtls_mpi_mul_mpi(&amp;X, &amp;A, &amp;N);<br>    mbedtls_mpi_write_string(&amp;X, <span class="hljs-number">16</span>, buf, <span class="hljs-number">256</span>, &amp;olen);<br>    mbedtls_printf(<span class="hljs-string">&quot;\n  X = A * N = \n\t&quot;</span>);<br>    dump_buf(buf, olen);<br><br>    mbedtls_mpi_exp_mod(&amp;X, &amp;A, &amp;E, &amp;N, <span class="hljs-literal">NULL</span>);<br>    mbedtls_mpi_write_string(&amp;X, <span class="hljs-number">16</span>, buf, <span class="hljs-number">256</span>, &amp;olen);<br>    mbedtls_printf(<span class="hljs-string">&quot;\n  X = A^E mode N = \n\t&quot;</span>);<br>    dump_buf(buf, olen);<br><br>    mbedtls_mpi_inv_mod( &amp;X, &amp;A, &amp;N);<br>    mbedtls_mpi_write_string(&amp;X, <span class="hljs-number">16</span>, buf, <span class="hljs-number">256</span>, &amp;olen);<br>    mbedtls_printf(<span class="hljs-string">&quot;\n  X = A^-1 mod N = \n\t&quot;</span>);<br>    dump_buf(buf, olen);<br><br>    mbedtls_mpi_free(&amp;A); <br>    mbedtls_mpi_free(&amp;E);<br>    mbedtls_mpi_free(&amp;N); <br>    mbedtls_mpi_free(&amp;X);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;   <br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>CmakeList.txt</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake_minimum_required(VERSION 3.8)<br><br>project(<span class="hljs-string">&quot;bignum&quot;</span>)<br><br>include_directories(./ <span class="hljs-variable">$ENV</span>&#123;MBEDTLS_BASE&#125;/include)<br>aux_source_directory(<span class="hljs-variable">$ENV</span>&#123;MBEDTLS_BASE&#125;/library MBEDTLS_SOURCES)<br><br><span class="hljs-built_in">set</span>(SOURCES <br> <span class="hljs-variable">$&#123;CMAKE_CURRENT_LIST_DIR&#125;</span>/main.c<br>    <span class="hljs-variable">$&#123;CMAKE_CURRENT_LIST_DIR&#125;</span>/mbedtls_config.h <br> <span class="hljs-variable">$&#123;MBEDTLS_SOURCES&#125;</span>)<br><br>add_executable(bignum <span class="hljs-variable">$&#123;SOURCES&#125;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>mbedtls_config.h</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/* System support */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_C</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_MEMORY</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_MEMORY_BUFFER_ALLOC_C</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_NO_STD_FUNCTIONS</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_EXIT_ALT</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_NO_PLATFORM_ENTROPY</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_PRINTF_ALT</span><br><br><span class="hljs-comment">/* mbed TLS modules */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_BIGNUM_C</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbedtls/check_config.h&quot;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* MBEDTLS_CONFIG_H */</span></span><br><br></code></pre></td></tr></table></figure>
+
+<p>运行测试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> -p build &amp;&amp; <span class="hljs-built_in">cd</span> build &amp;&amp; cmake .. &amp;&amp; make -j32<br>./bignum          <br><br>  X = A * N = <br>        602AB7ECA597A3D6B56FF9829A5E8B85<br>        9E857EA95A03512E2BAE7391688D264A<br>        A5663B0341DB9CCFD2C4C5F421FEC814<br>        8001B72E848A38CAE1C65F78E56ABDEF<br>        E12D3C039B8A02D6BE593F0BBBDA56F1<br>        ECF677152EF804370C1A305CAF3B5BF1<br>        30879B56C61DE584A0F53A2447A51E<br><br>  X = A^E mode N = <br>        36E139AEA55215609D2816998ED020BB<br>        BD96C37890F65171D948E9BC7CBAA4D9<br>        325D24D6A3C12710F10A09FA08AB87<br><br>  X = A^-1 mod N = <br>        3A0AAEDD7E784FC07D8F9EC6E3BFD5C3<br>        DBA76456363A10869622EAC2DD84ECC5<br>        B8A74DAC4D09E03B5E0BE779F2DF61<br></code></pre></td></tr></table></figure>
+
+<h4 id="算法分析"><a href="#算法分析" class="headerlink" title="算法分析"></a>算法分析</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">mbedtls_mpi</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-type">int</span> s;                 <span class="hljs-comment">/*!&lt;  Sign: -1 if the mpi is negative, 1 otherwise */</span><br>    <span class="hljs-type">size_t</span> n;              <span class="hljs-comment">/*!&lt;  total # of limbs  */</span><br>    mbedtls_mpi_uint *p;           <span class="hljs-comment">/*!&lt;  pointer to limbs  */</span><br>&#125;<br>mbedtls_mpi;<br></code></pre></td></tr></table></figure>
+
+<p>X-&gt;s指大数的正负，X-&gt;指数位总数，X-&gt;p[n]指向每一位，大小为32位或64位数。例如十六进制数-1 000000000000000F的结果为，最低位为65535，最高位为1，这里每16个字符是一位。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">A-&gt;s = <span class="hljs-number">-1</span> , A-&gt;n = <span class="hljs-number">2</span><br>A-&gt;[<span class="hljs-number">0</span>] = <span class="hljs-number">65535</span><br>A-&gt;[<span class="hljs-number">1</span>] = <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="数位统计"><a href="#数位统计" class="headerlink" title="数位统计"></a>数位统计</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">size_t</span> <span class="hljs-title function_">mbedtls_mpi_bitlen</span><span class="hljs-params">( <span class="hljs-type">const</span> mbedtls_mpi *X )</span><br></code></pre></td></tr></table></figure>
+
+<p>该函数计算大数的bit位的总个数，忽略前导0，譬如十六进制<code>-1000000000000FFFF</code>的运算结果为65，实现过程如下：i从最高位<code>n-1</code>往后数，遇到<code>X-&gt;p[i] != 0</code>截止，例如<code>-1000000000000FFFF</code>的n&#x3D;2, i&#x3D;1开始，此时再计算当前位（最左位）的bit数，依靠</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">size_t</span> <span class="hljs-title function_">mbedtls_clz</span><span class="hljs-params">( <span class="hljs-type">const</span> mbedtls_mpi_uint x )</span><br></code></pre></td></tr></table></figure>
+
+<p>函数来计算，这个函数将数值转为二进制并去除前导0计算剩余的有效bit位的总和，返回j&#x3D;1，则大数的数位综合为<code>( i * biL ) + j</code>，biL在这里值为64。</p>
+<h5 id="读取字符串"><a href="#读取字符串" class="headerlink" title="读取字符串"></a>读取字符串</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_read_string</span><span class="hljs-params">( mbedtls_mpi *X, <span class="hljs-type">int</span> radix, <span class="hljs-type">const</span> <span class="hljs-type">char</span> *s )</span><br></code></pre></td></tr></table></figure>
+
+<p>radix指进制，支持2-16进制以内的读取。以十六进制为例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs c">mbedtls_mpi_init( &amp;T );  <span class="hljs-comment">//初始化一个大数</span><br>slen = <span class="hljs-built_in">strlen</span>( s );         <span class="hljs-comment">//获取字符串长度</span><br><span class="hljs-keyword">if</span>( radix == <span class="hljs-number">16</span> )<br>&#123;<br>    <span class="hljs-keyword">if</span>( slen &gt; MPI_SIZE_T_MAX &gt;&gt; <span class="hljs-number">2</span> )     <span class="hljs-comment">//判断是否超出范围</span><br>        <span class="hljs-keyword">return</span>( MBEDTLS_ERR_MPI_BAD_INPUT_DATA );<br><br>    n = BITS_TO_LIMBS( slen &lt;&lt; <span class="hljs-number">2</span> );<br><br>    MBEDTLS_MPI_CHK( mbedtls_mpi_grow( X, n ) );  <span class="hljs-comment">//扩展n位</span><br>    MBEDTLS_MPI_CHK( mbedtls_mpi_lset( X, <span class="hljs-number">0</span> ) );  <span class="hljs-comment">//初始化每一位为0</span><br><br>    <span class="hljs-keyword">for</span>( i = slen, j = <span class="hljs-number">0</span>; i &gt; <span class="hljs-number">0</span>; i--, j++ )<br>    &#123;<br>        <span class="hljs-keyword">if</span>( i == <span class="hljs-number">1</span> &amp;&amp; s[i - <span class="hljs-number">1</span>] == <span class="hljs-string">&#x27;-&#x27;</span> )     <span class="hljs-comment">//判断字符串首位</span><br>        &#123;<br>            X-&gt;s = <span class="hljs-number">-1</span>;<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br><br>        MBEDTLS_MPI_CHK( mpi_get_digit( &amp;d, radix, s[i - <span class="hljs-number">1</span>] ) );<br>        X-&gt;p[j / ( <span class="hljs-number">2</span> * ciL )] |= d &lt;&lt; ( ( j % ( <span class="hljs-number">2</span> * ciL ) ) &lt;&lt; <span class="hljs-number">2</span> );<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>i</code>初始为slen，也就是字符串最右边（数值上的低位），<code>j</code>初始为大数的最低位，mpi_get_digit将<code>i-1</code>位的char类型转为digit类型，这里ciL&#x3D;8，所以<code>j / ( 2 * ciL )</code>意味着每16个字符为一组记为大数的1位。<code>d &lt;&lt; ( ( j % ( 2 * ciL ) ) &lt;&lt; 2 )</code>则表示这组16个字符每一位的数值，拆解来开，譬如字符串00001234，</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">i=7，d=4，j=0，左移0位<br>i=6，d=3，j=1，左移4位，乘以16<br>i=5，d=2，j=2，左移8位，乘以256<br>i=4，d=1，j=3，左移12位，乘以4096<br></code></pre></td></tr></table></figure>
+
+<p>以此类推求和。这里采用或运算而非加法。</p>
+<h5 id="输出字符串"><a href="#输出字符串" class="headerlink" title="输出字符串"></a>输出字符串</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_write_string</span><span class="hljs-params">( <span class="hljs-type">const</span> mbedtls_mpi *X, <span class="hljs-type">int</span> radix,</span><br><span class="hljs-params">                              <span class="hljs-type">char</span> *buf, <span class="hljs-type">size_t</span> buflen, <span class="hljs-type">size_t</span> *olen )</span><br></code></pre></td></tr></table></figure>
+
+<p>过程与读取相反，作者写的非常精简：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">if</span>( X-&gt;s == <span class="hljs-number">-1</span> )<br>&#123;<br>    *p++ = <span class="hljs-string">&#x27;-&#x27;</span>;<br>    buflen--;<br>&#125;<br><span class="hljs-keyword">if</span>( radix == <span class="hljs-number">16</span> )<br>&#123;<br>    <span class="hljs-type">int</span> c;<br>    <span class="hljs-type">size_t</span> i, j, k;<br><br>    <span class="hljs-keyword">for</span>( i = X-&gt;n, k = <span class="hljs-number">0</span>; i &gt; <span class="hljs-number">0</span>; i-- )<br>    &#123;<br>        <span class="hljs-keyword">for</span>( j = ciL; j &gt; <span class="hljs-number">0</span>; j-- )<br>        &#123;<br>            c = ( X-&gt;p[i - <span class="hljs-number">1</span>] &gt;&gt; ( ( j - <span class="hljs-number">1</span> ) &lt;&lt; <span class="hljs-number">3</span>) ) &amp; <span class="hljs-number">0xFF</span>;<br><br>            <span class="hljs-keyword">if</span>( c == <span class="hljs-number">0</span> &amp;&amp; k == <span class="hljs-number">0</span> &amp;&amp; ( i + j ) != <span class="hljs-number">2</span> )<br>                <span class="hljs-keyword">continue</span>;<br><br>            *(p++) = <span class="hljs-string">&quot;0123456789ABCDEF&quot;</span> [c / <span class="hljs-number">16</span>];<br>            *(p++) = <span class="hljs-string">&quot;0123456789ABCDEF&quot;</span> [c % <span class="hljs-number">16</span>];<br>            k = <span class="hljs-number">1</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>除此之外还有操作文件的接口：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_read_file</span><span class="hljs-params">( mbedtls_mpi *X, <span class="hljs-type">int</span> radix, FILE *fin )</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_write_file</span><span class="hljs-params">( <span class="hljs-type">const</span> <span class="hljs-type">char</span> *p, <span class="hljs-type">const</span> mbedtls_mpi *X, <span class="hljs-type">int</span> radix, FILE *fout )</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="数值比较"><a href="#数值比较" class="headerlink" title="数值比较"></a>数值比较</h5><p>mbedtls提供了两个大数比较的接口，分别是原值和绝对值：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_cmp_abs</span><span class="hljs-params">( <span class="hljs-type">const</span> mbedtls_mpi *X, <span class="hljs-type">const</span> mbedtls_mpi *Y )</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_cmp_mpi</span><span class="hljs-params">( <span class="hljs-type">const</span> mbedtls_mpi *X, <span class="hljs-type">const</span> mbedtls_mpi *Y )</span><br></code></pre></td></tr></table></figure>
+
+<p>由于大数结构体存放了数位n，因此首先比较两者n的大小，对绝对值的情况，n越大，值越大；如果n相同，则从高位向后循环。</p>
+<h5 id="加减计算"><a href="#加减计算" class="headerlink" title="加减计算"></a>加减计算</h5><p>大数加减提供四个主要函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Unsigned addition: X = |A| + |B|  (HAC 14.7)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_add_abs</span><span class="hljs-params">( mbedtls_mpi *X, <span class="hljs-type">const</span> mbedtls_mpi *A, <span class="hljs-type">const</span> mbedtls_mpi *B )</span><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Unsigned subtraction: X = |A| - |B|  (HAC 14.9, 14.10)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_sub_abs</span><span class="hljs-params">( mbedtls_mpi *X, <span class="hljs-type">const</span> mbedtls_mpi *A, <span class="hljs-type">const</span> mbedtls_mpi *B )</span><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Signed addition: X = A + B</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_add_mpi</span><span class="hljs-params">( mbedtls_mpi *X, <span class="hljs-type">const</span> mbedtls_mpi *A, <span class="hljs-type">const</span> mbedtls_mpi *B )</span><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Signed subtraction: X = A - B</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_sub_mpi</span><span class="hljs-params">( mbedtls_mpi *X, <span class="hljs-type">const</span> mbedtls_mpi *A, <span class="hljs-type">const</span> mbedtls_mpi *B )</span><br></code></pre></td></tr></table></figure>
+
+<p>首先是绝对值相加，然后是绝对值减法，有符号数加减法则可以是前两者的组合，例如正数加负数其实就是减法，负数加负数（或者负数减正数）则是绝对值加法取反。例如X&#x3D;A+B的计算，<br>首先判断A和B的符号位乘积，如果为负数，<br>则比较A和B的绝对值，</p>
+<ul>
+<li>绝对值A&gt;B，则为绝对值A-B，符号位与A一致</li>
+<li>绝对值A&lt;B，则为绝对值B-A，符号位与A相反</li>
+</ul>
+<p>如果为正数，则为绝对值A+B，符号位与A一致</p>
+<h5 id="乘法运算"><a href="#乘法运算" class="headerlink" title="乘法运算"></a>乘法运算</h5><p>乘法提供两个接口</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Baseline multiplication: X = A * B  (HAC 14.12)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_mul_mpi</span><span class="hljs-params">( mbedtls_mpi *X, <span class="hljs-type">const</span> mbedtls_mpi *A, <span class="hljs-type">const</span> mbedtls_mpi *B )</span><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Baseline multiplication: X = A * b</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_mul_int</span><span class="hljs-params">( mbedtls_mpi *X, <span class="hljs-type">const</span> mbedtls_mpi *A, mbedtls_mpi_uint b )</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="大数除法"><a href="#大数除法" class="headerlink" title="大数除法"></a>大数除法</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Division by mbedtls_mpi: A = Q * B + R  (HAC 14.20)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_div_mpi</span><span class="hljs-params">( mbedtls_mpi *Q, mbedtls_mpi *R, <span class="hljs-type">const</span> mbedtls_mpi *A,</span><br><span class="hljs-params">                         <span class="hljs-type">const</span> mbedtls_mpi *B )</span><br></code></pre></td></tr></table></figure>
+
+<p>这里Q&#x3D;A&#x2F;B，R&#x3D;A mod B</p>
+<h5 id="取模运算"><a href="#取模运算" class="headerlink" title="取模运算"></a>取模运算</h5><p>其实就是上面的R&#x3D;0</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Modulo: R = A mod B</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_mod_mpi</span><span class="hljs-params">( mbedtls_mpi *R, <span class="hljs-type">const</span> mbedtls_mpi *A, <span class="hljs-type">const</span> mbedtls_mpi *B )</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="指数运算"><a href="#指数运算" class="headerlink" title="指数运算"></a>指数运算</h5><p>因为结果可能非常大，所以对结果取模N，即<br>$$<br>X &#x3D; A^{E} mod N<br>$$</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Sliding-window exponentiation: X = A^E mod N  (HAC 14.85)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_exp_mod</span><span class="hljs-params">( mbedtls_mpi *X, <span class="hljs-type">const</span> mbedtls_mpi *A,</span><br><span class="hljs-params">                         <span class="hljs-type">const</span> mbedtls_mpi *E, <span class="hljs-type">const</span> mbedtls_mpi *N,</span><br><span class="hljs-params">                         mbedtls_mpi *_RR )</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="求取最大公约数"><a href="#求取最大公约数" class="headerlink" title="求取最大公约数"></a>求取最大公约数</h5><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Greatest common divisor: G = gcd(A, B)  (HAC 14.54)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_gcd</span><span class="hljs-params">( mbedtls_mpi *G, <span class="hljs-type">const</span> mbedtls_mpi *A, <span class="hljs-type">const</span> mbedtls_mpi *B )</span><br></code></pre></td></tr></table></figure>
+
+<h5 id="模逆运算"><a href="#模逆运算" class="headerlink" title="模逆运算"></a>模逆运算</h5><p>这里是求乘法逆元，即找到一个数X使得A和X的积关于模N与1同余，或者说<br>$$<br>A*X mod N &#x3D; 1, X&#x3D;A^{-1} mod N<br>$$</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Modular inverse: X = A^-1 mod N  (HAC 14.61 / 14.64)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_mpi_inv_mod</span><span class="hljs-params">( mbedtls_mpi *X, <span class="hljs-type">const</span> mbedtls_mpi *A, <span class="hljs-type">const</span> mbedtls_mpi *N )</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="平台安全架构"><a href="#平台安全架构" class="headerlink" title="平台安全架构"></a>平台安全架构</h3><p>PSA，全称Platform Secure Architecture，平台安全架构，是ARM公司在物联网安全领域联合众多芯片厂商推出的一个重要的软件实现架构，主要内容包括：</p>
+<ol>
+<li>威胁模型</li>
+<li>安全分析</li>
+<li>硬件和固件架构规范</li>
+<li>开源固件参考实现</li>
+<li>独立评估和认证计划–PSA Certified</li>
+</ol>
+<p>TF-M是PSA的一种实现方式，主要基于ARM Cortex-M系列的芯片，除此之外还有TF-A等。<a href="https://tls.mbed.org/">Mbedtls</a>也是ARM维护的基于ARM平台的开源嵌入式加密库，现已是<a href="https://www.trustedfirmware.org/">trust-frimware</a>的一部分，除了基本的各类加解密算法及安全工具箱的实现，为方便嵌入式开发人员快速编写符合PSA规范的代码，mbedtls提供了各类安全工具的调用接口。源代码见mbdetls&#x2F;library&#x2F;psa_crypto.c文件。</p>
+<h4 id="Key-management"><a href="#Key-management" class="headerlink" title="Key management"></a>Key management</h4><p>PSA支持对称和非对称密钥，实现基础是Mbedtls提供的各类密码箱工具。在导入key的时候需要注意key的type（类型）、usage（用途）和alg（算法）等属性，决定了密文或者签名的长度和解密的数据是否正确。Key在使用时，程序会检查key的policy的合法性，因此key的管理非常重要。主要的key管理函数如下：</p>
+<ul>
+<li>设置和检查key的用途</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">psa_set_key_usage_flags</span><span class="hljs-params">(<span class="hljs-type">psa_key_attributes_t</span> *attributes,</span><br><span class="hljs-params">                                    <span class="hljs-type">psa_key_usage_t</span> usage_flags)</span>;<br><span class="hljs-type">static</span> <span class="hljs-type">psa_key_usage_t</span> <span class="hljs-title function_">psa_get_key_usage_flags</span><span class="hljs-params">(</span><br><span class="hljs-params">    <span class="hljs-type">const</span> <span class="hljs-type">psa_key_attributes_t</span> *attributes)</span>;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>设置和检查key的算法</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">psa_set_key_algorithm</span><span class="hljs-params">(<span class="hljs-type">psa_key_attributes_t</span> *attributes,</span><br><span class="hljs-params">                                  <span class="hljs-type">psa_algorithm_t</span> alg)</span>;<br><span class="hljs-type">static</span> <span class="hljs-type">psa_algorithm_t</span> <span class="hljs-title function_">psa_get_key_algorithm</span><span class="hljs-params">(</span><br><span class="hljs-params">    <span class="hljs-type">const</span> <span class="hljs-type">psa_key_attributes_t</span> *attributes)</span>;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>设置和检查key的类型</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">psa_set_key_type</span><span class="hljs-params">(<span class="hljs-type">psa_key_attributes_t</span> *attributes,</span><br><span class="hljs-params">                             <span class="hljs-type">psa_key_type_t</span> type)</span>;<br><span class="hljs-type">static</span> <span class="hljs-type">psa_key_type_t</span> <span class="hljs-title function_">psa_get_key_type</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">psa_key_attributes_t</span> *attributes)</span>;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>获取key的属性</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_get_key_attributes</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                                    <span class="hljs-type">psa_key_attributes_t</span> *attributes)</span>;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>删除key</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_destroy_key</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key)</span>;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>导入导出key，注意<code>psa_export_public_key</code>函数只能是非对称密钥类型。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_import_key</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">psa_key_attributes_t</span> *attributes,</span><br><span class="hljs-params">                            <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *data,</span><br><span class="hljs-params">                            <span class="hljs-type">size_t</span> data_length,</span><br><span class="hljs-params">                            <span class="hljs-type">mbedtls_svc_key_id_t</span> *key)</span>;<br><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_export_key</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                            <span class="hljs-type">uint8_t</span> *data,</span><br><span class="hljs-params">                            <span class="hljs-type">size_t</span> data_size,</span><br><span class="hljs-params">                            <span class="hljs-type">size_t</span> *data_length)</span>;<br><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_export_public_key</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                                   <span class="hljs-type">uint8_t</span> *data,</span><br><span class="hljs-params">                                   <span class="hljs-type">size_t</span> data_size,</span><br><span class="hljs-params">                                   <span class="hljs-type">size_t</span> *data_length)</span>;<br></code></pre></td></tr></table></figure>
+
+<p>导入key后，常用来使用的参数是<code>mbedtls_svc_key_id_t *key</code>，即<code>psa_key_id_t *key</code>，在TF-M中又被命名为<code>psa_key_handle_t *key</code>，这是一个重要的参数，而<code>psa_key_attributes_t *attributes</code>则是指key的属性，内容如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">psa_client_key_attributes_s</span> <span class="hljs-title">psa_key_attributes_t</span>;</span><br><br><span class="hljs-comment">/* This is the client view of the `key_attributes` structure. Only</span><br><span class="hljs-comment"> * fields which need to be set by the PSA crypto client are present.</span><br><span class="hljs-comment"> * The PSA crypto service will maintain a different version of the</span><br><span class="hljs-comment"> * data structure internally. */</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">psa_client_key_attributes_s</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-type">uint16_t</span> type;<br>    <span class="hljs-type">uint16_t</span> bits;<br>    <span class="hljs-type">uint32_t</span> lifetime;<br>    <span class="hljs-type">psa_key_id_t</span> id;<br>    <span class="hljs-type">uint32_t</span> usage;<br>    <span class="hljs-type">uint32_t</span> alg;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h4 id="Message-digests"><a href="#Message-digests" class="headerlink" title="Message digests"></a>Message digests</h4><p>消息摘要，主要计算消息的单向散列函数值，计算hash的函数和Mbedtls类似，<code>psa_hash_operation_t *operation</code>需要先设置使用的算法，算法必须保证<code>PSA_ALG_IS_HASH(alg)</code>为真。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_hash_setup</span><span class="hljs-params">(<span class="hljs-type">psa_hash_operation_t</span> *operation,</span><br><span class="hljs-params">                            <span class="hljs-type">psa_algorithm_t</span> alg)</span>;<br><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_hash_update</span><span class="hljs-params">(<span class="hljs-type">psa_hash_operation_t</span> *operation,</span><br><span class="hljs-params">                             <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *input,</span><br><span class="hljs-params">                             <span class="hljs-type">size_t</span> input_length)</span>;<br><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_hash_finish</span><span class="hljs-params">(<span class="hljs-type">psa_hash_operation_t</span> *operation,</span><br><span class="hljs-params">                             <span class="hljs-type">uint8_t</span> *hash,</span><br><span class="hljs-params">                             <span class="hljs-type">size_t</span> hash_size,</span><br><span class="hljs-params">                             <span class="hljs-type">size_t</span> *hash_length)</span>;<br></code></pre></td></tr></table></figure>
+
+<p>PSA提供了一个更简单的Hash计算接口，适合轻量化的计算，使用时需要注意确保hash的长度<code>hash_size</code>应当大于算法输出的长度（根据<code>PSA_HASH_LENGTH(alg)</code>计算）。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_hash_compute</span><span class="hljs-params">(<span class="hljs-type">psa_algorithm_t</span> alg,</span><br><span class="hljs-params">                              <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *input,</span><br><span class="hljs-params">                              <span class="hljs-type">size_t</span> input_length,</span><br><span class="hljs-params">                              <span class="hljs-type">uint8_t</span> *hash,</span><br><span class="hljs-params">                              <span class="hljs-type">size_t</span> hash_size,</span><br><span class="hljs-params">                              <span class="hljs-type">size_t</span> *hash_length)</span>;<br></code></pre></td></tr></table></figure>
+
+<h4 id="MAC"><a href="#MAC" class="headerlink" title="MAC"></a>MAC</h4><p>消息认证码（Message authentication codes），用于认证消息，计算的输入为消息和消息发送者持有的密钥（对称密钥），计算和验证消息认证码，计算MAC的函数与Mbedtls类似，可以多次调用update函数计算长消息的MAC，<code>psa_mac_operation_t *operation</code>包含计算消息验证码用的算法和key的信息。<br>此处key的usage属性必须为<code>PSA_KEY_USAGE_SIGN_MESSAGE | PSA_KEY_USAGE_VERIFY_MESSAGE</code>，算法必须保证<code>PSA_ALG_IS_MAC(alg)</code>为真。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_mac_sign_setup</span><span class="hljs-params">(<span class="hljs-type">psa_mac_operation_t</span> *operation,</span><br><span class="hljs-params">                                <span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                                <span class="hljs-type">psa_algorithm_t</span> alg)</span>;<br><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_mac_verify_setup</span><span class="hljs-params">(<span class="hljs-type">psa_mac_operation_t</span> *operation,</span><br><span class="hljs-params">                                  <span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                                  <span class="hljs-type">psa_algorithm_t</span> alg)</span>;<br><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_mac_update</span><span class="hljs-params">(<span class="hljs-type">psa_mac_operation_t</span> *operation,</span><br><span class="hljs-params">                            <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *input,</span><br><span class="hljs-params">                            <span class="hljs-type">size_t</span> input_length)</span>;<br><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_mac_sign_finish</span><span class="hljs-params">(<span class="hljs-type">psa_mac_operation_t</span> *operation,</span><br><span class="hljs-params">                                 <span class="hljs-type">uint8_t</span> *mac,</span><br><span class="hljs-params">                                 <span class="hljs-type">size_t</span> mac_size,</span><br><span class="hljs-params">                                 <span class="hljs-type">size_t</span> *mac_length)</span>;<br><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_mac_verify_finish</span><span class="hljs-params">(<span class="hljs-type">psa_mac_operation_t</span> *operation,</span><br><span class="hljs-params">                                   <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *mac,</span><br><span class="hljs-params">                                   <span class="hljs-type">size_t</span> mac_length)</span>;<br></code></pre></td></tr></table></figure>
+
+<p>同样PSA提供了简短消息情况下的接口：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_mac_compute</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                             <span class="hljs-type">psa_algorithm_t</span> alg,</span><br><span class="hljs-params">                             <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *input,</span><br><span class="hljs-params">                             <span class="hljs-type">size_t</span> input_length,</span><br><span class="hljs-params">                             <span class="hljs-type">uint8_t</span> *mac,</span><br><span class="hljs-params">                             <span class="hljs-type">size_t</span> mac_size,</span><br><span class="hljs-params">                             <span class="hljs-type">size_t</span> *mac_length)</span>;<br><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_mac_verify</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                            <span class="hljs-type">psa_algorithm_t</span> alg,</span><br><span class="hljs-params">                            <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *input,</span><br><span class="hljs-params">                            <span class="hljs-type">size_t</span> input_length,</span><br><span class="hljs-params">                            <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *mac,</span><br><span class="hljs-params">                            <span class="hljs-type">size_t</span> mac_length)</span>;<br></code></pre></td></tr></table></figure>
+
+<h4 id="Asymmetric-cryptography"><a href="#Asymmetric-cryptography" class="headerlink" title="Asymmetric cryptography"></a>Asymmetric cryptography</h4><p>非对称加解密和签名认证的接口。</p>
+<h5 id="非对称加解密"><a href="#非对称加解密" class="headerlink" title="非对称加解密"></a>非对称加解密</h5><p>使用公钥加密，私钥解密，支持RSA、ECC等算法，key的usage为<code>PSA_KEY_USAGE_ENCRYPT | PSA_KEY_USAGE_DECRYPT</code>。参数salt（盐）在算法不需要的时候填<code>NULL</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_asymmetric_encrypt</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                                    <span class="hljs-type">psa_algorithm_t</span> alg,</span><br><span class="hljs-params">                                    <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *input,</span><br><span class="hljs-params">                                    <span class="hljs-type">size_t</span> input_length,</span><br><span class="hljs-params">                                    <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *salt,</span><br><span class="hljs-params">                                    <span class="hljs-type">size_t</span> salt_length,</span><br><span class="hljs-params">                                    <span class="hljs-type">uint8_t</span> *output,</span><br><span class="hljs-params">                                    <span class="hljs-type">size_t</span> output_size,</span><br><span class="hljs-params">                                    <span class="hljs-type">size_t</span> *output_length)</span>;<br><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_asymmetric_decrypt</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                                    <span class="hljs-type">psa_algorithm_t</span> alg,</span><br><span class="hljs-params">                                    <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *input,</span><br><span class="hljs-params">                                    <span class="hljs-type">size_t</span> input_length,</span><br><span class="hljs-params">                                    <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *salt,</span><br><span class="hljs-params">                                    <span class="hljs-type">size_t</span> salt_length,</span><br><span class="hljs-params">                                    <span class="hljs-type">uint8_t</span> *output,</span><br><span class="hljs-params">                                    <span class="hljs-type">size_t</span> output_size,</span><br><span class="hljs-params">                                    <span class="hljs-type">size_t</span> *output_length)</span>;<br></code></pre></td></tr></table></figure>
+
+<h5 id="签名和验证"><a href="#签名和验证" class="headerlink" title="签名和验证"></a>签名和验证</h5><p>通常采用对消息的单向散列值使用私钥进行签名，而消息接收者验证签名的步骤如下：</p>
+<ul>
+<li>对消息进行单向散列值计算</li>
+<li>用公钥对签名进行解密</li>
+<li>比对解密后的散列值和计算的散列值时否相同</li>
+</ul>
+<p>上述过程是<code>psa_verify_hash</code>函数的执行过程。因此接口定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_sign_hash</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                           <span class="hljs-type">psa_algorithm_t</span> alg,</span><br><span class="hljs-params">                           <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *hash,</span><br><span class="hljs-params">                           <span class="hljs-type">size_t</span> hash_length,</span><br><span class="hljs-params">                           <span class="hljs-type">uint8_t</span> *signature,</span><br><span class="hljs-params">                           <span class="hljs-type">size_t</span> signature_size,</span><br><span class="hljs-params">                           <span class="hljs-type">size_t</span> *signature_length)</span>;<br><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_verify_hash</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                             <span class="hljs-type">psa_algorithm_t</span> alg,</span><br><span class="hljs-params">                             <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *hash,</span><br><span class="hljs-params">                             <span class="hljs-type">size_t</span> hash_length,</span><br><span class="hljs-params">                             <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *signature,</span><br><span class="hljs-params">                             <span class="hljs-type">size_t</span> signature_length)</span>;<br></code></pre></td></tr></table></figure>
+
+<p>使用时key的usage为<code>PSA_KEY_USAGE_SIGN_HASH | PSA_KEY_USAGE_VERIFY_HASH</code>，key的type必须是非对称密钥类型，算法需要和计算单向散列值的函数（例如<code>psa_hash_compute</code>）使用的算法保持一致。</p>
+<h4 id="Symmetric-cryptography"><a href="#Symmetric-cryptography" class="headerlink" title="Symmetric cryptography"></a>Symmetric cryptography</h4><p>对称加解密的接口。key的usage为<code>PSA_KEY_USAGE_ENCRYPT | PSA_KEY_USAGE_DECRYPT</code>,算法必须满足<code>PSA_ALG_IS_CIPHER(alg)</code>为真。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_cipher_encrypt</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                                <span class="hljs-type">psa_algorithm_t</span> alg,</span><br><span class="hljs-params">                                <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *input,</span><br><span class="hljs-params">                                <span class="hljs-type">size_t</span> input_length,</span><br><span class="hljs-params">                                <span class="hljs-type">uint8_t</span> *output,</span><br><span class="hljs-params">                                <span class="hljs-type">size_t</span> output_size,</span><br><span class="hljs-params">                                <span class="hljs-type">size_t</span> *output_length)</span>;<br><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_cipher_decrypt</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                                <span class="hljs-type">psa_algorithm_t</span> alg,</span><br><span class="hljs-params">                                <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *input,</span><br><span class="hljs-params">                                <span class="hljs-type">size_t</span> input_length,</span><br><span class="hljs-params">                                <span class="hljs-type">uint8_t</span> *output,</span><br><span class="hljs-params">                                <span class="hljs-type">size_t</span> output_size,</span><br><span class="hljs-params">                                <span class="hljs-type">size_t</span> *output_length)</span>;<br></code></pre></td></tr></table></figure>
+
+<p>上面的接口使用的是随机初始化向量IV，通过下列一组函数可以使用特定的初始化向量：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c">psa_cipher_encrypt_setup<br>psa_cipher_decrypt_setup<br>psa_cipher_generate_iv<br>psa_cipher_set_iv<br>psa_cipher_update<br>psa_cipher_finish<br></code></pre></td></tr></table></figure>
+
+<h4 id="AEAD"><a href="#AEAD" class="headerlink" title="AEAD"></a>AEAD</h4><p>Authenticated Encryption with Associated Data (<a href="https://blog.csdn.net/qq_35324057/article/details/106035773?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_title-0&spm=1001.2101.3001.4242">AEAD</a>)，对称密码和消息认证码，是一种同时具备保密性，完整性和可认证性的加密形式。key的usage为<code>PSA_KEY_USAGE_DECRYPT | PSA_KEY_USAGE_ENCRYPT</code>，算法需要保证<code>PSA_ALG_IS_AEAD(alg)</code>为真。nonce可以是随机数或初始化向量，additional_data用来认证，不放在消息中加密。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_aead_encrypt</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                              <span class="hljs-type">psa_algorithm_t</span> alg,</span><br><span class="hljs-params">                              <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *nonce,</span><br><span class="hljs-params">                              <span class="hljs-type">size_t</span> nonce_length,</span><br><span class="hljs-params">                              <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *additional_data,</span><br><span class="hljs-params">                              <span class="hljs-type">size_t</span> additional_data_length,</span><br><span class="hljs-params">                              <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *plaintext,</span><br><span class="hljs-params">                              <span class="hljs-type">size_t</span> plaintext_length,</span><br><span class="hljs-params">                              <span class="hljs-type">uint8_t</span> *ciphertext,</span><br><span class="hljs-params">                              <span class="hljs-type">size_t</span> ciphertext_size,</span><br><span class="hljs-params">                              <span class="hljs-type">size_t</span> *ciphertext_length)</span>;<br><span class="hljs-type">psa_status_t</span> <span class="hljs-title function_">psa_aead_decrypt</span><span class="hljs-params">(<span class="hljs-type">mbedtls_svc_key_id_t</span> key,</span><br><span class="hljs-params">                              <span class="hljs-type">psa_algorithm_t</span> alg,</span><br><span class="hljs-params">                              <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *nonce,</span><br><span class="hljs-params">                              <span class="hljs-type">size_t</span> nonce_length,</span><br><span class="hljs-params">                              <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *additional_data,</span><br><span class="hljs-params">                              <span class="hljs-type">size_t</span> additional_data_length,</span><br><span class="hljs-params">                              <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *ciphertext,</span><br><span class="hljs-params">                              <span class="hljs-type">size_t</span> ciphertext_length,</span><br><span class="hljs-params">                              <span class="hljs-type">uint8_t</span> *plaintext,</span><br><span class="hljs-params">                              <span class="hljs-type">size_t</span> plaintext_size,</span><br><span class="hljs-params">                              <span class="hljs-type">size_t</span> *plaintext_length)</span>;<br></code></pre></td></tr></table></figure>
+
+<p>这里支持的算法包括：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PSA_ALG_CCM                             ((psa_algorithm_t)0x05500100)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PSA_ALG_GCM                             ((psa_algorithm_t)0x05500200)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PSA_ALG_CHACHA20_POLY1305               ((psa_algorithm_t)0x05100500)</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="psa示例代码"><a href="#psa示例代码" class="headerlink" title="psa示例代码"></a>psa示例代码</h4><h5 id="签名认证"><a href="#签名认证" class="headerlink" title="签名认证"></a>签名认证</h5><h6 id="导入ECC非对称密钥"><a href="#导入ECC非对称密钥" class="headerlink" title="导入ECC非对称密钥"></a>导入ECC非对称密钥</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> ECC_P256_PUBLIC_KEY_SIZE PSA_KEY_EXPORT_ECC_PUBLIC_KEY_MAX_SIZE(256)</span><br><span class="hljs-type">static</span> <span class="hljs-type">uint8_t</span> attestation_public_key[ECC_P256_PUBLIC_KEY_SIZE]; <span class="hljs-comment">/* 65bytes */</span><br><span class="hljs-type">static</span> <span class="hljs-type">size_t</span> attestation_public_key_len = <span class="hljs-number">0</span>;<br><span class="hljs-type">static</span> <span class="hljs-type">psa_key_handle_t</span> public_key_handle = <span class="hljs-number">0</span>;<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">load_key_pair</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-type">psa_key_attributes_t</span> key_attributes = psa_key_attributes_init();<br>    <span class="hljs-type">psa_key_handle_t</span> key_handle = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">psa_ecc_family_t</span> psa_curve;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ecc_key_t</span> <span class="hljs-title">attest_key</span> =</span> &#123;<span class="hljs-number">0</span>&#125;;<br>    <span class="hljs-type">uint8_t</span> key_buf[<span class="hljs-number">3</span> * PSA_BITS_TO_BYTES(<span class="hljs-number">256</span>)]; <span class="hljs-comment">/* priv + x_coord + y_coord */</span><br>    <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">tfm_plat_err_t</span> <span class="hljs-title">plat_res</span>;</span><br>    <span class="hljs-type">psa_key_usage_t</span> usage = PSA_KEY_USAGE_SIGN_HASH | PSA_KEY_USAGE_VERIFY_HASH;<br><br>    tfm_plat_get_initial_attest_key(key_buf, <span class="hljs-keyword">sizeof</span>(key_buf),<br>                                    &amp;attest_key, &amp;psa_curve);<br><br>    <span class="hljs-comment">/* Setup the key policy for private key */</span><br>    psa_set_key_usage_flags(&amp;key_attributes, usage);<br>    psa_set_key_algorithm(&amp;key_attributes, PSA_ALG_ECDSA(PSA_ALG_SHA_256));<br>    psa_set_key_type(&amp;key_attributes, PSA_KEY_TYPE_ECC_KEY_PAIR(psa_curve));<br><br>    <span class="hljs-comment">/* Register private key to Crypto service */</span><br>    <span class="hljs-type">int32_t</span> crypto_result = psa_import_key(&amp;key_attributes,<br>                                           attest_key.priv_key,<br>                                           attest_key.priv_key_size,<br>                                           &amp;key_handle);<br><br>    crypto_result = psa_export_public_key(key_handle, attestation_public_key,<br>                                          ECC_P256_PUBLIC_KEY_SIZE,<br>                                          &amp;attestation_public_key_len);<br><br>    public_key_handle = key_handle;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h6 id="计算签名"><a href="#计算签名" class="headerlink" title="计算签名"></a>计算签名</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">spm_server_sign_certificate</span><span class="hljs-params">(<span class="hljs-type">psa_msg_t</span> *msg)</span><br>&#123;<br>    <span class="hljs-type">uint8_t</span> server_msg[<span class="hljs-number">16</span>] = &#123;<span class="hljs-number">0</span>&#125;;<br>    <span class="hljs-type">uint8_t</span> server_msg_hash[<span class="hljs-number">32</span>] = &#123;<span class="hljs-number">0</span>&#125;;<br>    <span class="hljs-type">size_t</span> hash_length = <span class="hljs-number">0</span>;<br><br>    <span class="hljs-type">uint8_t</span> signature[<span class="hljs-number">64</span>] = &#123;<span class="hljs-number">0</span>&#125;;<br>    <span class="hljs-type">size_t</span> signature_length = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br><br>    <span class="hljs-comment">/* read data */</span><br>    <span class="hljs-type">uint8_t</span> msg_length = psa_read(msg-&gt;handle, <span class="hljs-number">0</span>,<br>                                  server_msg, <span class="hljs-keyword">sizeof</span>(server_msg));<br><br>    <span class="hljs-comment">/* calculate hash */</span><br>    <span class="hljs-type">int32_t</span> crypto_result = psa_hash_compute(PSA_ALG_SHA_256,<br>                                             server_msg,<br>                                             msg_length,<br>                                             server_msg_hash,<br>                                             <span class="hljs-keyword">sizeof</span>(server_msg_hash),<br>                                             &amp;hash_length);<br><br>    <span class="hljs-comment">/* calculate signature */</span><br>    crypto_result = psa_asymmetric_sign(public_key_handle,<br>                                        PSA_ALG_ECDSA(PSA_ALG_SHA_256),<br>                                        server_msg_hash,<br>                                        hash_length,<br>                                        signature,<br>                                        <span class="hljs-keyword">sizeof</span>(signature),<br>                                        &amp;signature_length);<br><br>    psa_write(msg-&gt;handle, <span class="hljs-number">0</span>, signature, signature_length);<br>    psa_write(msg-&gt;handle, <span class="hljs-number">1</span>, &amp;crypto_result, <span class="hljs-keyword">sizeof</span>(crypto_result));<br><br>    <span class="hljs-keyword">return</span> crypto_result;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h6 id="验证签名"><a href="#验证签名" class="headerlink" title="验证签名"></a>验证签名</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">spm_client_verify_certificate</span><span class="hljs-params">(<span class="hljs-type">psa_msg_t</span> *msg)</span><br>&#123;<br>    <span class="hljs-type">uint8_t</span> server_msg[<span class="hljs-number">16</span>] = &#123;<span class="hljs-number">0</span>&#125;;<br>    <span class="hljs-type">uint8_t</span> server_msg_hash[<span class="hljs-number">32</span>] = &#123;<span class="hljs-number">0</span>&#125;;<br>    <span class="hljs-type">size_t</span> hash_length = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">int32_t</span> verify_ret = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">uint8_t</span> signature[<span class="hljs-number">64</span>] = &#123;<span class="hljs-number">0</span>&#125;;<br><br>    <span class="hljs-comment">/* read data */</span><br>    <span class="hljs-type">uint8_t</span> msg_length = psa_read(msg-&gt;handle, <span class="hljs-number">0</span>,<br>                                  server_msg, <span class="hljs-keyword">sizeof</span>(server_msg));<br>    <span class="hljs-type">size_t</span> signature_length = psa_read(msg-&gt;handle, <span class="hljs-number">1</span>,<br>                                       signature, <span class="hljs-keyword">sizeof</span>(signature));<br><br>    <span class="hljs-comment">/* calculate hash */</span><br>    <span class="hljs-type">int32_t</span> crypto_result = psa_hash_compute(PSA_ALG_SHA_256,<br>                                             server_msg,<br>                                             msg_length,<br>                                             server_msg_hash,<br>                                             <span class="hljs-keyword">sizeof</span>(server_msg_hash),<br>                                             &amp;hash_length);<br><br>    <span class="hljs-comment">/* verify signature */</span><br>    verify_ret = psa_asymmetric_verify(public_key_handle,<br>                                       PSA_ALG_ECDSA(PSA_ALG_SHA_256),<br>                                       server_msg_hash,<br>                                       hash_length,<br>                                       signature,<br>                                       signature_length);<br><br>    psa_write(msg-&gt;handle, <span class="hljs-number">0</span>, &amp;verify_ret, <span class="hljs-keyword">sizeof</span>(verify_ret));<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h5 id="AEAD加密解密"><a href="#AEAD加密解密" class="headerlink" title="AEAD加密解密"></a>AEAD加密解密</h5><h6 id="导入对称密钥"><a href="#导入对称密钥" class="headerlink" title="导入对称密钥"></a>导入对称密钥</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX_KEY_NUM 2</span><br><span class="hljs-type">static</span> <span class="hljs-type">psa_key_handle_t</span> symmetric_key_handle[MAX_KEY_NUM] = &#123;<span class="hljs-number">0</span>&#125;;<br><br><span class="hljs-type">static</span> <span class="hljs-type">int32_t</span> <span class="hljs-title function_">load_symmetric_key</span><span class="hljs-params">(<span class="hljs-type">int8_t</span> key_index)</span><br>&#123;<br>    <span class="hljs-keyword">if</span> (key_index &gt; MAX_KEY_NUM || key_index &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> key_buf[] = <span class="hljs-string">&quot;This is AES key&quot;</span>;<br>    <span class="hljs-type">psa_key_attributes_t</span> key_attributes = psa_key_attributes_init();<br>    <span class="hljs-type">psa_key_handle_t</span> key_handle = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">psa_key_usage_t</span> usage = PSA_KEY_USAGE_ENCRYPT | PSA_KEY_USAGE_DECRYPT;<br><br>    psa_set_key_usage_flags(&amp;key_attributes, usage);<br>    psa_set_key_type(&amp;key_attributes, PSA_KEY_TYPE_AES);<br>    psa_set_key_algorithm(&amp;key_attributes, PSA_ALG_CCM);<br><br>    <span class="hljs-type">int32_t</span> crypto_result = psa_import_key(&amp;key_attributes, key_buf,<br>                                           <span class="hljs-keyword">sizeof</span>(key_buf), &amp;key_handle);<br><br>    symmetric_key_handle[key_index] = key_handle;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h6 id="消息加密"><a href="#消息加密" class="headerlink" title="消息加密"></a>消息加密</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">const</span> <span class="hljs-type">size_t</span> nonce_length = <span class="hljs-number">12</span>;<br><span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> nonce[] = <span class="hljs-string">&quot;01234567890&quot;</span>;<br><span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> associated_data[] = <span class="hljs-string">&quot;This is associated data&quot;</span>;<br><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">spm_client_encrypt_data</span><span class="hljs-params">(<span class="hljs-type">psa_msg_t</span> *msg)</span><br>&#123;<br>    <span class="hljs-type">int8_t</span> key_index = <span class="hljs-number">-1</span>;<br>    <span class="hljs-type">uint8_t</span> plaintext[<span class="hljs-number">16</span>] = &#123;<span class="hljs-number">0</span>&#125;;<br>    <span class="hljs-type">size_t</span> plaintext_len = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">uint8_t</span> ciphertext[<span class="hljs-number">32</span>] = &#123;<span class="hljs-number">0</span>&#125;;<br>    <span class="hljs-type">size_t</span> ciphertext_len = <span class="hljs-number">0</span>;<br><br>    <span class="hljs-comment">/* read data */</span><br>    <span class="hljs-type">int32_t</span> result = psa_read(msg-&gt;handle, <span class="hljs-number">0</span>, &amp;key_index, <span class="hljs-keyword">sizeof</span>(key_index));<br>    plaintext_len = psa_read(msg-&gt;handle, <span class="hljs-number">1</span>, plaintext, <span class="hljs-keyword">sizeof</span>(plaintext));<br><br>    <span class="hljs-comment">/* encrypt data by key */</span><br>    result = psa_aead_encrypt(symmetric_key_handle[key_index],<br>                              PSA_ALG_CCM,<br>                              nonce,<br>                              nonce_length,<br>                              associated_data,<br>                              <span class="hljs-keyword">sizeof</span>(associated_data),<br>                              plaintext,<br>                              plaintext_len,<br>                              ciphertext,<br>                              <span class="hljs-keyword">sizeof</span>(ciphertext),<br>                              &amp;ciphertext_len);<br><br>    psa_write(msg-&gt;handle, <span class="hljs-number">0</span>, ciphertext, ciphertext_len);<br>    psa_write(msg-&gt;handle, <span class="hljs-number">1</span>, &amp;result, <span class="hljs-keyword">sizeof</span>(result));<br><br>    <span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h6 id="消息解密"><a href="#消息解密" class="headerlink" title="消息解密"></a>消息解密</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">const</span> <span class="hljs-type">size_t</span> nonce_length = <span class="hljs-number">12</span>;<br><span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> nonce[] = <span class="hljs-string">&quot;01234567890&quot;</span>;<br><span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> associated_data[] = <span class="hljs-string">&quot;This is associated data&quot;</span>;<br><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">spm_client_decrypt_data</span><span class="hljs-params">(<span class="hljs-type">psa_msg_t</span> *msg)</span><br>&#123;<br>    <span class="hljs-type">int8_t</span> key_index = <span class="hljs-number">-1</span>;<br>    <span class="hljs-type">uint8_t</span> ciphertext[<span class="hljs-number">32</span>] = &#123;<span class="hljs-number">0</span>&#125;;<br>    <span class="hljs-type">size_t</span> ciphertext_len = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">uint8_t</span> decrypttext[<span class="hljs-number">16</span>] = &#123;<span class="hljs-number">0</span>&#125;;<br>    <span class="hljs-type">size_t</span> decrypttext_len = <span class="hljs-number">0</span>;<br><br>    <span class="hljs-comment">/* read data */</span><br>    <span class="hljs-type">int32_t</span> result = psa_read(msg-&gt;handle, <span class="hljs-number">0</span>, &amp;key_index, <span class="hljs-keyword">sizeof</span>(key_index));<br>    ciphertext_len = psa_read(msg-&gt;handle, <span class="hljs-number">1</span>, ciphertext, <span class="hljs-keyword">sizeof</span>(ciphertext));<br><br>    <span class="hljs-comment">/* decrypt data by key */</span><br>    result = psa_aead_decrypt(symmetric_key_handle[key_index],<br>                              PSA_ALG_CCM,<br>                              nonce,<br>                              nonce_length,<br>                              associated_data,<br>                              <span class="hljs-keyword">sizeof</span>(associated_data),<br>                              ciphertext,<br>                              ciphertext_len,<br>                              decrypttext,<br>                              <span class="hljs-keyword">sizeof</span>(decrypttext),<br>                              &amp;decrypttext_len);<br><br>    psa_write(msg-&gt;handle, <span class="hljs-number">0</span>, decrypttext, decrypttext_len);<br>    psa_write(msg-&gt;handle, <span class="hljs-number">1</span>, &amp;result, <span class="hljs-keyword">sizeof</span>(result));<br><br>    <span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="移植K210-RISC-V"><a href="#移植K210-RISC-V" class="headerlink" title="移植K210 RISC-V"></a>移植K210 RISC-V</h3><p>亚博智能开发板，使用的编译工具和sdk为riscv64-unknown-elf-gcc和kendryte-standalone-sdk-develop，开发环境为windows。</p>
+<p><img src="/img/post_pics/index_img/mbed.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="移植过程简述"><a href="#移植过程简述" class="headerlink" title="移植过程简述"></a>移植过程简述</h4><ul>
+<li><p>在sdk&#x2F;lib下添加mbedtls的文件夹，删除无关的文件只保留.c和.h文件：</p>
+<ul>
+<li>include</li>
+<li>library</li>
+</ul>
+</li>
+<li><p>在sdk&#x2F;lib&#x2F;mbedtls下添加CMakeLists.txt</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">FILE(GLOB_RECURSE MBEDTLS_SRC<br>        <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;CMAKE_CURRENT_LIST_DIR&#125;</span>/include/mbedtls/*.c&quot;</span><br>        <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;CMAKE_CURRENT_LIST_DIR&#125;</span>/include/mbedtls/*.h&quot;</span><br>        <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;CMAKE_CURRENT_LIST_DIR&#125;</span>/include/psa/*.c&quot;</span><br>        <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;CMAKE_CURRENT_LIST_DIR&#125;</span>/include/psa/*.h&quot;</span><br>        <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;CMAKE_CURRENT_LIST_DIR&#125;</span>/library/*.c&quot;</span><br>        <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;CMAKE_CURRENT_LIST_DIR&#125;</span>/library/*.h&quot;</span><br>)<br><br>ADD_LIBRARY(mbedtls<br>        <span class="hljs-variable">$&#123;MBEDTLS_SRC&#125;</span><br>)<br>TARGET_COMPILE_OPTIONS(mbedtls PRIVATE -O2)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>在lib&#x2F;CMakeLists.txt中添加</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">ADD_SUBDIRECTORY(mbedtls)<br>ADD_LIBRARY(kendryte<br>        <span class="hljs-variable">$&#123;LIB_SRC&#125;</span><br>        <span class="hljs-variable">$&#123;MBEDTLS_SRC&#125;</span><br>)<br><br>TARGET_LINK_LIBRARIES(kendryte<br>        PUBLIC<br>                nncase<br>                mbedtls<br>)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>全局搜索替换</p>
+<ul>
+<li><code>#include &quot;mbedtls/</code>替换为<code>#include &quot;</code></li>
+<li><code>#include &lt;mbedtls/</code>替换为<code>#include &lt;</code></li>
+<li><code>#include &quot;psa/</code>替换为<code>#include &quot;</code></li>
+<li><code>#include &lt;psa/</code>替换为<code>#include &lt;</code></li>
+</ul>
+</li>
+<li><p>重命名mbedtls中的</p>
+<ul>
+<li><code>aes.h</code>重命名<code>mbed_aes.h</code></li>
+<li><code>platform.h</code>重命名<code>mbed_platform.h</code></li>
+<li><code>sha256.h</code>重命名<code>mbed_sha256.h</code><br>并将mbedtls中依赖这些头文件的代码替换成新名称。</li>
+</ul>
+</li>
+<li><p>设置mbedtls&#x2F;config.h中的几个宏，这是平台的限制：</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_NO_PLATFORM_ENTROPY</span><br><span class="hljs-comment">// #define MBEDTLS_NET_C</span><br><span class="hljs-comment">// #define MBEDTLS_TIMING_C</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>由于库的冲突，删除x509_crl.c和x509_crt.c文件</li>
+</ul>
+<h4 id="测试例程"><a href="#测试例程" class="headerlink" title="测试例程"></a>测试例程</h4><p>使用IOT-Security仓库的AES代码，在sdk&#x2F;src下添加test_mbedtls文件夹，下面新建main.c和pin_config.h文件，代码如下：<br>main.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;pin_config.h&quot;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;cipher.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbed_platform.h&quot;</span></span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">    ### padding with pkcs7 AES_128_CBC Encrypt</span><br><span class="hljs-comment">    ptx = &quot;CBC has been the most commonly used mode of operation.&quot;</span><br><span class="hljs-comment">    key = 06a9214036b8a15b512e03d534120006</span><br><span class="hljs-comment">    iv  = 3dafba429d9eb430b422da802c9fac41</span><br><span class="hljs-comment">    ctx = 4DDF9012D7B3898745A1ED9860EB0FA2</span><br><span class="hljs-comment">          FD2BBD80D27190D72A2F240C8F372A27</span><br><span class="hljs-comment">          63746296DDC2BFCE7C252B6CD7DD4BA8</span><br><span class="hljs-comment">          577E096DBD8024C8B4C5A1160CA2D3F9</span><br><span class="hljs-comment">*/</span><br><span class="hljs-type">char</span> *ptx = <span class="hljs-string">&quot;CBC has been the most commonly used mode of operation.&quot;</span>;<br><span class="hljs-type">uint8_t</span> key[<span class="hljs-number">16</span>] =<br>    &#123;<br>        <span class="hljs-number">0x06</span>, <span class="hljs-number">0xa9</span>, <span class="hljs-number">0x21</span>, <span class="hljs-number">0x40</span>, <span class="hljs-number">0x36</span>, <span class="hljs-number">0xb8</span>, <span class="hljs-number">0xa1</span>, <span class="hljs-number">0x5b</span>,<br>        <span class="hljs-number">0x51</span>, <span class="hljs-number">0x2e</span>, <span class="hljs-number">0x03</span>, <span class="hljs-number">0xd5</span>, <span class="hljs-number">0x34</span>, <span class="hljs-number">0x12</span>, <span class="hljs-number">0x00</span>, <span class="hljs-number">0x06</span>&#125;;<br><br><span class="hljs-type">uint8_t</span> iv[<span class="hljs-number">16</span>] =<br>    &#123;<br>        <span class="hljs-number">0x3d</span>, <span class="hljs-number">0xaf</span>, <span class="hljs-number">0xba</span>, <span class="hljs-number">0x42</span>, <span class="hljs-number">0x9d</span>, <span class="hljs-number">0x9e</span>, <span class="hljs-number">0xb4</span>, <span class="hljs-number">0x30</span>,<br>        <span class="hljs-number">0xb4</span>, <span class="hljs-number">0x22</span>, <span class="hljs-number">0xda</span>, <span class="hljs-number">0x80</span>, <span class="hljs-number">0x2c</span>, <span class="hljs-number">0x9f</span>, <span class="hljs-number">0xac</span>, <span class="hljs-number">0x41</span>&#125;;<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">dump_buf</span><span class="hljs-params">(<span class="hljs-type">char</span> *info, <span class="hljs-type">uint8_t</span> *buf, <span class="hljs-type">uint32_t</span> len)</span><br>&#123;<br>    mbedtls_printf(<span class="hljs-string">&quot;%s&quot;</span>, info);<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; len; i++)<br>    &#123;<br>        mbedtls_printf(<span class="hljs-string">&quot;%s%02X%s&quot;</span>, i % <span class="hljs-number">16</span> == <span class="hljs-number">0</span> ? <span class="hljs-string">&quot;\n\t&quot;</span> : <span class="hljs-string">&quot; &quot;</span>,<br>                       buf[i], i == len - <span class="hljs-number">1</span> ? <span class="hljs-string">&quot;\n&quot;</span> : <span class="hljs-string">&quot;&quot;</span>);<br>    &#125;<br>    mbedtls_printf(<span class="hljs-string">&quot;\n&quot;</span>);<br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">cipher</span><span class="hljs-params">(<span class="hljs-type">int</span> type)</span><br>&#123;<br>    <span class="hljs-type">size_t</span> len;<br>    <span class="hljs-type">int</span> olen = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">uint8_t</span> buf[<span class="hljs-number">64</span>];<br><br>    <span class="hljs-type">mbedtls_cipher_context_t</span> ctx;<br>    <span class="hljs-type">const</span> <span class="hljs-type">mbedtls_cipher_info_t</span> *info;<br><br>    mbedtls_cipher_init(&amp;ctx);<br>    info = mbedtls_cipher_info_from_type(type);<br><br>    mbedtls_cipher_setup(&amp;ctx, info);<br>    mbedtls_printf(<span class="hljs-string">&quot;\ncipher info setup, name: %s, block size: %d\n&quot;</span>,<br>                   mbedtls_cipher_get_name(&amp;ctx),<br>                   mbedtls_cipher_get_block_size(&amp;ctx));<br><br>    mbedtls_cipher_setkey(&amp;ctx, key, <span class="hljs-keyword">sizeof</span>(key) * <span class="hljs-number">8</span>, MBEDTLS_ENCRYPT);<br>    mbedtls_cipher_set_iv(&amp;ctx, iv, <span class="hljs-keyword">sizeof</span>(iv));<br>    mbedtls_cipher_update(&amp;ctx, ptx, <span class="hljs-built_in">strlen</span>(ptx), buf, &amp;len);<br>    olen += len;<br><br>    mbedtls_cipher_finish(&amp;ctx, buf + len, &amp;len);<br>    olen += len;<br><br>    dump_buf(<span class="hljs-string">&quot;\ncipher aes encrypt:&quot;</span>, buf, olen);<br><br>    mbedtls_cipher_free(&amp;ctx);<br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">hardware_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    <span class="hljs-comment">// fpioa映射</span><br>    fpioa_set_function(PIN_UART_USB_RX, FUNC_UART_USB_RX);<br>    fpioa_set_function(PIN_UART_USB_TX, FUNC_UART_USB_TX);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    hardware_init();<br>    <span class="hljs-comment">// 初始化串口3，设置波特率为115200</span><br>    uart_init(UART_USB_NUM);<br>    uart_configure(UART_USB_NUM, <span class="hljs-number">115200</span>, UART_BITWIDTH_8BIT, UART_STOP_1, UART_PARITY_NONE);<br><br>    <span class="hljs-type">char</span> *info = &#123;<span class="hljs-string">&quot;This is AES test on K210 RISC-V!\n&quot;</span>&#125;;<br>    uart_send_data(UART_USB_NUM, info, <span class="hljs-built_in">strlen</span>(info));<br><br>    cipher(MBEDTLS_CIPHER_AES_128_CBC);<br>    cipher(MBEDTLS_CIPHER_AES_128_CTR);<br><br>    <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)<br>    &#123;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>pin_config.h</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> _PIN_CONFIG_H_</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _PIN_CONFIG_H_</span><br><span class="hljs-comment">/*****************************HEAR-FILE************************************/</span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;fpioa.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;uart.h&quot;</span></span><br><br><span class="hljs-comment">/*****************************HARDWARE-PIN*********************************/</span><br><span class="hljs-comment">// 硬件IO口，与原理图对应</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PIN_UART_USB_RX       (4)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PIN_UART_USB_TX       (5)</span><br><br><span class="hljs-comment">/*****************************SOFTWARE-GPIO********************************/</span><br><span class="hljs-comment">// 软件GPIO口，与程序对应</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UART_USB_NUM           UART_DEVICE_3</span><br><br><span class="hljs-comment">/*****************************FUNC-GPIO************************************/</span><br><span class="hljs-comment">// GPIO口的功能，绑定到硬件IO口</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> FUNC_UART_USB_RX       (FUNC_UART1_RX + UART_USB_NUM * 2)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> FUNC_UART_USB_TX       (FUNC_UART1_TX + UART_USB_NUM * 2)</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* _PIN_CONFIG_H_ */</span></span><br><br></code></pre></td></tr></table></figure>
+
+<p>在sdk下新建build文件夹并进入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake .. -DPROJ=test_mbedtls -G <span class="hljs-string">&quot;MinGW Makefiles&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>将编译好的文件烧入开发板中<br><img src="/img/post_pics/mbedtls/11.png" srcset="/img/loading.gif" lazyload></p>
+<p>上电运行：<br><img src="/img/post_pics/mbedtls/12.png" srcset="/img/loading.gif" lazyload><br>demo运行成功。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Security/" class="category-chain-item">Security</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Algorithm/" class="print-no-link">#Algorithm</a>
+      
+        <a href="/tags/TEE/" class="print-no-link">#TEE</a>
+      
+        <a href="/tags/Confidential-Compute/" class="print-no-link">#Confidential Compute</a>
+      
+        <a href="/tags/Security/" class="print-no-link">#Security</a>
+      
+        <a href="/tags/Cryptography/" class="print-no-link">#Cryptography</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/03/26/Security/Spectre-Meltdown/" title="机密计算: Spectre漏洞和原理">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">机密计算: Spectre漏洞和原理</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/01/19/SW/Interview/Interview-Technology-Summary-2024/" title="嵌入式软件C/C++/OS/驱动程序开发笔记">
+                        <span class="hidden-mobile">嵌入式软件C/C++/OS/驱动程序开发笔记</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

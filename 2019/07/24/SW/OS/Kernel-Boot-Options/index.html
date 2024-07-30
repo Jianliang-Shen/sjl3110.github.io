@@ -1,0 +1,799 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="内核的配置过程依赖Makefile和arch&#x2F;arm&#x2F;Kconfig以及其他文件下的Kconfig文件，通过make menuconfig或者桌面环境下的xconfig&#x2F;gconfig可以手动配置内核所支持的功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux内核配置--Boot options">
+<meta property="og:url" content="http://yoursite.com/2019/07/24/SW/OS/Kernel-Boot-Options/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="内核的配置过程依赖Makefile和arch&#x2F;arm&#x2F;Kconfig以及其他文件下的Kconfig文件，通过make menuconfig或者桌面环境下的xconfig&#x2F;gconfig可以手动配置内核所支持的功能">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-07-24T20:21:19.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.415Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Kernel">
+<meta property="article:tag" content="Kconfig">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>linux内核配置--Boot options - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="linux内核配置--Boot options"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-07-24 20:21" pubdate>
+          2019年7月24日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          615 words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          6 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">linux内核配置--Boot options</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>内核的配置过程依赖Makefile和arch&#x2F;arm&#x2F;Kconfig以及其他文件下的Kconfig文件，通过make menuconfig或者桌面环境下的xconfig&#x2F;gconfig可以手动配置内核所支持的功能</p>
+<span id="more"></span>
+
+
+<p>以下为Boot options启动设置的配置。</p>
+<h2 id="Y-Flattened-Device-Tree-support"><a href="#Y-Flattened-Device-Tree-support" class="headerlink" title="-Y- Flattened Device Tree support"></a>-Y- Flattened Device Tree support</h2><p>支持设备树。<br>Include support for flattened device tree machine descriptions.  </p>
+<ul>
+<li><code>[Y] Support for the traditional ATAGS boot data passing</code><br>支持传统的ATAGS启动数据传递。除非仅依赖设备树，否则建议选择。<br>ATAGS是传统的linux内核接收参数的方式，另一种是DTB。设备启动时，BOOT向内核传递三个参数，其中R0寄存器内容为一个“0”，R1是机器码（与内核匹配），R3为ATAGS或者DTB传递的地址。<br>This is the traditional way of passing data to the kernel at boot time. If you are solely relying on the flattened device tree (or the ARM_ATAG_DTB_COMPAT option) then you may unselect this option to remove ATAGS support from your kernel binary. If unsure, leave this to y.    <ul>
+<li><code>[N] Provide old way to pass kernel parameters</code><br>提供传递内核参数的旧方法。<br>This was deprecated in 2001 and announced to live on for 5 years. Some old boot loaders still use this way.</li>
+</ul>
+</li>
+</ul>
+<h2 id="0x0-Compressed-ROM-boot-loader-base-address"><a href="#0x0-Compressed-ROM-boot-loader-base-address" class="headerlink" title="(0x0) Compressed ROM boot loader base address"></a>(0x0) Compressed ROM boot loader base address</h2><p>default “0”<br>存放基地址，对zImage压缩镜像启动很重要。<br>The physical address at which the ROM-able zImage is to be placed in the target.  Platforms which normally make use of ROM-able zImage formats normally set this to a suitable value in their defconfig file.<br>If ZBOOT_ROM is not enabled, this has no effect.</p>
+<h2 id="0x0-Compressed-ROM-boot-loader-BSS-address"><a href="#0x0-Compressed-ROM-boot-loader-BSS-address" class="headerlink" title="(0x0) Compressed ROM boot loader BSS address"></a>(0x0) Compressed ROM boot loader BSS address</h2><p>default “0”<br>引导的BSS地址。<br>The base address of an area of read&#x2F;write memory in the target for the ROM-able zImage which must be available while the decompressor is running. It must be large enough to hold the entire decompressed kernel plus an additional 128 KiB.Platforms which normally make use of ROM-able zImage formats normally set this to a suitable value in their defconfig file.<br>If ZBOOT_ROM is not enabled, this has no effect.</p>
+<h2 id="Y-Use-appended-device-tree-blob-to-zImage-EXPERIMENTAL"><a href="#Y-Use-appended-device-tree-blob-to-zImage-EXPERIMENTAL" class="headerlink" title="[Y] Use appended device tree blob to zImage (EXPERIMENTAL)"></a>[Y] Use appended device tree blob to zImage (EXPERIMENTAL)</h2><p>将附加的设备树blob用于zImage（实验）。<br>With this option, the boot code will look for a device tree binary (DTB) appended to zImage (e.g. cat zImage <filename>.dtb &gt; zImage_w_dtb).This is meant as a backward compatibility convenience for those systems with a bootloader that can’t be upgraded to accommodate the documented boot protocol using a device tree. Beware that there is very little in terms of protection against this option being confused by leftover garbage in memory that might look like a DTB header after a reboot if no actual DTB is appended to Image.  Do not leave this option active in a production kernel if you don’t intend to always append a DTB.<br>Proper passing of the location into r2 of a bootloader provided DTB is always preferable to this option.  </p>
+<ul>
+<li><code>[Y] Supplement the appended DTB with traditional ATAG information</code><br>用传统的ATAG信息补充附加的DTB<br>Some old bootloaders can’t be updated to a DTB capable one, yet they provide ATAGs with memory configuration, the ramdisk address, the kernel cmdline string, etc.Such information is dynamically provided by the bootloader and can’t always be stored in a static DTB. To allow a device tree enabled kernel to be used with such bootloaders, this option allows zImage to extract the information from the ATAG list and store it at run time into the appended DTB.</li>
+</ul>
+<h2 id="C-Kernel-command-line-type"><a href="#C-Kernel-command-line-type" class="headerlink" title="[C] Kernel command line type"></a>[C] Kernel command line type</h2><p>内核命令行类型。  </p>
+<ul>
+<li><code>[X] Use bootloader kernel arguments if available</code><br>优先使用bootloader（uboot）参数，如果没有就使用DTB ARGS。<br>因为通过uboot修改环境变量比修改内核容易得多，因此使用bootloader更方便。造成的问题是内核配置的变量可能被覆盖。<br>Uses the command-line options passed by the boot loader instead of the device tree bootargs property. If the boot loader doesn’t provide any, the device tree bootargs property will be used.  </li>
+<li><code>[N] Extend with bootloader kernel arguments</code><br>使用DTB ARGS，bootloader提供的追加在其之后。<br>The command-line arguments provided by the boot loader will be appended to the the device tree bootargs property.</li>
+</ul>
+<h2 id="N-Default-kernel-command-string"><a href="#N-Default-kernel-command-string" class="headerlink" title="(N) Default kernel command string"></a>(N) Default kernel command string</h2><p>默认的内核命令行字符串。<br>On some architectures (EBSA110 and CATS), there is currently no way for the boot loader to pass arguments to the kernel. For these architectures, you should supply some command-line options at build time by entering them here. As a minimum, you should specify the memory size and the root device (e.g., mem&#x3D;64M root&#x3D;&#x2F;dev&#x2F;nfs). </p>
+<h2 id="N-Build-kdump-crash-kernel-EXPERIMENTAL"><a href="#N-Build-kdump-crash-kernel-EXPERIMENTAL" class="headerlink" title="[N] Build kdump crash kernel (EXPERIMENTAL)"></a>[N] Build kdump crash kernel (EXPERIMENTAL)</h2><p>支持core dump的内核调试工具。Kdump是系统崩溃时，通过kexec工具转储内存（运行在一个主内核不占用的额外的内存区域）。<br>Generate crash dump after being started by kexec. This should be normally only set in special crash dump kernels which are loaded in the main kernel with kexec-tools into a specially reserved region and then later executed after a crash by kdump&#x2F;kexec. The crash dump kernel must be compiled to a memory address not used by the main kernel. For more details see Documentation&#x2F;kdump&#x2F;kdump.txt</p>
+<h2 id="Y-Auto-calculation-of-the-decompressed-kernel-image-address"><a href="#Y-Auto-calculation-of-the-decompressed-kernel-image-address" class="headerlink" title="-Y- Auto calculation of the decompressed kernel image address"></a>-Y- Auto calculation of the decompressed kernel image address</h2><p>自动计算解压缩的内核映像地址。如果选择，开机后内核地址为0xf8000000，即在前128MB的位置（0x8000000&#x3D;128<em>1024</em>1024）。<br>ZRELADDR is the physical address where the decompressed kernel image will be placed. If AUTO_ZRELADDR is selected, the address will be determined at run-time by masking the current IP with 0xf8000000. This assumes the zImage being placed in the first 128MB from start of memory.</p>
+<h2 id="Y-UEFI-runtime-support"><a href="#Y-UEFI-runtime-support" class="headerlink" title="[Y] UEFI runtime support"></a>[Y] UEFI runtime support</h2><p>此选项提供对UEFI固件提供的运行时服务的支持（例如非易失性变量，实时时钟和平台重置）。还提供UEFI存根以允许内核作为EFI应用程序引导。这仅适用于可能在具有UEFI固件的系统上运行的内核。<br>This option provides support for runtime services provided by UEFI firmware (such as non-volatile variables, realtime clock, and platform reset). A UEFI stub is also provided to allow the kernel to be booted as an EFI application. This is only useful for kernels that may run on systems that have UEFI firmware.  </p>
+<ul>
+<li><code>[Y] Enable support for SMBIOS (DMI) tables</code><br>This enables SMBIOS&#x2F;DMI feature for systems. This option is only useful on systems that have UEFI firmware. However, even with this option, the resultant kernel should continue to boot on existing non-UEFI platforms.<br>NOTE: This does <em>NOT</em> enable or encourage the use of DMI quirks, i.e., the the practice of identifying the platform via DMI to decide whether certain workarounds for buggy hardware and&#x2F;or firmware need to be enabled. This would require the DMI subsystem to be enabled much earlier than we do on ARM, which is non-trivial.</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/OS/" class="category-chain-item">OS</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
+      
+        <a href="/tags/Kernel/" class="print-no-link">#Kernel</a>
+      
+        <a href="/tags/Kconfig/" class="print-no-link">#Kconfig</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/07/28/SW/OS/Kernel-Kconfig/" title="Linux内核Kconfig解读">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Linux内核Kconfig解读</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/07/23/SW/OS/Kernel-Device-Drivers/" title="linux内核配置--Device drivers">
+                        <span class="hidden-mobile">linux内核配置--Device drivers</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

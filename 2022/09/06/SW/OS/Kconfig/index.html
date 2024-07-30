@@ -1,0 +1,857 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Kconfig是一个常用于Linux内核开发的配置系统。它允许开发人员根据特定需求来自定义内核的编译选项和功能。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kconfig快速上手指南">
+<meta property="og:url" content="http://yoursite.com/2022/09/06/SW/OS/Kconfig/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="Kconfig是一个常用于Linux内核开发的配置系统。它允许开发人员根据特定需求来自定义内核的编译选项和功能。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-06T00:30:09.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.415Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Kconfig">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Kconfig快速上手指南 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Kconfig快速上手指南"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-06 00:30" pubdate>
+          2022年9月6日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Kconfig快速上手指南</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Kconfig是一个常用于Linux内核开发的配置系统。它允许开发人员根据特定需求来自定义内核的编译选项和功能。</p>
+<span id="more"></span>
+
+<h2 id="Kconfig介绍"><a href="#Kconfig介绍" class="headerlink" title="Kconfig介绍"></a>Kconfig介绍</h2><p>Kconfig广泛应用于各种软件的编译系统。如Linux等，和cmake以及make可以很好的搭配起来配置编译的选项，处理编译选项之间的依赖关系。并且支持menuconfig在命令行创建ui供用户手动选择。</p>
+<p>在编译系统中，Kconfig包括以下内容：</p>
+<ul>
+<li>defconfig：用户配置文件，内容形式为</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">CONFIG_FOO=y<br># CONFIG_FOO is not <span class="hljs-built_in">set</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>Kconfig：枚举config，并含有规则约束的文件，内容形式为</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c">config MODVERSIONS<br>      <span class="hljs-type">bool</span> <span class="hljs-string">&quot;Set version information on all module symbols&quot;</span><br>      depends on MODULES<br>      help<br>        Usually, modules have to be recompiled whenever you <span class="hljs-keyword">switch</span> to a new<br>        kernel.  ...<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>.config：经过工具或者menuconfig解析和约束后生成的配置选项，包含系统所有可配置的选项清单，内容形式和defconfig一致</p>
+</li>
+<li><p>config.h：以header file的形式供编译系统使用，是.config文件的转化</p>
+</li>
+</ul>
+<h2 id="Kconfig语法"><a href="#Kconfig语法" class="headerlink" title="Kconfig语法"></a>Kconfig语法</h2><h3 id="菜单属性"><a href="#菜单属性" class="headerlink" title="菜单属性"></a>菜单属性</h3><ul>
+<li><p>type：bool，int，hex，string，每个配置选项都必须有一个类型。只有两种基本类型：三态和字符串；其他类型基于这两种类型。</p>
+</li>
+<li><p>prompt，提示：展示给user，不含prompt将隐藏，以下效果是一致的</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">bool</span> <span class="hljs-string">&quot;Networking support&quot;</span><br><br><span class="hljs-type">bool</span><br>prompt <span class="hljs-string">&quot;Networking support&quot;</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>default：配置选项可以具有任意数量的默认值。<strong>如果看到多个默认值，则只有第一个定义的值处于活动状态</strong>。默认值不限于定义它们的菜单条目。这意味着默认值可以在其他地方定义，也可以被早期定义覆盖。只有当用户没有设置其他值（通过上面的输入提示符）时，默认值才会分配给配置符号。如果看到输入提示符，默认值将显示给用户，并可以由他重写。或者，只能使用此默认值的依赖项可以添加为“if”。默认值故意默认为“n”，以避免使构建臃肿。除了少数例外，新的配置选项不应该改变这一点。其目的是让“make oldconfig”从发布到发布尽可能少地添加到配置中。</p>
+</li>
+</ul>
+<blockquote>
+<p>值得“默认y”的东西包括：</p>
+<ul>
+<li>以前总是构建的东西的新Kconfig选项应该是“默认y”。</li>
+<li>隐藏&#x2F;显示其他Kconfig选项（但不会生成自己的任何代码）的新门禁Kconfig选项应该是“默认y”，以便人们会看到这些其他选项。</li>
+<li>“默认n”驱动程序的子驱动程序行为或类似选项。这允许您提供理智的默认值。</li>
+<li>每个人都期望的硬件或基础设施，例如CONFIG_NET或CONFIG_BLOCK。这些都是罕见的例外。</li>
+</ul>
+</blockquote>
+<ul>
+<li>depends on：和if等效，表示依赖于某个选项</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c">config FOO<br>    <span class="hljs-type">bool</span> <span class="hljs-string">&quot;foo&quot;</span> <span class="hljs-keyword">if</span> BAR<br>    <span class="hljs-comment">// default y if BAR</span><br><br>config FOO<br>    <span class="hljs-type">bool</span> <span class="hljs-string">&quot;foo&quot;</span><br>    depends on BAR<br>    <span class="hljs-keyword">default</span> y<br></code></pre></td></tr></table></figure>
+<ul>
+<li>select：反选，select FOO [if &lt;expr&gt;]。虽然正常依赖项减少了符号的上限（见下文），但反向依赖项可用于强制另一个符号的下限。使用当前菜单符号的值作为最小值&lt;符号&gt;可以设置为。如果多次选择&lt;符号&gt;，则限制设置为最大选择。反向依赖项只能与布尔或三态符号一起使用。</li>
+</ul>
+<blockquote>
+<p>select应该小心使用。选择将强制符号为一个值，而无需访问依赖项。通过滥用选择，即使FOO依赖于未设置的BAR，您也可以选择符号FOO。<strong>一般情况下，仅对不可见符号（任何地方都没有提示）和没有依赖项的符号使用选择</strong>。这将限制有用性，但另一方面，避免到处都是非法配置。</p>
+</blockquote>
+<ul>
+<li>imply：弱反选，这类似于“select”，因为它对另一个符号强制执行了下限，但是有依赖的或者可见的选项设置为n的无法被修改。如下例子中，FOO想打开BAZ，但后者依赖BAR，如果BAR为N，那么反选将失败。使用这个可以方便在自动化配置的同时允许用户选择。而select一般是后台自动选择。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c">config FOO<br>    <span class="hljs-type">bool</span> <span class="hljs-string">&quot;foo&quot;</span><br>    imply BAZ<br><br>config BAZ<br>    <span class="hljs-type">bool</span> <span class="hljs-string">&quot;baz&quot;</span><br>    depends on BAR<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>上面的配置，如果BAZ是非常值得选择的，在不使用select的情况下，因为select会跳过depend检查，应当同时imply BAR：</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c">config FOO<br>    <span class="hljs-type">bool</span> <span class="hljs-string">&quot;foo&quot;</span><br>    imply BAR<br>    imply BAZ<br><br>config BAZ<br>    <span class="hljs-type">bool</span> <span class="hljs-string">&quot;baz&quot;</span><br>    depends on BAR<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>visible if：仅适用于menu，即是否显示子menu，和if不同在于，if是就地展开块以内的configs，并有缩进分层。visible则会显示menu标题，用户将进入子菜单看到包含的config内容。</p>
+</li>
+<li><p>range：设置数值类型的范围</p>
+</li>
+<li><p>help：config的备注，在menuconfig按<code>?</code>将弹出帮助</p>
+</li>
+<li><p>module：Linux的模块编译选项</p>
+</li>
+</ul>
+<h3 id="块"><a href="#块" class="headerlink" title="块"></a>块</h3><h4 id="菜单"><a href="#菜单" class="headerlink" title="菜单"></a>菜单</h4><p>菜单下的所有子选项都依赖依赖的配置：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c">menu <span class="hljs-string">&quot;Network device support&quot;</span><br>      depends on NET<br>      <span class="hljs-meta"># visible <span class="hljs-keyword">if</span> NET #与depends on等同</span><br><br>config NETDEVICES<br>      ...<br><br>endmenu<br></code></pre></td></tr></table></figure>
+
+<p>menuconfig可以实现选中当前选项后展开菜单：</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs applescript"><span class="hljs-comment"># 选择前：</span><br>    [ ] M <span class="hljs-comment">---</span><br><span class="hljs-comment"># 选择后：</span><br>    [Y] M <span class="hljs-comment">--&gt;</span><br><span class="hljs-comment"># 进入菜单：</span><br>    [ ] C1<br>    [ ] C2<br><br><span class="hljs-comment"># 写法：</span><br>(<span class="hljs-number">1</span>):<br>menuconfig M<br><span class="hljs-keyword">if</span> M<br>    config C1<br>    config C2<br>endif<br><br>(<span class="hljs-number">2</span>):<br>menuconfig M<br>config C1<br>    depends <span class="hljs-keyword">on</span> M<br>config C2<br>    depends <span class="hljs-keyword">on</span> M<br></code></pre></td></tr></table></figure>
+
+<h4 id="选择"><a href="#选择" class="headerlink" title="选择"></a>选择</h4><p>choice是一组互斥的config的组合，默认选择第一个，不可以设置默认值。</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs gherkin"><span class="hljs-string">&quot;choice&quot;</span> [symbol]<br><span class="hljs-variable">&lt;choice options&gt;</span><br><span class="hljs-variable">&lt;choice block&gt;</span><br><span class="hljs-string">&quot;endchoice&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><ul>
+<li>source，导入Kconfig文件。Kconfig还支持对osource，rsource的扩展</li>
+<li>if，判断语句</li>
+<li>comment，是否显示注释在输出文件中</li>
+</ul>
+<h2 id="使用帮助"><a href="#使用帮助" class="headerlink" title="使用帮助"></a>使用帮助</h2><h3 id="添加常见功能并可配置"><a href="#添加常见功能并可配置" class="headerlink" title="添加常见功能并可配置"></a>添加常见功能并可配置</h3><p>实现与某些架构相关但不是所有架构相关的特征&#x2F;功能是一个常见的风格。推荐的方法是使用名为H<code>HAVE_*</code>的配置变量，该变量在公共Kconfig文件中定义，并由相关架构选择。一个例子是通用的IOMAP功能。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"># Generic IOMAP is used to ...<br>config HAVE_GENERIC_IOMAP<br><br>config GENERIC_IOMAP<br>      depends on HAVE_GENERIC_IOMAP &amp;&amp; FOO<br><br>config X86<br>      select ...<br>      select HAVE_GENERIC_IOMAP<br>      select ...<br></code></pre></td></tr></table></figure>
+
+<h3 id="添加需要编译器支持的功能"><a href="#添加需要编译器支持的功能" class="headerlink" title="添加需要编译器支持的功能"></a>添加需要编译器支持的功能</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c">config STACKPROTECTOR<br>      <span class="hljs-type">bool</span> <span class="hljs-string">&quot;Stack Protector buffer overflow detection&quot;</span><br>      depends on $(cc-option,-fstack-protector)<br></code></pre></td></tr></table></figure>
+
+<h3 id="平台架构的选项应当适当隐藏"><a href="#平台架构的选项应当适当隐藏" class="headerlink" title="平台架构的选项应当适当隐藏"></a>平台架构的选项应当适当隐藏</h3><p>对于特殊平台的测试，应当添加显示的依赖，在其他平台或架构下，不显示该选项。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">config FOO<br>    <span class="hljs-type">bool</span> <span class="hljs-string">&quot;user prompt&quot;</span> <span class="hljs-keyword">if</span> ARCH_FOO_VENDOR  <br>    # 或者 prompt <span class="hljs-string">&quot;&quot;</span> <span class="hljs-keyword">if</span> ARCH_FOO_VENDOR<br>     <span class="hljs-meta"># bool “Support for foo hardware” depends on ARCH_FOO_VENDOR || COMPILE_TEST</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="defconfig和Kconfig"><a href="#defconfig和Kconfig" class="headerlink" title="defconfig和Kconfig"></a>defconfig和Kconfig</h3><p>defconfig是面向用户的可配置选项，如果一个option，譬如<code>HAVE_</code>前缀的，是由ARCH或者PLATFORM决定的后台选项（没有prompt属性），defconfig将无法修改配置这些选项。所以还需要Kconfig文件来约束这些选项，以为每个目标设定隐藏的选项。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/OS/" class="category-chain-item">OS</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
+      
+        <a href="/tags/Kconfig/" class="print-no-link">#Kconfig</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/06/24/SW/AIoT/OpenCV-ncnn/" title="MacOS安装ncnn和OpenCV">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MacOS安装ncnn和OpenCV</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/07/11/SW/IoT/FPU-Interrupt-Test/" title="ARM Cortex-M FPU 模块">
+                        <span class="hidden-mobile">ARM Cortex-M FPU 模块</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

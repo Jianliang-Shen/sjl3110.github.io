@@ -1,0 +1,975 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="CMake为源码提供多项目的支持，是非常好的跨平台编译器。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CMake入门与进阶">
+<meta property="og:url" content="http://yoursite.com/2021/08/12/SW/CMake-Base/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="CMake为源码提供多项目的支持，是非常好的跨平台编译器。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/post_pics/index_img/cmake_index.png">
+<meta property="article:published_time" content="2021-08-12T21:04:18.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.411Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="CMake">
+<meta property="article:tag" content="Tool">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/post_pics/index_img/cmake_index.png">
+  
+  
+  
+  <title>CMake入门与进阶 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CMake入门与进阶"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-12 21:04" pubdate>
+          2021年8月12日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.8k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          33 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CMake入门与进阶</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>CMake为源码提供多项目的支持，是非常好的跨平台编译器。</p>
+<span id="more"></span>  
+
+<p>但是这工具随着版本更新，越来越冗杂，社区也提出modern CMake帮助用户更好的使用cmake。当构建的项目复杂到一定程序时，维护CMake将变得非常不便，本帖将从最简单的功能出发，一步步建立起CMake架构，希望对你能有所帮助。</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>官网下载：<a href="https://cmake.org/">Cmake</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt-get install cmake make<br>cmake --version<br></code></pre></td></tr></table></figure>
+
+<p>cmake学习参考：</p>
+<ul>
+<li>官方文档：<a href="https://cmake.org/documentation/">Cmake documentation</a></li>
+<li>wiki：<a href="https://gitlab.kitware.com/cmake/community/-/wikis/home">wiki</a></li>
+<li>博客：<a href="https://blog.csdn.net/whahu1989/article/details/82078563?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162864933516780261984309%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162864933516780261984309&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-82078563.first_rank_v2_pc_rank_v29&utm_term=cmake&spm=1018.2226.3001.4449">Linux下CMake简明教程</a></li>
+<li>cmake examples，很好的新手教程，下载：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> git@github.com:ttroy50/cmake-examples.git<br></code></pre></td></tr></table></figure>
+
+<p><em><strong>OK, let’s start !</strong></em></p>
+<p>注：本文不使用link_libraries这类不带target前缀的函数，后者通常在add_executable之后加入，前者可以任意地方引入，尽管前者更为简单，但是不能对多类目标构建清晰的结构，新版本的CMake建议使用target前缀的函数。</p>
+<h1 id="基础功能"><a href="#基础功能" class="headerlink" title="基础功能"></a>基础功能</h1><h2 id="第一个Cmake项目"><a href="#第一个Cmake项目" class="headerlink" title="第一个Cmake项目"></a>第一个Cmake项目</h2><p>CMakeLists.txt如下，功能十分简单，设置最低版本要求，新建project，增加从源码编译可执行文件的规则。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Set the minimum version of CMake that can be used</span><br><span class="hljs-comment"># To find the cmake version run</span><br><span class="hljs-comment"># $ cmake --version</span><br>cmake_minimum_required(VERSION 3.5)<br><br><span class="hljs-comment"># Set the project name</span><br>project (hello_cmake)<br><br><span class="hljs-comment"># set (EXECUTABLE_OUTPUT_PATH $&#123;PROJECT_SOURCE_DIR&#125;/bin)</span><br><br><span class="hljs-comment"># Add an executable</span><br>add_executable(hello_cmake main.cpp)<br></code></pre></td></tr></table></figure>
+
+<p>编译：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> build &amp;&amp; <span class="hljs-built_in">cd</span> build<br>cmake .. &amp;&amp; make -j4<br></code></pre></td></tr></table></figure>
+
+<p>我们可以通过下面命令将可执行文件重定向到bin目录下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">set</span> (EXECUTABLE_OUTPUT_PATH <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/bin)<br></code></pre></td></tr></table></figure>
+
+<h2 id="增加头文件"><a href="#增加头文件" class="headerlink" title="增加头文件"></a>增加头文件</h2><p>通常头文件放在include目录下，源码放在src下，main文件放在src的一级目录，函数文件可以继续递归放置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">.<br>├── CMakeLists.txt<br>├── include<br>│   └── Hello.h<br>└── src<br>    ├── Hello.cpp<br>    └── main.cpp<br></code></pre></td></tr></table></figure>
+
+<p>看一下CMakeLists.txt，新建一个SOURCE的变量（在多源码情况下可以建立多个不同的名称），该变量的值为一个“数组”，接下来在生成可执行文件函数<code>add_executable</code>中使用该变量，在多个变量情况下可以在末尾继续添加，也可以使用file命令<code>file(GLOB SOURCES &quot;src/*.cpp&quot;)</code>通过搜索通配符添加，也可以使用<code>aux_source_directory(src SOURCES)</code>添加。最后链接头文件，使用<code>target_include_directories</code>函数，该函数第一个变量是目标target，这里指可执行文件，之后是<code>PRIVATE|PUBLIC|INTERFACE</code>，顾名思义这是指作用域，之后再解释，最后一个参数是路径，用<code>PROJECT_SOURCE_DIR</code>指向路径。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake_minimum_required(VERSION 3.5)<br>project (hello_headers)<br><br><span class="hljs-comment"># Create a sources variable with a link to all cpp files to compile</span><br><span class="hljs-built_in">set</span>(SOURCES<br>    src/Hello.cpp<br>    src/main.cpp<br>)<br><span class="hljs-comment"># file(GLOB SOURCES &quot;src/*.cpp&quot;)</span><br><span class="hljs-comment"># aux_source_directory(src SOURCES)</span><br><br><span class="hljs-comment"># Add an executable with the above sources</span><br>add_executable(hello_headers <span class="hljs-variable">$&#123;SOURCES&#125;</span>)<br><br><span class="hljs-comment"># Set the directories that should be included in the build command for this target</span><br><span class="hljs-comment"># when running g++ these will be included as -I/directory/path/</span><br>target_include_directories(hello_headers<br>    PRIVATE <br>        <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/include<br>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="生成静态库"><a href="#生成静态库" class="headerlink" title="生成静态库"></a>生成静态库</h2><p>静态库给其他程序编译时使用并全部编译进可执行程序，因此在程序运行时不需要链接，后缀为<code>.a</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">.<br>├── build<br>├── CMakeLists.txt<br>├── src<br>│   ├── Hello.cpp       <span class="hljs-comment"># 库的头文件</span><br>│   └── main.cpp<br>├── src<br>│   └── Hello.cpp                  <span class="hljs-comment"># 库的接口文件</span><br>└── static_libs<br>    └── libhello_library.a<br></code></pre></td></tr></table></figure>
+
+<p>CMakeLists.txt，生成静态库，通过<code>add_library</code>函数导入库源码，第一个参数时target，这里是库名称xxx，最后生成的也是libxxx.a，第二个参数是类型<code>STATIC|SHARED|MODULE</code>，第三个参数是源文件。使用<code>target_include_directories</code>函数为目标链接头文件。这里<code>PUBLIC|PRIVATE|INTERFACE</code>区别如下：</p>
+<ul>
+<li>PRIVATE - the directory is added to this target’s include directories，只给库自己调用，或者外部引用库的程序使用</li>
+<li>INTERFACE - the directory is added to the include directories for any targets that link this library，可以给外部的或者内部其他目标使用</li>
+<li>PUBLIC - As above, it is included in this library and also any targets that link this library，同上，但只导出符号</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake_minimum_required(VERSION 3.5)<br>project(hello_library)<br><br><span class="hljs-built_in">set</span>(LIBRARY_OUTPUT_PATH <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/static_libs)   <span class="hljs-comment"># 重定向输出目录</span><br><br><span class="hljs-comment">#Generate the static library from the library sources</span><br>add_library(hello_library STATIC <br>    src/Hello.cpp<br>)<br><br>target_include_directories(hello_library<br>    PUBLIC <br>        <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/include<br>)<br></code></pre></td></tr></table></figure>
+
+<p>编译后在static_libs下面生成了静态库。让我们在这个project内部使用这个静态库，使用<code>target_link_libraries</code>函数为可执行文件目标添加静态库。这里的范围关键字参考<a href="https://stackoverflow.com/questions/26037954/cmake-target-link-libraries-interface-dependencies">CMake target_link_libraries Interface Dependencies</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Add an executable with the above sources</span><br>add_executable(hello_binary <br>    src/main.cpp<br>)<br><br><span class="hljs-comment"># link the new hello_library target with the hello_binary target</span><br>target_link_libraries( hello_binary<br>    PRIVATE <br>        hello_library<br>)<br></code></pre></td></tr></table></figure>
+
+<p>注意：在main.cpp中必须设置正确的头文件路径：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;static/Hello.h&quot;</span></span><br></code></pre></td></tr></table></figure>
+
+<p>在外部程序中如何使用静态库？可以将库文件和头文件拷贝到新的project中，这里注意库和新的可执行文件的编译工具需要相同。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">.<br>├── build<br>├── CMakeLists.txt<br>├── include<br>│   └── Hello.h<br>├── libs<br>│   └── libhello_library.a<br>└── src<br>    └── main.cpp<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake_minimum_required(VERSION 3.5)<br>project(test_libs)<br><br><span class="hljs-comment"># set(CMAKE_C_COMPILER &quot;arm-none-eabi-gcc&quot;)</span><br><span class="hljs-comment"># set(CMAKE_CXX_COMPILER &quot;arm-none-eabi-g++&quot;)</span><br><br><span class="hljs-comment"># Add an executable with the above sources</span><br>add_executable(hello_binary <br>    src/main.cpp<br>)<br><br><span class="hljs-comment"># link the new hello_library target with the hello_binary target</span><br>target_link_libraries( hello_binary<br>    PRIVATE <br>     <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/libs/libhello_library.a<br>)<br><br>target_include_directories(hello_binary<br>    PRIVATE<br>        <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/include<br>)<br></code></pre></td></tr></table></figure>
+
+<p>这里<code>target_link_libraries</code>函数在使用时，既可以是具体的库文件目录也可以是系统中安装的库。我们的库是使用gcc编译的，如果将上面CMakeLists.txt文件中打开交叉编译工具，则将无法编译通过。</p>
+<h2 id="生成动态库"><a href="#生成动态库" class="headerlink" title="生成动态库"></a>生成动态库</h2><p>动态库不会编译到程序中，因此可执行文件体积较小，但是运行时需要链接动态库。动态库的后缀为<code>.so</code>，可以方便库函数的升级而不需要升级程序本体。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">.<br>├── build<br>├── CMakeLists.txt<br>├── include<br>│   └── shared<br>│       └── Hello.h<br>├── README.adoc<br>└── src<br>    ├── Hello.cpp<br>    └── main.cpp<br></code></pre></td></tr></table></figure>
+
+<p>CMakeLists.txt</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake_minimum_required(VERSION 3.5)<br>project(hello_library)<br><br><span class="hljs-comment">############################################################</span><br><span class="hljs-comment"># Create a library</span><br><span class="hljs-comment">############################################################</span><br><br><span class="hljs-comment">#Generate the shared library from the library sources</span><br>add_library(hello_library SHARED <br>    src/Hello.cpp<br>)<br>add_library(hello::library ALIAS hello_library)   <span class="hljs-comment"># ALIAS关键字，内部重命名</span><br><br>target_include_directories(hello_library<br>    PUBLIC <br>        <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/include<br>)<br><br><span class="hljs-comment">############################################################</span><br><span class="hljs-comment"># Create an executable</span><br><span class="hljs-comment">############################################################</span><br><br><span class="hljs-comment"># Add an executable with the above sources</span><br>add_executable(hello_binary<br>    src/main.cpp<br>)<br><br><span class="hljs-comment"># link the new hello_library target with the hello_binary target</span><br>target_link_libraries( hello_binary<br>    PRIVATE <br>        hello::library<br>)<br></code></pre></td></tr></table></figure>
+
+<p>编译后在build目录下生成了<code>libhello_library.so</code>和可执行文件，注意在库文件删除或者移动时，程序无法执行，如何安装库文件将在之后介绍。</p>
+<p>第三方程序引用库可以参考：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">target_link_libraries( hello_binary<br>    PRIVATE <br>        <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/build/libhello_library.so<br>)<br><br>target_include_directories(hello_binary<br>    PRIVATE <br>        <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/include<br>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><p>大型的CMake开源软件在编译后会提供可执行文件、头文件和动态库的安装，通常安装到<code>/usr/loacl/lib</code>和<code>/usr/local/bin</code>目录中，也可以自定义安装位置，修改变量<code>$&#123;CMAKE_INSTALL_PREFIX&#125;</code>，像交叉编译时，一般输出到其他地方以供拷贝。</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs stylus">.<br>├── cmake-examples<span class="hljs-selector-class">.conf</span><br>├── CMakeLists<span class="hljs-selector-class">.txt</span><br>├── include<br>│   └── installing<br>│       └── Hello<span class="hljs-selector-class">.h</span><br>└── <span class="hljs-attribute">src</span><br>    ├── Hello<span class="hljs-selector-class">.cpp</span><br>    └── <span class="hljs-selector-tag">main</span>.cpp<br></code></pre></td></tr></table></figure>
+
+<p>CMakeLists.txt：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake_minimum_required(VERSION 3.5)<br>project(cmake_examples_install)<br><br><span class="hljs-comment"># 生成动态库</span><br>add_library(cmake_examples_inst SHARED src/Hello.cpp)<br>target_include_directories(cmake_examples_inst PUBLIC  <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/include)<br><br><span class="hljs-comment"># 生成可执行文件</span><br>add_executable(cmake_examples_inst_bin src/main.cpp)<br>target_link_libraries( cmake_examples_inst_bin PRIVATE cmake_examples_inst)  <span class="hljs-comment">#使用库</span><br><br><span class="hljs-comment">#安装可执行文件</span><br>install (TARGETS cmake_examples_inst_bin DESTINATION bin)<br><br><span class="hljs-comment"># 安装库</span><br>install (TARGETS cmake_examples_inst LIBRARY DESTINATION lib)<br><br><span class="hljs-comment"># 安装头文件</span><br>install(DIRECTORY <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/include/ DESTINATION include)<br><br><span class="hljs-comment"># 安装配置文件</span><br>install (FILES cmake-examples.conf DESTINATION etc)<br></code></pre></td></tr></table></figure>
+
+<p>先运行一下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> build install &amp;&amp; <span class="hljs-built_in">cd</span> build<br>cmake .. -DCMAKE_INSTALL_PREFIX=../install<br>make &amp; make install<br><span class="hljs-built_in">cd</span> ../install &amp;&amp; tree<br>.<br>├── bin<br>│   └── cmake_examples_inst_bin<br>├── etc<br>│   └── cmake-examples.conf<br>├── include<br>│   └── installing<br>│       └── Hello.h<br>└── lib<br>    └── libcmake_examples_inst.so<br></code></pre></td></tr></table></figure>
+
+<p>CMake不提供卸载命令<code>make uninstall</code>，如果想卸载库和可执行文件，将编译生成的<code>install_manifest.txt</code>中的文件对应删除即可。参考<a href="https://gitlab.kitware.com/cmake/community/-/wikis/FAQ#can-i-do-make-uninstall-with-cmake">Can I do “make uninstall” with CMake?</a></p>
+<h2 id="编译类型"><a href="#编译类型" class="headerlink" title="编译类型"></a>编译类型</h2><p>CMake支持几种编译类型：<code>Debug</code>，<code>Release</code>，<code>MinSizeRel</code>，<code>RelWithDebInfo</code>，由<code>$&#123;CMAKE_BUILD_TYPE&#125;</code>决定。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Set the minimum version of CMake that can be used</span><br><span class="hljs-comment"># To find the cmake version run</span><br><span class="hljs-comment"># $ cmake --version</span><br>cmake_minimum_required(VERSION 3.5)<br><br><span class="hljs-comment"># Set a default build type if none was specified</span><br><span class="hljs-keyword">if</span>(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)<br>  message(<span class="hljs-string">&quot;Setting build type to &#x27;RelWithDebInfo&#x27; as none was specified.&quot;</span>)<br>  <span class="hljs-built_in">set</span>(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING <span class="hljs-string">&quot;Choose the type of build.&quot;</span> FORCE)<br>  <span class="hljs-comment"># Set the possible values of build type for cmake-gui</span><br>  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS <span class="hljs-string">&quot;Debug&quot;</span> <span class="hljs-string">&quot;Release&quot;</span><br>    <span class="hljs-string">&quot;MinSizeRel&quot;</span> <span class="hljs-string">&quot;RelWithDebInfo&quot;</span>)<br>endif()<br><br><span class="hljs-comment"># Set the project name</span><br>project (build_type)<br><br><span class="hljs-comment"># Add an executable</span><br>add_executable(cmake_examples_build_type main.cpp)<br></code></pre></td></tr></table></figure>
+
+<p>默认采用的是<code>RelWithDebInfo</code>的编译方式，使用size工具查看不同类型的大小：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">size -B cmake_examples_build_type<br>   text    data     bss     dec     hex filename<br>   2357     656     280    3293     cdd cmake_examples_build_type<br></code></pre></td></tr></table></figure>
+
+<p>比较：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>text</th>
+<th>data</th>
+<th>bss</th>
+<th>dec</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Debug</td>
+<td>2477</td>
+<td>664</td>
+<td>280</td>
+<td>3421</td>
+</tr>
+<tr>
+<td>RelWithDebInfo</td>
+<td>2357</td>
+<td>656</td>
+<td>280</td>
+<td>3293</td>
+</tr>
+<tr>
+<td>Release</td>
+<td>2357</td>
+<td>656</td>
+<td>280</td>
+<td>3293</td>
+</tr>
+<tr>
+<td>MinSizeRel</td>
+<td>2257</td>
+<td>656</td>
+<td>280</td>
+<td>3193</td>
+</tr>
+</tbody></table>
+<h2 id="编译标志-变量"><a href="#编译标志-变量" class="headerlink" title="编译标志&#x2F;变量"></a>编译标志&#x2F;变量</h2><p>本节涉及到一个很重要的功能就是控制源码中的编译条件，我们先看C++代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span></span><br><span class="hljs-function"></span>&#123;<br>   std::cout &lt;&lt; <span class="hljs-string">&quot;Hello Compile Flags!&quot;</span> &lt;&lt; std::endl;<br><br>   <span class="hljs-comment">// only print if compile flag set</span><br><span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> EX2</span><br>  std::cout &lt;&lt; <span class="hljs-string">&quot;Hello Compile Flag EX2!&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> EX3</span><br>  std::cout &lt;&lt; <span class="hljs-string">&quot;Hello Compile Flag EX3!&quot;</span> &lt;&lt; std::endl;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br>   <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里有两个宏<code>EX2</code>和<code>EX3</code>，它们可以由CMake决定是否定义，这是一个很强大的功能，相对也比较不容易理解。先来看下面CMakeLists.txt：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake_minimum_required(VERSION 3.5)<br><br><span class="hljs-comment"># 添加CXX编译控制符-DX2，缓冲CACHE类型，强制FORCE设置</span><br><span class="hljs-built_in">set</span> (CMAKE_CXX_FLAGS <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;CMAKE_CXX_FLAGS&#125;</span> -DEX2&quot;</span> CACHE STRING <span class="hljs-string">&quot;Set C++ Compiler Flags&quot;</span> FORCE)<br><br>project (compile_flags)<br>add_executable(cmake_examples_compile_flags main.cpp)<br><br><span class="hljs-comment"># 直接将EX3导入到C程序中</span><br>target_compile_definitions(cmake_examples_compile_flags <br>    PRIVATE EX3<br>)<br></code></pre></td></tr></table></figure>
+
+<p>编译后可以看到：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">Hello Compile Flags!<br>Hello Compile Flag EX2!<br>Hello Compile Flag EX3!<br></code></pre></td></tr></table></figure>
+
+<p>这里有两种方式，一种是直接使用<code>$&#123;CMAKE_CXX_FLAGS &#125;</code>变量，C语言是<code>$&#123;CMAKE_C_FLAGS&#125;</code>，在其中不断添加新的控制符，使用<code>-D</code>开头，类似于命令行传递值，这时候这个标志会传递到C++程序中，表示已经定义。第二种方式是使用<code>target_compile_definitions</code>函数传递标志。除此之外还可以在命令行中传递：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake .. -DCMAKE_CXX_FLAGS=<span class="hljs-string">&quot;-DEX2 -DEX2&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="set"><a href="#set" class="headerlink" title="set"></a>set</h3><p><a href="https://cmake.org/cmake/help/v3.21/command/set.html?highlight=set">set</a>可以设置很多种类型，像BOOL、String，filepath等等，使用CACHE和FORCE时注意：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">SET(var1 13)<br></code></pre></td></tr></table></figure>
+
+<p>变量 var1 被设置成 13，如果 var1 在cache中已经存在，该命令不会overwrite cache中的值</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">SET(var1 13 ... CACHE ...)<br></code></pre></td></tr></table></figure>
+
+<p>如果cache存在该变量，使用cache中变量，如果cache中不存在，将该值写入cache</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">SET(var1 13 ... CACHE ... FORCE)<br></code></pre></td></tr></table></figure>
+
+<p>不论cache中是否存在，始终使用该值。</p>
+<p>上面程序中，也可以使用布尔变量来控制C++程序中的宏，让我们先感受一下set和CACHE的妙用以及复杂的CMake程序架构：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">.<br>├── build<br>├── CMakeLists.txt<br>├── config<br>│   ├── default_config.cmake<br>│   └── set_config.cmake<br>├── doc<br>│   └── README.adoc<br>└── src<br>    └── main.cpp<br></code></pre></td></tr></table></figure>
+
+<p><code>.cmake</code>文件通常是CMake的配置文件，你可以认为这是CMake的头文件，定义变量和规则或者函数通常都可以放在这类文件中。它们可以通过include函数在CMakeLists.txt中引入，程序默认在<code>$&#123;CMAKE_MODULE_PATH&#125;</code>下搜索此文件。作用域是从导入点到后面的CMake程序，导入点之前无法使用其中的值或者函数。先看一下CMakeLists.txt：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake_minimum_required(VERSION 3.5)<br><br>project (compile_flags)<br>add_executable(cmake_examples_compile_flags src/main.cpp)<br><br>include(config/set_config.cmake)<br>include(config/default_config.cmake)<br></code></pre></td></tr></table></figure>
+
+<p>比较简单，先为程序添加可执行文件的目标，然后在set_config中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># if(EX2)</span><br><span class="hljs-comment">#     target_compile_definitions(cmake_examples_compile_flags </span><br><span class="hljs-comment">#         PRIVATE EX2</span><br><span class="hljs-comment">#     )</span><br><span class="hljs-comment"># endif()</span><br><br><span class="hljs-comment"># if(EX3)</span><br><span class="hljs-comment">#     target_compile_definitions(cmake_examples_compile_flags </span><br><span class="hljs-comment">#         PRIVATE EX3</span><br><span class="hljs-comment">#     )</span><br><span class="hljs-comment"># endif()</span><br><br>target_compile_definitions(cmake_examples_compile_flags<br>    PRIVATE<br>        $&lt;$&lt;BOOL:<span class="hljs-variable">$&#123;EX2&#125;</span>&gt;:EX2&gt;<br>        $&lt;$&lt;BOOL:<span class="hljs-variable">$&#123;EX3&#125;</span>&gt;:EX3&gt;<br>)<br></code></pre></td></tr></table></figure>
+
+<p>这里使用两种方法导入标志，第一种是if的写法，第二种是表达式写法，相对第二种简单但可读性稍差，尤其是当组合变量的表达式变得复杂时，需要格外小心。表达式采用NOT、AND、OR的组合，或者数值运算&gt;，&lt;，或&#x3D;，以及STRING的equals等等。这个之后再补充介绍。</p>
+<p>最后是引入<code>default_config.cmake</code>中默认的值，即命令行没有输入时，两个变量选择的值。注意如果之前CACHE中已经有设置这个值，比如ON，默认的值CACHE设置不会Over Write这个变量，除非使用FORCE。这是CACHE带来的不便,，但从另一方面来说，这也方便不需要重复运行cmake指令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">set</span>(EX2 OFF CACHE BOOL <span class="hljs-string">&quot;EX2&quot;</span>)<br><span class="hljs-built_in">set</span>(EX3 OFF CACHE BOOL <span class="hljs-string">&quot;EX3&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>因为是布尔值，所以编译时参数应当设置为ON&#x2F;OFF或者True&#x2F;False。如果没有输入，则默认OFF&#x2F;False。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake .. -DEX3=ON -DEX2=ON<br>make &amp;&amp; ./cmake_examples_compile_flags<br>Hello Compile Flags!<br>Hello Compile Flag EX2!<br>Hello Compile Flag EX3!<br></code></pre></td></tr></table></figure>
+
+<p>注意如果此时继续cmake ..不输入任何变量，缓存中这两个仍然是打开的，除非删除build重新编译或者输入<code>-DEX3=OFF -DEX2=OFF</code>或者对缓存中的变量进行修改。在CMakeCache.txt中可以找到：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">//EX2<br>EX2:BOOL=ON<br><br>//EX3<br>EX3:BOOL=ON<br></code></pre></td></tr></table></figure>
+
+<p>可以手动修改CACHE中的值，然后重新编译，比如这里设置EX2:BOOL&#x3D;OFF，重新make后，EX2所控制的输出将被静默。</p>
+<p>有关CMake set的CACHE set和Normal set还可以参考：<a href="https://blog.csdn.net/weixin_39732534/article/details/110658282">cmake cache变量</a></p>
+<h2 id="第三方库"><a href="#第三方库" class="headerlink" title="第三方库"></a>第三方库</h2><p>我们的程序常常使用第三方库，例如现在我们有一个程序要使用Mbedtls的库和函数，一种方法是我们在系统中安装mbedtls的库和头文件，然后程序编译时链接，这其实和GCC使用默认的库是一回事；另一种方法我们下载源码，并将源码放在我们的工程当中，再进行编译。让我们来手动一步步尝试实现。</p>
+<h3 id="安装并使用"><a href="#安装并使用" class="headerlink" title="安装并使用"></a>安装并使用</h3><p>首先下载mbedtls并编译安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/ARMmbed/mbedtls.git<br><span class="hljs-built_in">cd</span> mbedtls &amp;&amp; <span class="hljs-built_in">mkdir</span> build &amp;&amp; <span class="hljs-built_in">cd</span> build<br>cmake .. &amp;&amp; make -j32 &amp;&amp; <span class="hljs-built_in">sudo</span> make install<br></code></pre></td></tr></table></figure>
+
+<p>然后我们新建一个目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">.<br>├── build<br>├── CMakeLists.txt<br>├── include<br>│   ├── mbedtls          <span class="hljs-comment"># mbedtls头文件</span><br>│   ├── psa           <span class="hljs-comment"># psa头文件</span><br>│   └── mbedtls_config.h <span class="hljs-comment"># 配置文件</span><br>└── src<br>    └── main.c<br></code></pre></td></tr></table></figure>
+
+<p>CMakeLists.txt文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake_minimum_required(VERSION 3.8)<br>project(<span class="hljs-string">&quot;hash&quot;</span>)<br>add_executable(<span class="hljs-built_in">hash</span> src/main.c)<br>target_include_directories(<span class="hljs-built_in">hash</span><br>    PUBLIC<br>        <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/include<br>)<br>target_link_libraries(<span class="hljs-built_in">hash</span> <br>    PUBLIC<br>        mbedtls<br>        mbedcrypto   <span class="hljs-comment"># 直接使用libmbedcrypto.a库文件，在系统目录下</span><br>)<br></code></pre></td></tr></table></figure>
+
+<p>main.c是一个单向散列函数计算的源码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdint.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbedtls/md.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbedtls/platform.h&quot;</span></span><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">dump_buf</span><span class="hljs-params">(<span class="hljs-type">char</span> *info, <span class="hljs-type">uint8_t</span> *buf, <span class="hljs-type">uint32_t</span> len)</span><br>&#123;<br>    mbedtls_printf(<span class="hljs-string">&quot;%s&quot;</span>, info);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; len; i++) &#123;<br>        mbedtls_printf(<span class="hljs-string">&quot;%s%02X%s&quot;</span>, i % <span class="hljs-number">16</span> == <span class="hljs-number">0</span> ? <span class="hljs-string">&quot;\n\t&quot;</span>:<span class="hljs-string">&quot; &quot;</span>, <br>                        buf[i], i == len - <span class="hljs-number">1</span> ? <span class="hljs-string">&quot;\n&quot;</span>:<span class="hljs-string">&quot;&quot;</span>);<br>    &#125;<br>    mbedtls_printf(<span class="hljs-string">&quot;\n&quot;</span>);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    <span class="hljs-type">uint8_t</span> digest[<span class="hljs-number">32</span>];<br>    <span class="hljs-type">char</span> *msg = <span class="hljs-string">&quot;abc&quot;</span>;<br><br>    <span class="hljs-type">mbedtls_md_context_t</span> ctx;<br>    <span class="hljs-type">const</span> <span class="hljs-type">mbedtls_md_info_t</span> *info;<br><br>    mbedtls_md_init(&amp;ctx);<br>    info = mbedtls_md_info_from_type(MBEDTLS_MD_SHA256);<br><br>    mbedtls_md_setup(&amp;ctx, info, <span class="hljs-number">0</span>);<br>    mbedtls_printf(<span class="hljs-string">&quot;\n  md info setup, name: %s, digest size: %d\n&quot;</span>, <br>                   mbedtls_md_get_name(info), mbedtls_md_get_size(info));<br><br>    mbedtls_md_starts(&amp;ctx);<br>    mbedtls_md_update(&amp;ctx, msg, <span class="hljs-built_in">strlen</span>(msg));<br>    mbedtls_md_finish(&amp;ctx, digest);<br><br>    dump_buf(<span class="hljs-string">&quot;\n  md sha-256 digest:&quot;</span>, digest, <span class="hljs-keyword">sizeof</span>(digest));<br><br>    mbedtls_md_free(&amp;ctx); <br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>配置头文件mbedtls_config.h：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/* System support */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_C</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_MEMORY</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_MEMORY_BUFFER_ALLOC_C</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_NO_STD_FUNCTIONS</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_EXIT_ALT</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_NO_PLATFORM_ENTROPY</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_NO_DEFAULT_ENTROPY_SOURCES</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_PLATFORM_PRINTF_ALT</span><br><br><span class="hljs-comment">/* mbed TLS modules */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MBEDTLS_BIGNUM_C</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;mbedtls/check_config.h&quot;</span></span><br></code></pre></td></tr></table></figure>
+
+<p>这样编译运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">./hash        <br><br>  md info setup, name: SHA256, digest size: 32<br><br>  md sha-256 digest:<br>        BA 78 16 BF 8F 01 CF EA 41 41 40 DE 5D AE 22 23<br>        B0 03 61 A3 96 17 7A 9C B4 10 FF 61 F2 00 15 AD<br></code></pre></td></tr></table></figure>
+
+<h3 id="直接下载并使用"><a href="#直接下载并使用" class="headerlink" title="直接下载并使用"></a>直接下载并使用</h3><p>这里借用git工具远程下载并使用。参考：<a href="https://cmake.org/cmake/help/v3.21/module/ExternalProject.html?highlight=git_repository">git_repository</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">.<br>├── build<br>├── CMakeLists.txt<br>├── config<br>│   └── config.cmake<br>├── include<br>│   └── mbedtls_config.h<br>├── lib<br>│   └── CMakeLists.txt<br>└── src<br>    └── main.c<br></code></pre></td></tr></table></figure>
+
+<p>先看一下根目录的CMakeLists.txt：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake_minimum_required(VERSION 3.8)<br>project(<span class="hljs-string">&quot;hash&quot;</span>)<br><br><span class="hljs-comment"># 导入MBEDTLS第三方库信息</span><br>include(config/config.cmake)<br><br><span class="hljs-comment"># 下载MBEDTLS库，路径保存在 MBEDCRYPTO_PATH 中</span><br>add_subdirectory(<span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/lib)<br><br><span class="hljs-comment"># 添加库的所有源码</span><br>aux_source_directory(<span class="hljs-variable">$&#123;MBEDCRYPTO_PATH&#125;</span>/library MBEDTLS_SOURCES)<br><br><span class="hljs-comment"># 建立可执行文件目标</span><br>add_executable(<span class="hljs-built_in">hash</span><br>    <span class="hljs-variable">$&#123;CMAKE_CURRENT_LIST_DIR&#125;</span>/src/main.c<br>    <span class="hljs-variable">$&#123;MBEDTLS_SOURCES&#125;</span><br>)<br><br><span class="hljs-comment"># 添加头文件</span><br>target_include_directories(<span class="hljs-built_in">hash</span><br>    PUBLIC<br>        <span class="hljs-variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/include<br>        <span class="hljs-variable">$&#123;MBEDCRYPTO_PATH&#125;</span>/include<br>        <span class="hljs-variable">$&#123;MBEDCRYPTO_PATH&#125;</span>/library<br>)<br></code></pre></td></tr></table></figure>
+
+<p>第一步导入config.cmake中关于Mbedtls相关的变量，指定了远程的位置和版本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">set</span>(MBEDCRYPTO_PATH                     <span class="hljs-string">&quot;DOWNLOAD&quot;</span>  CACHE PATH      <span class="hljs-string">&quot;Path to Mbed Crypto (or DOWNLOAD to fetch automatically&quot;</span>)<br><span class="hljs-built_in">set</span>(MBEDCRYPTO_VERSION                  <span class="hljs-string">&quot;mbedtls-3.0.0&quot;</span> CACHE STRING <span class="hljs-string">&quot;The version of Mbed Crypto to use&quot;</span>)<br><span class="hljs-built_in">set</span>(MBEDCRYPTO_GIT_REMOTE               <span class="hljs-string">&quot;https://github.com/ARMmbed/mbedtls.git&quot;</span> CACHE STRING <span class="hljs-string">&quot;The URL (or path) to retrieve MbedTLS from.&quot;</span>)<br><span class="hljs-built_in">set</span>(MBEDCRYPTO_BUILD_TYPE               <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;CMAKE_BUILD_TYPE&#125;</span>&quot;</span> CACHE STRING <span class="hljs-string">&quot;Build type of Mbed Crypto library&quot;</span>)<br><span class="hljs-built_in">set</span>(TFM_MBEDCRYPTO_CONFIG_PATH          <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;CMAKE_SOURCE_DIR&#125;</span>/include/mbedtls_config.h&quot;</span> CACHE PATH <span class="hljs-string">&quot;Config to use for Mbed Crypto&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>然后<code>lib/CMakeLists.txt</code>再根据输入和默认值判断是否要下载第三方库，借助<a href="https://cmake.org/cmake/help/v3.21/module/FetchContent.html">FetchContent</a>工具来引入第三方GIT下载源码。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs bash">include(FetchContent)<br><span class="hljs-built_in">set</span>(FETCHCONTENT_QUIET FALSE)<br><br><span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;<span class="hljs-variable">$&#123;MBEDCRYPTO_PATH&#125;</span>&quot;</span> STREQUAL <span class="hljs-string">&quot;DOWNLOAD&quot;</span>)<br>    find_package(Git)<br>    FetchContent_Declare(mbedcrypto<br>        GIT_REPOSITORY <span class="hljs-variable">$&#123;MBEDCRYPTO_GIT_REMOTE&#125;</span><br>        GIT_TAG <span class="hljs-variable">$&#123;MBEDCRYPTO_VERSION&#125;</span><br>        GIT_SHALLOW TRUE<br>        GIT_PROGRESS TRUE<br>        GIT_SUBMODULES <span class="hljs-string">&quot;&quot;</span><br>    )<br><br>    FetchContent_GetProperties(mbedcrypto)<br><br>    <span class="hljs-keyword">if</span>(NOT mbedcrypto_POPULATED)<br>        FetchContent_Populate(mbedcrypto)<br>        <span class="hljs-built_in">set</span>(MBEDCRYPTO_PATH <span class="hljs-variable">$&#123;mbedcrypto_SOURCE_DIR&#125;</span> CACHE PATH <span class="hljs-string">&quot;Path to mbed-crypto (or DOWNLOAD to get automatically&quot;</span> FORCE)<br>    endif()<br>endif()<br></code></pre></td></tr></table></figure>
+
+<p>如果已经下载过mbedtls，可以在命令行手动输入<code>-DMBEDCRYPTO_PATH</code>，这样CMake将不会自动下载目录。编译过程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs bash">cmake ..<br>-- The C compiler identification is GNU 9.3.0<br>-- The CXX compiler identification is GNU 9.3.0<br>-- Detecting C compiler ABI info<br>-- Detecting C compiler ABI info - <span class="hljs-keyword">done</span><br>-- Check <span class="hljs-keyword">for</span> working C compiler: /usr/bin/cc - skipped<br>-- Detecting C compile features<br>-- Detecting C compile features - <span class="hljs-keyword">done</span><br>-- Detecting CXX compiler ABI info<br>-- Detecting CXX compiler ABI info - <span class="hljs-keyword">done</span><br>-- Check <span class="hljs-keyword">for</span> working CXX compiler: /usr/bin/c++ - skipped<br>-- Detecting CXX compile features<br>-- Detecting CXX compile features - <span class="hljs-keyword">done</span><br>-- Found Git: /usr/bin/git (found version <span class="hljs-string">&quot;2.25.1&quot;</span>) <br>-- Populating mbedcrypto<br>-- Configuring <span class="hljs-keyword">done</span><br>-- Generating <span class="hljs-keyword">done</span><br>-- Build files have been written to: /home/sjl/learn/cmake-examples/mbedtls_test/build/_deps/mbedcrypto-subbuild<br>Scanning dependencies of target mbedcrypto-populate<br>[ 11%] Creating directories <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;mbedcrypto-populate&#x27;</span><br>[ 22%] Performing download step (git <span class="hljs-built_in">clone</span>) <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;mbedcrypto-populate&#x27;</span><br>Cloning into <span class="hljs-string">&#x27;mbedcrypto-src&#x27;</span>...<br>remote: Enumerating objects: 20471, <span class="hljs-keyword">done</span>.        <br>remote: Counting objects: 100% (20471/20471), <span class="hljs-keyword">done</span>.        <br>remote: Compressing objects: 100% (9915/9915), <span class="hljs-keyword">done</span>.        <br>remote: Total 20471 (delta 16054), reused 13968 (delta 10412), pack-reused 0        <br>Receiving objects: 100% (20471/20471), 20.12 MiB | 8.92 MiB/s, <span class="hljs-keyword">done</span>.<br>Resolving deltas: 100% (16054/16054), <span class="hljs-keyword">done</span>.<br>Note: switching to <span class="hljs-string">&#x27;mbedtls-3.0.0&#x27;</span>.<br><br>You are <span class="hljs-keyword">in</span> <span class="hljs-string">&#x27;detached HEAD&#x27;</span> state. You can look around, make experimental<br>changes and commit them, and you can discard any commits you make <span class="hljs-keyword">in</span> this<br>state without impacting any branches by switching back to a branch.<br><br>If you want to create a new branch to retain commits you create, you may<br><span class="hljs-keyword">do</span> so (now or later) by using -c with the switch <span class="hljs-built_in">command</span>. Example:<br><br>  git switch -c &lt;new-branch-name&gt;<br><br>Or undo this operation with:<br><br>  git switch -<br><br>Turn off this advice by setting config variable advice.detachedHead to <span class="hljs-literal">false</span><br><br>HEAD is now at 8df2f8e7 Merge pull request <span class="hljs-comment">#842 from ARMmbed/mbedtls-3.0.0rc0-pr</span><br>[ 33%] Performing update step <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;mbedcrypto-populate&#x27;</span><br>[ 44%] No patch step <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;mbedcrypto-populate&#x27;</span><br>[ 55%] No configure step <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;mbedcrypto-populate&#x27;</span><br>[ 66%] No build step <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;mbedcrypto-populate&#x27;</span><br>[ 77%] No install step <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;mbedcrypto-populate&#x27;</span><br>[ 88%] No <span class="hljs-built_in">test</span> step <span class="hljs-keyword">for</span> <span class="hljs-string">&#x27;mbedcrypto-populate&#x27;</span><br>[100%] Completed <span class="hljs-string">&#x27;mbedcrypto-populate&#x27;</span><br>[100%] Built target mbedcrypto-populate<br>-- Configuring <span class="hljs-keyword">done</span><br>-- Generating <span class="hljs-keyword">done</span><br>-- Build files have been written to: /home/sjl/learn/cmake-examples/mbedtls_test/build<br></code></pre></td></tr></table></figure>
+
+<p>可以看出有下载和分支切换的过程。</p>
+<h2 id="标准C-C"><a href="#标准C-C" class="headerlink" title="标准C&#x2F;C++"></a>标准C&#x2F;C++</h2><p>有时候我们需要指定一个编译标准以确保程序跨平台兼容，所以CMake需要能够检查并设置编译的标准。CMake提供<code>CHECK_CXX_COMPILER_FLAG</code>函数校验C++标准，然后同样可以在<code>$&#123;CMAKE_CXX_FLAGS&#125;</code>中输入标准。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Set the minimum version of CMake that can be used</span><br><span class="hljs-comment"># To find the cmake version run</span><br><span class="hljs-comment"># $ cmake --version</span><br>cmake_minimum_required(VERSION 2.8)<br><br><span class="hljs-comment"># Set the project name</span><br>project (hello_cpp11)<br><br><span class="hljs-comment"># try conditional compilation</span><br>include(CheckCXXCompilerFlag)<br>CHECK_CXX_COMPILER_FLAG(<span class="hljs-string">&quot;-std=c++11&quot;</span> COMPILER_SUPPORTS_CXX11)<br>CHECK_CXX_COMPILER_FLAG(<span class="hljs-string">&quot;-std=c++0x&quot;</span> COMPILER_SUPPORTS_CXX0X)<br><br><span class="hljs-comment"># check results and add flag</span><br><span class="hljs-keyword">if</span>(COMPILER_SUPPORTS_CXX11)#<br>    <span class="hljs-built_in">set</span>(CMAKE_CXX_FLAGS <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;CMAKE_CXX_FLAGS&#125;</span> -std=c++11&quot;</span>)<br>elseif(COMPILER_SUPPORTS_CXX0X)#<br>    <span class="hljs-built_in">set</span>(CMAKE_CXX_FLAGS <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;CMAKE_CXX_FLAGS&#125;</span> -std=c++0x&quot;</span>)<br><span class="hljs-keyword">else</span>()<br>    message(STATUS <span class="hljs-string">&quot;The compiler <span class="hljs-variable">$&#123;CMAKE_CXX_COMPILER&#125;</span> has no C++11 support. Please use a different C++ compiler.&quot;</span>)<br>endif()<br><br><span class="hljs-comment"># Add an executable</span><br>add_executable(hello_cpp11 main.cpp)<br></code></pre></td></tr></table></figure>
+
+<p>上面写法比较安全，下面是简单使用C++11的写法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># set the C++ standard to C++ 11</span><br><span class="hljs-built_in">set</span>(CMAKE_CXX_STANDARD 11)<br></code></pre></td></tr></table></figure>
+
+<p>也可以使用<code>target_compile_features</code>函数为目标选定编译标准，补充：可以使用<code>target_compile_options</code>为目标选的编译选项，如是否输出警告信息等。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Software/" class="category-chain-item">Software</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CMake/" class="print-no-link">#CMake</a>
+      
+        <a href="/tags/Tool/" class="print-no-link">#Tool</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/07/11/SW/IoT/FPU-Interrupt-Test/" title="ARM Cortex-M FPU 模块">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ARM Cortex-M FPU 模块</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/02/SW/AIoT/R329-Debian-Install/" title="R329 Debian系统安装体验">
+                        <span class="hidden-mobile">R329 Debian系统安装体验</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

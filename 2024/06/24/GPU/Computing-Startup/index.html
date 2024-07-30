@@ -1,0 +1,982 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="GPU, Compute and AI.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GPU Computing Startup">
+<meta property="og:url" content="http://yoursite.com/2024/06/24/GPU/Computing-Startup/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="GPU, Compute and AI.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/post_pics/ai/AGI.jpeg">
+<meta property="article:published_time" content="2024-06-24T23:46:14.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.407Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="CUDA">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Pytorch">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/post_pics/ai/AGI.jpeg">
+  
+  
+  
+  <title>GPU Computing Startup - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="GPU Computing Startup"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-06-24 23:46" pubdate>
+          2024年6月24日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.6k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          39 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">GPU Computing Startup</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>GPU, Compute and AI.</p>
+<span id="more"></span>
+
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#%E7%9B%AE%E5%BD%95">目录</a></li>
+<li><a href="#%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB">资料汇总</a></li>
+<li><a href="#pytorch-%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86">pytorch 知识点整理</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-pytorch-cpu-%E7%89%88%E6%9C%AC">安装 pytorch cpu 版本</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-pytorch-cuda-%E7%89%88%E6%9C%AC">安装 pytorch cuda 版本</a></li>
+<li><a href="#pytorch-book-vscode-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">pytorch book vscode 环境配置</a></li>
+<li><a href="#%E7%A4%BA%E4%BE%8B">示例</a><ul>
+<li><a href="#%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92">线性回归</a></li>
+<li><a href="#fashion-mnist-%E6%89%8B%E5%86%99%E6%95%B0%E5%AD%97%E5%88%86%E7%B1%BB">fashion mnist 手写数字分类</a></li>
+<li><a href="#cifar-10">cifar 10</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="资料汇总"><a href="#资料汇总" class="headerlink" title="资料汇总"></a>资料汇总</h2><table>
+<thead>
+<tr>
+<th>链接</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="https://github.com/chenyuntc/pytorch-book"><strong>《深度学习框架PyTorch：入门与实战》代码</strong></a></td>
+<td>这个适合开始阶段，参考<a href="#pytorch-%E7%9F%A5%E8%AF%86%E7%82%B9%E6%95%B4%E7%90%86">pytorch 知识点整理</a>。此书配套1.6版本的pytorch，参考<a href="#%E5%AE%89%E8%A3%85-pytorch-cpu-%E7%89%88%E6%9C%AC">安装 pytorch cpu 版本</a>和<a href="#pytorch-book-vscode-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">pytorch book vscode 环境配置</a></td>
+</tr>
+<tr>
+<td><a href="https://pytorch.org/tutorials/beginner/basics/intro.html">Pytorch 官方文档</a></td>
+<td>最新的是2.3版本，和下面教程搭配着看</td>
+</tr>
+<tr>
+<td><a href="https://github.com/pytorch/tutorials">Pytorch 官方文档教程仓库</a></td>
+<td>PyTorch tutorials。有点占地方，里面和文档内容对应，有直接可运行的脚本</td>
+</tr>
+<tr>
+<td><a href="https://pytorch.org/get-started/locally/">Pytorch 安装指引</a></td>
+<td>安装CPU&#x2F;CUDA版本</td>
+</tr>
+<tr>
+<td><a href="https://github.com/apachecn/pytorch-doc-zh">Pytorch 官方文档翻译版</a></td>
+<td>Pytorch 中文文档，缺点，广告太多</td>
+</tr>
+<tr>
+<td><a href="https://github.com/pytorch/examples">Pytorch Examples</a></td>
+<td>围绕 pytorch 的视觉、文本、强化学习等方面的一组示例。</td>
+</tr>
+<tr>
+<td><a href="https://github.com/pytorch/pytorch">Pytorch 源码仓库</a></td>
+<td>具有强大 GPU 加速的 Python 张量和动态神经网络。</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center">Cuda</th>
+<th align="center">Jetson 嵌入式AI</th>
+<th align="center">GPU driver</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><a href="https://docs.nvidia.com/cuda/">CUDA 官方文档</a><br/><a href="https://docs.nvidia.com/cuda/cuda-runtime-api/index.html">CUDA Runtime API</a><br/><a href="https://github.com/NVIDIA/cuda-samples"><strong>Samples for CUDA Developers</strong></a></td>
+<td align="center"><a href="https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/"><strong>Jetson Orin</strong></a><br/><a href="https://www.jetson-ai-lab.com/tutorial-intro.html"><strong>NVIDIA Jetson AI Lab</strong></a><br/><a href="https://developer.nvidia.com/embedded/community/jetson-projects"><strong>NVIDIA Jetson-projects</strong></a><br/><a href="https://www.yahboom.com/study/Jetson-Orin-NANO"><strong>Yahboom官方教程 提取码lguu</strong></a><br/><a href="https://developer.nvidia.com/blog/develop-ai-powered-robots-smart-vision-systems-and-more-with-nvidia-jetson-orin-nano-developer-kit">Jetson Orin Nano Developer Kit Now Available</a></td>
+<td align="center"><a href="https://github.com/NVIDIA/open-gpu-kernel-modules"><strong>NVIDIA GPU Kernel Modules</strong></a><br/><a href="https://github.com/torvalds/linux/tree/master/drivers/gpu/drm/amd/amdgpu">AMD KMD Driver in Linux</a></td>
+</tr>
+</tbody></table>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-1e33e29d" role="button" aria-expanded="false" aria-controls="collapse-1e33e29d">
+        <div class="fold-arrow">▶</div>Github 资源汇总
+      </div>
+      <div class="fold-collapse collapse" id="collapse-1e33e29d">
+        <div class="fold-content">
+          <table><thead><tr><th align="center">仓库</th><th>说明</th></tr></thead><tbody><tr><td align="center"><strong>1. AI&#x2F;AGI&#x2F;AIoT</strong></td><td></td></tr><tr><td align="center"><a href="https://github.com/huggingface/transformers"><strong>HuggingFace&#x2F;Transformers<br/>★★★★★</strong></a></td><td>著名论文<a href="https://arxiv.org/abs/1706.03762">Attention Is All You Need</a> 提出的 Transformers  提供数千个预训练模型，用于执行不同模态（例如文本、视觉和音频）的任务。这些模型可应用于：<br/>1. 📝 文本，用于 100 多种语言的文本分类、信息提取、问答、摘要、翻译和文本生成等任务。<br/>2. 🖼️ 图像，用于图像分类、对象检测和分割等任务。<br/>3. 🗣️ 音频，用于语音识别和音频分类等任务。<br/>Transformers 模型还可以执行多种模态组合的任务，例如表格问答、光学字符识别、从扫描文档中提取信息、视频分类和视觉问答。</td></tr><tr><td align="center"><a href="https://github.com/karpathy/llm.c"><strong>Karpathy&#x2F;llm.c<br/>★★★★★</strong></a></td><td>简单、纯 C&#x2F;CUDA 的 LLM，无需 245MB 的 PyTorch 或 107MB 的 cPython。当前重点是预训练，特别是重现 GPT-2 和 GPT-3 迷你剧，以及 train_gpt2.py 中的并行 PyTorch 参考实现。测试见：<a href="http://jianliang-shen.cn/2024/04/28/llm.c/">llm.c</a></td></tr><tr><td align="center"><a href="https://github.com/google-research/vision_transformer"><strong>Google&#x2F;Vision Transformer<br/>★★★★★</strong></a></td><td>在这个存储库中，我们发布了论文中的模型<br/>一张图片胜过 16x16 个单词：用于大规模图像识别的 Transformers<br/>MLP-Mixer：用于视觉的全 MLP 架构<br/>如何训练你的 ViT？视觉 Transformers 中的数据、增强和正则化<br/>当视觉 Transformers 在没有预训练或强大的数据增强的情况下胜过 ResNets 时<br/>LiT：使用锁定图像文本调整的零样本传输<br/>替代间隙最小化改进了清晰度感知训练<br/>这些模型在 ImageNet 和 ImageNet-21k 数据集上进行了预训练。我们在 JAX&#x2F;Flax 中提供了用于微调已发布模型的代码。<br/></td></tr><tr><td align="center"><a href="https://github.com/ultralytics/yolov5"><strong>Ultralytics&#x2F;Yolov5<br/>★★★★★</strong></a></td><td>YOLOv5🚀是世界上最受欢迎的视觉 AI，代表了 Ultralytics 对未来视觉 AI 方法的开源研究，融合了数千小时研发过程中获得的经验教训和最佳实践。</td></tr><tr><td align="center"><a href="https://github.com/dusty-nv/jetson-inference"><strong>Dusty-nv&#x2F;Jetson Inference<br/>★★★★★</strong></a></td><td>该项目使用 TensorRT 在 C++ 或 Python 的 GPU 上运行优化网络，并使用 PyTorch 训练模型。支持的 DNN 视觉基元包括用于图像分类的 imageNet、用于对象检测的 detectNet、用于语义分割的 segNet、用于姿势估计的 poseNet 和用于动作识别的 actionNet。提供了从实时摄像头源进行流式传输、使用 WebRTC 制作 Web 应用程序以及对 ROS&#x2F;ROS2 的支持的示例。</td></tr><tr><td align="center"><a href="https://github.com/AUTOMATIC1111/stable-diffusion-webui"><strong>Stable Diffusion WebUI<br/>★★★★★</strong></a></td><td>使用 Gradio 库实现的Stable Diffusion的 Web 界面。 <a href="https://github.com/dtlnor/stable-diffusion-webui-localization-zh_CN">简体中文翻译扩展</a></td></tr><tr><td align="center"><a href="https://github.com/Zhouyi-AIPU/Model_zoo"><strong>Zhouyi-AIPU&#x2F;Model Zoo<br/>★★★</strong></a></td><td>各种Embedded model汇总</td></tr><tr><td align="center"><a href="https://github.com/huggingface/pytorch-image-models">HuggingFace&#x2F;Pytorch image models<br/>★</a></td><td>最大的 PyTorch 图像 encoders &#x2F; backbone 集合。包括训练、评估、推理、导出脚本和预训练权重 - ResNet、ResNeXT、EfficientNet、NFNet、Vision Transformer (ViT)、MobileNetV4、MobileNet-V3 &amp; V2、RegNet、DPN、CSPNet、Swin Transformer、MaxViT、CoAtNet、ConvNeXt 等</td></tr><tr><td align="center"><a href="https://github.com/huggingface/datasets">HuggingFace&#x2F;Datasets<br/>★</a></td><td>Datasets 是一个轻量级库，提供两个主要功能：适用于许多公共数据集的单行数据加载器；高效的数据预处理。</td></tr><tr><td align="center"><a href="https://github.com/huggingface/accelerate">HuggingFace&#x2F;Accelerate<br/>★</a></td><td>Accelerate 是为那些喜欢编写 PyTorch 模型训练循环但不愿意编写和维护使用多 GPU&#x2F;TPU&#x2F;fp16 所需的样板代码的 PyTorch 用户创建的。</td></tr><tr><td align="center"><a href="https://github.com/Stability-AI/generative-models">Stability-AI&#x2F;Generative Models<br/>★</a></td><td>Generative Models by Stability AI</td></tr><tr><td align="center"><a href="https://github.com/Stability-AI/stablediffusion">Stability-AI&#x2F;Stable Diffusion<br/>★</a></td><td>此存储库包含从头开始训练的 Stable Diffusion 模型，并将使用新的检查点不断更新。</td></tr><tr><td align="center"><a href="https://github.com/tensorflow/tensorflow">TensorFlow<br/>★</a></td><td>An Open Source Machine Learning Framework for Everyone</td></tr><tr><td align="center"><a href="https://github.com/tensorflow/models">TensorFlow Models<br/>★</a></td><td>Models and examples built with TensorFlow</td></tr><tr><td align="center"><a href="https://github.com/ultralytics/ultralytics">Ultralytics&#x2F;ultralytics<br/>★</a></td><td>Ultralytics YOLOv8 是一款尖端的、最先进的 (SOTA) 模型，它以之前 YOLO 版本的成功为基础，并引入了新功能和改进，以进一步提高性能和灵活性。YOLOv8 旨在快速、准确且易于使用，使其成为各种对象检测和跟踪、实例分割、图像分类和姿势估计任务的绝佳选择。</td></tr><tr><td align="center"><a href="https://github.com/karpathy/llama2.c">Karpathy&#x2F;llama2.c<br/>★</a></td><td>在 PyTorch 中训练 Llama 2 LLM 架构，然后使用一个简单的 700 行 C 文件 (run.c) 进行推理。</td></tr><tr><td align="center"><a href="https://github.com/Morizeyao/GPT2-Chinese">GPT2-Chinese<br/>★</a></td><td>中文的GPT2训练代码，使用BERT的Tokenizer或Sentencepiece的BPE model</td></tr><tr><td align="center"><a href="https://github.com/openai/openai-cookbook">openai-cookbook<br/>★★</a></td><td>使用 OpenAI API 完成常见任务的示例代码和指南。</td></tr><tr><td align="center"><a href="https://github.com/onnx/onnx">ONNX<br/>★★★</a></td><td>开放神经网络交换(ONNX)是一个开放的生态系统，使人工智能开发人员能够随着项目的发展选择合适的工具。ONNX为人工智能模型提供了一种开源格式，包括深度学习和传统ML，它定义了一个可扩展的计算图模型，以及内置运算符和标准数据类型的定义。目前我们专注于推理(评分)所需的功能。</td></tr><tr><td align="center"><a href="https://github.com/microsoft/onnxruntime">Microsoft&#x2F;ONNX Runtime<br/>★</a></td><td>ONNX Runtime 是一个跨平台推理和训练机器学习加速器。</td></tr><tr><td align="center"><a href="https://github.com/onnx/onnx-tensorrt">onnx-tensorrt<br/>★★</a></td><td>解析 ONNX 模型以便使用 <a href="https://developer.nvidia.com/tensorrt">TensorRT</a> 执行。 NVIDIA® TensorRT™ 是一个用于高性能深度学习推理的 API 生态系统。TensorRT 包括推理运行时和模型优化，可为生产应用程序提供低延迟和高吞吐量。TensorRT 生态系统包括 TensorRT、TensorRT-LLM、TensorRT 模型优化器和 TensorRT Cloud。</td></tr><tr><td align="center"><a href="https://github.com/daquexian/onnx-simplifier">onnx-simplifier<br/>★</a></td><td>ONNX 很棒，但有时太复杂。</td></tr><tr><td align="center"><a href="https://github.com/onnx/tensorflow-onnx">tensorflow-onnx<br/>★</a></td><td>tf2onnx 通过命令行或 python api 将 TensorFlow（tf-1.x 或 tf-2.x）、keras、tensorflow.js 和 tflite 模型转换为 ONNX。</td></tr><tr><td align="center"><strong>2. GPU&#x2F;CUDA&#x2F;Rocm</strong></td><td></td></tr><tr><td align="center"><a href="https://github.com/DefTruth/CUDA-Learn-Notes"><strong>CUDA-Learn-Notes<br/>★★★★★</strong></a></td><td>CUDA-Learn-Notes: CUDA 笔记、大模型手撕CUDA、C++笔记</td></tr><tr><td align="center"><a href="https://github.com/HeKun-NVIDIA/CUDA-Programming-Guide-in-Chinese"><strong>CUDA-Programming-Guide-in-Chinese<br/>★</strong></a></td><td>本项目为 CUDA C Programming Guide 的中文翻译版。</td></tr><tr><td align="center"><a href="https://github.com/godweiyang/NN-CUDA-Example">NN-CUDA-Example<br/>★</a></td><td>调用自定义 CUDA 运算符的神经网络工具包（PyTorch、TensorFlow 等）的几个简单示例。</td></tr><tr><td align="center"><a href="https://github.com/NVIDIA/nvtrust">NVTrust<br/>★</a></td><td>nvTrust 是一个存储库，其中包含在受信任的环境（例如机密计算）中使用 NVIDIA 解决方案时利用的许多实用程序和工具、开源代码和 SDK。</td></tr><tr><td align="center"><a href="https://github.com/protectai/llm-guard">LLM Guard</a></td><td>LLM 交互的安全工具包</td></tr><tr><td align="center"><a href="https://github.com/ROCm/ROCT-Thunk-Interface">ROCm&#x2F;ROCT-Thunk-Interface<br/>★</a></td><td>此存储库包含用于与 (AMD)ROCk 驱动程序交互的用户模式 ​​API 接口。</td></tr><tr><td align="center"><strong>3. 免费资源</strong></td><td></td></tr><tr><td align="center"><a href="https://github.com/GrowingGit/GitHub-Chinese-Top-Charts"><strong>GitHub中文开源仓库排行榜<br/>★★★★★</strong></a></td><td>GitHub中文排行榜，帮助你发现优秀中文项目，可以无语言障碍地、更高效地吸收优秀经验成果</td></tr><tr><td align="center"><a href="https://github.com/EbookFoundation/free-programming-books"><strong>free-programming-books<br/>★★★★★</strong></a></td><td>多种语言的免费学习资源列表</td></tr><tr><td align="center"><a href="https://github.com/forthespada/CS-Books">CS EBook<br/>★★★</a></td><td>超过1000本的计算机经典书籍分享，解压密码：a123654</td></tr><tr><td align="center"><a href="https://github.com/lining808/CS-Ebook">CS EBook<br/>★★★</a></td><td>本储存库是一些高质量的计算机科学与技术书籍推荐书单，需要学习的可以按照此书单进行学习进阶，包含了计算机大多数软件相关方向。而且敢承诺一直更新。</td></tr><tr><td align="center"><a href="https://github.com/zhoucz97/myLearning">zhoucz97&#x2F;myLearning</a></td><td>记录个人的学习历程。包括但不限于算法、机器学习、论文写作等。</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-a44f8816" role="button" aria-expanded="false" aria-controls="collapse-a44f8816">
+        <div class="fold-arrow">▶</div>PyTorch文档
+      </div>
+      <div class="fold-collapse collapse" id="collapse-a44f8816">
+        <div class="fold-content">
+          <iframe src="https://pytorch.org/tutorials/beginner/basics/intro.html" width="100%" height="800" name="topFrame" scrolling="yes"  noresize="noresize" frameborder="0" id="topFrame"></iframe>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-4348e078" role="button" aria-expanded="false" aria-controls="collapse-4348e078">
+        <div class="fold-arrow">▶</div>CUDA文档
+      </div>
+      <div class="fold-collapse collapse" id="collapse-4348e078">
+        <div class="fold-content">
+          <iframe src="https://docs.nvidia.com/cuda/" width="100%" height="800" name="topFrame" scrolling="yes"  noresize="noresize" frameborder="0" id="topFrame"></iframe>
+        </div>
+      </div>
+    </div>
+
+<h2 id="pytorch-知识点整理"><a href="#pytorch-知识点整理" class="headerlink" title="pytorch 知识点整理"></a>pytorch 知识点整理</h2><p>《深度学习框架 PyTorch: 入门与实战》</p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-13aa53af" role="button" aria-expanded="false" aria-controls="collapse-13aa53af">
+        <div class="fold-arrow">▶</div>Chapter 2, 简单介绍 tensor 和构建 cifar-10 训练模型
+      </div>
+      <div class="fold-collapse collapse" id="collapse-13aa53af">
+        <div class="fold-content">
+          <ul><li>安装Pytorch</li><li>基本操作，如cat等</li><li>准备一个cifar-10模型，并训练推理</li></ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-898f91ec" role="button" aria-expanded="false" aria-controls="collapse-898f91ec">
+        <div class="fold-arrow">▶</div>Chapter 3, 介绍 tensor
+      </div>
+      <div class="fold-collapse collapse" id="collapse-898f91ec">
+        <div class="fold-content">
+          <table><thead><tr><th>概要</th><th>内容</th></tr></thead><tbody><tr><td>基本操作</td><td>Tensor(*sizes), tensor(data)<br/>ones&#x2F;zeros&#x2F;eye(*sizes)<br/>arrange(start, end, step), linspace(start, end, steps)<br/>rand &#x2F; randn(*sizes)<br/>new_* &#x2F; *_like()</td></tr><tr><td>命名张量</td><td>names, refine_names, rename, align_to</td></tr><tr><td>类型</td><td>set_default_tensor_type, type(new_type) &#x3D;&#x3D; .float(), .long(), .half(), to(device)</td></tr><tr><td>索引</td><td>index_select(input, dim, index)<br/>masked_select(input, mask)<br/>gather(input, dim, index)<br/>input.scatter_(dim, index)放回<br/>non_zero(input)非零下标</td></tr><tr><td>元素操作</td><td>abs&#x2F;sqrt&#x2F;div&#x2F;exp&#x2F;fmod&#x2F;log&#x2F;pow, cos&#x2F;sin&#x2F;asin&#x2F;atan2&#x2F;cosh, ceil&#x2F;round&#x2F;floor&#x2F;trunc, clamp(input,min,max), sigmod&#x2F;tanh, cumsum&#x2F;cumprod</td></tr><tr><td>归并操作</td><td>mean&#x2F;sum&#x2F;median&#x2F;mode, norm&#x2F;dist, std&#x2F;var, keepdim&#x3D;True<br/>保留维度, 在哪个维度操作, 哪个维度变成1，或者消失</td></tr><tr><td>比较</td><td>gt&#x2F;lt&#x2F;ge&#x2F;le&#x2F;eq&#x2F;ne, topk, sort, max&#x2F;min</td></tr><tr><td>线性代数</td><td>trace, diag, triu&#x2F;tril, mm&#x2F;bmm, addmm&#x2F;addbmm&#x2F;addmv, t, dot&#x2F;cross, inverse, svd</td></tr><tr><td>Numpy</td><td>from_numpy，共享内存<br/>torch.tensor()只进行数据拷贝, 不会共享内存<br/>torch.Tensor()在类型不一致时是复制而非共享内存</td></tr><tr><td>Tensor基本结构</td><td>storage()查看是否共享, contiguous()变成连续</td></tr><tr><td>Tensor改变形状</td><td>查看信息, size() &#x3D; shape, dim() &#x3D; len(tensor.shape), numel &lt;&#x3D;&gt; numpy.size<br/>改变维度, reshape(), view(), view_as()<br/>增加减少维度, squeeze()压缩, unsqueeze()新建维度, flatten(start_dim, end_dim)<br/>转置, transpose()仅限二维, t(), T, permute()</td></tr><tr><td>线性回归实例</td><td>手动计算求导函数</td></tr><tr><td>autograd</td><td>requires_grad&#x3D;True, retain_graph&#x3D;None, is_leaf, backward()</td></tr><tr><td>用autograd实现线性回归</td><td>自动backward, 梯度下降</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-35d00b6d" role="button" aria-expanded="false" aria-controls="collapse-35d00b6d">
+        <div class="fold-arrow">▶</div>Chapter 4, 神经网络工具箱nn
+      </div>
+      <div class="fold-collapse collapse" id="collapse-35d00b6d">
+        <div class="fold-content">
+          <p>torch.nn是专门为深度学习而设计的模块。torch.nn的核心数据结构是<code>Module</code>，它是一个抽象的概念，既可以表示神经网络中的某个层（layer），也可以表示一个包含很多层的神经网络。在实际使用中，最常见的做法是继承<code>nn.Module</code>，从而编写自己的网络&#x2F;层。多层感知机的网络结构如图所示，它由两个全连接层组成，采用$sigmoid$函数作为激活函数（图中没有画出）。</p><p><img src="/img/post_pics/ai/multi_perceptron.png" srcset="/img/loading.gif" lazyload alt="神经网络"></p><p>PyTorch内部实现了神经网络中绝大多数的layer，这些layer都继承于<code>nn.Module</code>，封装了可学习参数<code>parameter</code>，并实现了<code>forward</code>函数。同时，大部分layer都专门针对GPU运算进行了CuDNN优化，其速度和性能都十分优异。关注每一层的信息有：</p><ol><li>构造函数的参数，如nn.Linear(in_features, out_features, bias)，需关注这三个参数的作用；</li><li>属性、可学习参数和子module。如nn.Linear中有<code>weight</code>和<code>bias</code>两个可学习参数，不包含子module；</li><li>输入输出的形状，如nn.linear的输入形状是(N, input_features)，输出为(N，output_features)，其中N是batch_size。</li></ol><p>图像nn包括，卷积层（Conv）、池化层（Pool），池化方式又分为平均池化（AvgPool）、最大值池化（MaxPool）、自适应池化（AdaptiveAvgPool）等。而卷积层除了常用的前向卷积之外，还有逆卷积（TransposeConv）。卷积神经网络的本质就是卷积层、池化层、激活层以及其他层的叠加。池化层可以看作是一种特殊的卷积层，其主要用于下采样，增加池化层可以在保留主要特征的同时降低参数量，从而一定程度上防止了过拟合。池化层没有可学习参数，它的weight是固定的。在<code>torch.nn</code>工具箱中封装好了各种池化层，常见的有最大池化（MaxPool）和平均池化（AvgPool)。</p>
+        </div>
+      </div>
+    </div>
+
+<h2 id="安装-pytorch-cpu-版本"><a href="#安装-pytorch-cpu-版本" class="headerlink" title="安装 pytorch cpu 版本"></a>安装 pytorch cpu 版本</h2><p><a href="https://pytorch.org/get-started/previous-versions/">https://pytorch.org/get-started/previous-versions/</a></p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-95c8a4aa" role="button" aria-expanded="false" aria-controls="collapse-95c8a4aa">
+        <div class="fold-arrow">▶</div>点击此处查看步骤
+      </div>
+      <div class="fold-collapse collapse" id="collapse-95c8a4aa">
+        <div class="fold-content">
+          <p><img src="/img/post_pics/ai/Pytorch.png" srcset="/img/loading.gif" lazyload alt="Pytorch"></p><p><strong>安装 Anaconda. 下载地址:</strong> <a href="https://www.anaconda.com/download">https://www.anaconda.com/download</a></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># For example, Ubuntu</span><br>$ wget https://repo.anaconda.com/archive/Anaconda3-2024.02-1-Linux-x86_64.sh<br>$ <span class="hljs-built_in">chmod</span> +x Anaconda3-2024.02-1-Linux-x86_64.sh<br>$ ./Anaconda3-2024.02-1-Linux-x86_64.sh<br>$ <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;export PATH=\&quot;/root/anaconda3/bin\&quot;:\$PATH&quot;</span> &gt;&gt; ~/.bashrc   <span class="hljs-comment"># Check the path</span><br>$ <span class="hljs-built_in">source</span> ~/.bashrc<br><br><span class="hljs-comment"># Check if it is installed successfully:</span><br>$ conda --version<br>conda 24.1.2<br></code></pre></td></tr></table></figure><p><strong>换源</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Reference https://blog.csdn.net/adreammaker/article/details/123396951</span><br>$ conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/<br>$ conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/<br>$ conda config --<span class="hljs-built_in">set</span> show_channel_urls <span class="hljs-built_in">yes</span><br></code></pre></td></tr></table></figure><p><strong>创建Pytorch虚拟环境</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">conda create -n torch-1.6  python=3.6.13<br></code></pre></td></tr></table></figure><details><summary>创建过程的log</summary><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ conda create -n torch-1.6  python=3.6.13<br>Channels:<br> - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br> - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free<br> - defaults<br>Platform: linux-64<br>Collecting package metadata (repodata.json): <span class="hljs-keyword">done</span><br>Solving environment: <span class="hljs-keyword">done</span><br><br><span class="hljs-comment">## Package Plan ##</span><br><br>  environment location: /home/shenjianliang/anaconda3/envs/torch-1.6<br><br>  added / updated specs:<br>    - python=3.6.13<br><br><br>The following packages will be downloaded:<br><br>    package                    |            build<br>    ---------------------------|-----------------<br>    certifi-2021.5.30          |   py36h06a4308_0         139 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    libffi-3.3                 |       he6710b0_2          50 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    openssl-1.1.1w             |       h7f8727e_0         3.7 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    pip-21.2.2                 |   py36h06a4308_0         1.8 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    python-3.6.13              |       h12debd9_1        32.5 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    setuptools-58.0.4          |   py36h06a4308_0         788 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    wheel-0.37.1               |     pyhd3eb1b0_0          33 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    ------------------------------------------------------------<br>                                           Total:        39.0 MB<br><br>The following NEW packages will be INSTALLED:<br><br>  _libgcc_mutex      anaconda/pkgs/main/linux-64::_libgcc_mutex-0.1-main<br>  _openmp_mutex      anaconda/pkgs/main/linux-64::_openmp_mutex-5.1-1_gnu<br>  ca-certificates    anaconda/pkgs/main/linux-64::ca-certificates-2024.3.11-h06a4308_0<br>  certifi            anaconda/pkgs/main/linux-64::certifi-2021.5.30-py36h06a4308_0<br>  ld_impl_linux-64   anaconda/pkgs/main/linux-64::ld_impl_linux-64-2.38-h1181459_1<br>  libffi             anaconda/pkgs/main/linux-64::libffi-3.3-he6710b0_2<br>  libgcc-ng          anaconda/pkgs/main/linux-64::libgcc-ng-11.2.0-h1234567_1<br>  libgomp            anaconda/pkgs/main/linux-64::libgomp-11.2.0-h1234567_1<br>  libstdcxx-ng       anaconda/pkgs/main/linux-64::libstdcxx-ng-11.2.0-h1234567_1<br>  ncurses            anaconda/pkgs/main/linux-64::ncurses-6.4-h6a678d5_0<br>  openssl            anaconda/pkgs/main/linux-64::openssl-1.1.1w-h7f8727e_0<br>  pip                anaconda/pkgs/main/linux-64::pip-21.2.2-py36h06a4308_0<br>  python             anaconda/pkgs/main/linux-64::python-3.6.13-h12debd9_1<br>  readline           anaconda/pkgs/main/linux-64::readline-8.2-h5eee18b_0<br>  setuptools         anaconda/pkgs/main/linux-64::setuptools-58.0.4-py36h06a4308_0<br>  sqlite             anaconda/pkgs/main/linux-64::sqlite-3.45.3-h5eee18b_0<br>  tk                 anaconda/pkgs/main/linux-64::tk-8.6.14-h39e8969_0<br>  wheel              anaconda/pkgs/main/noarch::wheel-0.37.1-pyhd3eb1b0_0<br>  xz                 anaconda/pkgs/main/linux-64::xz-5.4.6-h5eee18b_1<br>  zlib               anaconda/pkgs/main/linux-64::zlib-1.2.13-h5eee18b_1<br><br><br>Proceed ([y]/n)? y<br><br><br>Downloading and Extracting Packages:<br><br>Preparing transaction: <span class="hljs-keyword">done</span><br>Verifying transaction: <span class="hljs-keyword">done</span><br>Executing transaction: <span class="hljs-keyword">done</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># To activate this environment, use</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment">#     $ conda activate torch-1.6</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># To deactivate an active environment, use</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment">#     $ conda deactivate</span><br></code></pre></td></tr></table></figure></details><p><strong>激活环境</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">conda activate torch-1.6<br></code></pre></td></tr></table></figure><p><strong>安装Pytorch 1.6</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">conda install pytorch==1.6.0 torchvision==0.7.0 -c pytorch<br></code></pre></td></tr></table></figure><details><summary>安装的log</summary><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ conda install pytorch==1.6.0 torchvision==0.7.0 -c pytorch<br>Channels:<br> - pytorch<br> - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br> - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free<br> - defaults<br>Platform: linux-64<br>Collecting package metadata (repodata.json): <span class="hljs-keyword">done</span><br>Solving environment: <span class="hljs-keyword">done</span><br><br><span class="hljs-comment">## Package Plan ##</span><br><br>  environment location: /home/shenjianliang/anaconda3/envs/torch-1.6<br><br>  added / updated specs:<br>    - pytorch==1.6.0<br>    - torchvision==0.7.0<br><br><br>The following packages will be downloaded:<br><br>    package                    |            build<br>    ---------------------------|-----------------<br>    cudatoolkit-10.2.89        |       hfd86e86_1       365.1 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    giflib-5.2.1               |       h5eee18b_3          80 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    intel-openmp-2022.1.0      |    h9e868ea_3769         4.5 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    libgfortran-ng-7.5.0       |      ha8ba4b0_17          22 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    libgfortran4-7.5.0         |      ha8ba4b0_17         995 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    libwebp-1.2.4              |       h11a3e52_1          86 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    libwebp-base-1.2.4         |       h5eee18b_1         376 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    mkl-2022.1.0               |     hc2b9512_224       129.7 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    ninja-1.10.2               |       h06a4308_5           8 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    ninja-base-1.10.2          |       hd09550d_5         109 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    numpy-1.14.2               |   py36hdbf6ddf_0         3.2 MB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    olefile-0.46               |     pyhd3eb1b0_0          34 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    pillow-8.3.1               |   py36h5aabda8_0         638 KB  https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main<br>    pytorch-1.6.0              |py3.6_cuda10.2.89_cudnn7.6.5_0       537.3 MB  pytorch<br>    torchvision-0.7.0          |       py36_cu102        11.0 MB  pytorch<br>    ------------------------------------------------------------<br>                                           Total:        1.03 GB<br><br>The following NEW packages will be INSTALLED:<br><br>  blas               anaconda/pkgs/main/linux-64::blas-1.0-mkl<br>  cudatoolkit        anaconda/pkgs/main/linux-64::cudatoolkit-10.2.89-hfd86e86_1<br>  freetype           anaconda/pkgs/main/linux-64::freetype-2.12.1-h4a9f257_0<br>  giflib             anaconda/pkgs/main/linux-64::giflib-5.2.1-h5eee18b_3<br>  intel-openmp       anaconda/pkgs/main/linux-64::intel-openmp-2022.1.0-h9e868ea_3769<br>  jpeg               anaconda/pkgs/main/linux-64::jpeg-9e-h5eee18b_1<br>  lcms2              anaconda/pkgs/main/linux-64::lcms2-2.12-h3be6417_0<br>  lerc               anaconda/pkgs/main/linux-64::lerc-3.0-h295c915_0<br>  libdeflate         anaconda/pkgs/main/linux-64::libdeflate-1.17-h5eee18b_1<br>  libgfortran-ng     anaconda/pkgs/main/linux-64::libgfortran-ng-7.5.0-ha8ba4b0_17<br>  libgfortran4       anaconda/pkgs/main/linux-64::libgfortran4-7.5.0-ha8ba4b0_17<br>  libpng             anaconda/pkgs/main/linux-64::libpng-1.6.39-h5eee18b_0<br>  libtiff            anaconda/pkgs/main/linux-64::libtiff-4.5.1-h6a678d5_0<br>  libwebp            anaconda/pkgs/main/linux-64::libwebp-1.2.4-h11a3e52_1<br>  libwebp-base       anaconda/pkgs/main/linux-64::libwebp-base-1.2.4-h5eee18b_1<br>  lz4-c              anaconda/pkgs/main/linux-64::lz4-c-1.9.4-h6a678d5_1<br>  mkl                anaconda/pkgs/main/linux-64::mkl-2022.1.0-hc2b9512_224<br>  ninja              anaconda/pkgs/main/linux-64::ninja-1.10.2-h06a4308_5<br>  ninja-base         anaconda/pkgs/main/linux-64::ninja-base-1.10.2-hd09550d_5<br>  numpy              anaconda/pkgs/main/linux-64::numpy-1.14.2-py36hdbf6ddf_0<br>  olefile            anaconda/pkgs/main/noarch::olefile-0.46-pyhd3eb1b0_0<br>  pillow             anaconda/pkgs/main/linux-64::pillow-8.3.1-py36h5aabda8_0<br>  pytorch            pytorch/linux-64::pytorch-1.6.0-py3.6_cuda10.2.89_cudnn7.6.5_0<br>  torchvision        pytorch/linux-64::torchvision-0.7.0-py36_cu102<br>  zstd               anaconda/pkgs/main/linux-64::zstd-1.5.5-hc292b87_2<br><br><br>Proceed ([y]/n)? y<br><br><br>Downloading and Extracting Packages:<br><br>Preparing transaction: <span class="hljs-keyword">done</span><br>Verifying transaction: <span class="hljs-keyword">done</span><br>Executing transaction: <span class="hljs-keyword">done</span><br></code></pre></td></tr></table></figure></details><p><strong>Conda删除环境</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 退出当前环境</span><br>$ conda deactivate<br><br><span class="hljs-comment"># 列出当前env</span><br>$ conda <span class="hljs-built_in">env</span> list<br><span class="hljs-comment"># conda environments:</span><br><span class="hljs-comment">#</span><br>base                     /home/shenjianliang/anaconda3<br>torch-1.6             *  /home/shenjianliang/anaconda3/envs/torch-1.6<br><br><span class="hljs-comment"># 删除</span><br>$ conda <span class="hljs-built_in">env</span> remove -p /home/shenjianliang/anaconda3/envs/torch-1.6<br></code></pre></td></tr></table></figure><p><strong>不用Anaconda，使用python虚拟env</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt-get install python3-venv<br>python3.6 -m venv myenv<br><span class="hljs-built_in">source</span> myenv/bin/activate<br><br>pip install torch==1.6.0+cpu torchvision==0.7.0+cpu -f https://download.pytorch.org/whl/torch_stable.html<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<h2 id="安装-pytorch-cuda-版本"><a href="#安装-pytorch-cuda-版本" class="headerlink" title="安装 pytorch cuda 版本"></a>安装 pytorch cuda 版本</h2><p>在RTX4070S windows中配置WSL相关的AI环境，包括CUDA，PyTorch，Cudnn等</p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-0142a643" role="button" aria-expanded="false" aria-controls="collapse-0142a643">
+        <div class="fold-arrow">▶</div>步骤
+      </div>
+      <div class="fold-collapse collapse" id="collapse-0142a643">
+        <div class="fold-content">
+          <p><strong>安装WSL&#x2F;Docker&#x2F;Nvidia：</strong><br><a href="https://blog.csdn.net/ndscvipuser/article/details/136610169">Windows 下让 Docker Desktop 关联上 NVidia GPU</a><br><a href="https://blog.csdn.net/dghcs18/article/details/134244426">如何查看wsl是wsl1还是wsl2</a><br><a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html">Nvidia WSL官方指引</a><br><a href="https://blog.csdn.net/weixin_55274216/article/details/137630257">linux上cuda相关包与opencv及相关模块安装（wsl+ubuntu22.04）</a></p><blockquote><p>注意：WSL不需要装cuda驱动，丢在win host安装，比如Geforce等驱动软件，安装完成后运行<code>nvidia-smi</code></p></blockquote><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Powershell中测试</span><br>docker run --<span class="hljs-built_in">rm</span> --runtime=nvidia --gpus all ubuntu nvidia-smi<br></code></pre></td></tr></table></figure><p>Docker Desktop中的设置：</p><p><img src="/img/post_pics/ai/docker_set1.png" srcset="/img/loading.gif" lazyload alt="1"><br><img src="/img/post_pics/ai/docker_set2.png" srcset="/img/loading.gif" lazyload alt="2"></p><p>测试结果：</p><p><img src="/img/post_pics/ai/docker.png" srcset="/img/loading.gif" lazyload alt="3"></p><p>WSL中测试：</p><p><img src="/img/post_pics/ai/wsl.png" srcset="/img/loading.gif" lazyload alt="4"></p><p>安装<a href="https://developer.nvidia.cn/cuda-downloads">cuda toolkit</a></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash">wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-wsl-ubuntu.pin<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mv</span> cuda-wsl-ubuntu.pin /etc/apt/preferences.d/cuda-repository-pin-600<br>wget https://developer.download.nvidia.com/compute/cuda/12.4.1/local_installers/cuda-repo-wsl-ubuntu-12-4-local_12.4.1-1_amd64.deb<br><span class="hljs-built_in">sudo</span> dpkg -i cuda-repo-wsl-ubuntu-12-4-local_12.4.1-1_amd64.deb<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">cp</span> /var/cuda-repo-wsl-ubuntu-12-4-<span class="hljs-built_in">local</span>/cuda-*-keyring.gpg /usr/share/keyrings/<br><span class="hljs-built_in">sudo</span> apt-get update<br><span class="hljs-built_in">sudo</span> apt-get -y install cuda-toolkit-12-4<br><br><span class="hljs-comment"># ~/.bashrc</span><br><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=/usr/local/cuda/lib64<br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:/usr/local/cuda/bin<br><br>nvcc -V<br>nvcc: NVIDIA (R) Cuda compiler driver<br>Copyright (c) 2005-2024 NVIDIA Corporation<br>Built on Thu_Mar_28_02:18:24_PDT_2024<br>Cuda compilation tools, release 12.4, V12.4.131<br>Build cuda_12.4.r12.4/compiler.34097967_0<br></code></pre></td></tr></table></figure><p><strong>安装Conda</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#创建环境</span><br>conda init<br>conda create -n torch-gpu  python=3.9<br>conda activate torch-gpu<br><br><span class="hljs-comment">#换源，参考https://blog.csdn.net/watermelon1123/article/details/88122020</span><br>conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/<br>conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/<br>conda config --<span class="hljs-built_in">set</span> show_channel_urls <span class="hljs-built_in">yes</span><br><br><span class="hljs-comment">#安装torch，命令在 https://pytorch.org/ 寻找</span><br>conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch-nightly -c nvidia<br><br><span class="hljs-comment"># ~/.bashrc</span><br>conda activate torch-gpu<br></code></pre></td></tr></table></figure><p><strong>安装cuDNN：<a href="https://developer.nvidia.com/cudnn-downloads">https://developer.nvidia.com/cudnn-downloads</a></strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">wget https://developer.download.nvidia.com/compute/cudnn/9.2.0/local_installers/cudnn-local-repo-ubuntu2004-9.2.0_1.0-1_amd64.deb<br><span class="hljs-built_in">sudo</span> dpkg -i cudnn-local-repo-ubuntu2004-9.2.0_1.0-1_amd64.deb<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">cp</span> /var/cudnn-local-repo-ubuntu2004-9.2.0/cudnn-*-keyring.gpg /usr/share/keyrings/<br><span class="hljs-built_in">sudo</span> apt-get update<br><span class="hljs-built_in">sudo</span> apt-get -y install cudnn-cuda-12<br><br><span class="hljs-comment"># 查看版本</span><br><span class="hljs-built_in">cat</span> /usr/include/cudnn_version.h | grep CUDNN_MAJOR -A 2<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<h2 id="pytorch-book-vscode-环境配置"><a href="#pytorch-book-vscode-环境配置" class="headerlink" title="pytorch book vscode 环境配置"></a>pytorch book vscode 环境配置</h2>
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-a474e0a9" role="button" aria-expanded="false" aria-controls="collapse-a474e0a9">
+        <div class="fold-arrow">▶</div>步骤
+      </div>
+      <div class="fold-collapse collapse" id="collapse-a474e0a9">
+        <div class="fold-content">
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> git@github.com:chenyuntc/pytorch-book.git<br></code></pre></td></tr></table></figure><p>VScode安装插件</p><p><img src="/img/post_pics/ai/torch-book-extension.png" srcset="/img/loading.gif" lazyload></p><p>此时打开任意一个note可以看到代码变成可以执行的框了：</p><p><img src="/img/post_pics/ai/vscode-load-python-1.png" srcset="/img/loading.gif" lazyload></p><p>但是会显示torch未导入，点击左侧的执行三角形按钮，会提示选择安装必要的插件，安装完成后再次点击，会提示选择python版本</p><p><img src="/img/post_pics/ai/vscode-load-python-11.png" srcset="/img/loading.gif" lazyload></p><p>选择python环境，找到conda路径下的python解释器</p><p><img src="/img/post_pics/ai/vscode-load-python-111.png" srcset="/img/loading.gif" lazyload></p><p>再次点击左侧运行，弹出要安装pykernel包，点击安装完成后，可以在右上角看到环境和python版本，也可以点击此处继续更换环境。</p>
+        </div>
+      </div>
+    </div>
+
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><h3 id="线性回归"><a href="#线性回归" class="headerlink" title="线性回归"></a>线性回归</h3><p>梯度下降算法和auto grad自动求解梯度函数，参考 <a href="https://github.com/chenyuntc/pytorch-book"><strong>《深度学习框架PyTorch：入门与实战》代码</strong></a> 小试牛刀: 用autograd实现线性回归。</p>
+<h3 id="fashion-mnist-手写数字分类"><a href="#fashion-mnist-手写数字分类" class="headerlink" title="fashion mnist 手写数字分类"></a>fashion mnist 手写数字分类</h3><p>参考Pytorch教程: <a href="https://pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html">Quick Start</a></p>
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-bca7c96c" role="button" aria-expanded="false" aria-controls="collapse-bca7c96c">
+        <div class="fold-arrow">▶</div>训练步骤
+      </div>
+      <div class="fold-collapse collapse" id="collapse-bca7c96c">
+        <div class="fold-content">
+          <ol><li>下载数据集</li><li>数据预处理等<a href="https://pytorch.org/tutorials/beginner/basics/data_tutorial.html">Data Tutorial</a></li><li>定义model，类型、层、前向函数和损失计算函数，并传递至device，如CPU或者CUDA，<a href="https://pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html">Build Model</a><ol><li><a href="https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html">Sequential</a>，构建连续的层<a href="https://blog.csdn.net/dss_dssssd/article/details/82980222">pytorch系列 nn.Sequential讲解</a></li><li>一些层级的简单介绍，<a href="https://yey.world/2020/12/16/Pytorch-13/">nn 网络层：池化层、线性层和激活函数层</a><ol><li><a href="https://pytorch.org/docs/stable/generated/torch.nn.ReLU.html">ReLU</a></li><li><a href="https://pytorch.org/docs/stable/generated/torch.nn.Linear.html">Linear</a></li></ol></li></ol></li><li>优化损失计算，<a href="https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html">Optimization Tutorials</a><ol><li><a href="https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html">交叉熵损失Cross Entropy Loss</a>，参考<a href="https://blog.csdn.net/chao_shine/article/details/89925762">交叉熵损失函数原理及Pytorch代码简介</a></li><li><a href="https://zhuanlan.zhihu.com/p/78622301">Pytorch中常用的四种优化器SGD、Momentum、RMSProp、Adam</a><ol><li><a href="https://pytorch.org/docs/stable/generated/torch.optim.SGD.html">SGD</a></li></ol></li></ol></li><li>训练，导入数据，计算损失，调用前向函数</li><li>测试，对测试集预测，计算预测结果争取率</li><li>保存模型，<a href="https://pytorch.org/tutorials/beginner/basics/saveloadrun_tutorial.html">Save &amp; Load &amp; Run</a></li></ol>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="fold">
+      <div class="fold-title fold-default collapsed" data-toggle="collapse" href="#collapse-2063547c" role="button" aria-expanded="false" aria-controls="collapse-2063547c">
+        <div class="fold-arrow">▶</div>测试模型
+      </div>
+      <div class="fold-collapse collapse" id="collapse-2063547c">
+        <div class="fold-content">
+          <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">from</span> torch <span class="hljs-keyword">import</span> nn<br><span class="hljs-keyword">from</span> torchvision <span class="hljs-keyword">import</span> datasets<br><span class="hljs-keyword">from</span> torchvision.transforms <span class="hljs-keyword">import</span> ToTensor<br><br>test_data = datasets.FashionMNIST(<br>    root=<span class="hljs-string">&quot;data&quot;</span>,<br>    train=<span class="hljs-literal">False</span>,<br>    download=<span class="hljs-literal">True</span>,<br>    transform=ToTensor(),<br>)<br><br>device = (<br>    <span class="hljs-string">&quot;cuda&quot;</span><br>    <span class="hljs-keyword">if</span> torch.cuda.is_available()<br>    <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;mps&quot;</span><br>    <span class="hljs-keyword">if</span> torch.backends.mps.is_available()<br>    <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;cpu&quot;</span><br>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Using <span class="hljs-subst">&#123;device&#125;</span> device&quot;</span>)<br><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">NeuralNetwork</span>(nn.Module):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-built_in">super</span>().__init__()<br>        <span class="hljs-variable language_">self</span>.flatten = nn.Flatten()<br>        <span class="hljs-variable language_">self</span>.linear_relu_stack = nn.Sequential(<br>            nn.Linear(<span class="hljs-number">28</span>*<span class="hljs-number">28</span>, <span class="hljs-number">512</span>),<br>            nn.ReLU(),<br>            nn.Linear(<span class="hljs-number">512</span>, <span class="hljs-number">512</span>),<br>            nn.ReLU(),<br>            nn.Linear(<span class="hljs-number">512</span>, <span class="hljs-number">10</span>)<br>        )<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, x</span>):<br>        x = <span class="hljs-variable language_">self</span>.flatten(x)<br>        logits = <span class="hljs-variable language_">self</span>.linear_relu_stack(x)<br>        <span class="hljs-keyword">return</span> logits<br><br>model = NeuralNetwork().to(device)<br>model.load_state_dict(torch.load(<span class="hljs-string">&quot;model.pth&quot;</span>))<br><br><br>classes = [<br>    <span class="hljs-string">&quot;T-shirt/top&quot;</span>,<br>    <span class="hljs-string">&quot;Trouser&quot;</span>,<br>    <span class="hljs-string">&quot;Pullover&quot;</span>,<br>    <span class="hljs-string">&quot;Dress&quot;</span>,<br>    <span class="hljs-string">&quot;Coat&quot;</span>,<br>    <span class="hljs-string">&quot;Sandal&quot;</span>,<br>    <span class="hljs-string">&quot;Shirt&quot;</span>,<br>    <span class="hljs-string">&quot;Sneaker&quot;</span>,<br>    <span class="hljs-string">&quot;Bag&quot;</span>,<br>    <span class="hljs-string">&quot;Ankle boot&quot;</span>,<br>]<br><br>model.<span class="hljs-built_in">eval</span>()<br><br>x, y = test_data[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>], test_data[<span class="hljs-number">1</span>][<span class="hljs-number">1</span>]<br><span class="hljs-keyword">with</span> torch.no_grad():<br>    x = x.to(device)<br>    pred = model(x)<br>    predicted, actual = classes[pred[<span class="hljs-number">0</span>].argmax(<span class="hljs-number">0</span>)], classes[y]<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;Predicted: &quot;<span class="hljs-subst">&#123;predicted&#125;</span>&quot;, Actual: &quot;<span class="hljs-subst">&#123;actual&#125;</span>&quot;&#x27;</span>)<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<h3 id="cifar-10"><a href="#cifar-10" class="headerlink" title="cifar 10"></a>cifar 10</h3><p>参考 <a href="https://github.com/chenyuntc/pytorch-book"><strong>《深度学习框架PyTorch：入门与实战》代码</strong></a> 2.2.4 小试牛刀：CIFAR-10分类。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/GPU/" class="category-chain-item">GPU</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CUDA/" class="print-no-link">#CUDA</a>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+        <a href="/tags/Algorithm/" class="print-no-link">#Algorithm</a>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/tags/Pytorch/" class="print-no-link">#Pytorch</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/02/Security/Nvidia-HCC-Driver-Code/" title="机密计算: HCC 驱动代码">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">机密计算: HCC 驱动代码</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/06/20/GPU/DIY-PC/" title="装机记录">
+                        <span class="hidden-mobile">装机记录</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

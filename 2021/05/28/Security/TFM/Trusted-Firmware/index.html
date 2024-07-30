@@ -1,0 +1,1198 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="The steps of Threat Modeling: Model System: Model the system you’re building, deploying, or changing Find Threats: Find threats using that model and the approaches Address Threats: Address threats u">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ARM Trusted Firmware">
+<meta property="og:url" content="http://yoursite.com/2021/05/28/Security/TFM/Trusted-Firmware/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="The steps of Threat Modeling: Model System: Model the system you’re building, deploying, or changing Find Threats: Find threats using that model and the approaches Address Threats: Address threats u">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/post_pics/index_img/tfm_logo.png">
+<meta property="article:published_time" content="2021-05-28T20:59:25.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.419Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="TF-M">
+<meta property="article:tag" content="TEE">
+<meta property="article:tag" content="Security">
+<meta property="article:tag" content="Arm">
+<meta property="article:tag" content="Firmware">
+<meta property="article:tag" content="PSA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/post_pics/index_img/tfm_logo.png">
+  
+  
+  
+  <title>ARM Trusted Firmware - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="ARM Trusted Firmware"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-05-28 20:59" pubdate>
+          2021年5月28日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          688 words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          6 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">ARM Trusted Firmware</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <span id="more"></span>
+
+<h2 id="The-steps-of-Threat-Modeling"><a href="#The-steps-of-Threat-Modeling" class="headerlink" title="The steps of Threat Modeling:"></a>The steps of Threat Modeling:</h2><ol>
+<li><strong>Model System</strong>: Model the system you’re building, deploying, or changing</li>
+<li><strong>Find Threats</strong>: Find threats using that model and the approaches</li>
+<li><strong>Address Threats</strong>: Address threats using the approaches</li>
+<li><strong>Validate</strong>: Validate your work for completeness and effectiveness</li>
+</ol>
+<p>People often use an approach centered on models of their <strong>assets</strong>, models of <strong>attackers</strong>, or models of their <strong>software</strong>.</p>
+<h3 id="Finding-Threats"><a href="#Finding-Threats" class="headerlink" title="Finding Threats"></a>Finding Threats</h3><p>Using <strong>STRIDE</strong> model and <strong>Attack Trees, Attack Libraries, Privacy Tools</strong> to find threats in system. The STRIDE model is:</p>
+<ul>
+<li><strong>Spoofing</strong>: Pretending to be something or someone other than yourself</li>
+<li><strong>Tampering</strong>: Modifying something on disk, on a network, or in memory</li>
+<li><strong>Repudiation</strong>: Claiming that you didn’t do something, or were not responsible. Repudiation can be honest or false, and the key question for system designers is, what evidence do you have?</li>
+<li><strong>Information Disclosure</strong>: Providing information to someone not authorized to see it</li>
+<li><strong>Denial of Service</strong>: Absorbing resources needed to provide service</li>
+<li><strong>Elevation of Privilege</strong>: Allowing someone to do something they’re not authorized to do</li>
+</ul>
+<h3 id="Defensive-Technologies"><a href="#Defensive-Technologies" class="headerlink" title="Defensive Technologies"></a>Defensive Technologies</h3><ul>
+<li><strong>Authentication</strong>: Mitigating Spoofing<ul>
+<li>mainly technologies: Digital signatures and Hashes</li>
+<li>Methods for authenticating people: password, access card or biometric information</li>
+</ul>
+</li>
+<li><strong>Integrity</strong>: Mitigating Tampering<ul>
+<li>using digital signatures or hashes to avoid tampering</li>
+</ul>
+</li>
+<li><strong>Non-Repudiatio</strong>n: Mitigating Repudiation<ul>
+<li>using logs or digital signatures to avoid reputation</li>
+</ul>
+</li>
+<li><strong>Confidentialit</strong>y: Mitigating Information Disclosure<ul>
+<li>using cryptography and keys</li>
+</ul>
+</li>
+<li><strong>Availability</strong>: Mitigating Denial of Service</li>
+<li><strong>Authorization</strong>: Mitigating Elevation of Privilege</li>
+</ul>
+<h3 id="Threat-modeling-of-TF-M-TMSA"><a href="#Threat-modeling-of-TF-M-TMSA" class="headerlink" title="Threat modeling of TF-M(TMSA)"></a>Threat modeling of TF-M(TMSA)</h3><p>TMSA of Network Camera.</p>
+<p>The <strong>assets</strong> of system:</p>
+<ul>
+<li>Camera ID: A unique ID to identify the device on a network, such as a Media Access Control (MAC) address.</li>
+<li>Firmware: The camera’s firmware.</li>
+<li>Firmware Certificate:  The cryptographic certificate used to authenticate firmware and firmware updates.</li>
+<li>Logs: The event logs, that can be used to detect suspicious activities.</li>
+<li>Video Stream: The video stream produced by the camera sent over the network.</li>
+<li>Configuration: The camera’s dynamic configuration, including network configuration such as the name of a Wireless Local Area Network (WLAN), or IP and Domain Name System (DNS) addresses and camera settings such as pan, tilt, and zoom, the events to be detected and notified.</li>
+<li>Credentials: The authentication credentials, used for local and remote authentication<ul>
+<li>Network credentials, to authenticate if needed on the network, for instance a Wi-Fi pre-shared key or a 802.1x certificate, to be protected in integrity and confidentiality.</li>
+<li>Device authentication credentials to authenticate on remote servers, to be protected in integrity and confidentiality.</li>
+<li>Server authentication data, such as public key certificates, to be protected in integrity.</li>
+<li>Session keys, used after establishment of a trusted communication channel with servers, to be protected in integrity and confidentiality.</li>
+<li>Administration and user credentials, to authenticate to the services provided by the network camera, either for administration or for regular use, to be protected in integrity and confidentiality.</li>
+<li>User biometric patterns to be used in face recognition or similar algorithms, to be protected in integrity.</li>
+</ul>
+</li>
+</ul>
+<p>The <strong>threats</strong> of system:</p>
+<ul>
+<li><strong>IMPERSONATION</strong><ul>
+<li>An attacker impersonates a legitimate user on the camera, either a regular user that can access the video stream or an admin user.</li>
+<li>The user credentials may be obtained through default admin passwords, interception, for instance in insecure communication links, or exposed through data disclosure.</li>
+<li>The attacker may then access video stream, modify configuration or try to modify firmware.</li>
+<li>Assets threatened directly: Credentials Assets threatened indirectly: Video Stream, Configuration.</li>
+</ul>
+</li>
+<li><strong>MITM</strong><ul>
+<li>An attacker performs a Man-In-The-Middle attack or impersonates a server the camera connects to, for instance to upload the video stream or the event logs.</li>
+<li>The attacker may rely on insecure communication links or prior modification of the server credentials on the camera through insecure configuration.</li>
+<li>The attacker may then access and modify Video Stream, Logs, Credentials, Configuration data.</li>
+<li>Assets threatened directly: Credentials (Server), Logs, Video Stream, Configuration</li>
+</ul>
+</li>
+<li><strong>FIRMWARE ABUSE</strong><ul>
+<li>An attacker installs a flawed version of the firmware and obtains partial or total control of the camera. The firmware may have been modified prior to the attack to include a malware or consist of an outdated version of the original firmware.</li>
+<li>The attacker may for instance modify on the device the value of the firmware certificate used to authenticate the installed firmware or firmware updates.</li>
+<li>Such an attack can allow for elevation of privileges, where a regular user gains access to admin privileges.</li>
+<li>This attack can also be used to take control over the TOE( Target of Evaluation) resources, for instance to carry a denial-of-service attack on other network devices, to store illegal files or to mine cryptocurrencies.</li>
+<li>Assets threatened directly: Firmware, Firmware Certificate, Computing Power, Network Bandwidth, Storage Space.</li>
+<li>Assets threatened indirectly: All.</li>
+</ul>
+</li>
+<li><strong>TAMPER</strong><ul>
+<li>An attacker tampers with the camera and tries to access or modify the media on which assets are stored.</li>
+<li>This includes basic Printed Circuit Board (PCB) attacks, after opening the camera case, such as eavesdropping buses, disordering memory chips, use of debug interfaces.</li>
+<li>Assets threatened directly: All.</li>
+</ul>
+</li>
+</ul>
+<p>Security Objectives:</p>
+<ul>
+<li><strong>Access control</strong><ul>
+<li>The TOE shall authenticate User before granting access to the Video Stream.</li>
+<li>The TOE shall authenticate Admin before granting access the camera configuration and logs and before performing firmware update.</li>
+</ul>
+</li>
+<li><strong>Secure storage</strong><ul>
+<li>The TOE shall protect integrity and confidentiality of Credentials when stored, and protect integrity of Firmware Certificate, Configuration and Logs when stored.</li>
+</ul>
+</li>
+<li><strong>Firmware authenticity</strong><ul>
+<li>The TOE shall authenticate and verify integrity of firmware image during boot and of new firmware versions prior upgrade.</li>
+<li>The TOE shall also reject attempts of firmware downgrade.</li>
+</ul>
+</li>
+<li><strong>Communication</strong><ul>
+<li>The TOE shall be able to authenticate remote servers where Video Stream and Logs are uploaded and provide integrity and confidentiality protection for export outside of the TOE.</li>
+</ul>
+</li>
+<li><strong>Audit(log)</strong><ul>
+<li>The TOE shall maintain log of all significant events and allow access and analysis of these logs to authorized users only.</li>
+</ul>
+</li>
+<li><strong>Secure state</strong><ul>
+<li>The TOE shall maintain a secure state even in case of failures, for instance failure of verification of firmware integrity.</li>
+</ul>
+</li>
+</ul>
+<h2 id="Fundamentals-of-Cryptography"><a href="#Fundamentals-of-Cryptography" class="headerlink" title="Fundamentals of Cryptography"></a>Fundamentals of Cryptography</h2><p>There are three classed of cryptography:</p>
+<ul>
+<li>symmetric cryptography</li>
+<li>public-key cryptography</li>
+<li>hybrid cryptography</li>
+</ul>
+<h3 id="Symmetric-cryptography"><a href="#Symmetric-cryptography" class="headerlink" title="Symmetric cryptography"></a>Symmetric cryptography</h3><p>The data(assets) is encoded into a binary sequence, we use XOR operation, one-time pad or DES&#x2F;AES to encrypt the plaintext into ciphertext.</p>
+<h3 id="Public-key-cryptography"><a href="#Public-key-cryptography" class="headerlink" title="Public-key cryptography"></a>Public-key cryptography</h3><p>RSA and ECC are the commonly used encryption algorithms. The theory of RSA:</p>
+<p>Ciphertext &#x3D; Plaintext ^ E mod N, the (E, N) is a pair of public keys<br>Plaintext &#x3D; Ciphertext ^ D mode N, the (D, N) is a pair of private keys</p>
+<p>How to calculate the keys:</p>
+<ol>
+<li>prepare two prime number P and Q, $N &#x3D; P * Q$</li>
+<li>$L &#x3D; lcm(P-1,Q-1)$, lcm means calculate  the least common multiple of two numbers</li>
+<li>$1 &lt; E &lt; L, gcd( E, L) &#x3D; 1$, gcd means calculate the greatest common divisor of two numbers</li>
+<li>$1 &lt; D &lt; L, E * D mod L &#x3D;1$</li>
+</ol>
+<p>The problem of Public-key cryptography is Man-in-the-middle attack, it needs the public key authentication.</p>
+<h3 id="Hybrid-cryptography"><a href="#Hybrid-cryptography" class="headerlink" title="Hybrid cryptography"></a>Hybrid cryptography</h3><p>It combines the advantages of symmetric and public-key cryptographies, and solute the problem of key distribution.</p>
+<p>Other security technologies</p>
+<ul>
+<li>Hashes: The hashes are used to guarantee the integrity of data or software, it can defense the tamper attack.</li>
+<li>MAC(Message Authentication Code): the inputs of MAC are message and shared key, the output of MAC is a fixed length number calculated by hashes. The MAC and defense the tamper and spoofing attack. But it cannot solve the Repudiation problem.</li>
+<li>Digital signature: the digital signature can defense the tamper, spoofing and repudiation attacks. It is realized by public-key cryptography. Alice use the private key to encrypt and Bob use the public key to decrypt so Alice cannot repudiate the message.</li>
+<li>PKC, public-key certificate: It is used to solve the public-key authentication problem.</li>
+</ul>
+<h2 id="Security-Requirements"><a href="#Security-Requirements" class="headerlink" title="Security Requirements"></a>Security Requirements</h2><p>Example: Security requirements of Network Camera</p>
+<ul>
+<li><strong>ACCESS CONTROL</strong><ul>
+<li>The TOE shall maintain the roles Admin and User.</li>
+<li>The TOE shall allow authentication of users according to these roles through user-initiated interactive sessions.</li>
+<li>Note 1: The ST writer shall explicit how credentials for user authentication are managed on the TOE. This may include techniques to prevent weak passwords and also to protect them against disclosure (for instance use of salted hashes).</li>
+<li>The TOE shall manage a threshold for unsuccessful authentication attempts. The ST writer shall precise the actions taken is this threshold is reached.</li>
+<li>The TOE shall require each user to be successfully authenticated before allowing any other actions on behalf of that user.</li>
+<li>The TOE shall allow termination of user’s own interactive session and automatically terminate a remote interactive session after session inactivity.</li>
+<li>The TOE shall enforce an access control policy on TOE assets and operations based on the identity of the user requesting access. The ST writer shall define rules of this policy.</li>
+<li>Note 2: This policy will typically include rules such as:<ul>
+<li>Access to Configuration, Logs, Credentials assets is only allowed to authenticated users with role Admin.</li>
+<li>Access to Firmware upgrade operations is only allowed to authenticated users with role Admin.</li>
+<li>Access to video stream assets is only allowed to authenticated users with role User.</li>
+</ul>
+</li>
+<li>The TOE shall prevent unauthorized uses of all assets. In particular, the TOE shall prevent reading of all Credentials and shall not provide an interface to do so.</li>
+</ul>
+</li>
+<li><strong>SECURE_STORAGE</strong><ul>
+<li>The TOE shall monitor for integrity errors assets with a security need for integrity (Camera ID, Firmware, Firmware Certificate, Logs, Configuration, Credentials).</li>
+<li>Note 3: The TOE will typically ensure integrity either with hardware based write-once mechanisms, such as One-Time-Programmable (OTP), or through cryptographic hash functions. In the latter case, the ST writer shall explicit the cryptographic algorithms used for secure storage and related key characteristics and random generation methods.</li>
+<li>Upon detection of a data integrity error, the TOE shall maintain a secure state. The ST writer shall specify reaction of the TOE in this case.</li>
+<li>Note 4: For assets with a security need for confidentiality (Credentials), protection of relies on access control measures (OT.ACCESS_CONTROL). However the TOE may offer additional protection by encryption of persistent memory. The ST writer shall specify the mechanism used and related encryption techniques.</li>
+</ul>
+</li>
+<li><strong>FIRMWARE_AUTHENTICITY</strong><ul>
+<li>The TOE shall rely on a secure boot mechanism to authenticate and verify integrity of firmware prior transferring control to the firmware.</li>
+<li>Note 5: A secure boot will typically rely on a multi-stage boot process where the authenticity of the first stage is assumed from read-only memory and other stages with verification of cryptographic signatures with asymmetric keys. The ST writer shall explicit which signature schemes are used at the various stages, including the hash algorithm, and the size of the various parameters (e.g., modulus of 2048 bits and exponent of 32 bits for RSASSA-PSS with SHA-512). He shall also specify the list of standards that are met by the chosen schemes or none.</li>
+<li>If the firmware is loaded from a removable media, the TOE shall use a persistent storage to store the version of the last installed firmware and compare this version to the version from the loaded firmware to prevent loading of an out-dated firmware.</li>
+<li>Upon detection of a firmware authenticity error, the TOE shall maintain a secure state. The ST writer shall specify the action to be taken if the verification fails (cf. OT.SECURE_STATE).</li>
+<li>Note 6: The TOE may enter a maintenance mode where the ability to return a secure state is provided.</li>
+<li>On firmware upgrade requests, the TOE shall first authenticate the upgrade binary based on digital signature and verify its integrity. The TOE shall also check that version of the firmware for upgrade is more recent than the firmware currently installed.</li>
+<li>Note 7: A Security Target derived from this TMSA must state which signature scheme is used.</li>
+<li>Upon detection of an error during upgrade, the TOE shall revert to the version of the firmware prior the upgrade request.</li>
+<li>The TOE should provide the ability to check availability of firmware upgrade and notify Admin.</li>
+</ul>
+</li>
+<li><strong>COMMUNICATION</strong><ul>
+<li>The TOE shall establish a trusted communication channel with remote servers prior any exchange of Target of Evaluation Security Functionality (TSF) data or User data and verify if the peer certificate is valid.</li>
+<li>Note 8: Trusted communication channels include any of Internet Protocol Security (IPsec), Transport Layer Security (TLS) or (Hyper Text Transfer Protocol Secure (HTTPS) performed by the TOE. Validity of the peer certificate is determined by the certificate path, the expiration date, and the revocation status.</li>
+<li>The TOE shall prevent the disclosure and modification of user data when exporting user data outside of the TOE.</li>
+<li>Note 9: Protection of user data relies on the encryption techniques provided with the trusted communication channel. The ST writer shall explicit which encryption algorithms are used and related key sizes.</li>
+<li>The TOE should support network authentication (e.g. Wi-Fi or IEEE 802.1X).</li>
+</ul>
+</li>
+<li><strong>AUDIT</strong><ul>
+<li>The TOE shall maintain an audit trail of security events. Each record shall mention the nature of the event, date and time of the event and the user, if any, responsible for the event.</li>
+<li>Note 10: The ST writer shall explicit which events are logged. This will include at least failed and successful authentication attempts, firmware upgrade requests and progress, integrity errors.</li>
+<li>The TOE shall prevent users from deleting entries from the audit trail.</li>
+<li>Note 11: The only audit trail operations and interfaces that should be available on the TOE are appending a line to the audit trail and export outside of the TOE.</li>
+<li>The TOE should rely on a Network Time Protocol (NTP) server to provide reliable source for time stamps for the audit trail.</li>
+<li>Note 12: If the TOE supports the use of a NTP server, the operational guidance for the TOE shall provide instructions for the Admin to configure the NTP client on the TOE.</li>
+</ul>
+</li>
+<li><strong>SECURE_STATE</strong><ul>
+<li>The TOE shall maintain a secure state in case of failures, such as firmware integrity error, firmware upgrade error, Random Number Generation (RNG) error, failure to establish a trusted communication channel.</li>
+<li>Note 13: If the TOE should encounter a failure in the middle of a critical operation, the TOE should not just quit operating, leaving key material and user data unprotected. The ST writer shall specify</li>
+<li>The TOE shall ensure residual information protection for credentials and session keys after they are being used.</li>
+</ul>
+</li>
+</ul>
+<p>Summary:</p>
+<ul>
+<li>Security Lifecycle: During its creation and use, the system progresses through a series of states. These states indicate the assets present in the system and the functionality that is available or has been disabled. Progression through the states is usually controlled using a write-once mechanism. The figure contains the minimum number of states and it is expected that a full product will contain more that are specific to a product family, OEM manufacturing, or market requirements.</li>
+<li>Boot ROM and reset<ul>
+<li>Boot keys: Root of Trust Public Key. To minimize the amount of required on-chip memory, an SoC should only store a cryptographic hash of the public key, while the public key is held in external storage. On each boot, the Boot ROM can then calculate the hash of the loaded public key and compare it with the hash in on-chip memory to ensure it has not been tampered.</li>
+<li>Boot type: cold and warm boot.</li>
+<li>Boot parameters: Some Boot ROM implementations can be influenced by additional configuration information stored in on-chip one-time programmable memory (OTP).</li>
+<li>Boot robustness: The execution of the Boot ROM must not be perturbed by other agents (for example, through DMA) or via interfaces (for example, PCI, JTAG).</li>
+<li>Secondary processing elements: If the SoC implements multiple processing elements (PE), the designated boot PE is called the primary. After the de-assertion of a reset, the primary boot PE executes the Boot ROM code, and the remaining PEs are held in reset or a safe platform-specific state until the primary boot PE initializes and boots them.</li>
+</ul>
+</li>
+<li>Clock and power</li>
+<li>Memory system: the system sees the memory map as into two spaces, Secure and Non-secure storage, in which Trusted world assets are held in Secure storage and Non-Trusted world assets are held in Non-secure storage. Each transaction originates from either the Trusted world or Non-Trusted world. Before any shared storage can be reallocated from one security domain to an untrusted security domain, the asset must be securely removed. This process is called scrubbing. Scrubbing is the process of overwriting an asset using any of the following methods:<ul>
+<li>Overwritten with a pre-defined constant value (for example, zero).</li>
+<li>Overwritten with a random value.</li>
+<li>Indirectly changed to a random value, for example by changing a key which is used to decrypt the content.</li>
+</ul>
+</li>
+<li>Processing elements</li>
+<li>Interrupts: Each world may receive interrupts of some form. An interrupt that is only meant to be received by the Trusted world is referred to as a Trusted interrupt. In most cases, a Trusted interrupt must not be visible to a Non-Trusted operation, in order to prevent information leaks that might be useful to an attacker. Consequently, the on-chip interrupt network must be able to route any interrupt to any world. However, the routing of Trusted interrupts must only be configured from the Trusted world. When a memory access violation occurs, such as when the Non-Trusted world tries to access a Trusted asset, a security exception or security interrupt is raised.</li>
+<li>Debug: DPM, debug protection mechanism</li>
+<li>Peripherals and subsystems</li>
+<li>Platform identity: Arm strongly recommends using public key cryptography, whereby the attestation key is a keypair consisting of a (secret) private key and a public key.</li>
+<li>Random number generation: true random number generator (TRNG.</li>
+<li>Timers: Trusted world depends on must be resistant against tampering and must only be configured by the Trusted world. Trusted timers are needed to provide time-based triggers to Trusted world services. The SoC must support one or more Trusted timers.</li>
+<li>Cryptography: The cryptographic algorithms that are used must be strong against networked adversaries and local attackers. The specific choice of algorithms depends on the target market and local regulations.</li>
+<li>Secure storage:<ul>
+<li>A hardware unique key (HUK)</li>
+<li>An on-chip Trusted non-volatile counter, which is required for version control of firmware and trusted data held in external storage. An important property of these counters is that it must not be possible to roll them back, to prevent replay attacks. There must be at least one counter for Trusted firmware use and at least one counter for Non-trusted firmware use.</li>
+</ul>
+</li>
+<li>Main memory: Example Secure RAM use cases are:<ul>
+<li>Secure boot code and data.</li>
+<li>Secure Monitor code.</li>
+<li>A Trusted OS or a Secure Partition Manager.</li>
+<li>Cryptographic services.</li>
+<li>Trusted services.</li>
+</ul>
+</li>
+</ul>
+<h2 id="Security-Model"><a href="#Security-Model" class="headerlink" title="Security Model"></a>Security Model</h2><p>The goals of security model:</p>
+<ul>
+<li>Devices are uniquely identifiable.</li>
+<li>Devices support a security lifecycle.</li>
+<li>Devices are securely attestable.</li>
+<li>Devices ensure that only authorized software can be executed.</li>
+<li>Devices support secure update.</li>
+<li>Devices prevent unauthorized rollback of software.</li>
+<li>Devices support isolation.</li>
+<li>Devices support interaction over isolation boundaries.</li>
+<li>Devices support unique binding of sensitive data to a device.</li>
+<li>Devices support a minimal set of trusted services and cryptographic operations that are necessary for the device to support the other goals.</li>
+</ul>
+<h2 id="Address-Threats"><a href="#Address-Threats" class="headerlink" title="Address Threats"></a>Address Threats</h2><p>Threat priority: Threat priority is indicated by the score calculated via Common Vulnerability Scoring System (CVSS) Version 3.1 <a href="https://www.first.org/cvss/calculator/3.1">CVSS</a>. The higher the threat scores, the greater severity the threat is with and the higher the priority is. CVSS scores can be mapped to qualitative severity ratings defined in CVSS 3.1 specification <a href="https://www.first.org/cvss/calculator/3.1">CVSS_SPEC</a>. This threat model follows the same mapping between CVSS scores and threat priority rating.</p>
+<p><img src="/img/post_pics/TF-M/tfm_1.png" srcset="/img/loading.gif" lazyload alt="fig1"></p>
+<p>Data flow and threats:</p>
+<ul>
+<li>DF1: TF-M initializes NS entry and activates NSPE.<ul>
+<li>Tampering: The NS image can be tampered by an attacker.</li>
+<li>Tampering: An attacker may replace the current NS image with an older version.</li>
+<li>Tampering&#x2F;Information disclosure: If SPE doesn’t complete isolation configuration before NSPE starts, NSPE can access secure regions which it is disallowed to.</li>
+<li>Tampering&#x2F;Information disclosure: If SPE doesn’t complete isolation configuration before NSPE starts, NSPE can control devices or peripherals which it is disallowed to.</li>
+<li>Information disclosure: If SPE leaves some SPE information in non-secure memory or shared registers when NSPE starts, NSPE may access those SPE information.</li>
+<li>Denial of service: An attacker may block NS to boot up</li>
+</ul>
+</li>
+<li>DF2: NSPE requests TF-M RoT services.<ul>
+<li>Spoofing: A malicious NS application may pretend as a secure client to access secure data which NSPE must not directly access.</li>
+<li>Tampering: An attacker in NSPE may tamper the service request input or output vectors between check and use (Time-Of-Check-to-Time-Of-Use (TOCTOU)).</li>
+<li>Tampering: A malicious NS application may request to tamper data belonging to SPE.</li>
+<li>Repudiation: A NS application may repudiate that it has requested services from a RoT service.</li>
+<li>Information disclosure: A malicious NS application may request to read data belonging to SPE.</li>
+<li>Tampering&#x2F;Information disclose: A malicious NS application may request to control secure device and peripherals, on which it doesn’t have the permission.</li>
+<li>Denial of service: A Malicious NS applications may frequently call secure services to block secure service requests from other NS applications.</li>
+<li>Denial of service: A malicious NS application may provide invalid NS memory addresses as the addresses of input and output data in RoT service requests.</li>
+</ul>
+</li>
+<li>DF3: Secure Partitions fetch input data from NS and write back output data to NS.<ul>
+<li>Tampering: An attacker may tamper NS input data while the RoT service is processing those data.</li>
+<li>Tampering: A malicious NS application may embed secure memory addresses into a structure in RoT service request input vectors, to tamper secure memory which the NS application must not access.</li>
+<li>Information disclosure: a malicious NS application can embed secure memory addresses in a parameter structure in RoT service request input vectors, to read secure data which the NS application must not access.</li>
+</ul>
+</li>
+<li>DF4: TF-M returns RoT service results to NSPE after NS request to RoT service is completed.<ul>
+<li>Information disclosure: SPE may leave secure data in the registers not banked after the SPE completes PSA Client calls and executes BXNS to switch Armv8-M back to Non-secure state.</li>
+</ul>
+</li>
+<li>DF5: Non-secure interrupts preempt SPE execution in single Armv8-M core scenarios.<ul>
+<li>Information disclosure: Shared registers may contain secure data when NS interrupts occur.</li>
+<li>Denial of service: An attacker may trigger spurious NS interrupts frequently to block SPE execution.</li>
+</ul>
+</li>
+<li>DF6: Secure interrupts preempt NSPE execution in single Armv8-M core scenarios.<ul>
+<li>Information disclosure: Shared registers may contain secure data when Armv8-M core switches back to Non-secure state on Secure interrupt return.</li>
+</ul>
+</li>
+<li>Other miscellaneous threats<ul>
+<li>Elevation of privilege: Armv8-M processor Secure software Stack Sealing vulnerability.</li>
+<li>Denial of service&#x2F;Tampering: Invoking Secure functions from handler mode may cause TF-M IPC model to behave unexpectedly.</li>
+</ul>
+</li>
+</ul>
+<p>How does TF-M defense or mitigate threats: please ignore the table because it is the personal opinion.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Spoofing</th>
+<th>Tampering</th>
+<th>Repudiation</th>
+<th>Information Disclosure</th>
+<th>Denial of Service</th>
+<th>Elevation of Privilege</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Isolation</strong></td>
+<td>√</td>
+<td>√</td>
+<td></td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td><strong>Anti-rollback&#x2F;FWU</strong></td>
+<td>√</td>
+<td>√</td>
+<td></td>
+<td>√</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Secure boot</strong></td>
+<td>√</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>√</td>
+</tr>
+<tr>
+<td><strong>Internal trusted storage</strong></td>
+<td></td>
+<td>√</td>
+<td></td>
+<td>√</td>
+<td></td>
+<td>√</td>
+</tr>
+<tr>
+<td><strong>Device binding</strong></td>
+<td>√</td>
+<td>√</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Cryptographic service</strong></td>
+<td>√</td>
+<td>√</td>
+<td></td>
+<td>√</td>
+<td></td>
+<td>√</td>
+</tr>
+<tr>
+<td><strong>Initial attestation</strong></td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td></td>
+<td></td>
+<td>√</td>
+</tr>
+<tr>
+<td><strong>Audit logging</strong></td>
+<td></td>
+<td>√</td>
+<td>√</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Protected storage</strong></td>
+<td></td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td></td>
+<td>√</td>
+</tr>
+<tr>
+<td><strong>PSA RoT</strong></td>
+<td>√</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>√</td>
+</tr>
+</tbody></table>
+<h2 id="Some-related-knowledge-of-ARMv8-M"><a href="#Some-related-knowledge-of-ARMv8-M" class="headerlink" title="Some related knowledge of ARMv8-M"></a>Some related knowledge of ARMv8-M</h2><h2 id="FF-M-and-PSA-interfaces"><a href="#FF-M-and-PSA-interfaces" class="headerlink" title="FF-M and PSA interfaces"></a>FF-M and PSA interfaces</h2><p>According to ARMv8-M document, the CPU has thread mode and handler mode. In handler mode, the processor has root privileges and accesses more system resources compared with thread mode. In thread mode, the processor can work with root privileges or none root privileges which is managed by nPRIV in CONTROL register. The handler mode can switch to the thread mode but the reverse process cannot complete by itself. If we want to turn the thread mode to handler mode, we need to put a processor exception.When the processor is reset, the CONTROL is cleared so it is under privileged thread mode. Most time the applications work under the ‘user mode’ (unprivileged thread mode) which is similar to Linux operating system.</p>
+<p><img src="/img/post_pics/TF-M/tfm_2.png" srcset="/img/loading.gif" lazyload alt="fig2"><br>The psa interface code shows:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c">__attribute__((naked))<br><span class="hljs-type">psa_handle_t</span> <span class="hljs-title function_">psa_connect</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> sid, <span class="hljs-type">uint32_t</span> version)</span><br>&#123;<br>    __ASM <span class="hljs-title function_">volatile</span><span class="hljs-params">(<span class="hljs-string">&quot;SVC %0           \n&quot;</span></span><br><span class="hljs-params">                   <span class="hljs-string">&quot;BX LR            \n&quot;</span></span><br><span class="hljs-params">                   : : <span class="hljs-string">&quot;I&quot;</span> (TFM_SVC_PSA_CONNECT))</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>Here is a flow chart to describe the psa interfaces in IPC mode:<br><img src="/img/post_pics/TF-M/tfm_3.png" srcset="/img/loading.gif" lazyload alt="fig3"></p>
+<p>The interfaces in library mode:<br><img src="/img/post_pics/TF-M/tfm_4.png" srcset="/img/loading.gif" lazyload alt="fig4"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Security/" class="category-chain-item">Security</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/TF-M/" class="print-no-link">#TF-M</a>
+      
+        <a href="/tags/TEE/" class="print-no-link">#TEE</a>
+      
+        <a href="/tags/Security/" class="print-no-link">#Security</a>
+      
+        <a href="/tags/Arm/" class="print-no-link">#Arm</a>
+      
+        <a href="/tags/Firmware/" class="print-no-link">#Firmware</a>
+      
+        <a href="/tags/PSA/" class="print-no-link">#PSA</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/05/29/Security/TFM/TFM-PSA-Interface/" title="TF-M PSA Interface">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">TF-M PSA Interface</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/03/31/SW/Git-Base/" title="git工具使用指北">
+                        <span class="hidden-mobile">git工具使用指北</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

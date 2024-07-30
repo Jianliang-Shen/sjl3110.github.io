@@ -1,0 +1,1073 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="zephyr是一个强大的嵌入式跨平台开源操作系统，有丰富的模块和完善的文档。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="快速了解zephyr">
+<meta property="og:url" content="http://yoursite.com/2023/06/25/SW/OS/Zephyr/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="zephyr是一个强大的嵌入式跨平台开源操作系统，有丰富的模块和完善的文档。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/post_pics/index_img/Zephyr-logo.png">
+<meta property="article:published_time" content="2023-06-25T21:52:36.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.415Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="Arm">
+<meta property="article:tag" content="RTOS">
+<meta property="article:tag" content="Zephyr">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/post_pics/index_img/Zephyr-logo.png">
+  
+  
+  
+  <title>快速了解zephyr - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="快速了解zephyr"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-06-25 21:52" pubdate>
+          2023年6月25日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          26 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">快速了解zephyr</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>zephyr是一个强大的嵌入式跨平台开源操作系统，有丰富的模块和完善的文档。</p>
+<span id="more"></span>
+
+<p>本篇旨在挑选文档重点内容和代码演示。为后续的开发提供基础。</p>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85">安装</a></li>
+<li><a href="#%E7%BC%96%E8%AF%91%E5%92%8C%E8%BF%90%E8%A1%8C">编译和运行</a><ul>
+<li><a href="#%E4%BD%BF%E7%94%A8kconfig%E5%85%B3%E9%97%AD%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9">使用Kconfig关闭编译选项</a></li>
+<li><a href="#musca_s1%E5%BC%80%E5%8F%91%E6%9D%BF">musca_s1开发板</a></li>
+<li><a href="#nucleo%E5%BC%80%E5%8F%91%E6%9D%BF">Nucleo开发板</a></li>
+</ul>
+</li>
+<li><a href="#%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91">应用开发</a><ul>
+<li><a href="#%E6%A6%82%E8%BF%B0">概述</a></li>
+<li><a href="#%E8%B0%83%E8%AF%95">调试</a><ul>
+<li><a href="#%E4%BD%BF%E7%94%A8%E5%B7%A5%E5%85%B7%E8%BF%9E%E6%8E%A5%E8%B0%83%E8%AF%95%E7%A1%AC%E4%BB%B6%E6%9D%BF">使用工具连接调试硬件板</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#api">API</a></li>
+<li><a href="#%E5%86%85%E6%A0%B8%E7%B3%BB%E7%BB%9F%E5%BC%80%E5%8F%91">内核系统开发</a><ul>
+<li><a href="#%E7%82%B9%E7%81%AF">点灯</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E5%BC%80%E5%8F%91">线程开发</a><ul>
+<li><a href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">生命周期</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81">线程状态</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E7%89%B9%E6%80%A7">线程特性</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B">创建线程</a></li>
+</ul>
+</li>
+<li><a href="#%E8%B0%83%E5%BA%A6">调度</a></li>
+<li><a href="#cpu-idle">CPU idle</a></li>
+<li><a href="#%E7%B3%BB%E7%BB%9F%E7%BA%BF%E7%A8%8B">系统线程</a></li>
+<li><a href="#%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97">工作队列</a></li>
+<li><a href="#%E4%B8%AD%E6%96%AD">中断</a></li>
+<li><a href="#%E5%85%B6%E4%BB%96%E5%86%85%E6%A0%B8%E5%8A%9F%E8%83%BD">其他内核功能</a></li>
+</ul>
+</li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93">数据传输</a></li>
+</ul>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>参考<a href="https://docs.zephyrproject.org/latest/develop/getting_started/index.html">zephyr安装指南</a></p>
+<h2 id="编译和运行"><a href="#编译和运行" class="headerlink" title="编译和运行"></a>编译和运行</h2><p>参考west使用指南：</p>
+<ul>
+<li><a href="https://docs.zephyrproject.org/latest/develop/west/build-flash-debug.html">Building, Flashing and Debugging</a><ul>
+<li>嵌入CMAKE：<a href="https://docs.zephyrproject.org/latest/develop/west/build-flash-debug.html#permanent-cmake-arguments">Permanent CMake Arguments</a></li>
+</ul>
+</li>
+<li><a href="https://docs.zephyrproject.org/latest/develop/west/built-in.html">Built-in commands</a></li>
+<li><a href="https://docs.zephyrproject.org/latest/develop/west/sign.html">Signing Binaries</a></li>
+<li><a href="https://docs.zephyrproject.org/latest/develop/west/without-west.html">Using Zephyr without west</a></li>
+</ul>
+<p>以qemu an521为例</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">west update<br>west build -p auto -b mps2_an521_ns -t run samples/hello_world<br></code></pre></td></tr></table></figure>
+
+<p>选项<code>run</code>表示编译后自动运行，参考west usage，输出</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">[INF] Beginning TF-M provisioning<br>[WRN] TFM_DUMMY_PROVISIONING is not suitable <span class="hljs-keyword">for</span> production! This device is NOT SECURE<br>[Sec Thread] Secure image initializing!<br>Booting TF-M a8313be08<br>Creating an empty ITS flash layout.<br>Creating an empty PS flash layout.<br>[INF][Crypto] Provisioning entropy seed... complete.<br>*** Booting Zephyr OS build zephyr-v3.3.0-1195-g9a759025d912 ***<br>Hello World! mps2_an521_ns<br></code></pre></td></tr></table></figure>
+
+<p>显然，这里打开了默认的trusted firmware-M</p>
+<h3 id="使用Kconfig关闭编译选项"><a href="#使用Kconfig关闭编译选项" class="headerlink" title="使用Kconfig关闭编译选项"></a>使用Kconfig关闭编译选项</h3><p>参考：<a href="https://docs.zephyrproject.org/latest/build/kconfig/index.html">Configuration System (Kconfig)</a></p>
+<p>命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">west build -p auto -b mps2_an521_ns samples/hello_world -t menuconfig<br></code></pre></td></tr></table></figure>
+
+<p>为了编译不含TF-M的版本，选择打开<code>boards/arm/mps2_an521/Kconfig.defconfig</code>看到：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">config BOARD<br>	default <span class="hljs-string">&quot;mps2_an521_ns&quot;</span> <span class="hljs-keyword">if</span> TRUSTED_EXECUTION_NONSECURE<br>	default <span class="hljs-string">&quot;mps2_an521_remote&quot;</span> <span class="hljs-keyword">if</span> BOARD_MPS2_AN521_CPU1<br>	default <span class="hljs-string">&quot;mps2_an521&quot;</span><br><br><span class="hljs-comment"># By default, if we build for a Non-Secure version of the board,</span><br><span class="hljs-comment"># force building with TF-M as the Secure Execution Environment.</span><br>config BUILD_WITH_TFM<br>	default y <span class="hljs-keyword">if</span> TRUSTED_EXECUTION_NONSECURE<br></code></pre></td></tr></table></figure>
+<p>运行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">west build -p auto -b mps2_an521 samples/hello_world -t run<br></code></pre></td></tr></table></figure>
+<p>打开menuconfig看到<br><img src="/img/post_pics/os/menuconfig_zephyr.png" srcset="/img/loading.gif" lazyload><br>此时输出为：</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-bullet">*** </span>Booting Zephyr OS build zephyr-v3.3.0-1195-g9a759025d912 <span class="hljs-strong">***</span><br>Hello World! mps2_an521<br></code></pre></td></tr></table></figure>
+
+<h3 id="musca-s1开发板"><a href="#musca-s1开发板" class="headerlink" title="musca_s1开发板"></a>musca_s1开发板</h3><p><img src="/img/post_pics/os/v2m_musca_s1.jpg" srcset="/img/loading.gif" lazyload><br>板载资源可以在<a href="https://docs.zephyrproject.org/latest/boards/arm/v2m_musca_s1/doc/index.html">Musca S1</a>找到，下载镜像，直接拷贝到存储区</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">west build -p auto -b v2m_musca_s1 samples/hello_world<br><span class="hljs-built_in">cp</span> build/zephyr/zephyr.hex /Volumes/MUSCA_S<br>minicom -D /dev/tty.usbmodem11302<br><br>output:<br>Musca-S1 Dual Firmware Version 1.9<br>*** Booting Zephyr OS build zephyr-v3.3.0-1195-g9a759025d912 ***<br>Hello World! musca_s1<br></code></pre></td></tr></table></figure>
+
+<h3 id="Nucleo开发板"><a href="#Nucleo开发板" class="headerlink" title="Nucleo开发板"></a>Nucleo开发板</h3><p><img src="/img/post_pics/os/nucleo_l552ze_q.jpg" srcset="/img/loading.gif" lazyload><br>板载资源参考：<a href="https://docs.zephyrproject.org/latest/boards/arm/nucleo_l552ze_q/doc/nucleol552ze_q.html">ST Nucleo L552ZE Q</a>，因为mac下载pyocd太慢装不了该板子的pack，选择runner openocd来下载镜像。编译时打开：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs awk">brew install openocd<br>west build -b nucleo_l552ze_q_ns samples<span class="hljs-regexp">/tfm_integration/</span>tfm_ipc -- -DBOARD_FLASH_RUNNER=openocd<br>.<span class="hljs-regexp">/build/</span>tfm/regression.sh  <span class="hljs-comment">#在下载不包含tfm的镜像时，需要额外跑一次恢复为normal模式</span><br>west flash<br></code></pre></td></tr></table></figure>
+
+<p>打开串口：</p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs tap">[WRN] This device was provisioned with dummy keys. This device is NOT SECURE<br>[Sec Thread] Secure image initializing!<br>Booting TF-M 79a6115d3<br>*** Booting Zephyr OS build zephyr-v3.4.0-483-g6050a10f8b29 ***<br>TF-M IPC on nucleo_l552ze_q<br>The version of the PSA Framework API is 257.<br>The PSA Crypto service minor version is 1.<br>Generating<span class="hljs-number"> 256 </span>bytes of random data:<br>11<span class="hljs-number"> 50 </span>AA DA<span class="hljs-number"> 03 </span>54 2E DB 0F B5 D3<span class="hljs-number"> 79 </span>EA BD C9<span class="hljs-number"> 97 </span><br>8C F1<span class="hljs-number"> 73 </span>AB 3C DF 5E B2 FB C0<span class="hljs-number"> 24 </span>1E<span class="hljs-number"> 34 </span>32<span class="hljs-number"> 02 </span>A2 <br>B1<span class="hljs-number"> 17 </span>CD CF DE<span class="hljs-number"> 25 </span>E9 F2 B0<span class="hljs-number"> 72 </span>82<span class="hljs-number"> 42 </span>58<span class="hljs-number"> 77 </span>63 A7 <br>B0<span class="hljs-number"> 30 </span>5D<span class="hljs-number"> 84 </span>BF EA F4 6F D1 A3 6D 7A<span class="hljs-number"> 23 </span>27 EF<span class="hljs-number"> 82 </span><br>9C<span class="hljs-number"> 25 </span>59 9B<span class="hljs-number"> 31 </span>43 9B 5A E5 FA F6<span class="hljs-number"> 76 </span>DE B2 0A<span class="hljs-number"> 38 </span><br>2B<span class="hljs-number"> 65 </span>C1<span class="hljs-number"> 45 </span>53<span class="hljs-number"> 61 </span>27 7C<span class="hljs-number"> 32 </span>AC 7A<span class="hljs-number"> 51 </span>42<span class="hljs-number"> 54 </span>BD<span class="hljs-number"> 92 </span><br>F9 8A CF 5B<span class="hljs-number"> 64 </span>FE B6<span class="hljs-number"> 41 </span>EB EC<span class="hljs-number"> 08 </span>CC 1E 8C<span class="hljs-number"> 46 </span>2A <br>A7<span class="hljs-number"> 16 </span>6F A2 FE 4A<span class="hljs-number"> 66 </span>B4 D3<span class="hljs-number"> 23 </span>EF F9 6B 4A<span class="hljs-number"> 40 </span>84 <br>75 CE F8 AB 5F<span class="hljs-number"> 61 </span>52 C9<span class="hljs-number"> 00 </span>7B<span class="hljs-number"> 10 </span>9E CB CB D5<span class="hljs-number"> 70 </span><br>35 1B E9<span class="hljs-number"> 95 </span>C7<span class="hljs-number"> 71 </span>F8<span class="hljs-number"> 66 </span>58 7B 7D 2A EB FF C1 2B <br>9A<span class="hljs-number"> 75 </span>CD<span class="hljs-number"> 34 </span>39 8B<span class="hljs-number"> 19 </span>D1<span class="hljs-number"> 98 </span>24 3A<span class="hljs-number"> 82 </span>61<span class="hljs-number"> 78 </span>60 E1 <br>88 7C 6D A6 FE 4C AE<span class="hljs-number"> 27 </span>EF<span class="hljs-number"> 24 </span>1F DD<span class="hljs-number"> 05 </span>1A AF<span class="hljs-number"> 04 </span><br>44<span class="hljs-number"> 70 </span>5D 5E<span class="hljs-number"> 13 </span>A1 DE C6<span class="hljs-number"> 10 </span>4C<span class="hljs-number"> 15 </span>13 CD DE EE E5 <br>29<span class="hljs-number"> 81 </span>C9 D3 9F 5E 7C<span class="hljs-number"> 03 </span>33 E7 F1<span class="hljs-number"> 86 </span>C1<span class="hljs-number"> 57 </span>2D<span class="hljs-number"> 48 </span><br>F7<span class="hljs-number"> 78 </span>83 C0<span class="hljs-number"> 39 </span>B1 D3 ED<span class="hljs-number"> 07 </span>EA FD A0 B0<span class="hljs-number"> 10 </span>FE 8C <br>C0<span class="hljs-number"> 17 </span>F4<span class="hljs-number"> 74 </span>96<span class="hljs-number"> 67 </span>D8<span class="hljs-number"> 29 </span>C4 1B<span class="hljs-number"> 47 </span>9F C3<span class="hljs-number"> 69 </span>06 0E<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="应用开发"><a href="#应用开发" class="headerlink" title="应用开发"></a>应用开发</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>应用既可以在zephyrproject&#x2F;zephyr里面创建编译，也可以在外部建立prj文件夹，项目文件中应当包含：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs stylus">&lt;app&gt;<br>├── CMakeLists<span class="hljs-selector-class">.txt</span><br>├── app<span class="hljs-selector-class">.overlay</span><br>├── prj<span class="hljs-selector-class">.conf</span><br>└── <span class="hljs-attribute">src</span><br>    └── <span class="hljs-selector-tag">main</span>.c<br></code></pre></td></tr></table></figure>
+<p>以<code>samples/hello_world</code>为例：</p>
+<ul>
+<li>cmake文件，环境中一定要设置<code>ZEPHYR_BASE</code></li>
+<li>设备树文件</li>
+<li>Kconfig配置文件，defconfig</li>
+<li>C&#x2F;C++源文件</li>
+</ul>
+<h3 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h3><p>Zephyr运行qemu的命令是：</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs livescript">qemu-system-arm -cpu cortex-m33 <span class="hljs-string">\</span><br>                -machine mps2-an521 <span class="hljs-string">\</span><br>                -nographic -m <span class="hljs-number">16</span> -vga none -net none <span class="hljs-string">\</span><br>                -pidfile qemu.pid <span class="hljs-string">\</span><br>                -chardev stdio,id=con,mux=<span class="hljs-literal">on</span> <span class="hljs-string">\</span><br>                -serial chardev:con <span class="hljs-string">\</span><br>                -mon chardev=con,mode=readline <span class="hljs-string">\</span><br>                -icount shift=<span class="hljs-number">6</span>,align=<span class="hljs-literal">off</span>,sleep=<span class="hljs-literal">off</span> <span class="hljs-string">\</span><br>                -rtc clock=vm -chardev pty,id=hostS0 <span class="hljs-string">\</span><br>                -serial chardev:hostS0 <span class="hljs-string">\</span><br>                -kernel build/zephyr/zephyr.elf<br></code></pre></td></tr></table></figure>
+<p>加上<code>-s</code>，（<code>-gdb tcp::1234</code>的缩写）打开gdbserver，默认端口为：1234。也可以运行</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">west build -<span class="hljs-selector-tag">p</span> auto -<span class="hljs-selector-tag">b</span> mps2_an521 . -t debugserver_qemu<br></code></pre></td></tr></table></figure>
+<p>运行gdb命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">arm-zephyr-eabi-gdb build/zephyr/zephyr.elf<br>(gdb) target remote localhost:1234<br>(gdb) <span class="hljs-built_in">dir</span> ZEPHYR_BASE<br></code></pre></td></tr></table></figure>
+<h4 id="使用工具连接调试硬件板"><a href="#使用工具连接调试硬件板" class="headerlink" title="使用工具连接调试硬件板"></a>使用工具连接调试硬件板</h4><p>参考：<a href="https://docs.zephyrproject.org/latest/develop/flash_debug/host-tools.html#j-link-debug-host-tools">Flash &amp; Debug Host Tools</a></p>
+<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><p>汇总：<a href="https://docs.zephyrproject.org/latest/develop/api/overview.html">API Overview</a><br>使用说明：<a href="https://docs.zephyrproject.org/latest/develop/api/design_guidelines.html">API Guildlines</a></p>
+<h2 id="内核系统开发"><a href="#内核系统开发" class="headerlink" title="内核系统开发"></a>内核系统开发</h2><h3 id="点灯"><a href="#点灯" class="headerlink" title="点灯"></a>点灯</h3><p>以musca-s1为例，在其设备树文件boards&#x2F;arm&#x2F;v2m_musca_s1&#x2F;v2m_musca_s1.dts中：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-title class_">aliases</span> <span class="hljs-punctuation">&#123;</span><br>	led0 = <span class="hljs-variable">&amp;red_led</span><span class="hljs-punctuation">;</span><br>	led1 = <span class="hljs-variable">&amp;green_led</span><span class="hljs-punctuation">;</span><br><span class="hljs-punctuation">&#125;;</span><br><br><span class="hljs-title class_">leds</span> <span class="hljs-punctuation">&#123;</span><br>	<span class="hljs-attr">compatible</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;gpio-leds&quot;</span><span class="hljs-punctuation">;</span><br><span class="hljs-symbol">	red_led:</span> <span class="hljs-title class_">led_0</span> <span class="hljs-punctuation">&#123;</span><br>		<span class="hljs-attr">gpios</span> <span class="hljs-operator">=</span> <span class="hljs-params">&lt;<span class="hljs-variable">&amp;gpio</span> <span class="hljs-number">2</span> <span class="hljs-number">0</span>&gt;</span><span class="hljs-punctuation">;</span><br>		<span class="hljs-attr">label</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;User LED1&quot;</span><span class="hljs-punctuation">;</span><br>	<span class="hljs-punctuation">&#125;;</span><br><span class="hljs-symbol">	green_led:</span> <span class="hljs-title class_">led_1</span> <span class="hljs-punctuation">&#123;</span><br>		<span class="hljs-attr">gpios</span> <span class="hljs-operator">=</span> <span class="hljs-params">&lt;<span class="hljs-variable">&amp;gpio</span> <span class="hljs-number">3</span> <span class="hljs-number">0</span>&gt;</span><span class="hljs-punctuation">;</span><br>		<span class="hljs-attr">label</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;User LED2&quot;</span><span class="hljs-punctuation">;</span><br>	<span class="hljs-punctuation">&#125;;</span><br><span class="hljs-punctuation">&#125;;</span><br></code></pre></td></tr></table></figure>
+<p>使用led0和led1，用两个线程进行闪烁，调用的是toggle接口，使用fifo和输出线程通信，打印log，配置如下：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs py">CONFIG_PRINTK=y<br>CONFIG_HEAP_MEM_POOL_SIZE=<span class="hljs-number">256</span><br>CONFIG_ASSERT=y<br>CONFIG_GPIO=y<br></code></pre></td></tr></table></figure>
+
+<p>代码如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Copyright (c) 2016 Intel Corporation</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * SPDX-License-Identifier: Apache-2.0</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;zephyr/kernel.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;zephyr/device.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;zephyr/drivers/gpio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;zephyr/sys/printk.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;zephyr/sys/__assert.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><br><span class="hljs-comment">/* 1000 msec = 1 sec */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> SLEEP_TIME_MS 1000</span><br><br><span class="hljs-comment">/* size of stack area used by each thread */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> STACKSIZE 1024</span><br><br><span class="hljs-comment">/* scheduling priority used by each thread */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PRIORITY 7</span><br><br><span class="hljs-comment">/* The devicetree node identifier for the &quot;led0&quot; alias. */</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> LED0_NODE DT_ALIAS(led0)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> LED1_NODE DT_ALIAS(led1)</span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * A build error on this line means your board is unsupported.</span><br><span class="hljs-comment"> * See the sample documentation for information on how to fix this.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">gpio_dt_spec</span> <span class="hljs-title">led0</span> =</span> GPIO_DT_SPEC_GET(LED0_NODE, gpios);<br><span class="hljs-type">static</span> <span class="hljs-type">const</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">gpio_dt_spec</span> <span class="hljs-title">led1</span> =</span> GPIO_DT_SPEC_GET(LED1_NODE, gpios);<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">printk_data_t</span></span><br><span class="hljs-class">&#123;</span><br>	<span class="hljs-type">void</span> *fifo_reserved; <span class="hljs-comment">/* 1st word reserved for use by fifo */</span><br>	<span class="hljs-type">uint32_t</span> led;<br>	<span class="hljs-type">uint32_t</span> cnt;<br>&#125;;<br><br>K_FIFO_DEFINE(printk_fifo);<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">blink</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> gpio_dt_spec *led, <span class="hljs-type">uint32_t</span> sleep_ms, <span class="hljs-type">uint32_t</span> id)</span><br>&#123;<br>	<span class="hljs-type">int</span> ret, cnt = <span class="hljs-number">0</span>;<br><br>	<span class="hljs-keyword">if</span> (!gpio_is_ready_dt(led))<br>	&#123;<br>		<span class="hljs-keyword">return</span>;<br>	&#125;<br><br>	ret = gpio_pin_configure_dt(led, GPIO_OUTPUT_ACTIVE);<br>	<span class="hljs-keyword">if</span> (ret &lt; <span class="hljs-number">0</span>)<br>	&#123;<br>		<span class="hljs-keyword">return</span>;<br>	&#125;<br><br>	<span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)<br>	&#123;<br><br>		ret = gpio_pin_toggle_dt(led);<br><br>		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">printk_data_t</span> <span class="hljs-title">tx_data</span> =</span> &#123;.led = id, .cnt = cnt&#125;;<br>		<span class="hljs-type">size_t</span> size = <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">struct</span> <span class="hljs-type">printk_data_t</span>);<br><br>		<span class="hljs-type">char</span> *mem_ptr = k_malloc(size);<br>		__ASSERT_NO_MSG(mem_ptr != <span class="hljs-number">0</span>);<br><br>		<span class="hljs-built_in">memcpy</span>(mem_ptr, &amp;tx_data, size);<br><br>		k_fifo_put(&amp;printk_fifo, mem_ptr);<br><br>		k_msleep(sleep_ms);<br>		cnt++;<br>	&#125;<br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">blink0</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	blink(&amp;led0, SLEEP_TIME_MS, <span class="hljs-number">0</span>);<br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">blink1</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	blink(&amp;led1, SLEEP_TIME_MS, <span class="hljs-number">1</span>);<br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">uart_out</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)<br>	&#123;<br>		<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">printk_data_t</span> *<span class="hljs-title">rx_data</span> =</span> k_fifo_get(&amp;printk_fifo,<br>												   K_FOREVER);<br>		printk(<span class="hljs-string">&quot;Toggled led%d; counter=%d\n&quot;</span>,<br>			   rx_data-&gt;led, rx_data-&gt;cnt);<br>		k_free(rx_data);<br>	&#125;<br>&#125;<br><br>K_THREAD_DEFINE(blink0_id, STACKSIZE, blink0, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>,	PRIORITY, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>K_THREAD_DEFINE(blink1_id, STACKSIZE, blink1, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>,	PRIORITY, <span class="hljs-number">0</span>, SLEEP_TIME_MS);<br>K_THREAD_DEFINE(uart_out_id, STACKSIZE, uart_out, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, PRIORITY, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="线程开发"><a href="#线程开发" class="headerlink" title="线程开发"></a>线程开发</h3><h4 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h4><ul>
+<li>线程创建</li>
+<li>线程终止，termination，入口函数执行返回，线程终止<ul>
+<li>通过k_thread_join()睡眠当前线程，等待其他线程执行结束</li>
+</ul>
+</li>
+<li>线程中止，aborting，调用k_thread_abort()</li>
+<li>线程挂起，suspension，调用k_thread_suspend()</li>
+</ul>
+<h4 id="线程状态"><a href="#线程状态" class="headerlink" title="线程状态"></a>线程状态</h4><p>zephyr的线程状态：<img src="/img/post_pics/os/thread_states.svg" srcset="/img/loading.gif" lazyload></p>
+<h4 id="线程特性"><a href="#线程特性" class="headerlink" title="线程特性"></a>线程特性</h4><p>线程有以下重要特性：</p>
+<ul>
+<li>堆栈区域<ul>
+<li>内核堆栈</li>
+<li>线程堆栈</li>
+</ul>
+</li>
+<li>线程控制块</li>
+<li>线程入口函数，及三个参数</li>
+<li><a href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#thread-priorities">线程优先级</a><ul>
+<li>越小优先级越高，可以为负数</li>
+</ul>
+</li>
+<li><a href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#configuration-options">线程配置选项</a><ul>
+<li>如<a href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#c.K_USER">K_USER</a>和<a href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#c.K_INHERIT_PERMS">K_INHERIT_PERMS</a></li>
+</ul>
+</li>
+<li>启动延时</li>
+<li>执行模式</li>
+</ul>
+<p>其他特性</p>
+<ul>
+<li><a href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#thread-custom-data">自定义数据</a></li>
+<li>用户线程，<a href="https://docs.zephyrproject.org/latest/kconfig.html#CONFIG_USERSPACE">CONFIG_USERSPACE</a>，用户线程需要系统调度获取权限，参考<a href="https://docs.zephyrproject.org/latest/kernel/usermode/index.html#usermode-api">用户模式</a></li>
+</ul>
+<h4 id="创建线程"><a href="#创建线程" class="headerlink" title="创建线程"></a>创建线程</h4><p>参考<a href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#spawning-a-thread">Spawning a Thread</a></p>
+<p>除了上述的<a href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#c.K_THREAD_DEFINE">K_THREAD_DEFINE</a>创建以外，还可以使用<a href="https://docs.zephyrproject.org/latest/kernel/services/threads/index.html#c.k_thread_create">k_thread_create</a>建立一个新的线程。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c">K_THREAD_STACK_DEFINE(bk_stack0, STACKSIZE);<br>K_THREAD_STACK_DEFINE(bk_stack1, STACKSIZE);<br>K_THREAD_STACK_DEFINE(ptk_stack, STACKSIZE);<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">k_thread</span> <span class="hljs-title">bk0</span>, <span class="hljs-title">bk1</span>, <span class="hljs-title">ptk</span>;</span><br>	<span class="hljs-type">k_timeout_t</span> delay = K_MSEC(SLEEP_TIME_MS);<br><br>	k_thread_create(&amp;bk0, bk_stack0, K_THREAD_STACK_SIZEOF(bk_stack0),<br>					(<span class="hljs-type">k_thread_entry_t</span>)blink0, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, PRIORITY, <span class="hljs-number">0</span>, K_NO_WAIT);<br><br>	k_thread_create(&amp;bk1, bk_stack1, K_THREAD_STACK_SIZEOF(bk_stack1),<br>					(<span class="hljs-type">k_thread_entry_t</span>)blink1, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, PRIORITY, <span class="hljs-number">0</span>, delay);<br><br>	k_thread_create(&amp;ptk, ptk_stack, K_THREAD_STACK_SIZEOF(ptk_stack),<br>					(<span class="hljs-type">k_thread_entry_t</span>)uart_out, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, PRIORITY, <span class="hljs-number">0</span>, K_NO_WAIT);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="调度"><a href="#调度" class="headerlink" title="调度"></a>调度</h3><p>参考<a href="https://docs.zephyrproject.org/latest/kernel/services/scheduling/index.html#">schduling</a></p>
+<p>支持以下三种：</p>
+<ul>
+<li>Simple linked-list ready queue (CONFIG_SCHED_DUMB)</li>
+<li>Red&#x2F;black tree ready queue (CONFIG_SCHED_SCALABLE)</li>
+<li>Traditional multi-queue ready queue (CONFIG_SCHED_MULTIQ)</li>
+</ul>
+<p><img src="/img/post_pics/os/cooperative.svg" srcset="/img/loading.gif" lazyload><br>其他相关：</p>
+<ul>
+<li><a href="https://docs.zephyrproject.org/latest/kernel/services/scheduling/index.html#preemptive-time-slicing">抢占式线程</a></li>
+<li><a href="https://docs.zephyrproject.org/latest/kernel/services/scheduling/index.html#scheduler-locking">调度锁</a>，只执行当前线程</li>
+<li><a href="https://docs.zephyrproject.org/latest/kernel/services/scheduling/index.html#thread-sleeping">睡眠和唤醒</a>，释放cpu</li>
+<li><a href="https://docs.zephyrproject.org/latest/kernel/services/scheduling/index.html#busy-waiting">忙等待</a>，不释放cpu</li>
+</ul>
+<p>要点：</p>
+<ul>
+<li>将普通线程用于设备驱动程序和其他性能关键型工作。</li>
+<li>使用普通线程实现相互排除，而无需内核对象（如互斥）。</li>
+<li>使用抢占式线程优先考虑时间敏感的处理，而不是时间敏感度较低的处理。</li>
+</ul>
+<h3 id="CPU-idle"><a href="#CPU-idle" class="headerlink" title="CPU idle"></a>CPU idle</h3><p>使CPU闲置会导致内核暂停所有操作，直到事件（通常是中断）唤醒CPU。在一般系统中，空闲线程负责这个事情。然而，在一些受约束的系统中，另一个线程可能会承担这一职责。使CPU闲置很简单：调用k_cpu_idle() API。CPU将停止执行指令，直到事件发生。最有可能的是，该函数将在循环中调用。请注意，在某些架构中，返回时，k_cpu_idle()无条件取消屏蔽中断。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> k_sem my_sem;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">my_isr</span><span class="hljs-params">(<span class="hljs-type">void</span> *unused)</span><br>&#123;<br>    k_sem_give(&amp;my_sem);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    k_sem_init(&amp;my_sem, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>);<br><br>    <span class="hljs-comment">/* wait for semaphore from ISR, then do related work */</span><br><br>    <span class="hljs-keyword">for</span> (;;) &#123;<br><br>        <span class="hljs-comment">/* wait for ISR to trigger work to perform */</span><br>        <span class="hljs-keyword">if</span> (k_sem_take(&amp;my_sem, K_NO_WAIT) == <span class="hljs-number">0</span>) &#123;<br><br>            <span class="hljs-comment">/* ... do processing */</span><br><br>        &#125;<br><br>        <span class="hljs-comment">/* put CPU to sleep to save power */</span><br>        k_cpu_idle();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>当线程除了空闲CPU等待事件外，还必须做一些实际工作时，请使用k_cpu_atomic_idle()。见下面的例子。</p>
+<p>仅当线程仅负责空转CPU时，即不进行任何实际工作时，才使用k_cpu_idle()。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> k_sem my_sem;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">my_isr</span><span class="hljs-params">(<span class="hljs-type">void</span> *unused)</span><br>&#123;<br>    k_sem_give(&amp;my_sem);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    k_sem_init(&amp;my_sem, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>);<br><br>    <span class="hljs-keyword">for</span> (;;) &#123;<br><br>        <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> key = irq_lock();<br><br>        <span class="hljs-comment">/*</span><br><span class="hljs-comment">         * Wait for semaphore from ISR; if acquired, do related work, then</span><br><span class="hljs-comment">         * go to next loop iteration (the semaphore might have been given</span><br><span class="hljs-comment">         * again); else, make the CPU idle.</span><br><span class="hljs-comment">         */</span><br><br>        <span class="hljs-keyword">if</span> (k_sem_take(&amp;my_sem, K_NO_WAIT) == <span class="hljs-number">0</span>) &#123;<br><br>            irq_unlock(key);<br><br>            <span class="hljs-comment">/* ... do processing */</span><br><br><br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">/* put CPU to sleep to save power */</span><br>            k_cpu_atomic_idle(key);<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="系统线程"><a href="#系统线程" class="headerlink" title="系统线程"></a>系统线程</h3><p>包括main线程和idle线程：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    <span class="hljs-comment">/* initialize a semaphore */</span><br>    ...<br><br>    <span class="hljs-comment">/* register an ISR that gives the semaphore */</span><br>    ...<br><br>    <span class="hljs-comment">/* monitor the semaphore forever */</span><br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) &#123;<br>        <span class="hljs-comment">/* wait for the semaphore to be given by the ISR */</span><br>        ...<br>        <span class="hljs-comment">/* do whatever processing is now needed */</span><br>        ...<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="工作队列"><a href="#工作队列" class="headerlink" title="工作队列"></a>工作队列</h3><p>工作队列是一个内核对象，它使用专用线程以先入先出的方式处理工作项。每个工作项都通过调用工作项指定的函数进行处理。工作队列通常由ISR或高优先级线程使用，将非紧急处理卸载到低优先级线程，因此它不会影响时间敏感的处理。可以定义任意数量的工作队列（仅受可用RAM的限制）。每个工作队列都由其内存地址引用。参考：<a href="https://docs.zephyrproject.org/latest/kernel/services/threads/workqueue.html#workqueue-threads">workqueue-threads</a></p>
+<h3 id="中断"><a href="#中断" class="headerlink" title="中断"></a>中断</h3><p>中断服务例程（ISR）是一种响应硬件或软件中断异步执行的函数。ISR通常抢占当前线程的执行，允许以非常低的开销进行响应。线程执行只有在所有ISR工作完成后才会恢复。参考：<a href="https://docs.zephyrproject.org/latest/kernel/services/interrupts.html#interrupts">interrupt service routine</a></p>
+<p>多级中断处理：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">          9             2   0<br>    _ _ _ _ _ _ _ _ _ _ _ _ _         (LEVEL 1)<br>  5       |         A   |<br>_ _ _ _ _ _ _         _ _ _ _ _ _ _   (LEVEL 2)<br>  |   C                       B<br>_ _ _ _ _ _ _                         (LEVEL 3)<br>        D<br></code></pre></td></tr></table></figure>
+<p>这里显示了三个中断级别。</p>
+<ul>
+<li>‘-‘表示中断行，从0开始编号（最右侧）。</li>
+<li>1级有12条中断线，两条线（2和9）连接到嵌套控制器，4号线有一个设备“A”。</li>
+<li>其中一个2级控制器的中断线5连接到3级嵌套控制器和3号线上的一个设备“C”。</li>
+<li>另一个2级控制器没有嵌套控制器，但在2号线上有一个设备“B”。</li>
+<li>3级控制器的2号线有一个设备“D”。</li>
+</ul>
+<p>2级及以上控制器的编号都+1，于是有：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">A</span> -&gt; <span class="hljs-number">0</span>x00000004<br><span class="hljs-attribute">B</span> -&gt; <span class="hljs-number">0</span>x00000302 (<span class="hljs-number">2</span>-&gt;<span class="hljs-number">2</span>)<br><span class="hljs-attribute">C</span> -&gt; <span class="hljs-number">0</span>x00000409 (<span class="hljs-number">3</span>-&gt;<span class="hljs-number">9</span>)<br><span class="hljs-attribute">D</span> -&gt; <span class="hljs-number">0</span>x00030609 (<span class="hljs-number">2</span>-&gt;<span class="hljs-number">5</span>-&gt;<span class="hljs-number">9</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="其他内核功能"><a href="#其他内核功能" class="headerlink" title="其他内核功能"></a>其他内核功能</h3><ul>
+<li><a href="https://docs.zephyrproject.org/latest/kernel/services/polling.html">轮训API</a>，轮询API的主要函数是k_poll()它在概念上与POSIX poll()函数非常相似，只是它在内核对象上运行，而不是在文件描述符上运行。</li>
+<li><a href="https://docs.zephyrproject.org/latest/kernel/services/synchronization/semaphores.html">信号量</a>，实现线程的互斥（多线程对资源的访问）或同步。<ul>
+<li>semaphore是使用k_sem类型的变量定义的。然后，它必须通过调用k_sem_init()进行初始化。</li>
+<li>或者，可以通过调用K_SEM_DEFINE在编译时定义和初始化信号量。</li>
+<li>通过调用k_sem_give()给出信号量。</li>
+<li>通过调用k_sem_take()来获取信号量</li>
+</ul>
+</li>
+<li><a href="https://docs.zephyrproject.org/latest/kernel/services/synchronization/mutexes.html">互斥锁</a>，互斥锁允许多个线程通过确保相互排斥地访问资源来安全地共享相关的硬件或软件资源。<ul>
+<li>互斥体是使用k_mutex类型的变量定义的。</li>
+<li>然后必须通过调用k_mutex_init()来初始化它。</li>
+<li>或者，可以通过调用K_MUTEX_DEFINE在编译时定义和初始化互斥体。</li>
+<li>互斥体通过调用k_mutex_lock()来锁定。通过调用k_mutex_unlock()来解锁互斥体。</li>
+</ul>
+</li>
+<li><a href="https://docs.zephyrproject.org/latest/kernel/services/synchronization/condvar.html">条件变量</a>，使线程能够等到特定条件发生。<ul>
+<li>线程可以通过调用k_condvar_wait()来等待条件。</li>
+<li>条件变量通过为一个线程调用k_condvar_signal()或为多个线程调用k_condvar_broadcast()来发出信号。</li>
+</ul>
+</li>
+<li><a href="https://docs.zephyrproject.org/latest/kernel/services/synchronization/events.html">事件</a>，一个或多个线程可以等待事件对象，直到所需的事件集交付到事件对象。当新事件交付到事件对象时，所有等待条件已满足的线程都会同时准备就绪。<ul>
+<li>使用k_event类型的变量定义事件对象。然后必须通过callkk_event_init()进行初始化。</li>
+<li>或者，可以通过调用K_EVENT_DEFINE在编译时定义和初始化事件对象。</li>
+<li>事件对象中的事件是通过调用k_event_set()来设置的。</li>
+<li>通过调用k_event_post()将事件发布到事件对象。</li>
+<li>线程通过调用k_event_wait()来等待事件。</li>
+</ul>
+</li>
+<li><a href="https://docs.zephyrproject.org/latest/kernel/services/smp/smp.html">多核对称多处理</a>，在多处理器架构上，Zephyr支持使用运行Zephyr应用程序代码的多个物理CPU。这种支持是“对称的”，因为默认情况下没有特定的CPU被特别处理。任何处理器都能够运行任何Zephyr线程，并支持访问所有标准的Zephyr API。<ul>
+<li>SMP系统提供了一个更受约束的k_spin_lock()原语，它不仅像irq_lock()所做的那样在本地屏蔽中断，而且还在返回调用者之前原子地验证共享锁变量已被修改，如果需要等待另一个CPU退出锁，则在检查上“旋转”。k_spin_lock()和k_spin_unlock()的默认Zephyr实现建立在预先存在的atomic_层（本身通常使用编译器本质实现）之上，尽管出于性能原因，架构存在定义自己的设施。</li>
+<li>IRQ锁和自旋锁之间的一个重要区别是，早期的API是自然递归的：锁是全局的，因此在关键部分内获取嵌套锁是合法的。Spinlocks是可分离的：您可以为单独的子系统或数据结构拥有许多锁，防止CPU在单个全局资源上竞争。但这意味着旋转锁不能递归使用。持有特定锁的代码不得试图重新获取它，否则它将陷入僵局（然而，嵌套不同的自旋锁是完全合法的）。验证层可用于检测和报告此类错误。</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据传输"><a href="#数据传输" class="headerlink" title="数据传输"></a>数据传输</h2><p>下面汇总所有的数据传输方式，参考<a href="https://docs.zephyrproject.org/latest/kernel/services/index.html#data-passing">Data passing</a></p>
+<table>
+<thead>
+<tr>
+<th>Object</th>
+<th>Bidirectional?</th>
+<th>Data structure</th>
+<th>Data item size</th>
+<th>Data Alignment</th>
+<th>ISRs can receive?</th>
+<th>ISRs can send?</th>
+<th>Overrun handling</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FIFO</td>
+<td>No</td>
+<td>Queue</td>
+<td>Arbitrary [1]</td>
+<td>4 B [2]</td>
+<td>Yes [3]</td>
+<td>Yes</td>
+<td>N&#x2F;A</td>
+</tr>
+<tr>
+<td>LIFO</td>
+<td>No</td>
+<td>Queue</td>
+<td>Arbitrary [1]</td>
+<td>4 B [2]</td>
+<td>Yes [3]</td>
+<td>Yes</td>
+<td>N&#x2F;A</td>
+</tr>
+<tr>
+<td>Stack</td>
+<td>No</td>
+<td>Array</td>
+<td>Word</td>
+<td>Word</td>
+<td>Yes [3]</td>
+<td>Yes</td>
+<td>Undefined behavior</td>
+</tr>
+<tr>
+<td>Message queue</td>
+<td>No</td>
+<td>Ring buffer</td>
+<td>Power of two</td>
+<td>Power of two</td>
+<td>Yes [3]</td>
+<td>Yes</td>
+<td>Pend thread or return -errno</td>
+</tr>
+<tr>
+<td>Mailbox</td>
+<td>Yes</td>
+<td>Queue</td>
+<td>Arbitrary [1]</td>
+<td>Arbitrary</td>
+<td>No</td>
+<td>No</td>
+<td>N&#x2F;A</td>
+</tr>
+<tr>
+<td>Pipe</td>
+<td>No</td>
+<td>Ring buffer [4]</td>
+<td>Arbitrary</td>
+<td>Arbitrary</td>
+<td>Yes [5]</td>
+<td>Yes [5]</td>
+<td>Pend thread or return -errno</td>
+</tr>
+</tbody></table>
+<p>[1] Callers allocate space for queue overhead in the data elements themselves.<br>[2] Objects added with k_fifo_alloc_put() and k_lifo_alloc_put() do not have alignment constraints, but use temporary memory from the calling thread’s resource pool.<br>[3] ISRs can receive only when passing K_NO_WAIT as the timeout argument.<br>[4] Optional.<br>[5] ISRS can send and&#x2F;or receive only when passing K_NO_WAIT as the timeout argument.<br>[6] Data item size must be a multiple of the data alignment.</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/OS/" class="category-chain-item">OS</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Arm/" class="print-no-link">#Arm</a>
+      
+        <a href="/tags/RTOS/" class="print-no-link">#RTOS</a>
+      
+        <a href="/tags/Zephyr/" class="print-no-link">#Zephyr</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/10/SW/Qemu-Debug/" title="VScode+Qemu调试TF-M">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">VScode+Qemu调试TF-M</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/06/24/SW/AIoT/OpenCV-ncnn/" title="MacOS安装ncnn和OpenCV">
+                        <span class="hidden-mobile">MacOS安装ncnn和OpenCV</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

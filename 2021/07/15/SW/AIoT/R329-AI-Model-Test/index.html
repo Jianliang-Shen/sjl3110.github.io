@@ -1,0 +1,804 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Docker安装及使用参考这个帖子安装docker在Ubuntu中安装Docker和docker的使用安装完毕后拉取环境并启动">
+<meta property="og:type" content="article">
+<meta property="og:title" content="R329模型仿真测试">
+<meta property="og:url" content="http://yoursite.com/2021/07/15/SW/AIoT/R329-AI-Model-Test/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="Docker安装及使用参考这个帖子安装docker在Ubuntu中安装Docker和docker的使用安装完毕后拉取环境并启动">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-15T22:07:29.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.411Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>R329模型仿真测试 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="R329模型仿真测试"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-07-15 22:07" pubdate>
+          2021年7月15日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">R329模型仿真测试</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="Docker安装及使用"><a href="#Docker安装及使用" class="headerlink" title="Docker安装及使用"></a>Docker安装及使用</h2><p>参考这个帖子安装docker<a href="https://www.cnblogs.com/blog-rui/p/11244023.html">在Ubuntu中安装Docker和docker的使用</a><br>安装完毕后拉取环境并启动</p>
+<span id="more"></span>  
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> docker pull zepan/zhouyi<br><span class="hljs-built_in">sudo</span> docker run -i -t zepan/zhouyi  /bin/bash<br></code></pre></td></tr></table></figure>
+
+<h3 id="运行中保存"><a href="#运行中保存" class="headerlink" title="运行中保存"></a>运行中保存</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker ps<br>docker commit b4c875ede137 zepan/zhouyi<br></code></pre></td></tr></table></figure>
+
+<h3 id="传递文件"><a href="#传递文件" class="headerlink" title="传递文件"></a>传递文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker <span class="hljs-built_in">cp</span> [DOCKER ID]:[path] [path]<br>docker <span class="hljs-built_in">cp</span> [path] [DOCKER ID]:[path]<br></code></pre></td></tr></table></figure>
+
+<h2 id="模型处理"><a href="#模型处理" class="headerlink" title="模型处理"></a>模型处理</h2><p>模型下载：<a href="https://github.com/tensorflow/models/tree/master/research/slim#pre-trained-models">Github</a><br>这里下载vgg_16_2016_08_28.tar.gz</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">tar xvf vgg_16_2016_08_28.tar.gz<br>vgg_16.ckpt<br></code></pre></td></tr></table></figure>
+
+<h3 id="导出图"><a href="#导出图" class="headerlink" title="导出图"></a>导出图</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> git@github.com:tensorflow/models.git<br><span class="hljs-built_in">cd</span> models/research/slim<br>python setup.py install<br>python3 export_inference_graph.py \<br>        --alsologtostderr \<br>        --model_name=vgg_16 \<br>        --image_size=224 \<br>        --labels_offset=1 \<br>        --output_file=/root/test/vgg/model/vgg.pb<br></code></pre></td></tr></table></figure>
+
+<h3 id="冻结"><a href="#冻结" class="headerlink" title="冻结"></a>冻结</h3><p>下载1.15的tensorflow</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> -b r1.15 --single-branch https://github.com/tensorflow/tensorflow.git<br><span class="hljs-built_in">cd</span> tensorflow/tensorflow/python/tools<br>python3 freeze_graph.py \<br>            --input_graph=/root/test/vgg/model/vgg.pb \<br>            --input_checkpoint=/root/test/vgg/vgg_16.ckpt \<br>            --input_binary=<span class="hljs-literal">true</span> \<br>            --output_node_names=vgg_16/fc8/BiasAdd \<br>            --output_graph=/root/test/vgg/model/vgg_frozen.pb<br></code></pre></td></tr></table></figure>
+
+<p>其中vgg_16&#x2F;fc8&#x2F;BiasAdd通过将vgg.pb上传至<a href="https://netron.app/">Netron</a>网站查看。vgg_frozen.pb存放在工程model路径下。</p>
+<h2 id="准备数据集"><a href="#准备数据集" class="headerlink" title="准备数据集"></a>准备数据集</h2><p>下载ILSVRC2012，通过脚本生成numpy格式的文件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> tensorflow <span class="hljs-keyword">as</span> tf<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> cv2<br><br>sys.path.append(<span class="hljs-string">&#x27;/project/ai/scratch01/salyua01/sharing/guide_acc&#x27;</span>)<br>img_dir=<span class="hljs-string">&#x27;./img/&#x27;</span><br>label_file=<span class="hljs-string">&#x27;./label.txt&#x27;</span><br><br><span class="hljs-comment">#RESNET PARAM</span><br>input_height=<span class="hljs-number">224</span><br>input_width=<span class="hljs-number">224</span><br>input_channel = <span class="hljs-number">3</span><br>mean = [<span class="hljs-number">123.68</span>, <span class="hljs-number">116.78</span>, <span class="hljs-number">103.94</span>]<br>var = <span class="hljs-number">1</span><br><br>tf.enable_eager_execution()<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">smallest_size_at_least</span>(<span class="hljs-params">height, width, resize_min</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;Computes new shape with the smallest side equal to `smallest_side`.</span><br><span class="hljs-string"></span><br><span class="hljs-string">    Computes new shape with the smallest side equal to `smallest_side` while</span><br><span class="hljs-string">    preserving the original aspect ratio.</span><br><span class="hljs-string"></span><br><span class="hljs-string">    Args:</span><br><span class="hljs-string">      height: an int32 scalar tensor indicating the current height.</span><br><span class="hljs-string">      width: an int32 scalar tensor indicating the current width.</span><br><span class="hljs-string">      resize_min: A python integer or scalar `Tensor` indicating the size of</span><br><span class="hljs-string">        the smallest side after resize.</span><br><span class="hljs-string"></span><br><span class="hljs-string">    Returns:</span><br><span class="hljs-string">      new_height: an int32 scalar tensor indicating the new height.</span><br><span class="hljs-string">      new_width: an int32 scalar tensor indicating the new width.</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    resize_min = tf.cast(resize_min, tf.float32)<br><br>    <span class="hljs-comment"># Convert to floats to make subsequent calculations go smoothly.</span><br>    height, width = tf.cast(height, tf.float32), tf.cast(width, tf.float32)<br><br>    smaller_dim = tf.minimum(height, width)<br>    scale_ratio = resize_min / smaller_dim<br><br>    <span class="hljs-comment"># Convert back to ints to make heights and widths that TF ops will accept.</span><br>    new_height = tf.cast(tf.<span class="hljs-built_in">round</span>(height * scale_ratio), tf.int32)<br>    new_width = tf.cast(tf.<span class="hljs-built_in">round</span>(width * scale_ratio), tf.int32)<br><br>    <span class="hljs-keyword">return</span> new_height, new_width<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">resize_image</span>(<span class="hljs-params">image, height, width, method=<span class="hljs-string">&#x27;BILINEAR&#x27;</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;Simple wrapper around tf.resize_images.</span><br><span class="hljs-string"></span><br><span class="hljs-string">    This is primarily to make sure we use the same `ResizeMethod` and other</span><br><span class="hljs-string">    details each time.</span><br><span class="hljs-string"></span><br><span class="hljs-string">    Args:</span><br><span class="hljs-string">      image: A 3-D image `Tensor`.</span><br><span class="hljs-string">      height: The target height for the resized image.</span><br><span class="hljs-string">      width: The target width for the resized image.</span><br><span class="hljs-string"></span><br><span class="hljs-string">    Returns:</span><br><span class="hljs-string">      resized_image: A 3-D tensor containing the resized image. The first two</span><br><span class="hljs-string">        dimensions have the shape [height, width].</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    resize_func = tf.image.ResizeMethod.NEAREST_NEIGHBOR <span class="hljs-keyword">if</span> method == <span class="hljs-string">&#x27;NEAREST&#x27;</span> <span class="hljs-keyword">else</span> tf.image.ResizeMethod.BILINEAR<br>    <span class="hljs-keyword">return</span> tf.image.resize_images(image, [height, width], method=resize_func, align_corners=<span class="hljs-literal">False</span>)<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">aspect_preserving_resize</span>(<span class="hljs-params">image, resize_min, channels=<span class="hljs-number">3</span>, method=<span class="hljs-string">&#x27;BILINEAR&#x27;</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;Resize images preserving the original aspect ratio.</span><br><span class="hljs-string"></span><br><span class="hljs-string">    Args:</span><br><span class="hljs-string">      image: A 3-D image `Tensor`.</span><br><span class="hljs-string">      resize_min: A python integer or scalar `Tensor` indicating the size of</span><br><span class="hljs-string">        the smallest side after resize.</span><br><span class="hljs-string"></span><br><span class="hljs-string">    Returns:</span><br><span class="hljs-string">      resized_image: A 3-D tensor containing the resized image.</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    shape = tf.shape(image)<br>    height, width = shape[<span class="hljs-number">0</span>], shape[<span class="hljs-number">1</span>]<br>    new_height, new_width = smallest_size_at_least(height, width, resize_min)<br>    <span class="hljs-keyword">return</span> resize_image(image, new_height, new_width, method)<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">central_crop</span>(<span class="hljs-params">image, crop_height, crop_width, channels=<span class="hljs-number">3</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;Performs central crops of the given image list.</span><br><span class="hljs-string"></span><br><span class="hljs-string">    Args:</span><br><span class="hljs-string">      image: a 3-D image tensor</span><br><span class="hljs-string">      crop_height: the height of the image following the crop.</span><br><span class="hljs-string">      crop_width: the width of the image following the crop.</span><br><span class="hljs-string"></span><br><span class="hljs-string">    Returns:</span><br><span class="hljs-string">      3-D tensor with cropped image.</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    shape = tf.shape(image)<br>    height, width = shape[<span class="hljs-number">0</span>], shape[<span class="hljs-number">1</span>]<br>    amount_to_be_cropped_h = height - crop_height<br>    crop_top = amount_to_be_cropped_h // <span class="hljs-number">2</span><br>    amount_to_be_cropped_w = width - crop_width<br>    crop_left = amount_to_be_cropped_w // <span class="hljs-number">2</span><br>    <span class="hljs-comment"># return tf.image.crop_to_bounding_box(image, crop_top, crop_left, crop_height, crop_width)</span><br><br>    size_assertion = tf.Assert(<br>        tf.logical_and(<br>            tf.greater_equal(height, crop_height),<br>            tf.greater_equal(width, crop_width)),<br>        [<span class="hljs-string">&#x27;Crop size greater than the image size.&#x27;</span>]<br>    )<br>    <span class="hljs-keyword">with</span> tf.control_dependencies([size_assertion]):<br>        <span class="hljs-keyword">if</span> channels == <span class="hljs-number">1</span>:<br>            image = tf.squeeze(image)<br>            crop_start = [crop_top, crop_left, ]<br>            crop_shape = [crop_height, crop_width, ]<br>        <span class="hljs-keyword">elif</span> channels &gt;= <span class="hljs-number">3</span>:<br>            crop_start = [crop_top, crop_left, <span class="hljs-number">0</span>]<br>            crop_shape = [crop_height, crop_width, -<span class="hljs-number">1</span>]<br><br>        image = tf.<span class="hljs-built_in">slice</span>(image, crop_start, crop_shape)<br><br>    <span class="hljs-keyword">return</span> tf.reshape(image, [crop_height, crop_width, -<span class="hljs-number">1</span>])<br><br>label_data = <span class="hljs-built_in">open</span>(label_file)<br>filename_list = []<br>label_list = []<br><span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> label_data:<br>    filename_list.append(line.rstrip(<span class="hljs-string">&#x27;\n&#x27;</span>).split(<span class="hljs-string">&#x27; &#x27;</span>)[<span class="hljs-number">0</span>])<br>    label_list.append(<span class="hljs-built_in">int</span>(line.rstrip(<span class="hljs-string">&#x27;\n&#x27;</span>).split(<span class="hljs-string">&#x27; &#x27;</span>)[<span class="hljs-number">1</span>]))<br>label_data.close()<br>img_num = <span class="hljs-built_in">len</span>(label_list)<br><br>images = np.zeros([img_num, input_height, input_width, input_channel], np.float32)<br><span class="hljs-keyword">for</span> file_name, img_idx <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(filename_list, <span class="hljs-built_in">range</span>(img_num)):<br>    image_file = os.path.join(img_dir, file_name)<br>    img_s = tf.gfile.GFile(image_file, <span class="hljs-string">&#x27;rb&#x27;</span>).read()<br>    image = tf.image.decode_jpeg(img_s)<br>    image = tf.cast(image, tf.float32)<br>    image = tf.clip_by_value(image, <span class="hljs-number">0.</span>, <span class="hljs-number">255.</span>)<br>    image = aspect_preserving_resize(image, <span class="hljs-built_in">min</span>(input_height, input_width), input_channel) <br>    image = central_crop(image, input_height, input_width)<br>    image = tf.image.resize_images(image, [input_height, input_width])<br>    image = (image - mean) / var<br>    image = image.numpy()<br>    _, _, ch = image.shape<br>    <span class="hljs-keyword">if</span> ch == <span class="hljs-number">1</span>:<br>        image = tf.tile(image, multiples=[<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>])<br>        image = image.numpy()<br>    images[img_idx] = image<br><br>np.save(<span class="hljs-string">&#x27;dataset.npy&#x27;</span>, images)<br><br>labels = np.array(label_list)<br>np.save(<span class="hljs-string">&#x27;label.npy&#x27;</span>, labels)<br></code></pre></td></tr></table></figure>
+
+<p>label.npy和dataset.npy存放在dataset路径下。</p>
+<h2 id="仿真配置文件"><a href="#仿真配置文件" class="headerlink" title="仿真配置文件"></a>仿真配置文件</h2><p>编写run.cfg</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python">[Common]<br>mode=run<br><br>[Parser]<br>model_name = vgg_16<br>detection_postprocess =<br>model_domain = image_classification<br>output = vgg_16/fc8/BiasAdd<br>input_model = ./model/vgg_frozen.pb<br><span class="hljs-built_in">input</span> = <span class="hljs-built_in">input</span><br>input_shape = [<span class="hljs-number">1</span>,<span class="hljs-number">224</span>,<span class="hljs-number">224</span>,<span class="hljs-number">3</span>]<br>output_dir = ./<br><br>[AutoQuantizationTool]<br>model_name = vgg_16<br>quantize_method = SYMMETRIC<br>ops_per_channel = DepthwiseConv<br>calibration_data = ./dataset/dataset.npy<br>calibration_label = ./dataset/label.npy<br>preprocess_mode = normalize<br>quant_precision=int8<br>reverse_rgb = <span class="hljs-literal">False</span><br>label_id_offset = <span class="hljs-number">0</span><br><br>[GBuilder]<br>inputs=./model/<span class="hljs-built_in">input</span>.<span class="hljs-built_in">bin</span><br>simulator=aipu_simulator_z1<br>outputs=output_vgg.<span class="hljs-built_in">bin</span><br>profile= <span class="hljs-literal">True</span><br>target=Z1_0701<br></code></pre></td></tr></table></figure>
+
+<p>Input.bin文件可以在&#x2F;root&#x2F;demos&#x2F;tflite&#x2F;model下找到。开始仿真</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><code class="hljs bash">aipubuild run.cfg<br>[I]     step1: get max/min statistic value DONE<br>[I]     step2: quantization each op DONE<br>[I]     step3: build quantization forward DONE<br>[I]     step4: show output scale of end node:<br>[I]             layer_id: 21, layer_top:vgg_16/fc8/BiasAdd_0, output_scale:[10.010092]<br>[I] ==== auto-quantization DONE =<br>[I] Quantize model complete<br>[I] Building ...<br>[I] [common_options.h: 276] BuildTool version: 4.0.175. Build <span class="hljs-keyword">for</span> target Z1_0701 at frequency 800MHz<br>[I] [common_options.h: 297] using default profile events to profile AIFF<br><br>[I] [IRChecker] Start to check IR: /tmp/AIPUBuilder_1626512017.731944/vgg_16_int8.txt<br>[I] [IRChecker] model_name: vgg_16<br>[I] [IRChecker] IRChecker: All IR pass<br>[I] [graph.cpp : 846] loading graph weight: /tmp/AIPUBuilder_1626512017.731944/vgg_16_int8.bin size: 0x83fc860<br>[I] [builder.cpp:1059] Total memory <span class="hljs-keyword">for</span> this graph: 0x9098c90 Bytes<br>[I] [builder.cpp:1060] Text   section:  0x0000fb90 Bytes<br>[I] [builder.cpp:1061] RO     section:  0x00001700 Bytes<br>[I] [builder.cpp:1062] Desc   section:  0x00002000 Bytes<br>[I] [builder.cpp:1063] Data   section:  0x083f6800 Bytes<br>[I] [builder.cpp:1064] BSS    section:  0x00c4ee00 Bytes<br>[I] [builder.cpp:1065] Stack         :  0x00040400 Bytes<br>[I] [builder.cpp:1066] Workspace(BSS):  0x00310000 Bytes<br>[I] [main.cpp  : 467] <span class="hljs-comment"># autogenrated by aipurun, do NOT modify!</span><br>LOG_FILE=log_default<br>FAST_FWD_INST=0<br>INPUT_INST_CNT=1<br>INPUT_DATA_CNT=2<br>CONFIG=Z1-0701<br>LOG_LEVEL=0<br>INPUT_INST_FILE0=/tmp/temp_c68782b79b33b6f5c74dd8da6592.text<br>INPUT_INST_BASE0=0x0<br>INPUT_INST_STARTPC0=0x0<br>INPUT_DATA_FILE0=/tmp/temp_c68782b79b33b6f5c74dd8da6592.ro<br>INPUT_DATA_BASE0=0x10000000<br>INPUT_DATA_FILE1=/tmp/temp_c68782b79b33b6f5c74dd8da6592.data<br>INPUT_DATA_BASE1=0x20000000<br>OUTPUT_DATA_CNT=2<br>OUTPUT_DATA_FILE0=output_vgg.bin<br>OUTPUT_DATA_BASE0=0x29328800<br>OUTPUT_DATA_SIZE0=0x3e8<br>OUTPUT_DATA_FILE1=profile_data.bin<br>OUTPUT_DATA_BASE1=0x28436c00<br>OUTPUT_DATA_SIZE1=0x300<br>RUN_DESCRIPTOR=BIN[0]<br><br>[I] [main.cpp  : 118] run simulator:<br>aipu_simulator_z1 /tmp/temp_c68782b79b33b6f5c74dd8da6592.cfg<br>[INFO]:SIMULATOR START!<br>[INFO]:========================================================================<br>[INFO]:                             STATIC CHECK<br>[INFO]:========================================================================<br>[INFO]:  INST START ADDR : 0x0(0)<br>[INFO]:  INST END ADDR   : 0xfb8f(64399)<br>[INFO]:  INST SIZE       : 0xfb90(64400)<br>[INFO]:  PACKET CNT      : 0xfb9(4025)<br>[INFO]:  INST CNT        : 0x3ee4(16100)<br>[INFO]:------------------------------------------------------------------------<br>[WARN]:[0803] INST WR/RD REG CONFLICT! PACKET 0x1c4: 0x472021b(POP R27,Rc7) vs 0x5f00000(MVI R0,0x0,Rc7), PACKET:0x1c4(452) SLOT:0 vs 3<br>[WARN]:[0803] INST WR/RD REG CONFLICT! PACKET 0x1d1: 0x472021b(POP R27,Rc7) vs 0x5f00000(MVI R0,0x0,Rc7), PACKET:0x1d1(465) SLOT:0 vs 3<br>[WARN]:[0803] INST WR/RD REG CONFLICT! PACKET 0x336: 0x472021b(POP R27,Rc7) vs 0x9f80020(ADD.S R0,R0,0x1,Rc7), PACKET:0x336(822) SLOT:0 vs 3<br>[WARN]:[0803] INST WR/RD REG CONFLICT! PACKET 0x4d3: 0x4520180(BRL R0) vs 0x47a03e5(ADD R5,R0,R31,Rc7), PACKET:0x4d3(1235) SLOT:0 vs 3<br>[INFO]:========================================================================<br>[INFO]:                             STATIC CHECK END<br>[INFO]:========================================================================<br><br>[INFO]:AIPU START RUNNING: BIN[0]<br><br>[INFO]:TOTAL TIME: 25.355962s.<br>[INFO]:SIMULATOR EXIT!<br>[I] [main.cpp  : 135] Simulator finished.<br>Total errors: 0,  warnings: 0<br></code></pre></td></tr></table></figure>
+
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>通过quant_predict.py脚本进行测试：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image<br><span class="hljs-keyword">import</span> cv2<br><span class="hljs-keyword">from</span> matplotlib <span class="hljs-keyword">import</span> pyplot <span class="hljs-keyword">as</span> plt<br><span class="hljs-keyword">import</span> matplotlib.patches <span class="hljs-keyword">as</span> patches<br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> imagenet_classes <span class="hljs-keyword">as</span> class_name<br><br>current_dir = os.getcwd()<br>label_offset = <span class="hljs-number">1</span><br>outputfile = current_dir + <span class="hljs-string">&#x27;/output_vgg.bin&#x27;</span><br>npyoutput = np.fromfile(outputfile, dtype=np.int8)<br>outputclass = npyoutput.argmax()<br>head5p = npyoutput.argsort()[-<span class="hljs-number">5</span>:][::-<span class="hljs-number">1</span>]<br><br>labelfile = current_dir + <span class="hljs-string">&#x27;/output_ref.bin&#x27;</span><br>npylabel = np.fromfile(labelfile, dtype=np.int8)<br>labelclass = npylabel.argmax()<br>head5t = npylabel.argsort()[-<span class="hljs-number">5</span>:][::-<span class="hljs-number">1</span>]<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;predict first 5 label:&quot;</span>)<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> head5p:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;    index %4d, prob %3d, name: %s&quot;</span>%(i, npyoutput[i], class_name.class_names[i-label_offset]))<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;true first 5 label:&quot;</span>)<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> head5t:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;    index %4d, prob %3d, name: %s&quot;</span>%(i, npylabel[i], class_name.class_names[i-label_offset]))<br><br><span class="hljs-comment"># Show input picture</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;Detect picture save to result.jpeg&#x27;</span>)<br><br>input_path = <span class="hljs-string">&#x27;./model/input.bin&#x27;</span><br>npyinput = np.fromfile(input_path, dtype=np.int8)<br>image = np.clip(np.<span class="hljs-built_in">round</span>(npyinput)+<span class="hljs-number">128</span>, <span class="hljs-number">0</span>, <span class="hljs-number">255</span>).astype(np.uint8)<br>image = np.reshape(image, (<span class="hljs-number">224</span>, <span class="hljs-number">224</span>, <span class="hljs-number">3</span>))<br>im = Image.fromarray(image)<br>im.save(<span class="hljs-string">&#x27;result.jpeg&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>其中output_ref.bin、imagenet_classes.py可以在&#x2F;root&#x2F;demos&#x2F;tflite下找到。运行结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">python3 quant_predict.py<br>predict first 5 label:<br>    index  230, prob 116, name: Old English sheepdog, bobtail<br>    index  231, prob 108, name: Shetland sheepdog, Shetland sheep dog, Shetland<br>    index  157, prob  71, name: Blenheim spaniel<br>    index  169, prob  58, name: redbone<br>    index  259, prob  53, name: Samoyed, Samoyede<br><span class="hljs-literal">true</span> first 5 label:<br>    index  232, prob  83, name: collie<br>    index  231, prob  83, name: Shetland sheepdog, Shetland sheep dog, Shetland<br>    index  158, prob  41, name: papillon<br>    index  170, prob  40, name: borzoi, Russian wolfhound<br>    index  161, prob  39, name: Afghan hound, Afghan<br></code></pre></td></tr></table></figure>
+
+<p>可以看到正确预测了图片231。文件见<a href="https://github.com/sjl3110/AIPU-Zhouyi-VGG-16">AIPU-Zhouyi-VGG-1</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AIoT/" class="category-chain-item">AIoT</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Algorithm/" class="print-no-link">#Algorithm</a>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/07/27/SW/AIoT/R329-Startup/" title="R329开发板上手体验">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">R329开发板上手体验</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/05/29/Security/TFM/How-TFM-Call-Secure/" title="TF-M是如何调用secure接口的">
+                        <span class="hidden-mobile">TF-M是如何调用secure接口的</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

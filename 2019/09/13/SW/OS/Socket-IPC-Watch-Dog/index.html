@@ -1,0 +1,1044 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="简单的服务器完成以下功能:  与客户端创建连接建立握手   转发客户端的消息，发向指定客户端   完成客户端喂狗信号的处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="socket进程间通信及喂狗框架">
+<meta property="og:url" content="http://yoursite.com/2019/09/13/SW/OS/Socket-IPC-Watch-Dog/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="简单的服务器完成以下功能:  与客户端创建连接建立握手   转发客户端的消息，发向指定客户端   完成客户端喂狗信号的处理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/post_pics/index_img/tcpip_index.png">
+<meta property="article:published_time" content="2019-09-13T23:24:34.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.415Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Net">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/post_pics/index_img/tcpip_index.png">
+  
+  
+  
+  <title>socket进程间通信及喂狗框架 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="socket进程间通信及喂狗框架"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-09-13 23:24" pubdate>
+          2019年9月13日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.9k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          58 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">socket进程间通信及喂狗框架</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>简单的服务器完成以下功能:</p>
+<ol>
+<li>与客户端创建连接建立握手  </li>
+<li>转发客户端的消息，发向指定客户端  </li>
+<li>完成客户端喂狗信号的处理  <span id="more"></span></li>
+</ol>
+<ul>
+<li><a href="#%E5%BA%93%E5%87%BD%E6%95%B0">库函数</a><ul>
+<li><a href="#socket">socket</a><ul>
+<li><a href="#tcpsocket-%E5%AE%9E%E7%8E%B0">tcpsocket 实现</a></li>
+<li><a href="#socket-1">socket()</a></li>
+<li><a href="#bind">bind()</a></li>
+<li><a href="#listen">listen()</a></li>
+<li><a href="#accept">accept()</a></li>
+<li><a href="#connect">connect()</a></li>
+<li><a href="#send%E5%92%8Crecv">send()和recv()</a></li>
+</ul>
+</li>
+<li><a href="#select">select()</a><ul>
+<li><a href="#select%E7%9B%B8%E5%85%B3api">select()相关API</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E8%8C%83%E4%BE%8B">使用范例</a></li>
+<li><a href="#%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3select">深入理解select</a></li>
+<li><a href="#select%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9">select的优缺点</a></li>
+</ul>
+</li>
+<li><a href="#pthread_create">pthread_create()</a><ul>
+<li><a href="#%E7%BA%BF%E7%A8%8B">线程</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E4%B8%8E%E8%BF%9B%E7%A8%8B">线程与进程</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E5%88%9B%E5%BB%BA%E4%B8%8E%E4%BD%BF%E7%94%A8">线程创建与使用</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E4%BC%A0%E5%8F%82">线程传参</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F">线程局部变量</a></li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E7%BC%96%E8%AF%91">线程编译</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E6%96%B9%E6%A1%88%E9%80%89%E6%8B%A9">方案选择</a></li>
+<li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0%E5%8F%8A%E5%8A%9F%E8%83%BD">自定义函数及功能</a><ul>
+<li><a href="#%E8%BF%90%E8%A1%8C%E6%A1%86%E5%9B%BE">运行框图</a></li>
+</ul>
+</li>
+<li><a href="#%E5%AE%88%E6%8A%A4%E8%84%9A%E6%9C%AC">守护脚本</a></li>
+<li><a href="#%E5%AE%9E%E7%8E%B0%E7%BB%93%E6%9E%9C">实现结果</a></li>
+<li><a href="#%E4%BB%A3%E7%A0%81">代码</a></li>
+</ul>
+<h2 id="库函数"><a href="#库函数" class="headerlink" title="库函数"></a>库函数</h2><h3 id="socket"><a href="#socket" class="headerlink" title="socket"></a>socket</h3><p>参考：<a href="https://blog.csdn.net/jyy305/article/details/73012706">socket编程以及select、epoll、poll示例详解</a><br>socket这个词可以表示很多概念，在TCP&#x2F;IP协议中“IP地址+TCP或UDP端口号”唯一标识网络通讯中的一个进程，“IP+端口号”就称为socket。在TCP协议中，建立连接的两个进程各自有一个socket来标识，那么两个socket组成的socket pair就唯一标识一个连接。  </p>
+<blockquote>
+<p><strong>网络字节序</strong>：内存中多字节数据相对于内存地址有大端小端之分，磁盘文件中的多字节数据相对于文件中的偏移地址也有大端小端之分。网络数据流同样有大端小端之分，所以发送主机通常将发送缓冲区中的数据按内存地址从低到高的顺序发出，接收主机把从网络上接收到的字节按内存从低到高的顺序保存，因此网络数据流的地址应该规定：<code>先发出的数据是低地址，后发出的数据是高地址</code>。TCP&#x2F;IP协议规定网络数据流应该采用大端字节序，即低地址高字节。所以发送主机和接收主机是小段字节序的在发送和接收之前需要做字节序的转换。  </p>
+</blockquote>
+<h4 id="tcpsocket-实现"><a href="#tcpsocket-实现" class="headerlink" title="tcpsocket 实现"></a>tcpsocket 实现</h4><p>实现模型：</p>
+<ol>
+<li><strong>服务器端</strong>： socket -&gt; bind -&gt; listen -&gt; accept(阻塞,三次握手)-&gt; send。  </li>
+<li><strong>客户端</strong>： socket -&gt; connect(阻塞,三次握手)-&gt; recv。</li>
+</ol>
+<h4 id="socket-1"><a href="#socket-1" class="headerlink" title="socket()"></a>socket()</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">int</span> <span class="hljs-title function_">socket</span><span class="hljs-params">(<span class="hljs-type">int</span> family, <span class="hljs-type">int</span> type, <span class="hljs-type">int</span> protocol)</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>family</strong>：指定协议的类型本次选择AF_INET（IPv4协议）；</li>
+<li><strong>type</strong>：网络数据类型，TCP是面向字节流的—SOCK_STREAM；</li>
+<li><strong>protocol</strong>：前两个参数一般确定了协议类型通常传0；</li>
+<li><strong>返回值</strong>：成功返回套接字符；失败返回-1设置相关错误码。</li>
+</ul>
+<h4 id="bind"><a href="#bind" class="headerlink" title="bind()"></a>bind()</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">int</span> <span class="hljs-title function_">bind</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> sockaddr *servaddr, <span class="hljs-type">socklen_t</span> addrlen)</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>sockfd</strong>：socket函数成功时候返回的套接字描述符；  </li>
+<li><strong>servaddr</strong>：服务器的IP和端口；  </li>
+<li><strong>addrlen</strong>： 长度（sizeof(servaddr)）；  </li>
+<li><strong>返回值</strong>：成功返回0；失败返回-1，并设置相关错误码。</li>
+</ul>
+<h4 id="listen"><a href="#listen" class="headerlink" title="listen()"></a>listen()</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">int</span> <span class="hljs-title function_">listen</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-type">int</span> backlog)</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>sockfd</strong>：socket函数成功时候返回的套接字描述符；  </li>
+<li><strong>backlog</strong>：内核中套接字排队的最大个数；  </li>
+<li><strong>返回值</strong>：成功返回0；失败返回-1，并设置相关错误码。</li>
+</ul>
+<h4 id="accept"><a href="#accept" class="headerlink" title="accept()"></a>accept()</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">int</span> <span class="hljs-title function_">accept</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> sockaddr *servaddr, <span class="hljs-type">socklen_t</span> *addrlen)</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>sockfd</strong>：socket函数成功时候返回的套接字描述符；</li>
+<li><strong>servaddr</strong>：输出型参数，客户端的ip和端口；</li>
+<li><strong>addrlen</strong>：长度（sizeof(servaddr)）；</li>
+<li><strong>返回值</strong>：成功:从监听套接字返回已连接套接字；失败返回-1，并设置相关错误码。</li>
+</ul>
+<h4 id="connect"><a href="#connect" class="headerlink" title="connect()"></a>connect()</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">int</span> <span class="hljs-title function_">connect</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> sockaddr *servaddr, <span class="hljs-type">socklen_t</span> addrlen)</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>sockfd</strong>：函数返回的套接字描述符；</li>
+<li><strong>servaddr</strong>：服务器的IP和端口；</li>
+<li><strong>addrlen</strong>：长度（sizeof(servaddr)）；</li>
+<li><strong>返回值</strong>：成功返回0；失败返回-1，并设置相关错误码</li>
+</ul>
+<h4 id="send-和recv"><a href="#send-和recv" class="headerlink" title="send()和recv()"></a>send()和recv()</h4><ul>
+<li><a href="https://blog.csdn.net/ly0303521/article/details/52290217"><strong>Socket中send()函数和recv()函数详解</strong></a></li>
+</ul>
+<ul>
+<li><a href="https://blog.csdn.net/G_BrightBoy/article/details/12854117"><strong>常用socket函数详解</strong></a></li>
+</ul>
+<h3 id="select"><a href="#select" class="headerlink" title="select()"></a>select()</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">int</span> <span class="hljs-title function_">select</span><span class="hljs-params">(<span class="hljs-type">int</span> maxfdp,fd_set *readfds,fd_set *writefds,fd_set *errorfds,<span class="hljs-keyword">struct</span> timeval *timeout)</span>;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>maxfdp</strong>: 需要监视的最大文件描述符加1；  </li>
+<li><strong>readfds</strong>、<strong>writefds</strong>、<strong>errorfds</strong>：分别对应于需要检测的可读文件描述符的集合，可写文件描述符的集合及异常文件描述符的集合；  </li>
+<li><strong>timeout</strong>：等待时间，这个时间内，需要监视的描述符没有事件，timeout &#x3D;&#x3D; NULL表示等待无限时长；  </li>
+<li><strong>返回值</strong>：发⽣生则函数返回，返回值为0。设为NULL 表示阻塞式等待，一直等到有事件就绪，函数才会返回，0表示非阻塞式等待，没有事件就立即返回，大于0表示等待的时间。大于0表示就绪时间的个数，等于0表示timeout等待时间到了，小于0表示调用失败。</li>
+</ul>
+<h4 id="select-相关API"><a href="#select-相关API" class="headerlink" title="select()相关API"></a>select()相关API</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-comment">//延时结构体</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">timeval</span></span><br><span class="hljs-class">&#123;</span>      <br>    <span class="hljs-type">long</span> tv_sec;   <span class="hljs-comment">/*秒 */</span><br>    <span class="hljs-type">long</span> tv_usec;  <span class="hljs-comment">/*微秒 */</span>   <br>&#125;;<br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/select.h&gt;</span>   </span><br><span class="hljs-type">int</span> <span class="hljs-title function_">FD_ZERO</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, fd_set *fdset)</span>;   <span class="hljs-comment">//一个 fd_set类型变量的所有位都设为 0</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">FD_CLR</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, fd_set *fdset)</span>;  <span class="hljs-comment">//清除某个位时可以使用</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">FD_SET</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, fd_set *fd_set)</span>;   <span class="hljs-comment">//设置变量的某个位置位</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">FD_ISSET</span><span class="hljs-params">(<span class="hljs-type">int</span> fd, fd_set *fdset)</span>; <span class="hljs-comment">//测试某个位是否被置位</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="使用范例"><a href="#使用范例" class="headerlink" title="使用范例"></a>使用范例</h4><p>当声明了一个文件描述符集后，必须用FD_ZERO将所有位置零。之后将我们所感兴趣的描述符所对应的位置位，操作如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs C">fd_set rset;   <br><span class="hljs-type">int</span> fd;   <br>FD_ZERO(&amp;rset);   <br>FD_SET(fd, &amp;rset);   <br>FD_SET(<span class="hljs-built_in">stdin</span>, &amp;rset);<br><span class="hljs-comment">//调用select</span><br>select(fd+<span class="hljs-number">1</span>, &amp;rset, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>,<span class="hljs-literal">NULL</span>);<br><span class="hljs-comment">//select返回后用FD_ISSET测试给定位是否置位</span><br><span class="hljs-keyword">if</span>(FD_ISSET(fd, &amp;rset)   <br>&#123; <br>    ... <br>    <span class="hljs-comment">//do something  </span><br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="深入理解select"><a href="#深入理解select" class="headerlink" title="深入理解select"></a>深入理解select</h4><p>从流程上来看，使用select函数进行IO请求和同步阻塞模型没有太大的区别，甚至还多了添加监视socket，以及调用select函数的额外操作，效率更差。<strong>但是，使用select以后最大的优势是用户可以在一个线程内同时处理多个socket的IO请求。用户可以注册多个socket，然后不断地调用select读取被激活的socket，即可达到在同一个线程内同时处理多个IO请求的目的。</strong>而在同步阻塞模型中，必须通过多线程的方式才能达到这个目的。<br>理解select模型的关键在于理解fd_set,为说明方便，取fd_set长度为1字节，fd_set中的每一bit可以对应一个文件描述符fd。则1字节长的fd_set最大可以对应8个fd。  </p>
+<ol>
+<li>执行fd_set set; FD_ZERO(&amp;set); 则set用位表示是0000,0000。</li>
+<li>若fd＝5,执行FD_SET(fd,&amp;set);后set变为0001,0000(第5位置为1)</li>
+<li>若再加入fd＝2，fd&#x3D;1,则set变为0001,0011</li>
+<li>执行select(6,&amp;set,0,0,0)阻塞等待</li>
+<li>若fd&#x3D;1,fd&#x3D;2上都发生可读事件，则select返回，此时set变为0000,0011。<strong>注意：没有事件发生的fd&#x3D;5被清空。</strong></li>
+</ol>
+<p>基于上面的讨论，可以轻松得出select模型的特点：  </p>
+<ol>
+<li>可监控的文件描述符个数取决与sizeof(fd_set)的值。我这边服务器上sizeof(fd_set)＝512，每bit表示一个文件描述符，则我服务器上支持的最大文件描述符是512*8&#x3D;4096。据说可调，另有说虽然可调，但调整上限受于编译内核时的变量值。</li>
+<li>将fd加入select监控集的同时，还要再使用一个数据结构array保存放到select监控集中的fd，一是用于再select返回后，array作为源数据和fd_set进行FD_ISSET判断。二是select返回后会把以前加入的但并无事件发生的fd清空，则每次开始select前都要重新从array取得fd逐一加入（FD_ZERO最先），扫描array的同时取得fd最大值maxfd，用于select的第一个参数。</li>
+<li>可见select模型必须在select前循环加fd，取maxfd，select返回后利用FD_ISSET判断是否有事件发生。</li>
+</ol>
+<blockquote>
+<p>注意：select在设置定时时，检测系统调用中的<code>SIGALARM</code>信号，会与其他的定时函数，例如alarm()、settimer()等函数。</p>
+</blockquote>
+<h4 id="select的优缺点"><a href="#select的优缺点" class="headerlink" title="select的优缺点"></a>select的优缺点</h4><ul>
+<li><strong>优点：</strong></li>
+</ul>
+<ol>
+<li>select的可移植性好，在某些unix下不支持poll.  </li>
+<li>select对超时值提供了很好的精度，精确到微秒，而poll式毫秒。</li>
+</ol>
+<ul>
+<li><strong>缺点：</strong></li>
+</ul>
+<ol>
+<li>单个进程可监视的fd数量被限制，默认是1024。  </li>
+<li>需要维护一个用来存放大量fd的数据结构，这样会使得用户空间和内核空间在传递该结构时复制开销大。  </li>
+<li>对fd进行扫描时是线性扫描，fd剧增后，IO效率降低，每次调用都对fd进行线性扫描遍历，随着fd的增加会造成遍历速度慢的问题。  </li>
+<li>select函数超时参数在返回时也是未定义的，考虑到可移植性，每次超时之后进入下一个select之前都要重新设置超时参数。</li>
+</ol>
+<h3 id="pthread-create"><a href="#pthread-create" class="headerlink" title="pthread_create()"></a>pthread_create()</h3><h4 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h4><ol>
+<li>是操作系统能够进行调度的最小单位；  </li>
+<li>线程被包含在进程之中，是进程中的实际运作单位；  </li>
+<li>一个线程指的是进程中一个单一顺序的控制流；  </li>
+<li>一个进程可以并发多个线程，每个线程执行不同的任务。</li>
+</ol>
+<blockquote>
+<ul>
+<li><strong>优点</strong></li>
+</ul>
+<ol>
+<li>创建一个新的线程的代价要比创建一个新进程的代价小得多；</li>
+<li>与进程之间的切换相比，线程之间的切换需要操作系统做的工作要少很多；</li>
+<li>线程占有的资源要比进程少；</li>
+<li>线程之间共享数据更容易（线程是在一个房间中，所以相互通信比较容易，而进程之间通话需要跑到另一个房间）。</li>
+</ol>
+<ul>
+<li><strong>缺点</strong></li>
+</ul>
+<ol>
+<li>编码&#x2F;调试难度提高，因为线程之间谁先执行不确定，在一个是共享资源的问题。  </li>
+<li>缺乏访问控制，一个线程崩溃，会导致整个进程都异常终止，一个线程中调用某些函数，会影响整个进程。</li>
+</ol>
+</blockquote>
+<h4 id="线程与进程"><a href="#线程与进程" class="headerlink" title="线程与进程"></a>线程与进程</h4><ol>
+<li>进程：进程（或者任务）是资源分配的基本单位  </li>
+<li>线程：线程（或者轻量级进程）是调度&#x2F;执行的基本单位  </li>
+<li>线程运行在进程中  </li>
+<li>一个进程至少都有一个线程</li>
+</ol>
+<blockquote>
+<p>注：参考阮一峰的博客<a href="http://www.ruanyifeng.com/blog/2013/04/processes_and_threads.html"><strong>进程与线程的一个简单解释</strong></a></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>进程</th>
+<th>线程</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>fork</td>
+<td>pthread_create</td>
+<td>新建控制流</td>
+</tr>
+<tr>
+<td>waitpid</td>
+<td>pthread_join</td>
+<td>等待控制流，从当前控制流得到退出状态</td>
+</tr>
+<tr>
+<td>exit</td>
+<td>pthread_exit</td>
+<td>从当前控制流中退出</td>
+</tr>
+<tr>
+<td>getpid</td>
+<td>pthread_self</td>
+<td>获取当前控制流的ID</td>
+</tr>
+<tr>
+<td>abort</td>
+<td>pthread_cancel</td>
+<td>使指定的控制流异常退出</td>
+</tr>
+</tbody></table>
+<h4 id="线程创建与使用"><a href="#线程创建与使用" class="headerlink" title="线程创建与使用"></a>线程创建与使用</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;pthread.h&gt;</span></span><br><span class="hljs-type">void</span> * <span class="hljs-title function_">thread_test</span><span class="hljs-params">(<span class="hljs-type">void</span> *arg)</span><br>&#123;<br>    <span class="hljs-comment">//test</span><br>    pthread(<span class="hljs-literal">NULL</span>); <span class="hljs-comment">//退出，也可以return</span><br>    <span class="hljs-comment">//return (void *)1;</span><br>&#125;<br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-type">pthread_t</span> thread1;<br>    pthread_create(&amp;thread1,<span class="hljs-literal">NULL</span>,thread_test,<span class="hljs-literal">NULL</span>);<br>    <span class="hljs-comment">//pthread_cancel(thread1); //关闭线程</span><br>    <br>    <span class="hljs-type">int</span> wait_thread_end;<br>    <span class="hljs-comment">//void *thread1_return;</span><br>    <span class="hljs-comment">//wait_thread_end = pthread_join(thread1, &amp;thread1_return);</span><br>    <span class="hljs-comment">//等待线程的返回，并获取返回值</span><br><br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="线程传参"><a href="#线程传参" class="headerlink" title="线程传参"></a>线程传参</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-comment">//存储客户端sock_cli的结构体</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-type">int</span> sock_cli[<span class="hljs-number">10</span>];<br>    <span class="hljs-type">int</span> num;<br>&#125; SERVER_SOC;<br><br><span class="hljs-type">void</span> *<span class="hljs-title function_">wdt_thread</span><span class="hljs-params">(<span class="hljs-type">void</span> *arg)</span><br>&#123;<br>    SERVER_SOC *wdt_sockfd;         <span class="hljs-comment">//新建一个SERVER_SOC结构体指针</span><br>    wdt_sockfd = (SERVER_SOC *)arg; <span class="hljs-comment">//接收传递来的参数结构体</span><br>    <span class="hljs-comment">//对wdt_sockfd-&gt;元素操作</span><br><br>    <span class="hljs-comment">//return (void *)1; //退出线程</span><br>    pthread_exit(<span class="hljs-number">0</span>); <span class="hljs-comment">//退出线程</span><br>&#125;<br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-comment">//...</span><br>    pthread_create(&amp;thread2, <span class="hljs-literal">NULL</span>, wdt_thread, (<span class="hljs-type">void</span> *)sockfd);<br>    <span class="hljs-comment">//...</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="线程局部变量"><a href="#线程局部变量" class="headerlink" title="线程局部变量"></a>线程局部变量</h4><p>当一个线程多次创建时，线程内定义的变量需要设置为局部变量，一种利用键值的demo如下：  </p>
+<details>
+<summary>局部变量</summary>  
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">pthread_key_t</span> key_msg;    <span class="hljs-comment">//声明一个线程局部变量的共享键值</span><br><span class="hljs-type">pthread_key_t</span> key_buffer; <span class="hljs-comment">//声明一个线程局部变量的共享键值</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">recv_func</span><span class="hljs-params">(<span class="hljs-type">int</span> sock_cli)</span><br>&#123;<br>    MSG_STRUCT *recv_msg = pthread_getspecific(key_msg); <span class="hljs-comment">//从键值中获取局部变量</span><br>    <span class="hljs-type">char</span> *buffer = pthread_getspecific(key_buffer);      <span class="hljs-comment">//从键值中获取局部变量</span><br>    <span class="hljs-comment">//...</span><br>&#125;<br><br><span class="hljs-type">void</span> *<span class="hljs-title function_">msg_thread</span><span class="hljs-params">(<span class="hljs-type">void</span> *arg)</span><br>&#123;<br>    SERVER_SOC *msg_sockfd;                                          <span class="hljs-comment">//新建一个SERVER_SOC结构体指针</span><br>    msg_sockfd = (SERVER_SOC *)arg;                                  <span class="hljs-comment">//接收传递来的参数结构体</span><br>    MSG_STRUCT *recv_msg = (MSG_STRUCT *)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(MSG_STRUCT)); <span class="hljs-comment">//分配消息结构体指针</span><br>    <span class="hljs-type">char</span> *buffer = (<span class="hljs-type">char</span> *)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(MSG_STRUCT));               <span class="hljs-comment">//新建一个接收的缓存区域</span><br>    pthread_setspecific(key_msg, recv_msg);                          <span class="hljs-comment">//将recv_msg与key_msg键值绑定</span><br>    pthread_setspecific(key_buffer, buffer);                         <span class="hljs-comment">//将buffer与key_buffer键值绑定</span><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;线程ID为%lu\n&quot;</span>, pthread_self());<br>    recv_func(msg_sockfd-&gt;sock_cli[msg_sockfd-&gt;num]); <span class="hljs-comment">//接收服务端发来是信号</span><br><br>    <span class="hljs-comment">//return (void *)1; //退出线程</span><br>    pthread_exit(<span class="hljs-number">0</span>); <span class="hljs-comment">//退出线程</span><br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    pthread_key_create(&amp;key_msg, <span class="hljs-literal">NULL</span>);<br>    pthread_key_create(&amp;key_buffer, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)<br>    &#123;<br>        pthread_create(&amp;thread1, <span class="hljs-literal">NULL</span>, msg_thread, (<span class="hljs-type">void</span> *)sockfd); <span class="hljs-comment">//传参</span><br><br>    &#125;<br>    pthread_key_delete(key_msg);    <span class="hljs-comment">//销毁键值</span><br>    pthread_key_delete(key_buffer); <span class="hljs-comment">//销毁键值</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+</details>  
+  
+<h4 id="线程编译"><a href="#线程编译" class="headerlink" title="线程编译"></a>线程编译</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">gcc -o pthread -lpthread pthread.c  <span class="hljs-comment">#-lpthread调用libpthread库 </span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta"># cmake中添加链接库</span><br>LINK_LIBRARIES(pthread)     #添加链接库，gcc里面需要添加 -lpthread<br></code></pre></td></tr></table></figure>
+
+<h2 id="方案选择"><a href="#方案选择" class="headerlink" title="方案选择"></a>方案选择</h2><p>实现服务器架构，综上而言，客户端较少的情况下，使用select查找法更为容易，对内存的开销较小，但是当客户端增加后服务器处理客户端消息的实时性将大打折扣。  </p>
+<p>使用多进程的方式，服务端的子进程之间还需要建立通信，相对而言使用多线程更为容易，且多线程一样具有多进程的实时性。多线程开发中要注意变量的读写，如果变量比较重要且均在线程内，应当设置为局部变量。当然，变量作为全局变量，可以允许各线程加以修改，但一定要解决同步问题。对于单核的处理器而言，每个时间片只运行一个进程的一个线程的一部分，因此微观上，各线程读或者写的顺序是无法控制的，可能会出现读的线程发生在写之前，读到了旧值，这个问题需要非常重视。一个可以反映出问题的demo如下：</p>
+<details>
+<summary>test.c</summary>  
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;pthread.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-comment">// pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;</span><br><span class="hljs-type">int</span> g_val = <span class="hljs-number">0</span>;<br><span class="hljs-type">void</span>* <span class="hljs-title function_">add</span><span class="hljs-params">(<span class="hljs-type">void</span> *argv)</span><br>&#123;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span> ; i &lt; <span class="hljs-number">5000</span>; ++i)<br>    &#123;<br>        <span class="hljs-comment">// g_val++;</span><br>        <span class="hljs-comment">// pthread_mutex_lock(&amp;lock);  //上锁</span><br>        <span class="hljs-type">int</span> tmp = g_val;  <span class="hljs-comment">//可能读取旧值，而另一个线程已经在加</span><br>        g_val = tmp+<span class="hljs-number">1</span>;<br>        usleep(<span class="hljs-number">10</span>);<br>        <span class="hljs-comment">// pthread_mutex_unlock(&amp;lock); //解锁</span><br>    &#125;<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> <span class="hljs-type">const</span> *argv[])</span><br>&#123;<br>    <span class="hljs-type">pthread_t</span> id1,id2;<br><br>    pthread_create(&amp;id1,<span class="hljs-literal">NULL</span>,add,<span class="hljs-literal">NULL</span>);<br>    pthread_create(&amp;id2,<span class="hljs-literal">NULL</span>,add,<span class="hljs-literal">NULL</span>);<br><br>    pthread_join(id1,<span class="hljs-literal">NULL</span>);<br>    pthread_join(id2,<span class="hljs-literal">NULL</span>);<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d\n&quot;</span>,g_val);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+</details>  
+代码实际运行，各线程累加5000次，应该值为10000，但实际上如果不加锁和解锁，数值最终无法到达10000。
+
+<p>参考：<a href="https://www.cnblogs.com/lang5230/p/5686868.html">linux多线程-互斥&amp;条件变量与同步</a>。</p>
+<h2 id="自定义函数及功能"><a href="#自定义函数及功能" class="headerlink" title="自定义函数及功能"></a>自定义函数及功能</h2><details>
+<summary>socket.c</summary>  
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;am5728.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sock.h&quot;</span></span><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 获取指定进程的pid</span><br><span class="hljs-comment"> * @输入 : 进程名称</span><br><span class="hljs-comment"> * @返回 : 进程pid</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">get_other_process_pid</span><span class="hljs-params">(<span class="hljs-type">char</span> *process_name)</span><br>&#123;<br>    <span class="hljs-type">char</span> popen_cmd[<span class="hljs-number">50</span>] = &#123;<span class="hljs-string">&#x27;\0&#x27;</span>&#125;;<br>    <span class="hljs-built_in">sprintf</span>(popen_cmd, <span class="hljs-string">&quot;ps -a | grep \&#x27;%s\&#x27; | awk \&#x27;&#123;print $1&#125;\&#x27;&quot;</span>,<br>            process_name); <span class="hljs-comment">//遍历查询PID</span><br>    FILE *fp = popen(popen_cmd, <span class="hljs-string">&quot;r&quot;</span>);<br>    <span class="hljs-type">char</span> pid_buffer[<span class="hljs-number">10</span>] = &#123;<span class="hljs-string">&#x27;\0&#x27;</span>&#125;;<br>    fgets(pid_buffer, <span class="hljs-number">10</span>, fp);<br>    pclose(fp);<br>    <span class="hljs-keyword">return</span> atoi(pid_buffer);<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 向表中添加一个client的接收线程fd，超出范围则返回-1，当有新客户端注册接收线程sockfd时调用</span><br><span class="hljs-comment"> * @输入 : 客户端sockfd表结构体地址，客户端进程名称，注册的sockfd</span><br><span class="hljs-comment"> * @返回 : 正确添加返回1；超出范围返回-1</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">add_table</span><span class="hljs-params">(CLIENT_TABLE *table, <span class="hljs-type">char</span> *client_name, <span class="hljs-type">int</span> sock)</span><br>&#123;<br>    <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; CLI_NUM; i++)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (table-&gt;client_recv_sock[i] &lt; <span class="hljs-number">0</span>)<br>        &#123;<br>            <span class="hljs-built_in">strcpy</span>(table-&gt;client_name[i], client_name);<br>            table-&gt;client_recv_sock[i] = sock;<br>            <span class="hljs-comment">// printf(&quot;[server ] Add %dth data in client_sockfd:name = %s\tsock = %d\n&quot;, i, table-&gt;client_name[i], table-&gt;client_recv_sock[i]);</span><br>            <span class="hljs-comment">//break;</span><br>            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 从表中搜寻指定client_name的fd并返回，当服务器需要转发消息时调用</span><br><span class="hljs-comment"> * @输入 : 客户端sockfd表结构体地址，客户端进程名称</span><br><span class="hljs-comment"> * @返回 : 正确搜寻到返回sockfd，无法查询返回-1</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">search_fd</span><span class="hljs-params">(CLIENT_TABLE *table, <span class="hljs-type">char</span> *client_name)</span><br>&#123;<br>    <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">int</span> sock;<br>    <span class="hljs-keyword">while</span> (i &lt; CLI_NUM)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">strcmp</span>(client_name, table-&gt;client_name[i]) == <span class="hljs-number">0</span>)<br>        &#123;<br>            sock = table-&gt;client_recv_sock[i];<br>            <span class="hljs-keyword">return</span> sock;<br>        &#125;<br>        i++;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 从表中删除一组client的接收线程sockfd，在client突然断开时调用</span><br><span class="hljs-comment"> * @输入 : 客户端sockfd表结构体地址，注册的sockfd</span><br><span class="hljs-comment"> * @返回 : 正确搜寻并删除返回1，无法查找返回-1</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">delete_fd</span><span class="hljs-params">(CLIENT_TABLE *table, <span class="hljs-type">int</span> sock)</span><br>&#123;<br>    <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; CLI_NUM; i++)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (table-&gt;client_recv_sock[i] == sock)<br>        &#123;<br>            <span class="hljs-built_in">strcpy</span>(table-&gt;client_name[i], <span class="hljs-string">&quot;&quot;</span>);<br>            table-&gt;client_recv_sock[i] = <span class="hljs-number">-1</span>;<br>            <span class="hljs-comment">// printf(&quot;[server ] Delete %dth data in client_sockfd\n&quot;, i);</span><br>            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>&#125;<br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 客户端注册看门狗时调用，向wdt表中添加对应的进程名称，并将wdt_count置0（默认值-1）</span><br><span class="hljs-comment"> * @输入 : 看门狗注册表结构体地址，客户端进程名</span><br><span class="hljs-comment"> * @返回 : 正常添加返回1，已注册满返回-1</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">add_wdt</span><span class="hljs-params">(WDT_STRUCT *wdt, <span class="hljs-type">char</span> *client_name)</span><br>&#123;<br>    <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; CLI_NUM; i++)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (wdt-&gt;wdt_count[i] &lt; <span class="hljs-number">0</span>)<br>        &#123;<br>            <span class="hljs-built_in">strcpy</span>(wdt-&gt;wdt_client_name[i], client_name);<br>            wdt-&gt;wdt_count[i] = <span class="hljs-number">0</span>;<br>            <span class="hljs-comment">// printf(&quot;[server ] Add %dth data in wdt_table:name = %s\twdt_count = %d\n&quot;, i, wdt-&gt;wdt_client_name[i], wdt-&gt;wdt_count[i]);</span><br>            <span class="hljs-comment">//break;</span><br>            <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 将看门狗注册表中相应的客户端计数置0，在客户端喂狗时调用</span><br><span class="hljs-comment"> * @输入 : 看门狗注册表结构体地址，客户端进程名</span><br><span class="hljs-comment"> * @返回 : 成功置0返回1，无法查询返回-1</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">set_wdt_count_zero</span><span class="hljs-params">(WDT_STRUCT *wdt, <span class="hljs-type">char</span> *client_name)</span><br>&#123;<br>    <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span> (i &lt; CLI_NUM)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">strcmp</span>(client_name, wdt-&gt;wdt_client_name[i]) == <span class="hljs-number">0</span>)<br>        &#123;<br>            wdt-&gt;wdt_count[i] = <span class="hljs-number">0</span>;<br>            <span class="hljs-comment">// printf(&quot;[server ] set %s process&#x27;s wdt_count to be zero\n&quot;, wdt-&gt;wdt_client_name[i]);</span><br>            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>        &#125;<br>        i++;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>&#125;<br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 将看门狗注册表中的所有计数加1，如果超出阈值kill相应进程</span><br><span class="hljs-comment"> * @输入 : 看门狗注册表结构体地址</span><br><span class="hljs-comment"> * @返回 : 1</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">wdt_count</span><span class="hljs-params">(WDT_STRUCT *wdt)</span><br>&#123;<br>    <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span> (i &lt; CLI_NUM)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (wdt-&gt;wdt_count[i] &gt;= <span class="hljs-number">0</span>) <span class="hljs-comment">//挑选出注册的wdt</span><br>        &#123;<br>            wdt-&gt;wdt_count[i]++;<br>            <span class="hljs-comment">// printf(&quot;[server ] 进程 %s 的计数加一，wdt_count = %d\n&quot;, wdt-&gt;wdt_client_name[i], wdt-&gt;wdt_count[i]);</span><br>            <span class="hljs-keyword">if</span> (wdt-&gt;wdt_count[i] &gt;= <span class="hljs-number">3</span>)<br>            &#123;<br>                <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[server ] %s process&#x27;s(PID = %d) wdt_count is larger than 3\n&quot;</span>, wdt-&gt;wdt_client_name[i], get_other_process_pid(wdt-&gt;wdt_client_name[i]));<br>                kill(get_other_process_pid(wdt-&gt;wdt_client_name[i]), SIGKILL);<br>                wdt-&gt;wdt_count[i] = <span class="hljs-number">-1</span>; <span class="hljs-comment">//重置wdt_count，防止下次注册重复</span><br>                <span class="hljs-built_in">strcpy</span>(wdt-&gt;wdt_client_name[i], <span class="hljs-string">&quot;&quot;</span>);<br>            &#125;<br>        &#125;<br>        i++;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 服务器新建socket程序</span><br><span class="hljs-comment"> * @输入 : ip地址，port端口</span><br><span class="hljs-comment"> * @返回 : 正常建立返回sock，无法建立返回-1</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">server_socket</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *_ip, <span class="hljs-type">int</span> _port)</span><br>&#123;<br>    <span class="hljs-type">int</span> sock = socket(AF_INET, SOCK_STREAM, <span class="hljs-number">0</span>);<br>    <span class="hljs-keyword">if</span> (sock &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        perror(<span class="hljs-string">&quot;[server ] socket&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sockaddr_in</span> <span class="hljs-title">local</span>;</span><br>    local.sin_family = AF_INET;<br>    local.sin_port = htons(_port);<br>    local.sin_addr.s_addr = inet_addr(_ip);<br>    <span class="hljs-keyword">if</span> (bind(sock, (<span class="hljs-keyword">struct</span> sockaddr *)&amp;local, <span class="hljs-keyword">sizeof</span>(local)) &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        perror(<span class="hljs-string">&quot;[server ] bind&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (listen(sock, <span class="hljs-number">10</span>) &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        perror(<span class="hljs-string">&quot;[server ] listen&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> sock;<br>&#125;<br><br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 处理服务器接收到的消息，分别有客户端接收线程fd注册，看门狗注册，看门狗置0以及消息转发</span><br><span class="hljs-comment"> * @输入 : 消息结构体地址，客户端sockfd表结构体地址，注册的sockfd，看门狗注册表结构体地址</span><br><span class="hljs-comment"> * @返回 : 正常完成返回1，错误完成返回-1</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">msg_option</span><span class="hljs-params">(PACKET *msg, CLIENT_TABLE *table, <span class="hljs-type">int</span> sock, WDT_STRUCT *wdt)</span><br>&#123;<br>    <span class="hljs-keyword">switch</span> (msg-&gt;cmd)<br>    &#123;<br>    <span class="hljs-keyword">case</span> CMD_RECV: <span class="hljs-comment">//客户端建立接收线程，调用add_table向表中注册信息</span><br>    &#123;<br>        add_table(table, msg-&gt;source_name, sock);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    <span class="hljs-keyword">case</span> CMD_WDT: <span class="hljs-comment">//客户端发送看门狗消息</span><br>    &#123;<br>        <span class="hljs-keyword">switch</span> (msg-&gt;wdt)<br>        &#123;<br>        <span class="hljs-keyword">case</span> WDT_REGISTER:<br>        &#123;<br>            <span class="hljs-comment">//printf(&quot;wdt : 正在向表中注册client_name\n&quot;);</span><br>            add_wdt(wdt, msg-&gt;source_name);<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>        <span class="hljs-keyword">case</span> WDT_SIGNAL:<br>        &#123;<br>            <span class="hljs-comment">//根据source_name查询wdt_count并置零</span><br>            <span class="hljs-comment">//printf(&quot;wdt : 正在计数清零\n&quot;);</span><br>            set_wdt_count_zero(wdt, msg-&gt;source_name);<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>        <span class="hljs-keyword">default</span>:<br>        &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>        &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    <span class="hljs-keyword">case</span> CMD_TRANSFER: <span class="hljs-comment">//客户端发送转发消息，查表获取目标fd并转发</span><br>    &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[server ] Transfering a message from %s to %s\n&quot;</span>, msg-&gt;source_name, msg-&gt;target_name);<br>        <span class="hljs-type">char</span> *buf = (<span class="hljs-type">char</span> *)<span class="hljs-built_in">malloc</span>(MSG_LEGHTN);<br>        <span class="hljs-built_in">memcpy</span>(buf, msg, MSG_LEGHTN);<br>        <span class="hljs-type">int</span> target_sock = search_fd(table, msg-&gt;target_name);<br>        <span class="hljs-comment">// printf(&quot;[server ] Searching sockfd...\n&quot;);</span><br>        <span class="hljs-keyword">if</span> (target_sock &lt; <span class="hljs-number">0</span>)<br>        &#123;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[server ] Cannot find sockfd, no route to send!\n&quot;</span>);<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>        &#125;<br>        write(target_sock, buf, MSG_LEGHTN);<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[server ] Send successfully!\n&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    &#125;<br>    <span class="hljs-keyword">default</span>:<br>    &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    &#125;<br>&#125;<br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 客户端新建socket并connect服务器函数</span><br><span class="hljs-comment"> * @输入 : NULL</span><br><span class="hljs-comment"> * @返回 : 成功创建返回sockfd，无法连接返回-1</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">client_socket</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-type">int</span> sock = socket(AF_INET, SOCK_STREAM, <span class="hljs-number">0</span>);<br>    <span class="hljs-keyword">if</span> (sock &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        perror(<span class="hljs-string">&quot;socket&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sockaddr_in</span> <span class="hljs-title">server</span>;</span><br>    server.sin_family = AF_INET;<br>    server.sin_port = htons(<span class="hljs-number">8000</span>);<br>    server.sin_addr.s_addr = inet_addr(<span class="hljs-string">&quot;127.1.1.1&quot;</span>);<br>    <span class="hljs-keyword">if</span> (connect(sock, (<span class="hljs-keyword">struct</span> sockaddr *)&amp;server, <span class="hljs-keyword">sizeof</span>(server)) &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        perror(<span class="hljs-string">&quot;connect&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> sock;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 转发消息，msg-&gt;cmd = 2</span><br><span class="hljs-comment"> * @输入 : 服务器sockfd，目标进程名，源进程名，消息内容</span><br><span class="hljs-comment"> * @返回 : 成功发送返回1，发送失败返回-1</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">transfer_msg</span><span class="hljs-params">(<span class="hljs-type">int</span> sock, <span class="hljs-type">char</span> *target_name, <span class="hljs-type">char</span> *source_name, <span class="hljs-type">char</span> *content)</span><br>&#123;<br>    PACKET *msg = (PACKET *)<span class="hljs-built_in">malloc</span>(MSG_LEGHTN);<br>    <span class="hljs-built_in">sprintf</span>(msg-&gt;head, <span class="hljs-string">&quot;%s&quot;</span>, <span class="hljs-string">&quot;head&quot;</span>);<br>    msg-&gt;cmd = <span class="hljs-number">2</span>; <span class="hljs-comment">//transfer cmd</span><br>    msg-&gt;wdt = <span class="hljs-number">0</span>;<br>    <span class="hljs-built_in">sprintf</span>(msg-&gt;target_name, <span class="hljs-string">&quot;%s&quot;</span>, target_name);<br>    <span class="hljs-built_in">sprintf</span>(msg-&gt;source_name, <span class="hljs-string">&quot;%s&quot;</span>, source_name);<br>    <span class="hljs-built_in">sprintf</span>(msg-&gt;msg, <span class="hljs-string">&quot;%s&quot;</span>, content);<br>    <span class="hljs-type">char</span> *buf = (<span class="hljs-type">char</span> *)<span class="hljs-built_in">malloc</span>(MSG_LEGHTN);<br>    <span class="hljs-built_in">memcpy</span>(buf, msg, MSG_LEGHTN);<br>    <span class="hljs-type">int</span> result = write(sock, buf, MSG_LEGHTN);<br>    <span class="hljs-keyword">if</span> (result &lt;= <span class="hljs-number">0</span>)<br>    &#123;<br>        <span class="hljs-built_in">printf</span> (<span class="hljs-string">&quot;[%s] Cannot send!\n&quot;</span>, source_name);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 注册看门狗信息，msg-&gt;cmd = 1，msg-&gt;wdt = 0</span><br><span class="hljs-comment"> * @输入 : 服务器sockfd，源进程名</span><br><span class="hljs-comment"> * @返回 : 成功发送返回1，发送失败返回-1</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">register_wdt</span><span class="hljs-params">(<span class="hljs-type">int</span> sock, <span class="hljs-type">char</span> *source_name)</span><br>&#123;<br>    PACKET *msg = (PACKET *)<span class="hljs-built_in">malloc</span>(MSG_LEGHTN);<br>    <span class="hljs-built_in">sprintf</span>(msg-&gt;head, <span class="hljs-string">&quot;%s&quot;</span>, <span class="hljs-string">&quot;head&quot;</span>);<br>    msg-&gt;cmd = <span class="hljs-number">1</span>; <span class="hljs-comment">//transfer cmd</span><br>    msg-&gt;wdt = <span class="hljs-number">0</span>; <span class="hljs-comment">//wdt register</span><br>    <span class="hljs-built_in">sprintf</span>(msg-&gt;target_name, <span class="hljs-string">&quot;%s&quot;</span>, <span class="hljs-string">&quot;null&quot;</span>);<br>    <span class="hljs-built_in">sprintf</span>(msg-&gt;source_name, <span class="hljs-string">&quot;%s&quot;</span>, source_name);<br>    <span class="hljs-built_in">sprintf</span>(msg-&gt;msg, <span class="hljs-string">&quot;%s&quot;</span>, <span class="hljs-string">&quot;null&quot;</span>);<br>    <span class="hljs-type">char</span> *buf = (<span class="hljs-type">char</span> *)<span class="hljs-built_in">malloc</span>(MSG_LEGHTN);<br>    <span class="hljs-built_in">memcpy</span>(buf, msg, MSG_LEGHTN);<br>    <span class="hljs-type">int</span> result= write(sock, buf, MSG_LEGHTN);<br>    <span class="hljs-keyword">if</span> (result &lt;= <span class="hljs-number">0</span>)<br>    &#123;<br>        <span class="hljs-built_in">printf</span> (<span class="hljs-string">&quot;[%s] Cannot send!\n&quot;</span>, source_name);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 喂狗，msg-&gt;cmd = 1，msg-&gt;wdt = 1</span><br><span class="hljs-comment"> * @输入 : 服务器sockfd，源进程名</span><br><span class="hljs-comment"> * @返回 : 成功发送返回1，发送失败返回-1</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">send_wdt</span><span class="hljs-params">(<span class="hljs-type">int</span> sock, <span class="hljs-type">char</span> *source_name)</span><br>&#123;<br>    PACKET *msg = (PACKET *)<span class="hljs-built_in">malloc</span>(MSG_LEGHTN);<br>    <span class="hljs-built_in">sprintf</span>(msg-&gt;head, <span class="hljs-string">&quot;%s&quot;</span>, <span class="hljs-string">&quot;head&quot;</span>);<br>    msg-&gt;cmd = <span class="hljs-number">1</span>; <span class="hljs-comment">//transfer cmd</span><br>    msg-&gt;wdt = <span class="hljs-number">1</span>; <span class="hljs-comment">//wdt signal</span><br>    <span class="hljs-built_in">sprintf</span>(msg-&gt;target_name, <span class="hljs-string">&quot;%s&quot;</span>, <span class="hljs-string">&quot;null&quot;</span>);<br>    <span class="hljs-built_in">sprintf</span>(msg-&gt;source_name, <span class="hljs-string">&quot;%s&quot;</span>, source_name);<br>    <span class="hljs-built_in">sprintf</span>(msg-&gt;msg, <span class="hljs-string">&quot;%s&quot;</span>, <span class="hljs-string">&quot;null&quot;</span>);<br>    <span class="hljs-type">char</span> *buf = (<span class="hljs-type">char</span> *)<span class="hljs-built_in">malloc</span>(MSG_LEGHTN);<br>    <span class="hljs-built_in">memcpy</span>(buf, msg, MSG_LEGHTN);<br>    <span class="hljs-type">int</span> result = write(sock, buf, MSG_LEGHTN);<br>    <span class="hljs-keyword">if</span> (result &lt;= <span class="hljs-number">0</span>)<br>    &#123;<br>        <span class="hljs-built_in">printf</span> (<span class="hljs-string">&quot;[%s] Cannot send!\n&quot;</span>, source_name);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+</details>  
+
+<h3 id="运行框图"><a href="#运行框图" class="headerlink" title="运行框图"></a>运行框图</h3><p>服务端<br><img src="/img/post_pics/tcpip/%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BD%AF%E4%BB%B6%E6%A1%86%E5%9B%BE.bmp" srcset="/img/loading.gif" lazyload><br>客户端<br><img src="/img/post_pics/tcpip/%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%BD%AF%E4%BB%B6%E6%A1%86%E5%9B%BE.bmp" srcset="/img/loading.gif" lazyload></p>
+<h2 id="守护脚本"><a href="#守护脚本" class="headerlink" title="守护脚本"></a>守护脚本</h2><p>守护脚本的功能是，当检测到某进程不存在是，立即重启该进程，对应着服务器检测到某个进程不喂狗时立即杀死该进程。两者想结合完成对客户端及服务器端的保护。守护进程中用shell语言编写了protect函数，输入参数为<code>$1</code>，即进程名。启动守护脚本后，将分先后运行服务器和客户端可执行文件并运行在后台，再在主循环中轮询守护对应的进程。</p>
+<details>
+<summary>main.sh</summary>  
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs bash">./zhx_server &amp;<br>./client1 &amp;<br>./client2 &amp;<br><br><span class="hljs-keyword">function</span> protect &#123;<br>    <span class="hljs-comment"># PRO_NAME = $1   </span><br>    <span class="hljs-comment">#用ps获取$PRO_NAME进程数量</span><br>    NUM=`ps aux | grep -w <span class="hljs-variable">$1</span> | grep -v grep |<span class="hljs-built_in">wc</span> -l`<br>    <span class="hljs-comment">#echo $NUM</span><br>    <span class="hljs-comment">#少于1，重启进程</span><br>    <span class="hljs-keyword">if</span> [ <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;NUM&#125;</span>&quot;</span> -lt <span class="hljs-string">&quot;1&quot;</span> ];<span class="hljs-keyword">then</span><br>        <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;[main.sh] <span class="hljs-variable">$1</span> was killed&quot;</span><br>        ./<span class="hljs-variable">$1</span> &amp;<br>    <span class="hljs-comment">#大于1，杀掉所有进程，重启</span><br>    <span class="hljs-keyword">elif</span> [ <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;NUM&#125;</span>&quot;</span> -gt <span class="hljs-string">&quot;1&quot;</span> ];<span class="hljs-keyword">then</span><br>        <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;[main.sh] more than 1 <span class="hljs-variable">$1</span>,killall <span class="hljs-variable">$1</span>&quot;</span><br>        killall -9 <span class="hljs-variable">$PRO_NAME</span><br>        ./<span class="hljs-variable">$1</span> &amp;<br>    <span class="hljs-keyword">fi</span><br>    <span class="hljs-comment">#kill僵尸进程</span><br>    NUM_STAT=`ps aux | grep -w <span class="hljs-variable">$1</span> | grep T | grep -v grep | <span class="hljs-built_in">wc</span> -l`<br>    <span class="hljs-keyword">if</span> [ <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;NUM_STAT&#125;</span>&quot;</span> -gt <span class="hljs-string">&quot;0&quot;</span> ];<span class="hljs-keyword">then</span><br>        killall -9 <span class="hljs-variable">$1</span><br>        ./<span class="hljs-variable">$1</span> &amp;<br>    <span class="hljs-keyword">fi</span><br>    <span class="hljs-comment"># sleep 1s</span><br>&#125;<br><br><span class="hljs-comment"># NAME=&quot;client1&quot;</span><br><span class="hljs-keyword">while</span> <span class="hljs-literal">true</span> ; <span class="hljs-keyword">do</span><br>    protect <span class="hljs-string">&quot;zhx_server&quot;</span><br>    protect <span class="hljs-string">&quot;client1&quot;</span><br>    protect <span class="hljs-string">&quot;client2&quot;</span><br><span class="hljs-keyword">done</span><br><span class="hljs-built_in">exit</span> 0<br></code></pre></td></tr></table></figure>
+
+</details>  
+
+<h2 id="实现结果"><a href="#实现结果" class="headerlink" title="实现结果"></a>实现结果</h2><p><img src="/img/post_pics/tcpip/socket%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C.JPG" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">[client1] Creating recv thread.<span class="hljs-string">..</span>                                   <span class="hljs-comment">#客户端建立接收线程</span><br>[client2] Creating recv thread.<span class="hljs-string">..</span><br>[server ] Transfering a message from client1 to client2             <span class="hljs-comment">#服务端转发客户端的消息</span><br>[server ] Send successfully!                                        <span class="hljs-comment">#转发成功</span><br>[client2] thread recv msg:<span class="hljs-string">&quot;this message is from client1 to client2&quot;</span> <span class="hljs-comment">#client2成功接收</span><br>[server ] client1 process&#x27;s<span class="hljs-params">(<span class="hljs-attr">PID</span> = 5061)</span> wdt_count is larger than 3  <span class="hljs-comment">#client1计数超时</span><br>[main.sh] client1 was killed                                        <span class="hljs-comment">#服务器关闭客户端</span><br>[client1] Creating recv thread.<span class="hljs-string">..</span>                                   <span class="hljs-comment">#守护脚本再次重启客户端</span><br><span class="hljs-string">......</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><details>
+<summary>server.c</summary>  
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;am5728.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sock.h&quot;</span></span><br><span class="hljs-type">pthread_mutex_t</span> lock = PTHREAD_MUTEX_INITIALIZER;<br>WDT_STRUCT wdt;          <span class="hljs-comment">//新建一个客户端进程看门狗维护表的结构体，相关函数传递 &amp;wdt</span><br><span class="hljs-type">int</span> client_sockfd[<span class="hljs-number">4096</span>]; <span class="hljs-comment">//所有客户端连接的fd存储数组</span><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * @功能 : 看门狗信号处理线程，独立于主线程</span><br><span class="hljs-comment"> * @输入 : NULL</span><br><span class="hljs-comment"> * @返回 : NULL</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> *<span class="hljs-title function_">wdt_opt</span><span class="hljs-params">(<span class="hljs-type">void</span> *arg)</span><br>&#123;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)<br>    &#123;<br>        sleep(<span class="hljs-number">3</span>); <span class="hljs-comment">//设置定时</span><br>        pthread_mutex_lock(&amp;lock);<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[server ] 看门狗线程正在上锁\n&quot;</span>);<br>        wdt_count(&amp;wdt); <span class="hljs-comment">//计数</span><br>        pthread_mutex_unlock(&amp;lock);<br>    &#125;<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span><br>&#123;<br>    <span class="hljs-comment">//******************************************************************************************************</span><br>    <span class="hljs-comment">//                                           建立socket和fd_set变量</span><br>    <span class="hljs-comment">//******************************************************************************************************</span><br>    <span class="hljs-type">int</span> listensock = server_socket(<span class="hljs-string">&quot;127.1.1.1&quot;</span>, <span class="hljs-number">8000</span>);<br>    <span class="hljs-keyword">if</span> (listensock &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        perror(<span class="hljs-string">&quot;[server ] Create socket error!\n&quot;</span>);<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br>    <span class="hljs-type">int</span> maxfd = <span class="hljs-number">0</span>; <span class="hljs-comment">//初始化maxfd</span><br>    fd_set rfds;   <span class="hljs-comment">//可读</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">timeval</span> <span class="hljs-title">tv</span>;</span><br><br>    <span class="hljs-comment">//******************************************************************************************************</span><br>    <span class="hljs-comment">//                                           初始化table结构体</span><br>    <span class="hljs-comment">//******************************************************************************************************</span><br>    CLIENT_TABLE *table = (CLIENT_TABLE *)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(CLIENT_TABLE)); <span class="hljs-comment">//新建一个客户端进程与接收fd的表的结构体指针</span><br>    <span class="hljs-built_in">memset</span>(table, <span class="hljs-string">&#x27;\0&#x27;</span>, <span class="hljs-keyword">sizeof</span>(CLIENT_TABLE));                          <span class="hljs-comment">//初始化表</span><br>    <span class="hljs-type">int</span> m = <span class="hljs-number">0</span>;                                                          <span class="hljs-comment">//循环计数值</span><br>    <span class="hljs-keyword">for</span> (m = <span class="hljs-number">0</span>; m &lt; CLI_NUM; m++)                                       <span class="hljs-comment">//将table-&gt;client_recv_sock[10]所有内容初始化为-1</span><br>        table-&gt;client_recv_sock[m] = <span class="hljs-number">-1</span>;<br><br>    <span class="hljs-comment">//******************************************************************************************************</span><br>    <span class="hljs-comment">//                                           初始化client_sockfd</span><br>    <span class="hljs-comment">//******************************************************************************************************</span><br>    client_sockfd[<span class="hljs-number">0</span>] = listensock;                                             <span class="hljs-comment">//client_sockfd[]的第一个值为server自己的sockfd</span><br>    <span class="hljs-type">int</span> i = <span class="hljs-number">1</span>;                                                                 <span class="hljs-comment">//client_sockfd置数循环计数</span><br>    <span class="hljs-type">int</span> client_sockfd_size = <span class="hljs-keyword">sizeof</span>(client_sockfd) / <span class="hljs-keyword">sizeof</span>(client_sockfd[<span class="hljs-number">0</span>]); <span class="hljs-comment">//client_sockfd_size=4096</span><br>    <span class="hljs-keyword">for</span> (; i &lt; client_sockfd_size; i++)                                        <span class="hljs-comment">//将保存fd的client_sockfd除去第一位，全部预先设为-1</span><br>        client_sockfd[i] = <span class="hljs-number">-1</span>;<br>    <span class="hljs-comment">//******************************************************************************************************</span><br>    <span class="hljs-comment">//                                           初始化wdt结构体</span><br>    <span class="hljs-comment">//******************************************************************************************************</span><br>    <span class="hljs-built_in">memset</span>(&amp;wdt, <span class="hljs-string">&#x27;\0&#x27;</span>, <span class="hljs-keyword">sizeof</span>(WDT_STRUCT)); <span class="hljs-comment">//初始化表</span><br>    <span class="hljs-type">int</span> n = <span class="hljs-number">0</span>;                              <span class="hljs-comment">//循环计数</span><br>    <span class="hljs-keyword">for</span> (n = <span class="hljs-number">0</span>; n &lt; CLI_NUM; n++)<br>    &#123;<br>        wdt.wdt_count[n] = <span class="hljs-number">-1</span>;<br>        <span class="hljs-built_in">strcpy</span>(wdt.wdt_client_name[n], <span class="hljs-string">&quot;&quot;</span>);<br>    &#125;<br><br>    <span class="hljs-comment">//******************************************************************************************************</span><br>    <span class="hljs-comment">//                                           开启看门狗线程</span><br>    <span class="hljs-comment">//******************************************************************************************************</span><br>    <span class="hljs-type">pthread_t</span> thread1;                             <span class="hljs-comment">//新建线程变量</span><br>    pthread_create(&amp;thread1, <span class="hljs-literal">NULL</span>, wdt_opt, <span class="hljs-literal">NULL</span>); <span class="hljs-comment">//创建线程</span><br><br>    <span class="hljs-comment">//******************************************************************************************************</span><br>    <span class="hljs-comment">//                                           主循环</span><br>    <span class="hljs-comment">//******************************************************************************************************</span><br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)<br>    &#123;<br>        FD_ZERO(&amp;rfds);                          <span class="hljs-comment">//将所有位清0</span><br>        <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; client_sockfd_size; ++i) <span class="hljs-comment">//将client_sockfd中成员与fd_set绑定</span><br>        &#123;<br>            <span class="hljs-keyword">if</span> (client_sockfd[i] &gt; <span class="hljs-number">0</span>)<br>            &#123;<br>                FD_SET(client_sockfd[i], &amp;rfds);<br>                <span class="hljs-keyword">if</span> (client_sockfd[i] &gt; maxfd)<br>                    maxfd = client_sockfd[i]; <span class="hljs-comment">//取出最大的fd，作为select的第一个参数</span><br>            &#125;<br>        &#125;<br><br>        <span class="hljs-comment">//******************************************************************************************************</span><br>        <span class="hljs-comment">//                                           等待select返回文件描述符变化</span><br>        <span class="hljs-comment">//******************************************************************************************************</span><br>        <span class="hljs-keyword">switch</span> (select(maxfd + <span class="hljs-number">1</span>, &amp;rfds, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>)) <span class="hljs-comment">//第一个参数是被监听的文件描述符的总数</span><br>        &#123;<br>        <span class="hljs-keyword">case</span> <span class="hljs-number">0</span>:<br>        &#123;<br>            <span class="hljs-comment">// printf(&quot;timeout\t&quot;); //超时=0</span><br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>        <span class="hljs-keyword">case</span> <span class="hljs-number">-1</span>:<br>        &#123;<br>            <span class="hljs-comment">//perror(&quot;select error&quot;); //错误小于0</span><br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>        <span class="hljs-keyword">default</span>: <span class="hljs-comment">//大于0返回就绪的文件描述符的个数</span><br>        &#123;<br>            <span class="hljs-type">int</span> j = <span class="hljs-number">0</span>;<br>            <span class="hljs-keyword">for</span> (; j &lt; client_sockfd_size; ++j) <span class="hljs-comment">//遍历查询client_sockfd[]里面所有内容，用FD_ISSET捕获变化位</span><br>            &#123;<br>                <span class="hljs-comment">//******************************************************************************************************</span><br>                <span class="hljs-comment">//                                           处理客户端创建连接</span><br>                <span class="hljs-comment">//******************************************************************************************************</span><br>                <span class="hljs-keyword">if</span> (j == <span class="hljs-number">0</span> &amp;&amp; FD_ISSET(client_sockfd[j], &amp;rfds)) <span class="hljs-comment">//判断client_sockfd[0]是否有变化</span><br>                &#123;<br>                    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sockaddr_in</span> <span class="hljs-title">client</span>;</span><br>                    <span class="hljs-type">socklen_t</span> len = <span class="hljs-keyword">sizeof</span>(client);<br>                    <span class="hljs-type">int</span> new_sock = accept(listensock, (<span class="hljs-keyword">struct</span> sockaddr *)&amp;client, &amp;len); <span class="hljs-comment">//获得accept返回值</span><br>                    <span class="hljs-keyword">if</span> (new_sock &lt;= <span class="hljs-number">0</span>)                                                   <span class="hljs-comment">//accept failed</span><br>                    &#123;<br>                        perror(<span class="hljs-string">&quot;[server ] accept&quot;</span>);<br>                        <span class="hljs-keyword">continue</span>;<br>                    &#125;<br>                    <span class="hljs-comment">// printf(&quot;[server ] get a new client, sock = %d\n&quot;, new_sock);</span><br>                    fflush(<span class="hljs-built_in">stdout</span>);<br>                    <span class="hljs-type">int</span> k = <span class="hljs-number">1</span>;<br>                    <span class="hljs-keyword">for</span> (; k &lt; client_sockfd_size; ++k) <span class="hljs-comment">//找最靠前的-1的项赋值</span><br>                    &#123;<br>                        <span class="hljs-keyword">if</span> (client_sockfd[k] &lt; <span class="hljs-number">0</span>)<br>                        &#123;<br>                            client_sockfd[k] = new_sock;<br>                            <span class="hljs-keyword">if</span> (new_sock &gt; maxfd) <span class="hljs-comment">//获取新的最大描述符</span><br>                                maxfd = new_sock;<br>                            <span class="hljs-keyword">break</span>;<br>                        &#125;<br>                    &#125;<br>                    <span class="hljs-keyword">if</span> (k == client_sockfd_size) <span class="hljs-comment">//fd达到上限</span><br>                        close(new_sock);<br>                &#125;<br>                <span class="hljs-comment">//******************************************************************************************************</span><br>                <span class="hljs-comment">//                                           处理客户端发送消息</span><br>                <span class="hljs-comment">//******************************************************************************************************</span><br>                <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (j != <span class="hljs-number">0</span> &amp;&amp; FD_ISSET(client_sockfd[j], &amp;rfds)) <span class="hljs-comment">//如果是client_sockfd[1]以后的fd有读的变化</span><br>                &#123;<br>                    <span class="hljs-type">char</span> *buf = (<span class="hljs-type">char</span> *)<span class="hljs-built_in">malloc</span>(MSG_LEGHTN);              <span class="hljs-comment">//新建一个接收消息的缓冲buf</span><br>                    <span class="hljs-type">ssize_t</span> s = read(client_sockfd[j], buf, MSG_LEGHTN); <span class="hljs-comment">//将队列中的内容读至buf中</span><br>                    PACKET *msg = (PACKET *)<span class="hljs-built_in">malloc</span>(MSG_LEGHTN);          <span class="hljs-comment">//新建一个msg结构体地址，将消息传给消息处理函数</span><br>                    <span class="hljs-built_in">memcpy</span>(msg, buf, MSG_LEGHTN);                        <span class="hljs-comment">//将buf内容还原位结构体，保存到msg指向的结构体</span><br>                    <span class="hljs-keyword">if</span> (s &gt; <span class="hljs-number">0</span>)                                           <span class="hljs-comment">//读到正确的消息</span><br>                    &#123;<br>                        pthread_mutex_lock(&amp;lock);<br>                        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[server ] 主线程正在上锁\n&quot;</span>);<br>                        msg_option(msg, table, client_sockfd[j], &amp;wdt);<br>                        pthread_mutex_unlock(&amp;lock);<br>                    &#125;<br>                    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-number">0</span> == s) <span class="hljs-comment">//客户端离线</span><br>                    &#123;<br>                        close(client_sockfd[j]);                         <span class="hljs-comment">//关闭客户端</span><br>                        <span class="hljs-type">int</span> result = delete_fd(table, client_sockfd[j]); <span class="hljs-comment">//先删除再把client_sockfd[j]置为-1</span><br>                        client_sockfd[j] = <span class="hljs-number">-1</span>;                           <span class="hljs-comment">//还原client_sockfd[j]</span><br>                    &#125;<br>                    <span class="hljs-keyword">else</span><br>                    &#123;<br>                        perror(<span class="hljs-string">&quot;[server ] read&quot;</span>);<br>                        close(client_sockfd[j]);<br>                        client_sockfd[j] = <span class="hljs-number">-1</span>;<br>                    &#125;<br>                &#125;<br>            &#125;<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+</details>
+  
+<details>
+<summary>client1.c</summary>  
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;am5728.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;sock.h&quot;</span></span><br><br><span class="hljs-type">void</span> *<span class="hljs-title function_">client_recv_thread</span><span class="hljs-params">(<span class="hljs-type">void</span> *arg)</span><br>&#123;<br>    <span class="hljs-type">int</span> sock_recv; <span class="hljs-comment">//存放socket_client函数运行的返回值，也是recv函数的第一个参数</span><br><br>    PACKET *send_msg = (PACKET *)<span class="hljs-built_in">malloc</span>(MSG_LEGHTN);<br>    PACKET *recv_msg = (PACKET *)<span class="hljs-built_in">malloc</span>(MSG_LEGHTN);<br><br>    <span class="hljs-built_in">sprintf</span>(send_msg-&gt;head, <span class="hljs-string">&quot;%s&quot;</span>, <span class="hljs-string">&quot;head&quot;</span>);<br>    send_msg-&gt;cmd = <span class="hljs-number">0</span>;<br>    send_msg-&gt;wdt = <span class="hljs-number">0</span>;<br>    <span class="hljs-built_in">sprintf</span>(send_msg-&gt;target_name, <span class="hljs-string">&quot;%s&quot;</span>, <span class="hljs-string">&quot;null&quot;</span>);<br>    <span class="hljs-built_in">sprintf</span>(send_msg-&gt;source_name, <span class="hljs-string">&quot;%s&quot;</span>, <span class="hljs-string">&quot;client1&quot;</span>);<br>    <span class="hljs-built_in">sprintf</span>(send_msg-&gt;msg, <span class="hljs-string">&quot;%s&quot;</span>, <span class="hljs-string">&quot;null&quot;</span>);<br>    <span class="hljs-type">char</span> *buffer = (<span class="hljs-type">char</span> *)<span class="hljs-built_in">malloc</span>(MSG_LEGHTN);<br>    <span class="hljs-keyword">if</span> ((sock_recv = client_socket()) &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        perror(<span class="hljs-string">&quot;[client1] connect failed!\n&quot;</span>);<br>        <span class="hljs-keyword">return</span> (<span class="hljs-type">void</span> *)<span class="hljs-number">-1</span>;<br>    &#125;<br><br>    <span class="hljs-comment">// printf(&quot;客户端的sock_cli值为：%d\n&quot;, sock_recv);</span><br>    <span class="hljs-built_in">memcpy</span>(buffer, send_msg, MSG_LEGHTN);<br>    write(sock_recv, buffer, MSG_LEGHTN);<br><br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)<br>    &#123;<br>        <span class="hljs-built_in">memset</span>(recv_msg, <span class="hljs-string">&#x27;\0&#x27;</span>, MSG_LEGHTN);<br>        <span class="hljs-built_in">memset</span>(buffer, <span class="hljs-string">&#x27;\0&#x27;</span>, MSG_LEGHTN);<br><br>        <span class="hljs-comment">//recv(sock_recv, buffer, MSG_LEGHTN,0);  //让线程进入阻塞，此处不用read()</span><br>        <span class="hljs-type">ssize_t</span> s = read(sock_recv, buffer, MSG_LEGHTN);<br>        <span class="hljs-keyword">if</span> (s &gt; <span class="hljs-number">0</span>)<br>        &#123;<br>            <span class="hljs-built_in">memcpy</span>(recv_msg, buffer, MSG_LEGHTN);<br>            <span class="hljs-comment">//sleep(1);</span><br>            <span class="hljs-comment">//对接收的数据操作</span><br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[client1] thread recv:msg=\&quot;%s\&quot;\n&quot;</span>, recv_msg-&gt;msg);<br>        &#125;<br>    &#125;<br>    close(sock_recv);<br>    pthread_exit(<span class="hljs-number">0</span>);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span><br>&#123;<br>    <span class="hljs-type">pthread_t</span> recv_thread;<br>    pthread_create(&amp;recv_thread, <span class="hljs-literal">NULL</span>, client_recv_thread, <span class="hljs-literal">NULL</span>);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;[client1] Creating recv thread...\n&quot;</span>);<br>    sleep(<span class="hljs-number">1</span>);<br>    <span class="hljs-type">int</span> sock = client_socket();<br>    <span class="hljs-keyword">if</span> (sock &lt; <span class="hljs-number">0</span>)<br>    &#123;<br>        perror(<span class="hljs-string">&quot;[client1] Connect failed&quot;</span>);<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br><br>    register_wdt(sock, <span class="hljs-string">&quot;client1&quot;</span>);<br><br>    <span class="hljs-keyword">while</span> (get_other_process_pid(<span class="hljs-string">&quot;zhx_server&quot;</span>) &gt; <span class="hljs-number">0</span>)<br>    &#123;<br>        <span class="hljs-comment">// memcpy(buf, msg, MSG_LEGHTN);</span><br>        <span class="hljs-comment">// write(sock, buf, MSG_LEGHTN);</span><br>        <span class="hljs-comment">//sleep(4);</span><br>        transfer_msg(sock, <span class="hljs-string">&quot;client2&quot;</span>, <span class="hljs-string">&quot;client1&quot;</span>, <span class="hljs-string">&quot;this message is from client1 to client2&quot;</span>);<br>        sleep(<span class="hljs-number">10</span>);<br>        send_wdt(sock,<span class="hljs-string">&quot;client1&quot;</span>);<br>    &#125;<br><br>    close(sock);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+</details>  
+  
+<details>
+<summary>sock.h</summary>  
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;am5728.h&quot;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CMD_RECV 0     <span class="hljs-comment">//recv标志 0</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CMD_WDT 1      <span class="hljs-comment">//wdt标志 1</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CMD_TRANSFER 2 <span class="hljs-comment">//transfer标志 2</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> WDT_REGISTER 0 <span class="hljs-comment">//注册wdt表</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> WDT_SIGNAL 1   <span class="hljs-comment">//wdt发来的测试信号</span></span><br><span class="hljs-comment">//消息结构体</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-type">char</span> head[<span class="hljs-number">10</span>];<br>    <span class="hljs-type">int</span> cmd;<br>    <span class="hljs-type">int</span> wdt;<br>    <span class="hljs-type">char</span> target_name[<span class="hljs-number">10</span>];<br>    <span class="hljs-type">char</span> source_name[<span class="hljs-number">10</span>];<br>    <span class="hljs-type">char</span> msg[<span class="hljs-number">512</span>];<br>&#125; PACKET;<br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MSG_LEGHTN sizeof(PACKET) <span class="hljs-comment">//PACKET结构体的长度，也是接收和发送指定的长度</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CLI_NUM 10                <span class="hljs-comment">//允许的客户端接收线程上限</span></span><br><span class="hljs-comment">//客户端进程与接收fd的表，结构体</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-type">char</span> client_name[CLI_NUM][<span class="hljs-number">10</span>]; <span class="hljs-comment">//存储客户端进程名的二维数组</span><br>    <span class="hljs-type">int</span> client_recv_sock[CLI_NUM]; <span class="hljs-comment">//存储客户端接收线程fd的数组</span><br>&#125; CLIENT_TABLE;<br><br><span class="hljs-comment">//存放客户端看门狗计数的结构体</span><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-type">int</span> wdt_count[CLI_NUM];<br>    <span class="hljs-type">char</span> wdt_client_name[CLI_NUM][<span class="hljs-number">10</span>];<br>&#125; WDT_STRUCT;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">get_other_process_pid</span><span class="hljs-params">(<span class="hljs-type">char</span> *process_name)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">add_table</span><span class="hljs-params">(CLIENT_TABLE *table, <span class="hljs-type">char</span> *client_name, <span class="hljs-type">int</span> sock)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">search_fd</span><span class="hljs-params">(CLIENT_TABLE *table, <span class="hljs-type">char</span> *client_name)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">delete_fd</span><span class="hljs-params">(CLIENT_TABLE *table, <span class="hljs-type">int</span> sock)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">add_wdt</span><span class="hljs-params">(WDT_STRUCT *wdt, <span class="hljs-type">char</span> *client_name)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">set_wdt_count_zero</span><span class="hljs-params">(WDT_STRUCT *wdt, <span class="hljs-type">char</span> *client_name)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">wdt_count</span><span class="hljs-params">(WDT_STRUCT *wdt)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">server_socket</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *_ip, <span class="hljs-type">int</span> _port)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">msg_option</span><span class="hljs-params">(PACKET *msg, CLIENT_TABLE *table, <span class="hljs-type">int</span> sock, WDT_STRUCT *wdt)</span>;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">client_socket</span><span class="hljs-params">()</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">transfer_msg</span><span class="hljs-params">(<span class="hljs-type">int</span> sock, <span class="hljs-type">char</span> *target_name, <span class="hljs-type">char</span> *source_name, <span class="hljs-type">char</span> *content)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">register_wdt</span><span class="hljs-params">(<span class="hljs-type">int</span> sock, <span class="hljs-type">char</span> *source_name)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">send_wdt</span><span class="hljs-params">(<span class="hljs-type">int</span> sock, <span class="hljs-type">char</span> *source_name)</span>;<br></code></pre></td></tr></table></figure>
+
+</details>  
+  
+<details>
+<summary>am5728.h</summary>  
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">ifndef</span> _AM5728_H</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _AM5728_H</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/types.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/socket.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;netinet/in.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;arpa/inet.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/time.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/select.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;pthread.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;memory.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br></code></pre></td></tr></table></figure>
+
+</details>  
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/OS/" class="category-chain-item">OS</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
+      
+        <a href="/tags/Net/" class="print-no-link">#Net</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/11/08/SW/IoT/AM5728-Mem-Config/" title="AM5728配置DMM_LISA_MAP修改内存工作模式">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">AM5728配置DMM_LISA_MAP修改内存工作模式</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/08/10/SW/OS/VScode-WSL/" title="VScode WSL开发环境配置">
+                        <span class="hidden-mobile">VScode WSL开发环境配置</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

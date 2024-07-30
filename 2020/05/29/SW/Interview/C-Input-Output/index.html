@@ -1,0 +1,766 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="刷题时经常遇到C语言的输入问题，包括一行读入数字、字符串、十六进制数等等，本文将对此进行一一分类编写.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C语言输入输出汇总">
+<meta property="og:url" content="http://yoursite.com/2020/05/29/SW/Interview/C-Input-Output/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="刷题时经常遇到C语言的输入问题，包括一行读入数字、字符串、十六进制数等等，本文将对此进行一一分类编写.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-29T18:45:55.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.411Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>C语言输入输出汇总 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="C语言输入输出汇总"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-05-29 18:45" pubdate>
+          2020年5月29日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">C语言输入输出汇总</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>刷题时经常遇到C语言的输入问题，包括一行读入数字、字符串、十六进制数等等，本文将对此进行一一分类编写.</p>
+<span id="more"></span>   
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br><span class="line">478</span><br><span class="line">479</span><br><span class="line">480</span><br><span class="line">481</span><br><span class="line">482</span><br><span class="line">483</span><br><span class="line">484</span><br><span class="line">485</span><br><span class="line">486</span><br><span class="line">487</span><br><span class="line">488</span><br><span class="line">489</span><br><span class="line">490</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;ctype.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;malloc.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">get_data</span><span class="hljs-params">(<span class="hljs-type">int</span> *nums)</span>;<br><span class="hljs-type">long</span> <span class="hljs-title function_">StrToHex</span><span class="hljs-params">(<span class="hljs-type">char</span> *data)</span>;<br><span class="hljs-type">int</span> <span class="hljs-title function_">judgeHexStr</span><span class="hljs-params">(<span class="hljs-type">char</span> *data)</span>;<br><span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> <span class="hljs-title function_">simple_strtoul</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *cp, <span class="hljs-type">char</span> **endp, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> base)</span>;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-comment">/*</span><br><span class="hljs-comment">    1 . 常规输入整行，$ My name is shenjianliang</span><br><span class="hljs-comment">    My name is shenjianliang</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br>    <span class="hljs-type">char</span> strline[<span class="hljs-number">100</span>] = &#123;<span class="hljs-string">&#x27;\0&#x27;</span>&#125;;<br>    gets(strline);<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;input : %s\n&quot;</span>, strline);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">    2 . 按空格隔开输入，使用scanf和二维数组,假设单词长度不超过20，总数不超过100</span><br><span class="hljs-comment">    My name is shenjianliang</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br>    <span class="hljs-comment">//按 Enter 后程序输出并退出</span><br>    <span class="hljs-type">char</span> input[<span class="hljs-number">100</span>][<span class="hljs-number">20</span>];<br>    <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%s&quot;</span>, &amp;input[count++]) &gt; <span class="hljs-number">0</span>) &#123;<br>        <span class="hljs-keyword">if</span> (getchar() == <span class="hljs-string">&#x27;\n&#x27;</span>)  <span class="hljs-comment">//判断是否检测到 Enter</span><br>            <span class="hljs-keyword">break</span>;<br>    &#125;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;input[%d] = \t %s\n&quot;</span>, i, input[i]);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">    3 . 按行输入，使用双指针，假设单词长度不超过20，总数不超过100</span><br><span class="hljs-comment">    My</span><br><span class="hljs-comment">    name</span><br><span class="hljs-comment">    is</span><br><span class="hljs-comment">    shenjianliang</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br>    <span class="hljs-comment">//按 Enter</span><br>    <span class="hljs-comment">//退出循环无法实现，此类题目一般靠有多少个输入或者最后一行等于end判断结束</span><br>    <span class="hljs-type">char</span> strline[<span class="hljs-number">100</span>][<span class="hljs-number">20</span>];<br>    <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br>    <span class="hljs-comment">//	int N;</span><br>    <span class="hljs-comment">//	scanf (&quot;%d\n&quot;,&amp;N);</span><br>    <span class="hljs-comment">//	for (i = 0;i&lt; N;i++)&#123;</span><br>    <span class="hljs-comment">//		gets(strline[i]);</span><br>    <span class="hljs-comment">//		printf (&quot;strline[%d] = \t%s\n&quot;,i,strline[i]);</span><br>    <span class="hljs-comment">//	&#125;</span><br>    <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span> (gets(strline[count++]) != <span class="hljs-literal">NULL</span>) &#123;<br>        <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strcmp</span>(strline[count - <span class="hljs-number">1</span>], <span class="hljs-string">&quot;end&quot;</span>)) &#123;<br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;strline[%d] = \t %s\n&quot;</span>, i, strline[i]);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">    4 . 按逗号隔开输入（最难），使用双指针，条件同上</span><br><span class="hljs-comment">    etgerwty,,,rtyer,,,rteyerty,</span><br><span class="hljs-comment">    count  = 3</span><br><span class="hljs-comment">    input[0] =       etgerwty</span><br><span class="hljs-comment">    input[1] =       rtyer</span><br><span class="hljs-comment">    input[2] =       rteyerty</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br>    <span class="hljs-type">char</span> input[<span class="hljs-number">20</span>][<span class="hljs-number">100</span>];  <span class="hljs-comment">//使用二维数组</span><br>    <span class="hljs-type">char</span> str[<span class="hljs-number">1000</span>];<br>    <span class="hljs-type">char</span> *ptr;<br>    <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br>    gets(str);<br>    <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br>    ptr = strtok(str, <span class="hljs-string">&quot;,&quot;</span>);<br>    <span class="hljs-keyword">while</span> (ptr != <span class="hljs-literal">NULL</span>) &#123;<br>        <span class="hljs-comment">// count ++;</span><br>        <span class="hljs-built_in">strcpy</span>(input[count++], ptr);<br>        ptr = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);<br>    &#125;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;count  = %d\n&quot;</span>, count);<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;input[%d] = \t %s\n&quot;</span>, i, input[i]);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br>    <span class="hljs-type">char</span> **input, **temp;  <span class="hljs-comment">//使用双指针 ,效果不好，不便于输出</span><br>    input = (<span class="hljs-type">char</span> **)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-type">char</span> **) * <span class="hljs-number">100</span>);  <span class="hljs-comment">//声明100个字符串组成的数组</span><br>    temp = input;                                    <span class="hljs-comment">//存放开始的地址</span><br>    <span class="hljs-type">char</span> str[<span class="hljs-number">1000</span>];<br><br>    gets(str);<br><br>    <span class="hljs-comment">//*input  = (char *) malloc (sizeof(char *)*20 );//第一个字符串数组分配空间</span><br>    <span class="hljs-comment">//不分配也可以</span><br>    *input = strtok(str, <span class="hljs-string">&quot;,&quot;</span>);<br>    <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span> (*input != <span class="hljs-literal">NULL</span>) &#123;<br>        count++;<br>        *input++;<br>        <span class="hljs-comment">//*input = (char *) malloc (sizeof(char *)*20 );	 // 不分配也可以</span><br>        *input = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);<br>    &#125;<br>    input = temp;  <span class="hljs-comment">//恢复指针初始位置</span><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;input[%d] = \t %s\n&quot;</span>, i, input[i]);  <span class="hljs-comment">//以二维数组的形式打印输出</span><br>    &#125;<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">    5 . 数字输入，空格隔开</span><br><span class="hljs-comment">    12 23 445 345 12342435</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br>    <span class="hljs-comment">//按 Enter 后程序输出并退出</span><br>    <span class="hljs-type">int</span> input[<span class="hljs-number">100</span>];<br>    <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d&quot;</span>, &amp;input[count++]) != EOF) &#123;<br>        <span class="hljs-keyword">if</span> (getchar() == <span class="hljs-string">&#x27;\n&#x27;</span>)  <span class="hljs-comment">//判断是否检测到 Enter</span><br>            <span class="hljs-keyword">break</span>;<br>    &#125;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;count  = %d \n&quot;</span>, count);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;input[%d] = \t %d\n&quot;</span>, i, input[i]);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">    6 . 数字输入，逗号隔开</span><br><span class="hljs-comment">    Example 1:</span><br><span class="hljs-comment">        452345,  645 6345,63776 ,37657, 214545          ,526</span><br><span class="hljs-comment">        count  = 6</span><br><span class="hljs-comment">        input[0] =       452345</span><br><span class="hljs-comment">        input[1] =       645</span><br><span class="hljs-comment">        input[2] =       63776</span><br><span class="hljs-comment">        input[3] =       37657</span><br><span class="hljs-comment">        input[4] =       214545</span><br><span class="hljs-comment">        input[5] =       526</span><br><span class="hljs-comment">    Example 2:</span><br><span class="hljs-comment">        2344,  ,  ,3545,,365</span><br><span class="hljs-comment">        count  = 5</span><br><span class="hljs-comment">        input[0] =       2344</span><br><span class="hljs-comment">        input[1] =       0</span><br><span class="hljs-comment">        input[2] =       0</span><br><span class="hljs-comment">        input[3] =       3545</span><br><span class="hljs-comment">        input[4] =       365</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br><br>    <span class="hljs-type">int</span> num_input[<span class="hljs-number">20</span>];<br>    <span class="hljs-type">char</span> str[<span class="hljs-number">1000</span>];<br>    <span class="hljs-type">char</span> *ptr;<br>    <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br>    gets(str);<br>    ptr = strtok(str, <span class="hljs-string">&quot;,&quot;</span>);<br>    <span class="hljs-keyword">while</span> (ptr != <span class="hljs-literal">NULL</span>) &#123;<br>        num_input[count++] = atoi(ptr);<br>        ptr = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);<br>    &#125;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;count  = %d\n&quot;</span>, count);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;input[%d] = \t %d\n&quot;</span>, i, num_input[i]);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">    7 . 多组输入，数据总量不相同</span><br><span class="hljs-comment">        N 组数据</span><br><span class="hljs-comment">        1,2,3,4				//伤害值数组，不定长</span><br><span class="hljs-comment">        20,30,15			//怪物生命值，不定长</span><br><span class="hljs-comment">        5,6,7,8				//不同箭的数量，与伤害值种类对应</span><br><span class="hljs-comment">        // 下面是第二组数据</span><br><span class="hljs-comment">        4,2,3,4,7,8,9		//伤害值数组，不定长</span><br><span class="hljs-comment">        50,30,15,234,44		//怪物生命值，不定长</span><br><span class="hljs-comment">        5,6,7,8,66,77,88	//不同箭的数量，与伤害值种类对应</span><br><span class="hljs-comment">        // 下面是第三组数据</span><br><span class="hljs-comment">        1,2,3,4,45			//伤害值数组，不定长</span><br><span class="hljs-comment">        20,60,11			//怪物生命值，不定长</span><br><span class="hljs-comment">        5,6,7,8,34			//不同箭的数量，与伤害值种类对应</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br>    <span class="hljs-type">int</span> N = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">int</span> *damage, *health, *arrow_count;<br>    <span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d\n&quot;</span>, &amp;N);<br>    <span class="hljs-type">int</span> damage_length = <span class="hljs-number">0</span>, health_length = <span class="hljs-number">0</span>, arrow_count_length = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; N; i++) &#123;<br>        damage = (<span class="hljs-type">int</span> *)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-type">int</span>) * <span class="hljs-number">20</span>);<br>        health = (<span class="hljs-type">int</span> *)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-type">int</span>) * <span class="hljs-number">20</span>);<br>        arrow_count = (<span class="hljs-type">int</span> *)<span class="hljs-built_in">malloc</span>(<span class="hljs-keyword">sizeof</span>(<span class="hljs-type">int</span>) * <span class="hljs-number">20</span>);<br><br>        damage_length = get_data(damage);<br>        health_length = get_data(health);<br>        arrow_count_length = get_data(arrow_count);<br><br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;=============== start print =================\n&quot;</span>);<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; damage_length; j++) &#123;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;damage[%d] = %d\n&quot;</span>, j, damage[j]);<br>        &#125;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; health_length; j++) &#123;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;health[%d] = %d\n&quot;</span>, j, health[j]);<br>        &#125;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; arrow_count_length; j++) &#123;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;arrow_count[%d] = %d\n&quot;</span>, j, arrow_count[j]);<br>        &#125;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;================ end print =================\n&quot;</span>);<br><br>        <span class="hljs-built_in">free</span>(damage);<br>        <span class="hljs-built_in">free</span>(health);<br>        <span class="hljs-built_in">free</span>(arrow_count);<br>    &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 1</span><br>    <span class="hljs-type">int</span> N = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">int</span> damage[<span class="hljs-number">20</span>], health[<span class="hljs-number">20</span>], arrow_count[<span class="hljs-number">20</span>];<br>    <span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d\n&quot;</span>, &amp;N);<br>    <span class="hljs-type">int</span> damage_length = <span class="hljs-number">0</span>, health_length = <span class="hljs-number">0</span>, arrow_count_length = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; N; i++) &#123;<br>        damage_length = get_data(damage);<br>        health_length = get_data(health);<br>        arrow_count_length = get_data(arrow_count);<br><br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;=============== start print =================\n&quot;</span>);<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; damage_length; j++) &#123;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;damage[%d] = %d\n&quot;</span>, j, damage[j]);<br>        &#125;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; health_length; j++) &#123;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;health[%d] = %d\n&quot;</span>, j, health[j]);<br>        &#125;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; arrow_count_length; j++) &#123;<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;arrow_count[%d] = %d\n&quot;</span>, j, arrow_count[j]);<br>        &#125;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;================ end print =================\n&quot;</span>);<br>    &#125;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">    8 . 读入十六进制字符串，空格隔开</span><br><span class="hljs-comment">    0x123 0xaaaa 100 0x01111 00x10 0x101 101 x xx 10ac      x01</span><br><span class="hljs-comment">    a[0]            H: 0x123                O: 291</span><br><span class="hljs-comment">    a[1]            H: 0xaaaa               O: 43690</span><br><span class="hljs-comment">    a[2]            H: 0x100                O: 256</span><br><span class="hljs-comment">    a[3]            H: 0x1111               O: 4369</span><br><span class="hljs-comment">    a[4]            H: 0x0                  O: 0     //00x101为0 和   0x10 = 16</span><br><span class="hljs-comment">    a[5]            H: 0x10                 O: 16</span><br><span class="hljs-comment">    a[6]            H: 0x101                O: 257</span><br><span class="hljs-comment">    a[7]            H: 0x101                O: 257  //x 和 xx不计入</span><br><span class="hljs-comment">    a[8]            H: 0x0                  O: 0</span><br><span class="hljs-comment">    //由于有x和xx,10ac和x01无法输入</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br>    <span class="hljs-type">long</span> a[<span class="hljs-number">20</span>];<br>    <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%lx&quot;</span>, &amp;a[count++])) &#123;<br>        <span class="hljs-keyword">if</span> (getchar() == <span class="hljs-string">&#x27;\n&#x27;</span>) <span class="hljs-keyword">break</span>;<br>    &#125;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;a[%d]\t\tH: 0x%lx\t\tO: %ld\n&quot;</span>, i, a[i], a[i]);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">    9 . 读入十六进制字符串，逗号隔开，判断后使用字符串格式输出</span><br><span class="hljs-comment">    0xaabb,0x1234,0xffff,0x10000000</span><br><span class="hljs-comment">    a[0] =   0xaabb</span><br><span class="hljs-comment">    a[1] =   0x1234</span><br><span class="hljs-comment">    a[2] =   0xffff</span><br><span class="hljs-comment">    a[3] =   0x10000000</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br>    <span class="hljs-type">char</span> a[<span class="hljs-number">20</span>][<span class="hljs-number">100</span>];  <span class="hljs-comment">//使用二维数组</span><br>    <span class="hljs-type">char</span> str[<span class="hljs-number">1000</span>];<br>    <span class="hljs-type">char</span> *ptr;<br>    <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br>    gets(str);<br>    <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br>    ptr = strtok(str, <span class="hljs-string">&quot;,&quot;</span>);<br>    <span class="hljs-keyword">while</span> (ptr != <span class="hljs-literal">NULL</span>) &#123;<br>        <span class="hljs-keyword">if</span> (judgeHexStr(ptr) == <span class="hljs-number">0</span>) &#123;  <span class="hljs-comment">//判断格式</span><br>            <span class="hljs-built_in">strcpy</span>(a[count++], ptr);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            ptr = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);<br>            <span class="hljs-keyword">continue</span>;<br>        &#125;<br><br>        ptr = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);<br>    &#125;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;a[%d] = \t %s\n&quot;</span>, i, a[i]);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">    10 . 读入十六进制字符串，逗号隔开，使用十六进制和十进制格式输出</span><br><span class="hljs-comment">    0x123,0xaaaa,100,0x01111,00x10,0x101,101,x,xx,10ac,    ,x01</span><br><span class="hljs-comment">    output[0]               H: 0x123                O: 291</span><br><span class="hljs-comment">    output[1]               H: 0xaaaa               O: 43690</span><br><span class="hljs-comment">    output[2]               H: 0x100                O: 256</span><br><span class="hljs-comment">    output[3]               H: 0x1111               O: 4369</span><br><span class="hljs-comment">    output[4]               H: 0x101                O: 257</span><br><span class="hljs-comment">    output[5]               H: 0x101                O: 257</span><br><span class="hljs-comment">    output[6]               H: 0x10ac               O: 4268</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br>    <span class="hljs-type">char</span> str[<span class="hljs-number">1000</span>];<br>    <span class="hljs-type">long</span> output[<span class="hljs-number">20</span>];<br>    <span class="hljs-type">char</span> *ptr;<br>    <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br>    gets(str);<br>    <span class="hljs-type">int</span> i = <span class="hljs-number">0</span>;<br>    ptr = strtok(str, <span class="hljs-string">&quot;,&quot;</span>);<br>    <span class="hljs-keyword">while</span> (ptr != <span class="hljs-literal">NULL</span>) &#123;<br>        output[count] = StrToHex(ptr);<br>        ptr = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);<br>        <span class="hljs-keyword">if</span> (output[count] == <span class="hljs-number">-1</span>) &#123;<br>            <span class="hljs-keyword">continue</span>;  <span class="hljs-comment">//不是标准十六进制字符串则舍弃</span><br>        &#125;<br>        count++;<br>    &#125;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; count; i++) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;output[%d]\t\tH: 0x%lx\t\tO: %ld\n&quot;</span>, i, output[i], output[i]);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br><span class="hljs-comment">/*</span><br><span class="hljs-comment">        11 . 进制转换</span><br><span class="hljs-comment">        0xaa 111 98 aa 64 0Xaa 100fg   //非法字符自动截断</span><br><span class="hljs-comment">        (16)     a = 170        (10)     a = 170        (8)      a = 170</span><br><span class="hljs-comment">        (16)     a = 273        (10)     a = 111        (8)      a = 73</span><br><span class="hljs-comment">        (16)     a = 152        (10)     a = 98 		(8)      a = 0</span><br><span class="hljs-comment">        (16)     a = 170        (10)     a = 0  		(8)      a = 0</span><br><span class="hljs-comment">        (16)     a = 100        (10)     a = 64 		(8)      a = 52</span><br><span class="hljs-comment">        (16)     a = 170        (10)     a = 170        (8)      a = 170</span><br><span class="hljs-comment">        (16)     a = 4111       (10)     a = 100        (8)      a = 64</span><br><span class="hljs-comment">*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> 0</span><br>    <span class="hljs-comment">// char *a;</span><br>    <span class="hljs-comment">// a = (char *)malloc (sizeof(char) * 20);</span><br>    <span class="hljs-type">char</span> a[<span class="hljs-number">20</span>];<br>    <span class="hljs-type">char</span> **endp;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%s&quot;</span>, a) != EOF) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;(16)\t a = %ld\t&quot;</span>, simple_strtoul(a, <span class="hljs-literal">NULL</span>, <span class="hljs-number">16</span>));<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;(10)\t a = %ld\t&quot;</span>, simple_strtoul(a, <span class="hljs-literal">NULL</span>, <span class="hljs-number">10</span>));<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;(8)\t a = %ld\n&quot;</span>, simple_strtoul(a, <span class="hljs-literal">NULL</span>, <span class="hljs-number">8</span>));<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">get_data</span><span class="hljs-params">(<span class="hljs-type">int</span> *nums)</span> &#123;<br>    <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>, data = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">char</span> str[<span class="hljs-number">1000</span>];<br>    gets(str);<br>    <span class="hljs-type">char</span> *ptr;<br>    ptr = strtok(str, <span class="hljs-string">&quot;,&quot;</span>);<br>    <span class="hljs-keyword">while</span> (ptr != <span class="hljs-literal">NULL</span>) &#123;<br>        nums[count++] = atoi(ptr);<br>        ptr = strtok(<span class="hljs-literal">NULL</span>, <span class="hljs-string">&quot;,&quot;</span>);<br>    &#125;<br>    <span class="hljs-keyword">return</span> count;<br>&#125;<br><br><span class="hljs-comment">//将十六进制字符串转换为整数（long）</span><br><span class="hljs-type">long</span> <span class="hljs-title function_">StrToHex</span><span class="hljs-params">(<span class="hljs-type">char</span> *data)</span> &#123;<br>    <span class="hljs-comment">//使用自己写的函数00x不可以识别</span><br>    <span class="hljs-keyword">if</span> (judgeHexStr(data) != <span class="hljs-number">0</span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <span class="hljs-type">long</span> ret = <span class="hljs-number">0</span>, s = <span class="hljs-number">1</span>;<br>    <span class="hljs-type">int</span> length = <span class="hljs-built_in">strlen</span>(data);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) &#123;<br>        <span class="hljs-keyword">if</span> ((<span class="hljs-string">&#x27;0&#x27;</span> &lt;= data[i]) &amp;&amp; (data[i] &lt;= <span class="hljs-string">&#x27;9&#x27;</span>)) &#123;<br>            s = <span class="hljs-number">1</span>;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; length - i - <span class="hljs-number">1</span>; j++) &#123;<br>                s = s * <span class="hljs-number">16</span>;<br>            &#125;<br>            ret += ((<span class="hljs-type">int</span>)(data[i] - <span class="hljs-string">&#x27;0&#x27;</span>)) * s;<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ((<span class="hljs-string">&#x27;a&#x27;</span> &lt;= data[i]) &amp;&amp; (data[i] &lt;= <span class="hljs-string">&#x27;f&#x27;</span>)) &#123;<br>            s = <span class="hljs-number">1</span>;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; length - i - <span class="hljs-number">1</span>; j++) &#123;<br>                s = s * <span class="hljs-number">16</span>;<br>            &#125;<br>            ret += ((<span class="hljs-type">int</span>)(data[i] - <span class="hljs-string">&#x27;a&#x27;</span> + <span class="hljs-number">10</span>)) * s;<br>        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ((<span class="hljs-string">&#x27;A&#x27;</span> &lt;= data[i]) &amp;&amp; (data[i] &lt;= <span class="hljs-string">&#x27;F&#x27;</span>)) &#123;<br>            s = <span class="hljs-number">1</span>;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; length - i - <span class="hljs-number">1</span>; j++) &#123;<br>                s = s * <span class="hljs-number">16</span>;<br>            &#125;<br>            ret += ((<span class="hljs-type">int</span>)(data[i] - <span class="hljs-string">&#x27;A&#x27;</span> + <span class="hljs-number">10</span>)) * s;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">continue</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> ret;<br>&#125;<br><span class="hljs-comment">//判断是否为标准 0xaA12 或者 0XaA12 或者 aA12 格式</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">judgeHexStr</span><span class="hljs-params">(<span class="hljs-type">char</span> *data)</span> &#123;<br>    <span class="hljs-keyword">if</span> (data == <span class="hljs-literal">NULL</span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    <span class="hljs-type">int</span> length = <span class="hljs-built_in">strlen</span>(data);<br>    <span class="hljs-keyword">if</span> (length == <span class="hljs-number">0</span>) &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (length &gt;= <span class="hljs-number">1</span>) &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; length; i++) &#123;<br>            <span class="hljs-keyword">if</span> ((data[i] == <span class="hljs-string">&#x27;x&#x27;</span>) || (data[i] == <span class="hljs-string">&#x27;X&#x27;</span>)) &#123;<br>                <span class="hljs-comment">// if (i == 0)</span><br>                <span class="hljs-comment">// &#123;</span><br>                <span class="hljs-comment">// 	return -1;</span><br>                <span class="hljs-comment">// &#125;</span><br>                <span class="hljs-keyword">if</span> (i != <span class="hljs-number">1</span>)  <span class="hljs-comment">//改为判断第二位是否为x</span><br>                &#123;<br>                    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>                &#125;<br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; i; j++) &#123;<br>                    <span class="hljs-keyword">if</span> (data[j] != <span class="hljs-string">&#x27;0&#x27;</span>) &#123;<br>                        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>                    &#125;<br>                &#125;<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                <span class="hljs-comment">// if (((&#x27;a&#x27; &lt;= data[i]) &amp;&amp; (data[i] &lt;= &#x27;f&#x27;)) ||</span><br>                <span class="hljs-comment">//     ((&#x27;A&#x27; &lt;= data[i]) &amp;&amp; (data[i] &lt;= &#x27;F&#x27;)) ||</span><br>                <span class="hljs-comment">//     ((&#x27;0&#x27; &lt;= data[i]) &amp;&amp; (data[i] &lt;= &#x27;9&#x27;))) &#123;</span><br>                <span class="hljs-comment">//等同于isxdigit(data[i]</span><br>                <span class="hljs-keyword">if</span> (<span class="hljs-built_in">isxdigit</span>(data[i])) &#123;<br>                    <span class="hljs-keyword">continue</span>;<br>                &#125; <span class="hljs-keyword">else</span> &#123;<br>                    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>                &#125;<br>            &#125;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-comment">//进制转换</span><br><span class="hljs-comment">//如果输入为 0xff 或者 0Xff 格式，则默认转化为16进制</span><br><span class="hljs-comment">//如果输入有 8~9，则转化为十进制和十六进制</span><br><span class="hljs-comment">//如果输入为 a~f，则只能转为十六进制</span><br><span class="hljs-comment">//输入遇到非法字符则自动截断</span><br><span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> <span class="hljs-title function_">simple_strtoul</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *cp, <span class="hljs-type">char</span> **endp, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> base)</span> &#123;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> result = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> value;<br><br>    <span class="hljs-keyword">if</span> (*cp == <span class="hljs-string">&#x27;0&#x27;</span>) &#123;<br>        cp++;<br>        <span class="hljs-keyword">if</span> ((*cp == <span class="hljs-string">&#x27;x&#x27;</span> || *cp == <span class="hljs-string">&#x27;X&#x27;</span>) &amp;&amp;<br>            <span class="hljs-built_in">isxdigit</span>(cp[<span class="hljs-number">1</span>])) &#123;  <span class="hljs-comment">//判断是否 0x 开头，0x 开头则为十六进制数</span><br>            base = <span class="hljs-number">16</span>;<br>            cp++;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (!base) &#123;  <span class="hljs-comment">//如果不是 0x 开头，base = 8</span><br>            base = <span class="hljs-number">8</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (!base) &#123;<br>        base = <span class="hljs-number">10</span>;<br>    &#125;<br>    <span class="hljs-keyword">while</span> (<span class="hljs-built_in">isxdigit</span>(*cp) &amp;&amp;  <span class="hljs-comment">// cp在的值0~f范围内，否则跳出循环</span><br>           (value = <span class="hljs-built_in">isdigit</span>(*cp) ? *cp - <span class="hljs-string">&#x27;0&#x27;</span>  <span class="hljs-comment">//如果cp的值在0~9</span><br>                                 : (<span class="hljs-built_in">islower</span>(*cp) ? <span class="hljs-built_in">toupper</span>(*cp) : *cp) - <span class="hljs-string">&#x27;A&#x27;</span> +<br>                                       <span class="hljs-number">10</span>) &lt; base) &#123;  <span class="hljs-comment">//或者变为大写-&#x27;A&#x27;+10</span><br>        result = result * base + value;  <span class="hljs-comment">//从左往右，数值 x base +最低位的值</span><br>        cp++;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (endp) &#123;<br>        *endp = (<span class="hljs-type">char</span> *)cp;  <span class="hljs-comment">//捕获最低位地址</span><br>    &#125;<br>    <span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Interview/" class="category-chain-item">Interview</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/C-C/" class="print-no-link">#C/C++</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/05/30/SW/Interview/Data-Structure-Tree/" title="C语言数据结构--树与二叉树">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">C语言数据结构--树与二叉树</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/05/25/SW/IoT/AM437-U-Boot-Dev/" title="AM437 U-Boot-2014修改">
+                        <span class="hidden-mobile">AM437 U-Boot-2014修改</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

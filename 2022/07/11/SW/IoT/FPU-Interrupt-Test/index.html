@@ -1,0 +1,1055 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="测试安全模式和非安全模式下中断的FPU寄存器保护">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ARM Cortex-M FPU 模块">
+<meta property="og:url" content="http://yoursite.com/2022/07/11/SW/IoT/FPU-Interrupt-Test/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="测试安全模式和非安全模式下中断的FPU寄存器保护">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-07-11T21:14:39.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.415Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="TF-M">
+<meta property="article:tag" content="TEE">
+<meta property="article:tag" content="Arm">
+<meta property="article:tag" content="FPU">
+<meta property="article:tag" content="Firmware">
+<meta property="article:tag" content="Interrupt">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>ARM Cortex-M FPU 模块 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="ARM Cortex-M FPU 模块"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-07-11 21:14" pubdate>
+          2022年7月11日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">ARM Cortex-M FPU 模块</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>测试安全模式和非安全模式下中断的FPU寄存器保护</p>
+<span id="more"></span>
+
+<ul>
+<li><a href="#fpu%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D">FPU基本介绍</a><ul>
+<li><a href="#%E5%AF%84%E5%AD%98%E5%99%A8">寄存器</a><ul>
+<li><a href="#cpacr">CPACR</a></li>
+<li><a href="#floating-point-register-bank">Floating point register bank</a></li>
+<li><a href="#fpscr">FPSCR</a></li>
+<li><a href="#fpccr">FPCCR</a></li>
+<li><a href="#fpcar">FPCAR</a></li>
+<li><a href="#fpdscr">FPDSCR</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BC%96%E8%AF%91%E5%91%BD%E4%BB%A4">编译命令</a></li>
+<li><a href="#%E7%9B%B8%E5%85%B3%E6%8C%87%E4%BB%A4">相关指令</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%AD%E6%96%AD">中断</a><ul>
+<li><a href="#%E5%AF%84%E5%AD%98%E5%99%A8-1">寄存器</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BD%BF%E7%94%A8">配置和使用</a></li>
+</ul>
+</li>
+<li><a href="#%E6%B5%8B%E8%AF%95%E6%96%B9%E6%A1%88%E5%92%8C%E7%BB%93%E6%9E%9C">测试方案和结果</a></li>
+</ul>
+<h2 id="FPU基本介绍"><a href="#FPU基本介绍" class="headerlink" title="FPU基本介绍"></a>FPU基本介绍</h2><p>Float point unit，浮点计运算元，在ARM Cortex-M同样广泛应用。C语言中浮点数有单精度和双精度之分：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">float</span> pi = 3.141592F;<br>double pi = 3.1415926535897932384626433832795;<br></code></pre></td></tr></table></figure>
+
+<h3 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h3><h4 id="CPACR"><a href="#CPACR" class="headerlink" title="CPACR"></a>CPACR</h4><p>Coprocessor Access Control Register，指定协处理器和浮点扩展的访问权限。如果实现了MVE，则此寄存器指定MVE的访问权限。MVE是指基于M-Profile Vector Extension矢量扩充方案的Arm Helium技术。MVE可以分为2大类，MVE-I和MVE-F。MVE-I仅对整型向量提供支持，MVE-F则对浮点数据向量提供支持。要包含MVE-F那么处理器核心就需要支持MVE-I以及浮点扩展。<br>寄存器组成：</p>
+<table>
+<thead>
+<tr>
+<th>31-24</th>
+<th>23-22</th>
+<th>21-20</th>
+<th>19-16</th>
+<th>15-14</th>
+<th>…</th>
+<th>3-2</th>
+<th>1-0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RES0</td>
+<td>CP11</td>
+<td>CP10</td>
+<td>RES0</td>
+<td>CP7</td>
+<td>…</td>
+<td>CP1</td>
+<td>CP0</td>
+</tr>
+</tbody></table>
+<p><code>CP10</code>定义浮点功能的访问权限，<code>00b</code>表示对FP&#x2F;MVE导致NOCP UsageFault；<code>01b</code>表示只能特权访问；<code>11b</code>表示可以在特权非特权访问FP Extension和MVE。<code>CP11</code>则和CP10同步，如果<code>CP10</code>是<code>RAZ/WI</code>，则<code>CP11</code>也是；如果<code>CP11</code>值编程和<code>CP10</code>一致，则该值为<code>UNKNOWN</code>。<code>CPm</code>，控制协处理器m的访问权限，同<code>CP10</code>。</p>
+<blockquote>
+<p><code>RES0</code>, Reserved，保留字段。<br><code>RAZ/WI</code>，读为0，写忽略。<br><code>NOCP</code>，No Co-processor。</p>
+</blockquote>
+<p>使处理器能完全访问CP10和CP11：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">if</span> (__FPU_PRESENT == 1) &amp;&amp; (__FPU_USED == 1)</span><br>    SCB-&gt;CPACR |= ((<span class="hljs-number">3UL</span> &lt;&lt; <span class="hljs-number">20U</span>)|(<span class="hljs-number">3UL</span> &lt;&lt; <span class="hljs-number">22U</span>));  <span class="hljs-comment">/* set CP10 and CP11 Full Access */</span><br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>SCB</code>，System Control Block，系统控制块。<br><code>__FPU_PRESENT</code>，表示当前处理器是否有FPU<br><code>__FPU_USED</code>，表示当前处理器是否使用FPU</p>
+</blockquote>
+<h4 id="Floating-point-register-bank"><a href="#Floating-point-register-bank" class="headerlink" title="Floating point register bank"></a>Floating point register bank</h4><p>分为<code>S0-S31</code>或者<code>D0-D15</code>，后者为双字64位寄存器，D0指S1+S0。</p>
+<ul>
+<li>S0-S15是caller saved（调用者保护）寄存器，如果函数A调用函数B，A函数必须保存这些寄存器（例如入栈），因为这些寄存器有可能被B破坏，类似R0-R3寄存器。</li>
+<li>S16-S31是callee saved（被调用者保护）寄存器，如果函数A调用函数B，并且B函数需要使用超过16个寄存器（指caller），B函数需要首先保存callee在堆栈上，并且在返回函数A前还原callee寄存器。</li>
+</ul>
+<h4 id="FPSCR"><a href="#FPSCR" class="headerlink" title="FPSCR"></a>FPSCR</h4><p>Float point status and control register，浮点状态和控制寄存器。类似程序状态寄存器应用<code>xPSR</code>（APSR, Application Program Status Register）。可以将状态复制给APSR：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">VMRS APSR_nzcv, FPSCR;<br></code></pre></td></tr></table></figure>
+
+<h4 id="FPCCR"><a href="#FPCCR" class="headerlink" title="FPCCR"></a>FPCCR</h4><p>Float point context control register浮点上下文控制寄存器，用于控制<a href="https://developer.arm.com/documentation/dai0298/a/">惰性压栈(lazy stacking)</a>特性等异常处理行为。TF-M初始化时对<code>FPCCR</code>的修改：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">if</span> (CONFIG_TFM_FP &gt;= 1)</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">ifdef</span> CONFIG_TFM_LAZY_STACKING</span><br>    <span class="hljs-comment">/* Enable lazy stacking. */</span><br>    FPU-&gt;FPCCR |= FPU_FPCCR_LSPEN_Msk;<br><span class="hljs-meta">#<span class="hljs-keyword">else</span></span><br>    <span class="hljs-comment">/* Disable lazy stacking. */</span><br>    FPU-&gt;FPCCR &amp;= ~FPU_FPCCR_LSPEN_Msk;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span></span><br><br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">     * If the SPE will ever use the floating-point registers for sensitive</span><br><span class="hljs-comment">     * data, then FPCCR.ASPEN, FPCCR.TS, FPCCR.CLRONRET and FPCCR.CLRONRETS</span><br><span class="hljs-comment">     * must be set at initialisation and not changed again afterwards.</span><br><span class="hljs-comment">     * Let SPE decide the S/NS shared setting (LSPEN and CLRONRET) to avoid the</span><br><span class="hljs-comment">     * possible side-path brought by flexibility. This is not needed</span><br><span class="hljs-comment">     * if the SPE will never use floating-point but enables the FPU only for</span><br><span class="hljs-comment">     * avoiding NOCP faults during interrupted NSPE to SPE calls.</span><br><span class="hljs-comment">     */</span><br>    FPU-&gt;FPCCR |= FPU_FPCCR_ASPEN_Msk<br>                  | FPU_FPCCR_TS_Msk<br>                  | FPU_FPCCR_CLRONRET_Msk<br>                  | FPU_FPCCR_CLRONRETS_Msk<br>                  | FPU_FPCCR_LSPENS_Msk;<br><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>ASPEN</code>：置位时，使能<code>CONTROL.FPCA</code>，caller saved（S0-S15，FPSR和VPR）寄存器在异常入口和推出时的状态自动保存</li>
+<li><code>LSPEN</code>：置位时，异常流程使用惰性压栈特性以保持中断等待</li>
+<li><code>LSPENS</code>：控制协处理器mLazy状态保存启用Secure的访问权限。该位控制LSPEN位是否可从非安全状态写入。置位时，LSPEN可从两种安全状态读取，但从非安全状态忽略对LSPEN的写入。</li>
+<li><code>CLRONRET</code>：如果 ASPEN&#x2F;CONTROL.FPCA &#x3D; 1 并且 FPCCR_S.LSPACT &#x3D; 0，在异常返回时，清空caller saved寄存器，CLRONRETS置位时，NS不能写入</li>
+<li><code>CLRONRETS</code>：仅限Secure能清空caller saved寄存器，置位时，NS只能读CLRONRET，而不能写入</li>
+<li><code>TS</code>：当设置为0时即使PE处于安全状态，浮点寄存器也被视为非安全，因此，callee saved寄存器永远不会被推入堆栈。如果浮点寄存器从不包含需要保护的数据，清除该标志可以减少中断延迟。由于该字段改变了安全堆栈帧的解释方式，如果该位的状态与当前安全堆栈不一致，则可能导致不可预测的行为。 因此，固件在修改此值时必须小心。该字段在非安全状态下表现为 RAZ&#x2F;WI。<strong>简而言之，TS&#x3D;1，则在secure中，caller and callee均会保存。</strong></li>
+</ul>
+<h4 id="FPCAR"><a href="#FPCAR" class="headerlink" title="FPCAR"></a>FPCAR</h4><p>Float point context address register，浮点上下文地址寄存器。和惰性压栈机制有关，即<code>FPCCR.LSPEN</code>。目的是为了降低中断等待，为长栈帧包括整型的寄存器组R0-R3,R12,LR,Return Address，xPSR以及FPU寄存器S0-S15和FPSCR预留栈空间从而快速返回。</p>
+<h4 id="FPDSCR"><a href="#FPDSCR" class="headerlink" title="FPDSCR"></a>FPDSCR</h4><p>Float point default status control register，存放默认浮点状态控制数据的配置信息，这些数据在异常入口处被复制到了FPSCR。</p>
+<h3 id="编译命令"><a href="#编译命令" class="headerlink" title="编译命令"></a>编译命令</h3><p>gcc:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">-mfloat-abi=hard -mfpu=fpv5-d16 -march=cortex-m55 -mcpu=armv8.1-m.main<br></code></pre></td></tr></table></figure>
+
+<p>hard和soft abi（应用程序二进制接口）的影响：</p>
+<ul>
+<li>是否使用浮点单元进行计算</li>
+<li>调用函数和被调用函数如何传递参数（使用整数寄存器组还是FP寄存器组）</li>
+</ul>
+<p>gcc浮点ABI选项</p>
+<ul>
+<li>-mfloat-abi&#x3D;soft，0，此时所有浮点运算都由runtime库函数实现，数据通过整数寄存器组实现</li>
+<li>-mfloat-abi&#x3D;softfp，1，代码可以访问FPU，如需访问runtime库函数，使用软件浮点调用规则，即使用整数寄存器组实现</li>
+<li>-mfloat-abi&#x3D;hard，2，代码可以访问FPU，调用runtime库函数使用FPU相关的调用规则</li>
+</ul>
+<blockquote>
+<p>如果所有浮点运算都是单精度的，则硬件浮点ABI的性能最高，如果双精度，软件ABI性能更好一些，因为Cortex-M4的FPU不支持双精度的浮点运算，数值仍需从FPU寄存器复制后由软件处理，带来额外开销。</p>
+</blockquote>
+<h3 id="相关指令"><a href="#相关指令" class="headerlink" title="相关指令"></a>相关指令</h3><table>
+<thead>
+<tr>
+<th>指令</th>
+<th>说明</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VADD</td>
+<td>浮点加法</td>
+<td>&#x2F;</td>
+</tr>
+<tr>
+<td>VSUB</td>
+<td>浮点减法</td>
+<td>&#x2F;</td>
+</tr>
+<tr>
+<td>VMUL</td>
+<td>浮点乘法</td>
+<td>&#x2F;</td>
+</tr>
+<tr>
+<td>VDIV</td>
+<td>浮点除法</td>
+<td>&#x2F;</td>
+</tr>
+<tr>
+<td>VABS</td>
+<td>浮绝对值</td>
+<td>&#x2F;</td>
+</tr>
+<tr>
+<td>VSQRT</td>
+<td>浮点平方根</td>
+<td>&#x2F;</td>
+</tr>
+<tr>
+<td>VCVT(R&#x2F;B&#x2F;F)</td>
+<td>数值转换</td>
+<td>&#x2F;</td>
+</tr>
+<tr>
+<td>VCMP</td>
+<td>比较两个浮点寄存器</td>
+<td><code>vcmp.f16     s6,#0</code></td>
+</tr>
+<tr>
+<td>VSTR</td>
+<td>将浮点寄存器的值存入存储器</td>
+<td>&#x2F;</td>
+</tr>
+<tr>
+<td>VLDR</td>
+<td>从存储中加载一个浮点数存入寄存器</td>
+<td>&#x2F;</td>
+</tr>
+<tr>
+<td>VPUSH&#x2F;VPOP</td>
+<td>压栈出栈</td>
+<td><code>vpush     &#123;s0-s15&#125;</code></td>
+</tr>
+<tr>
+<td>VMOV</td>
+<td>复制</td>
+<td><code>vmov      s1,r0</code></td>
+</tr>
+<tr>
+<td>VSTM</td>
+<td>将多个寄存器读出到地址中</td>
+<td><code>vstm      r0, &#123;s16-s31&#125;</code></td>
+</tr>
+<tr>
+<td>VLDM</td>
+<td>将地址中的数组写入多个寄存器</td>
+<td><code>vldm      r0,&#123;s16-s31&#125;</code></td>
+</tr>
+</tbody></table>
+<h2 id="中断"><a href="#中断" class="headerlink" title="中断"></a>中断</h2><h3 id="寄存器-1"><a href="#寄存器-1" class="headerlink" title="寄存器"></a>寄存器</h3><p>除了STIR以外，所有寄存器都只能特权访问。STIR默认特权访问，但也可以设置<code>CCR.USERSETMPEND=1</code>实现非特权访问。</p>
+<table>
+<thead>
+<tr>
+<th>Address</th>
+<th>Register</th>
+<th>Description</th>
+<th>NVIC API</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0xE002E100</td>
+<td>NVIC_ISERn</td>
+<td>Interrupt Set Enable Register</td>
+<td>NVIC_EnableIRQ</td>
+</tr>
+<tr>
+<td>0xE002E180</td>
+<td>NVIC_ICERn</td>
+<td>Interrupt Clear Enable Register</td>
+<td>NVIC_DisableIRQ</td>
+</tr>
+<tr>
+<td>0xE002E200</td>
+<td>NVIC_ISPRn</td>
+<td>Interrupt Set Pending Register</td>
+<td>NVIC_SetPendingIRQ</td>
+</tr>
+<tr>
+<td>0xE002E280</td>
+<td>NVIC_ICPRn</td>
+<td>Interrupt Clear Pending Register</td>
+<td>NVIC_ClearPendingIRQ</td>
+</tr>
+<tr>
+<td>0xE002E300</td>
+<td>NVIC_IABRn</td>
+<td>Interrupt Active Bit Register</td>
+<td>NVIC_GetActive</td>
+</tr>
+<tr>
+<td>0xE002E400</td>
+<td>NVIC_IPRn</td>
+<td>Interrupt Priority Register</td>
+<td>NVIC_SetPriority</td>
+</tr>
+<tr>
+<td>0xE000E380</td>
+<td>NVIC_ITNSn</td>
+<td>Interrupt Target Non-secure Register</td>
+<td>NVIC_SetTargetState&#x2F;NVIC_ClearTargetState</td>
+</tr>
+<tr>
+<td>0xE000EF00</td>
+<td>STIR</td>
+<td>Software Triggered Interrupt Register</td>
+<td>NVIC-&gt;STIR &#x3D; 3  &lt;&#x3D;&#x3D;&gt; NVIC_SetPendingIRQ(3);</td>
+</tr>
+<tr>
+<td>0xE000ED08</td>
+<td>VTOR</td>
+<td>Vector Table Offset Register</td>
+<td>NVIC_SetVector</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>若要在下一个操作前立即执行中断，则要设置存储器屏障<code>_DSB()</code>。<br>设置ITNS，1在NS中执行，0在S中执行<br>注：<code>S可以触发S、NS的中断，NS可以触发NS的中断，但是无法触发S的中断，后者是架构不允许的</code></p>
+</blockquote>
+<p>以下汇编实现NVIC的功能，仅限前32中断。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs c">__attribute__((naked)) <span class="hljs-type">uint32_t</span> <span class="hljs-title function_">ClearTargetState</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> IRQ_NUM)</span>&#123;<br>    __asm <span class="hljs-title function_">volatile</span><span class="hljs-params">(</span><br><span class="hljs-params">        <span class="hljs-string">&quot;push    &#123;r6-r9, lr&#125;                  \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;ldr     r7, =0xE000E380              \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;ldr     r8, [r7]                     \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;ldr     r9, =0x1                     \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;lsl     r9, r0                       \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;bic     r8, r8, r9                   \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;str     r8, [r7]                     \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;pop     &#123;r6-r9, pc&#125;                  \n&quot;</span></span><br><span class="hljs-params">    )</span>;<br>&#125;<br><br>__STATIC_INLINE <span class="hljs-type">uint32_t</span> <span class="hljs-title function_">NVIC_ClearTargetState</span><span class="hljs-params">(IRQn_Type IRQn)</span><br>&#123;<br>  <span class="hljs-keyword">if</span> ((<span class="hljs-type">int32_t</span>)(IRQn) &gt;= <span class="hljs-number">0</span>)<br>  &#123;<br>    NVIC-&gt;ITNS[(((<span class="hljs-type">uint32_t</span>)IRQn) &gt;&gt; <span class="hljs-number">5UL</span>)] &amp;= ~((<span class="hljs-type">uint32_t</span>)(<span class="hljs-number">1UL</span> &lt;&lt; (((<span class="hljs-type">uint32_t</span>)IRQn) &amp; <span class="hljs-number">0x1F</span>UL)));<br>    <span class="hljs-keyword">return</span>((<span class="hljs-type">uint32_t</span>)(((NVIC-&gt;ITNS[(((<span class="hljs-type">uint32_t</span>)IRQn) &gt;&gt; <span class="hljs-number">5UL</span>)] &amp; (<span class="hljs-number">1UL</span> &lt;&lt; (((<span class="hljs-type">uint32_t</span>)IRQn) &amp; <span class="hljs-number">0x1F</span>UL))) != <span class="hljs-number">0UL</span>) ? <span class="hljs-number">1UL</span> : <span class="hljs-number">0UL</span>));<br>  &#125;<br>  <span class="hljs-keyword">else</span><br>  &#123;<br>    <span class="hljs-keyword">return</span>(<span class="hljs-number">0U</span>);<br>  &#125;<br>&#125;<br><br>__attribute__((naked)) <span class="hljs-type">uint32_t</span> <span class="hljs-title function_">SetTargetState</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> IRQ_NUM)</span>&#123;<br>    __asm <span class="hljs-title function_">volatile</span><span class="hljs-params">(</span><br><span class="hljs-params">        <span class="hljs-string">&quot;push    &#123;r6-r9, lr&#125;                  \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;ldr     r7, =0xE000E380              \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;ldr     r8, [r7]                     \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;ldr     r9, =0x1                     \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;lsl     r9, r0                       \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;orr     r8, r8, r9                   \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;str     r8, [r7]                     \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;pop     &#123;r6-r9, pc&#125;                  \n&quot;</span></span><br><span class="hljs-params">    )</span>;<br>&#125;<br>__attribute__((naked)) <span class="hljs-type">uint32_t</span> <span class="hljs-title function_">EnableIRQ</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> IRQ_NUM)</span>&#123;<br>    __asm <span class="hljs-title function_">volatile</span><span class="hljs-params">(</span><br><span class="hljs-params">        <span class="hljs-string">&quot;push    &#123;r6-r9, lr&#125;                  \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;ldr     r7, =0xE000E100              \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;ldr     r8, [r7]                     \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;ldr     r9, =0x1                     \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;lsl     r9, r0                       \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;orr     r8, r8, r9                   \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;str     r8, [r7]                     \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;pop     &#123;r6-r9, pc&#125;                  \n&quot;</span></span><br><span class="hljs-params">    )</span>;<br>&#125;<br><br>__STATIC_INLINE <span class="hljs-type">void</span> __NVIC_EnableIRQ(IRQn_Type IRQn)<br>&#123;<br>  <span class="hljs-keyword">if</span> ((<span class="hljs-type">int32_t</span>)(IRQn) &gt;= <span class="hljs-number">0</span>)<br>  &#123;<br>    __COMPILER_BARRIER();<br>    NVIC-&gt;ISER[(((<span class="hljs-type">uint32_t</span>)IRQn) &gt;&gt; <span class="hljs-number">5UL</span>)] = (<span class="hljs-type">uint32_t</span>)(<span class="hljs-number">1UL</span> &lt;&lt; (((<span class="hljs-type">uint32_t</span>)IRQn) &amp; <span class="hljs-number">0x1F</span>UL));<br>    __COMPILER_BARRIER();<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>触发中断的代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c">__attribute__((naked)) <span class="hljs-type">uint32_t</span> <span class="hljs-title function_">interrupt_trigger</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> IRQ_NUM)</span>&#123;<br>    __asm <span class="hljs-title function_">volatile</span><span class="hljs-params">(</span><br><span class="hljs-params">        <span class="hljs-string">&quot;push    &#123;r7, lr&#125;                  \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-comment">/* Software Trigger Interrupt Register address is 0xE000EF00. */</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;ldr     r7, =0xE000EF00           \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;str     r0, [r7]                  \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;dsb     0xF                       \n&quot;</span></span><br><span class="hljs-params">        <span class="hljs-string">&quot;pop     &#123;r7, pc&#125;                  \n&quot;</span></span><br><span class="hljs-params">    )</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="配置和使用"><a href="#配置和使用" class="headerlink" title="配置和使用"></a>配置和使用</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> _<span class="hljs-title">IRQn_Type</span> &#123;</span><br>    NonMaskableInt_IRQn                = <span class="hljs-number">-14</span>,  <span class="hljs-comment">/* Non Maskable Interrupt */</span><br>    HardFault_IRQn                     = <span class="hljs-number">-13</span>,  <span class="hljs-comment">/* HardFault Interrupt */</span><br>    MemoryManagement_IRQn              = <span class="hljs-number">-12</span>,  <span class="hljs-comment">/* Memory Management Interrupt */</span><br>    BusFault_IRQn                      = <span class="hljs-number">-11</span>,  <span class="hljs-comment">/* Bus Fault Interrupt */</span><br>    UsageFault_IRQn                    = <span class="hljs-number">-10</span>,  <span class="hljs-comment">/* Usage Fault Interrupt */</span><br>    SecureFault_IRQn                   = <span class="hljs-number">-9</span>,   <span class="hljs-comment">/* Secure Fault Interrupt */</span><br>    SVCall_IRQn                        = <span class="hljs-number">-5</span>,   <span class="hljs-comment">/* SV Call Interrupt */</span><br>    DebugMonitor_IRQn                  = <span class="hljs-number">-4</span>,   <span class="hljs-comment">/* Debug Monitor Interrupt */</span><br>    PendSV_IRQn                        = <span class="hljs-number">-2</span>,   <span class="hljs-comment">/* Pend SV Interrupt */</span><br>    SysTick_IRQn                       = <span class="hljs-number">-1</span>,   <span class="hljs-comment">/* System Tick Interrupt */</span><br>    NONSEC_WATCHDOG_RESET_REQ_IRQn     = <span class="hljs-number">0</span>,    <span class="hljs-comment">/* Non-Secure Watchdog Reset</span><br><span class="hljs-comment">                                                * Request Interrupt</span><br><span class="hljs-comment">                                                */</span><br>    NONSEC_WATCHDOG_IRQn               = <span class="hljs-number">1</span>,    <span class="hljs-comment">/* Non-Secure Watchdog Interrupt */</span><br>    SLOWCLK_TIMER_IRQn                 = <span class="hljs-number">2</span>,    <span class="hljs-comment">/* SLOWCLK Timer Interrupt */</span><br>    ...<br>    <span class="hljs-comment">/* Reserved                        = 128:130   Reserved */</span><br>&#125; IRQn_Type;<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>分配IRQn，这个枚举类型里，前面为系统异常，&gt;&#x3D;0的为中断。定义一个新的<code>IRQn</code>，例如<code>Example_IRQn</code>。</li>
+<li>设置Handler函数。在BSP中，中断函数可以写为回调函数的模式，嵌入到中断调用的函数。这里的Handler函数是ISPR或者STIR触发中断后，CPU直接执行的函数，不通过回调的上层模式，在寄存器层面实现中断。</li>
+<li>绑定。有两种方式，一是在内存中通过<code>NVIC_SetVector</code>，实现<code>IRQn</code>和Handler的绑定；如果RAM是受到保护的，采用另一种方式直接改startup文件中的配对表。</li>
+<li>设置执行的S&#x2F;NS环境。通过<code>INTS</code>寄存器配置对应中断是在S还是NS中执行。</li>
+<li>使能中断，通过<code>NVIC_EnableIRQ</code>打开中断使能。</li>
+<li>触发中断，通过asm函数修改<code>STIR</code>寄存器的值或者通过NVIC的接口set pending。（后者只能特权模式）</li>
+</ol>
+<h2 id="测试方案和结果"><a href="#测试方案和结果" class="headerlink" title="测试方案和结果"></a>测试方案和结果</h2><p>测试平台：ARM AN521&#x2F;AN552 FVP</p>
+<ol>
+<li>测试NS调用NS的中断保护，NS中断修改所有的寄存器，返回后只有caller恢复</li>
+<li>测试S调用S的中断保护，由于<code>FPCCR.TS=1</code>，所以caller callee在中断结束后都恢复<ol>
+<li>中断发生前，<code>FPCCR_S.LSPACT</code>&#x3D;1，<code>CONTROL_S.FPCA</code>&#x3D;1</li>
+<li>进入Handler时，<code>FPCCR_S.LSPACT</code>&#x3D;0，<code>CONTROL_S.FPCA</code>&#x3D;0，因此返回时不清caller，如果此时修改为1，则测试用例失败（caller被清无法恢复）</li>
+</ol>
+</li>
+<li>测试S调用NS的中断保护，在进入NS IRQ Handler时，验证所有寄存器清零；修改寄存器值后中断返回后Secure中的caller callee均恢复</li>
+</ol>
+<blockquote>
+<p>If FPCCR_S.TS is 1 when the Floating-point context and additional Floating-point context are both pushed to the stack, S0-S31 and the FPSCR are set to zero after stacking</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/IoT/" class="category-chain-item">IoT</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/TF-M/" class="print-no-link">#TF-M</a>
+      
+        <a href="/tags/TEE/" class="print-no-link">#TEE</a>
+      
+        <a href="/tags/Arm/" class="print-no-link">#Arm</a>
+      
+        <a href="/tags/FPU/" class="print-no-link">#FPU</a>
+      
+        <a href="/tags/Firmware/" class="print-no-link">#Firmware</a>
+      
+        <a href="/tags/Interrupt/" class="print-no-link">#Interrupt</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/09/06/SW/OS/Kconfig/" title="Kconfig快速上手指南">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Kconfig快速上手指南</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/12/SW/CMake-Base/" title="CMake入门与进阶">
+                        <span class="hidden-mobile">CMake入门与进阶</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

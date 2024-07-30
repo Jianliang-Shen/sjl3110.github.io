@@ -1,0 +1,850 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="作为工程师我们需要保护敏感数据防止其被滥用，并遵守各种数据保护法律，同时这些数据仍要支持机器学习、分析或数据共享等数据驱动的工作流。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机密计算: 10 大隐私计算技术">
+<meta property="og:url" content="http://yoursite.com/2024/07/30/Security/Privacy-compute/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="作为工程师我们需要保护敏感数据防止其被滥用，并遵守各种数据保护法律，同时这些数据仍要支持机器学习、分析或数据共享等数据驱动的工作流。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/post_pics/cc/privacy_index.jpg">
+<meta property="article:published_time" content="2024-07-30T14:44:04.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.419Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="Confidential Compute">
+<meta property="article:tag" content="Security">
+<meta property="article:tag" content="Cryptography">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/post_pics/cc/privacy_index.jpg">
+  
+  
+  
+  <title>机密计算: 10 大隐私计算技术 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="机密计算: 10 大隐私计算技术"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-30 14:44" pubdate>
+          2024年7月30日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.8k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          41 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">机密计算: 10 大隐私计算技术</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>作为工程师我们需要保护敏感数据防止其被滥用，并遵守各种数据保护法律，同时这些数据仍要支持机器学习、分析或数据共享等数据驱动的工作流。</p>
+<span id="more"></span>
+
+<p>幸运的是隐私计算领域的最新进展可以帮助我们不仅保护数据隐私，还可以高效利用。本文将讨论 10 种不同的隐私增强技术（Privacy-enhancing Technologies，PETs），所有工程师都应该了解这些 PETs，他们正在向实用和商业化可用飞速发展。</p>
+<ul>
+<li><a href="https://softwareengineeringdaily.com/2022/07/21/10-privacy-enhancing-technologies-every-engineer-should-know-about/">10 Privacy-enhancing Technologies Every Engineer Should Know About</a></li>
+</ul>
+<h1 id="什么是隐私增强技术？"><a href="#什么是隐私增强技术？" class="headerlink" title="什么是隐私增强技术？"></a>什么是隐私增强技术？</h1><p>隐私增强技术包括任何增加敏感数据隐私和安全性的技术，这些关键信息包括客户姓名、电话号码、电子邮件地址等。无论是要确保符合数据隐私保护法的相关法律法规，还是要加固系统以防止下一次数据泄漏，这些技术都是全栈开发人员工具包中不可或缺的一部分。</p>
+<p>尽管形式各异，隐私增强技术往往强调一些共同的主题：</p>
+<ul>
+<li>去标识化</li>
+<li>混淆（标记化、加密、伪匿名化）</li>
+<li>隔离或集中敏感数据</li>
+<li>零信任&#x2F;分布式信任（包括多方计算）</li>
+</ul>
+<h1 id="为什么隐私增强技术重要？"><a href="#为什么隐私增强技术重要？" class="headerlink" title="为什么隐私增强技术重要？"></a>为什么隐私增强技术重要？</h1><p>隐私增强技术之所以重要，是因为个人有权保护其敏感个人数据的隐私。近年来不断增加的数据泄漏事件引发用户隐私意识增强，用户希望使用的应用程序和网站保护这些数据。监管机构已经采取措施制定了新的数据隐私法规，如国内的《数据安全法》、《个人隐私保护法》等。国外的 CCPA（加利福尼亚州）、CPA（科罗拉多州）、GDPR（欧盟）和DCIA（加拿大）等等。</p>
+<h1 id="隐私增强技术的示例"><a href="#隐私增强技术的示例" class="headerlink" title="隐私增强技术的示例"></a>隐私增强技术的示例</h1><h2 id="安全多方计算"><a href="#安全多方计算" class="headerlink" title="安全多方计算"></a>安全多方计算</h2><p>安全多方计算（Secure Multiparty Compute，MPC）是一种将计算分布在多个参与方之间的密码学分支，没有个别参与方可以看到其他参与方的数据。核心思想是为不同的参与方提供一种在不向其他参与方泄露其私有数据的情况下计算数据并得出共同期望结果的方法。</p>
+<p>经典的用例是平均薪资问题：如何让一组工人在不向其他人透露自己的工资的情况下计算其平均工资？</p>
+<p>MPC 可以通过以下一系列操作来解决这个问题：</p>
+<p>按任意顺序对工人进行编号</p>
+<ul>
+<li>第一个工人选择一个非常大的随机数，将其工资加到该数值上，然后将结果转发给第二个工人（见下图）</li>
+<li>第二个工人将其工资添加到共享值上，然后将该结果转发给第三个工人，依此类推，直到所有工人都贡献了他们的工资</li>
+<li>最后一个工人添加他们的工资并将最终结果发送给第一个工人</li>
+<li>由于第一个工人选择了随机数，现在他们可以从总数中减去该数，从而得到所有工资的总和。然后，他们可以通过将这个结果除以工人的总数来计算平均值。</li>
+</ul>
+<p><img src="/img/post_pics/cc/privacy1.png" srcset="/img/loading.gif" lazyload alt="MPC 示例说明：工人A 选择一个随机数 W，将其添加到其工资中，然后将总和传递给 工人B，工人B 将其工资添加到该总和中，然后将其传递给 工人C，依此类推。工人A 得到最终总和，并可以计算平均工资"></p>
+<p>MPC 于 20 世纪 70 年代初首次引入，然后在 20 世纪 80 年代末首次形式化，但直到最近才从学术研究变为解决商业产品的实际问题。MPC 现在被用于广泛的应用，包括欺诈检测、心脏疾病分析和跨私人数据集的特征聚合。</p>
+<p>这是一种极其强大的隐私方法，但也有一些局限性。使用 MPC 会为现有系统增加计算开销，并在不同参与方之间增加高通信成本。这使得在许多问题上使用 MPC 变得不切实际。</p>
+<h2 id="去标识化技术"><a href="#去标识化技术" class="headerlink" title="去标识化技术"></a>去标识化技术</h2><p>去标识化是从数据集中删除个人信息的过程。有多种去标识化方法，例如标记化和 k-匿名化。</p>
+<h3 id="标记化"><a href="#标记化" class="headerlink" title="标记化"></a>标记化</h3><p>标记化是一种非算法方法的数据混淆，它将敏感数据替换为标记。例如，客户的姓名“约翰·史密斯”可以替换为标记化的字符串 “7afd3186-369f-4898-ac93-3a4e732ebf7c”。由于“约翰·史密斯”和字符串 “7afd3186-369f-4898-ac93-3a4e732ebf7c” 之间没有数学关系，没有办法从标记化的数据中获取原始数据，除非有权访问标记化过程。</p>
+<p><img src="/img/post_pics/cc/privacy2.png" srcset="/img/loading.gif" lazyload alt="姓名和电子邮件地址的简单标记化系统"></p>
+<p>有各种各样的标记化技术和样式，包括保持长度的标记化、保持格式的标记化以及随机与一致的标记化。不同的方法有不同的权衡，可以支持不同的用例。</p>
+<h3 id="k-匿名化"><a href="#k-匿名化" class="headerlink" title="k-匿名化"></a>k-匿名化</h3><p>k-匿名化 最早是由研究人员 Latanya Sweeney 和 Pierangela Samarati 于 20 世纪 90 年代末提出的。数据集具有 k-匿名性 属性，如果数据集中的每个人的信息不能与至少 k-1 个个体区分开。</p>
+<p>这是一种“人多力量大”的方法。实质上，如果每个人都属于一个组，那么组内的任何记录都可能对应于单个个体。k-匿名化 的缺点是没有随机化，因此攻击者仍然可以推断出有关数据的信息。此外，如果攻击者了解某个人的某些信息，他们可以使用这些群体来了解该人的其他信息。例如，如果数据集中的所有年龄在 60 岁以上的女性都患有乳腺癌，而攻击者知道朱莉年龄在 60 岁以上且在数据集中，那么攻击者现在知道朱莉患有乳腺癌。</p>
+<p>像这个列表中的许多 PET 一样，如果将 k-匿名化 与其他技术相结合，并在适当的位置加入适当的保护措施，那么 k-匿名化 将是一个强大的工具。</p>
+<h2 id="伪匿名化"><a href="#伪匿名化" class="headerlink" title="伪匿名化"></a>伪匿名化</h2><p>伪匿名化是一种通过用伪名替换字段值来隐藏个人的身份的混淆形式。通过伪匿名化，仅删除了识别数据的一部分，足以使数据值无法与其引用的个人或事物（数据主体）关联起来。</p>
+<p>伪匿名化有多种方法，包括混淆，其中原始值与混淆的字母混合在一起，以及数据屏蔽，其中原始数据的某部分被隐藏。</p>
+<p>在使用伪匿名化时，总会存在再识别的风险。不同的方法带来不同的风险，并且某些方法不符合某些法规。虽然伪匿名化具有许多用途，但仅仅依靠这一方法不足以成为完整的数据隐私解决方案。</p>
+<h2 id="同态加密"><a href="#同态加密" class="headerlink" title="同态加密"></a>同态加密</h2><p>基本的加密形式早在公元前 1900 年就已经存在，现代技术如 RSA、AES 和 DES 广泛用于安全数据传输和存储。然而，所有这些技术的缺点在于，为了对数据进行操作，我们需要首先对其进行解密。这会打开一个潜在的攻击面，因为解密数据会缓存在内存中，或者由于小的编码错误可能导致敏感的未加密数据出现在日志文件或其他地方。这增加了安全和合规性问题的范围。</p>
+<p>同态加密被广泛认为是加密的“黄金标准”。它是一种加密形式，允许对加密数据执行计算，而无需先解密数据。从表面上看，这听起来很神奇。完整的数据效用，同时最大限度地提高安全性。</p>
+<p>然而，<strong>在实际中，完全同态加密面临性能挑战，无法提供合理的性能，而且它需要过多的计算资源才能供企业使用。</strong></p>
+<p>同态加密面临性能挑战，因为它非常复杂，需要支持对加密数据的几乎任何操作。从理论上讲，这是一种理想的能力，但对于大多数软件工程师来说，他们不需要对数据执行任何任意操作。他们通常只需要执行一些非常特定的操作。</p>
+<p>特别是在涉及敏感客户数据时，这一点特别正确。没有必要对两个电话号码进行乘法或除法，甚至没有必要取一个任意的子字符串。电话号码、出生日期、社会安全号码以及许多其他形式的敏感客户数据都具有非常特定的格式和组件。于是，多态加密登场。<strong>与同态加密类似，多态加密支持对加密数据执行操作，但专门设计用于支持工程师在敏感数据上通常需要执行的类型和操作。例如，索引和解密社会安全号码的最后四位数字，或者确定客户的信用分数是否高于或低于给定的阈值，而实际上不看客户的信用分数。多态加密是一种非常强大的PET，今天已经可以供企业使用。</strong></p>
+<ul>
+<li><a href="https://www.cnblogs.com/primihub/p/17584977.html">同态加密为什么能被称为密码学的“圣杯”？</a></li>
+<li><a href="https://zh.wikipedia.org/zh-hans/%E5%90%8C%E6%80%81%E5%8A%A0%E5%AF%86">维基百科</a>: 同态加密（英语：Homomorphic encryption）是一种加密形式，它允许人们对密文进行特定形式的代数运算得到仍然是加密的结果，将其解密所得到的结果与对明文进行同样的运算结果一样。换言之，这项技术令人们可以在加密的数据中进行诸如检索、比较等操作，得出正确的结果，而在整个处理过程中无需对数据进行解密。其意义在于，真正从根本上解决将数据及其操作委托给第三方时的保密问题，例如对于各种云计算的应用。</li>
+<li><a href="https://blog.csdn.net/qq_16763983/article/details/131519376">【密码学基础】半&#x2F;全同态加密算法基础学习笔记</a></li>
+<li><a href="https://www.secrss.com/articles/28486">同态加密：密码学的“黄金时代”</a></li>
+<li><a href="https://cread.jd.com/read/startRead.action?bookId=30833377&readType=1">书《同态密码学原理及算法》</a></li>
+<li><a href="https://www.cnblogs.com/pam-sh/p/17397609.html">同态密码学原理及算法-笔记</a></li>
+<li><a href="https://www.ejournal.org.cn/CN/10.12263/DZXB.20210702">电子学报: 综述：基于密码技术的人工智能隐私保护计算模型</a></li>
+<li><a href="https://foresightnews.pro/article/detail/45316"><strong>全同态加密如何解决 LLM 的隐私问题</strong></a></li>
+<li><a href="https://www.panewslab.com/zh/articledetails/5q2y608q.html">为什么说全同态加密（FHE）是人工智能的下一个圣杯？</a></li>
+</ul>
+<h2 id="联邦学习"><a href="#联邦学习" class="headerlink" title="联邦学习"></a>联邦学习</h2><p><strong>联邦学习是一种分散的机器学习形式。在机器学习中，通常会从多个来源（手机、笔记本电脑、物联网设备等）聚合训练数据，并将其传送到中央服务器进行训练。然而，从隐私的角度来看，这显然存在问题。</strong><br><img src="/img/post_pics/cc/privacy3.png" srcset="/img/loading.gif" lazyload alt="联邦学习"></p>
+<p>联邦学习模型中，训练在本地进行，结果报告给中央服务器，而不是原始输入。例如，中央机器学习应用程序可以直接在所有设备上使用。本地模型基于用户的输入和设备使用情况进行学习和训练。然后，设备仅将来自本地副本的训练结果传输回到中央服务器。</p>
+<p>所有分散设备的结果被汇总在一起，但不会看到任何用户数据。然后，用户的设备可以使用新训练的中央模型进行更新。我们可以通过 Google 的 Federated Learning for Image Classification codelab 自行尝试此操作。尽管联邦学习具有一些限制，但它需要设备和中央服务器之间的频繁通信，因此需要大量的网络带宽。此外，本地训练需要足够的本地计算能力和内存，以便在设备上实际进行模型训练。然而，Google 和 Amazon 等公司都在大力投资这种 PET，已经取得了多个降低计算成本和提高通信效率的突破。</p>
+<h2 id="零知识证明"><a href="#零知识证明" class="headerlink" title="零知识证明"></a>零知识证明</h2><p>零知识证明是一种让一方向另一方证明给定的陈述是真实的，而不透露除该陈述为真以外的任何信息的方法。</p>
+<p>零知识证明的一个经典示例是阿里巴巴洞穴，有两个角色，佩吉（证明者）和维克多（验证者）。佩吉和维克多都在洞穴的入口，洞穴有两个不同的入口通往两条不同的路径（A和B）。洞穴内有一扇连接两条路径的门，但只能用秘密代码打开。佩吉拥有该代码，维克多想要拥有它，但维克多首先想确保佩吉没有骗人。佩吉如何向维克多展示她拥有秘密代码（钥匙）且不透露它？</p>
+<p><img src="/img/post_pics/cc/privacy5.jpg" srcset="/img/loading.gif" lazyload alt="零知识证明"></p>
+<p>为此，佩吉可以通过任一门（A或B）进入洞穴。一旦在洞穴内，维克多会走近洞穴，并大声对佩吉喊，要求她沿着两个路径之一返回，选择是随机的。如果维克多喊佩吉返回 A 路径，但佩吉实际上在 B 路径上，那么只有在她确实拥有秘密代码（钥匙）的情况下，她才能通过 A 路径返回。当然，如果佩吉撒谎并且已经在 A 路径上了，她可能会幸运，但<strong>只要这个过程重复足够多次，只有当她拥有秘密代码（钥匙）时，她才能始终准确地返回</strong>。这是零知识证明的基本概念，即证明者可以在不透露陈述外的任何信息的情况下证明给定陈述的真实性。</p>
+<p>关于零知识证明的挑战在于其答案并非百分之百保证，而且计算密集。为了将误差表现降低到可接受的水平，证明者和验证者之间需要多次交互。这使得这种方法对于缓慢或低功率设备来说并不实用。</p>
+<h2 id="差分隐私"><a href="#差分隐私" class="headerlink" title="差分隐私"></a>差分隐私</h2><p>差分隐私是一种正在得到越来越多商业兴趣的隐私增强技术。差分隐私的思想是，通过在数据集中引入少量噪音，查询结果无法推断出关于单个个体的太多信息。差分隐私并不是像去识别化那样的特定过程，而是算法或过程可以具备的属性。</p>
+<p>通过向原始数据添加噪音，差分隐私在数据上添加了一层隐私保护。因此，使用得出的数据进行建模或分析会降低准确性。巧妙地使用差分隐私的关键是要在保护个体隐私的同时，平衡获取准确结果的需求。</p>
+<ul>
+<li><a href="https://www.cnblogs.com/primihub/p/17543200.html">一文读懂苹果的差分隐私技术原理</a></li>
+</ul>
+<h2 id="合成数据"><a href="#合成数据" class="headerlink" title="合成数据"></a>合成数据</h2><p>合成数据（或“虚假数据”）是人工生成的数据，它模拟了原始数据集的模式和组成，是一种数据匿名化的形式。合成数据在某些用例中是一个很好的解决方案，比如为工程师提供与生产数据类似的东西，用于测试目的，而不暴露实际客户个人信息。合成数据还广泛用于训练欺诈检测系统中使用的机器学习模型。</p>
+<p>合成生成足够真实以用于测试或其他应用的数据，是一个复杂的过程。例如，如果一个企业有多个数据库，其中包含独立的表，其中的客户姓名相同，那么在这两个数据库中相同的客户将具有相同的姓名。理想情况下，为该企业生成的合成数据能够捕捉到这种模式。</p>
+<p>虽然这是一个复杂的问题，但现在有许多公司提供商业解决方案。</p>
+<h2 id="可信执行环境"><a href="#可信执行环境" class="headerlink" title="可信执行环境"></a>可信执行环境</h2><p>可信执行环境（TEE）是一种基于硬件的隐私保护方法。使用 TEE，CPU 具有与主计算机进程和内存分区的硬件分区。TEE 内的数据无法从主处理器访问，TEE 与 CPU 的其余部分之间的通信是加密的。对加密数据的操作只能在 TEE 内部进行。</p>
+<p>英特尔、AMD 等芯片制造商现在提供 TEE 芯片。AWS Nitro Enclaves 使用这项技术创建了适用于处理高度敏感数据（如个人识别信息）的隔离计算环境，同时保持其安全性和隐私性。</p>
+<h2 id="安全多方计算数据隐私保险库"><a href="#安全多方计算数据隐私保险库" class="headerlink" title="安全多方计算数据隐私保险库"></a>安全多方计算数据隐私保险库</h2><p>数据隐私保险库隔离、安全地控制访问以管理、监视和使用敏感数据。它既是一种技术，也是一种架构设计模式。数据隐私保险库结合了多种 PET，如加密、令牌化和数据遮蔽，以及零信任、日志记录和审计等数据安全技术，以及隔离的原则。</p>
+<p><img src="/img/post_pics/cc/privacy4.png" srcset="/img/loading.gif" lazyload alt="使用数据隐私保险库，敏感数据在采集时被发送到保险库，之后下游存储令牌化数据"></p>
+<p>将客户个人识别信息从现有的数据存储和基础架构移入数据隐私保险库，如上图所示。数据隐私保险库成为所有客户个人识别信息的唯一真实来源，从而有效地将现有应用基础架构从数据安全和合规性的责任中解放出来。这种数据隐私的架构设计方法还有一个好处：大大减少了数据驻留或本地化的复杂性。</p>
+<p>这项技术最初是由苹果和 Netflix 等公司首创的。尽管在数据隐私方面被广泛认为是最佳实践方法，但除了一些主要技术公司外，数据隐私保险库在其他地方并没有得到广泛采用。这是由于构建保险库系统涉及到的复杂性。Shopify 花费了三年时间，由 94 名工程师共同贡献，构建了他们自己版本的数据隐私保险库。</p>
+<h1 id="隐私的未来"><a href="#隐私的未来" class="headerlink" title="隐私的未来"></a>隐私的未来</h1><p>数据隐私不仅仅是合规问题，也是对用户的负责。在这个领域，有大量的增长和势头，将帮助工程师构建更好、更安全的系统，同时仍然允许企业使用他们收集的关于客户的数据来改进他们的产品。</p>
+<p>随着这些技术的商业化以及 API 和 SDK 等抽象层的开发，利用这些技术来进行日常工程任务将变得像编程式地拨打电话或发出信用卡交易一样简单和常见。</p>
+<p>数据隐私不仅仅是 CISO（首席信息安全官）的工作，也不仅仅是隐私官的工作，它是每个人的工作。作为常常被赋予保护敏感数据技术方面任务的工程师，我们必须理解隐私增强工具和技术的领域。同时，在用户分享他们的敏感个人数据时，我们使用这种理解遵循隐私最佳实践并尊重用户对我们的信任是至关重要的。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="https://www.cnblogs.com/primihub/p/17631966.html">每个程序员都应该了解的 10 大隐私计算技术</a></li>
+<li><a href="https://www.cnblogs.com/primihub/p/17846381.html">隐私计算真的是一项变革性技术么？</a></li>
+<li><a href="https://github.com/primihub/primihub">Privacy-Preserving Computing Platform</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Security/" class="category-chain-item">Security</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Confidential-Compute/" class="print-no-link">#Confidential Compute</a>
+      
+        <a href="/tags/Security/" class="print-no-link">#Security</a>
+      
+        <a href="/tags/Cryptography/" class="print-no-link">#Cryptography</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/29/Security/LLM-Security-Solution-WhitePaper/" title="机密计算: 大模型安全解决方案">
+                        <span class="hidden-mobile">机密计算: 大模型安全解决方案</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

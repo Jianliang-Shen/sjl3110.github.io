@@ -1,0 +1,919 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="暂不更新。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常见经典算法及题型">
+<meta property="og:url" content="http://yoursite.com/2020/07/08/SW/Interview/Leetcode-2020/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="暂不更新。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-07-08T15:13:11.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.411Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>常见经典算法及题型 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="常见经典算法及题型"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-07-08 15:13" pubdate>
+          2020年7月8日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          694 words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          6 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">常见经典算法及题型</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>暂不更新。</p>
+<span id="more"></span>
+
+<ul>
+<li><p><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/base/">C&#x2F;C++基础</a></p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/base/C_input_output.md">C输入输出</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/base/CPP_input_output.md">C++输入输出</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/base/CPP_STL.md">C++ STL</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/base/C_tree.md">C语言树基础</a></li>
+</ul>
+</li>
+<li><p>双指针★★★</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0011.%E7%9B%9B%E6%9C%80%E5%A4%9A%E6%B0%B4%E7%9A%84%E5%AE%B9%E5%99%A8.md">0011.盛最多水的容器</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0015.%E4%B8%89%E6%95%B0%E4%B9%8B%E5%92%8C.cpp">0015.三数之和</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0019.%E5%88%A0%E9%99%A4%E9%93%BE%E8%A1%A8%E7%9A%84%E5%80%92%E6%95%B0%E7%AC%ACN%E4%B8%AA%E8%8A%82%E7%82%B9.md">0019.删除链表的倒数第N个节点</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0026.%E5%88%A0%E9%99%A4%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%87%8D%E5%A4%8D%E9%A1%B9.md">0026.删除排序数组中的重复项</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0027.%E7%A7%BB%E9%99%A4%E5%85%83%E7%B4%A0.md">0027.移除元素</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0054.%E8%9E%BA%E6%97%8B%E7%9F%A9%E9%98%B5.md">0054.螺旋矩阵</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0202.%E5%BF%AB%E4%B9%90%E6%95%B0.md">0202.快乐数</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0209.%E9%95%BF%E5%BA%A6%E6%9C%80%E5%B0%8F%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84.md">0209.长度最小的子数组</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0283.%E7%A7%BB%E5%8A%A8%E9%9B%B6.md">0283.移动零</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0345.%E5%8F%8D%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E7%9A%84%E5%85%83%E9%9F%B3%E5%AD%97%E6%AF%8D.md">0345.反转字符串中的元音字母</a></li>
+</ul>
+</li>
+<li><p>数组</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0048.%E6%97%8B%E8%BD%AC%E5%9B%BE%E5%83%8F.cpp">0048.旋转图像</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.1300.%E8%BD%AC%E5%8F%98%E6%95%B0%E7%BB%84%E5%90%8E%E6%9C%80%E6%8E%A5%E8%BF%91%E7%9B%AE%E6%A0%87%E5%80%BC%E7%9A%84%E6%95%B0%E7%BB%84%E5%92%8C.c">1300.转变数组后最接近目标值的数组和</a></li>
+</ul>
+</li>
+<li><p>位操作★★</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0136.%E5%8F%AA%E5%87%BA%E7%8E%B0%E4%B8%80%E6%AC%A1%E7%9A%84%E6%95%B0%E5%AD%97.cpp">0136.只出现一次的数字</a></li>
+</ul>
+</li>
+<li><p>深度优先搜索★★★★</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0101.%E5%AF%B9%E7%A7%B0%E4%BA%8C%E5%8F%89%E6%A0%91.md">0101.对称二叉树</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0200.%E5%B2%9B%E5%B1%BF%E6%95%B0%E9%87%8F.md">0200.岛屿数量</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0279.%E5%AE%8C%E5%85%A8%E5%B9%B3%E6%96%B9%E6%95%B0.md">0279.完全平方数</a></li>
+</ul>
+</li>
+<li><p>广度优先搜索★★★★</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0112.%E8%B7%AF%E5%BE%84%E6%80%BB%E5%92%8C.md">0112.路径总和</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0101.%E5%AF%B9%E7%A7%B0%E4%BA%8C%E5%8F%89%E6%A0%91.md">0101.对称二叉树</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0102.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86.md">0102.二叉树的层序遍历</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0200.%E5%B2%9B%E5%B1%BF%E6%95%B0%E9%87%8F.md">0200.岛屿数量</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0279.%E5%AE%8C%E5%85%A8%E5%B9%B3%E6%96%B9%E6%95%B0.md">0279.完全平方数</a></li>
+</ul>
+</li>
+<li><p>动态规划★★★</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0010.%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%8C%B9%E9%85%8D.cpp">0010.正则表达式匹配</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0044.%E9%80%9A%E9%85%8D%E7%AC%A6%E5%8C%B9%E9%85%8D.cpp">0044.通配符匹配</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0053.%E6%9C%80%E5%A4%A7%E5%AD%90%E5%BA%8F%E5%92%8C.md">0053.最大子序和</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0063.%E4%B8%8D%E5%90%8C%E8%B7%AF%E5%BE%84II.cpp">0063.不同路径II</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0070.%E7%88%AC%E6%A5%BC%E6%A2%AF.cpp">0070.爬楼梯</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0091.%E8%A7%A3%E7%A0%81%E6%96%B9%E6%B3%95.md">0091.解码方法</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0198.%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D.md">0198.打家劫舍</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0221.%E6%9C%80%E5%A4%A7%E6%AD%A3%E6%96%B9%E5%BD%A2.md">0221.最大正方形</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0300.%E6%9C%80%E9%95%BF%E4%B8%8A%E5%8D%87%E5%AD%90%E5%BA%8F%E5%88%97.md">0300.最长上升子序列</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0337.%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8DIII.md">0337.打家劫舍III</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0718.%E6%9C%80%E9%95%BF%E9%87%8D%E5%A4%8D%E5%AD%90%E6%95%B0%E7%BB%84.cpp">0718.最长重复子数组</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0837.%E6%96%B021%E7%82%B9.md">0837.新21点</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.1262.%E5%8F%AF%E8%A2%AB%E4%B8%89%E6%95%B4%E9%99%A4%E7%9A%84%E6%9C%80%E5%A4%A7%E5%92%8C.cpp">1262.可被三整除的最大和</a></li>
+</ul>
+</li>
+<li><p>枚举</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.1014.%E6%9C%80%E4%BD%B3%E8%A7%82%E5%85%89%E7%BB%84%E5%90%88.cpp">1014.最佳观光组合</a></li>
+</ul>
+</li>
+<li><p>贪心★★</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0055.%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F.md">0055.跳跃游戏</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0122.%E4%B9%B0%E5%8D%96%E8%82%A1%E7%A5%A8%E7%9A%84%E6%9C%80%E4%BD%B3%E6%97%B6%E6%9C%BAII.md">0122.买卖股票的最佳时机II</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0495.%E6%8F%90%E8%8E%AB%E6%94%BB%E5%87%BB.cpp">0495.提莫攻击</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0605.%E7%A7%8D%E8%8A%B1%E9%97%AE%E9%A2%98.cpp">0605.种花问题</a></li>
+</ul>
+</li>
+<li><p>哈希&#x2F;集合&#x2F;映射★★★★</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0041.%E7%BC%BA%E5%A4%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E6%AD%A3%E6%95%B0.cpp">0041.缺失的第一个正数</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0887.%E9%B8%A1%E8%9B%8B%E6%8E%89%E8%90%BD.cpp">0887.鸡蛋掉落</a></li>
+</ul>
+</li>
+<li><p>链表★★★</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0023.%E5%90%88%E5%B9%B6K%E4%B8%AA%E6%8E%92%E5%BA%8F%E9%93%BE%E8%A1%A8.cpp">0023.合并K个排序链表</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0024.%E4%B8%A4%E4%B8%A4%E4%BA%A4%E6%8D%A2%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E8%8A%82%E7%82%B9.cpp">0024.两两交换链表中的节点</a></li>
+</ul>
+</li>
+<li><p>队列★★★★★</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0239.%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC.md">0239.滑动窗口最大值</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.1353.%E6%9C%80%E5%A4%9A%E5%8F%AF%E4%BB%A5%E5%8F%82%E5%8A%A0%E7%9A%84%E4%BC%9A%E8%AE%AE%E6%95%B0%E7%9B%AE.cpp">1353.最多可以参加的会议数目</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.%E5%89%91%E6%8C%87Offer09.%E7%94%A8%E4%B8%A4%E4%B8%AA%E6%A0%88%E5%AE%9E%E7%8E%B0%E9%98%9F%E5%88%97.cpp">剑指Offer09.用两个栈实现队列</a></li>
+</ul>
+</li>
+<li><p>递归</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0108.%E5%B0%86%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E8%BD%AC%E6%8D%A2%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91.cpp">0108.将有序数组转换为二叉搜索树</a></li>
+</ul>
+</li>
+<li><p>滑动窗口★★★★</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0239.%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC.md">0239.滑动窗口最大值</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.1052.%E7%88%B1%E7%94%9F%E6%B0%94%E7%9A%84%E4%B9%A6%E5%BA%97%E8%80%81%E6%9D%BF.cpp">1052.爱生气的书店老板</a></li>
+</ul>
+</li>
+<li><p>堆栈★★★★★</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0020.%E6%9C%89%E6%95%88%E7%9A%84%E6%8B%AC%E5%8F%B7.md">0020.有效的括号</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0032.%E6%9C%80%E9%95%BF%E6%9C%89%E6%95%88%E6%8B%AC%E5%8F%B7.cpp">0032.最长有效括号</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0084.%E6%9F%B1%E7%8A%B6%E5%9B%BE%E4%B8%AD%E6%9C%80%E5%A4%A7%E7%9A%84%E7%9F%A9%E5%BD%A2.md">0084.柱状图中最大的矩形</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0739.%E6%AF%8F%E6%97%A5%E6%B8%A9%E5%BA%A6.md">0739.每日温度</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.%E5%89%91%E6%8C%87Offer09.%E7%94%A8%E4%B8%A4%E4%B8%AA%E6%A0%88%E5%AE%9E%E7%8E%B0%E9%98%9F%E5%88%97.cpp">剑指Offer09.用两个栈实现队列</a></li>
+</ul>
+</li>
+<li><p>字符串★★★</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0006.Z%E5%AD%97%E5%BD%A2%E5%8F%98%E6%8D%A2.md">0006.Z字形变换</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0009.%E5%9B%9E%E6%96%87%E6%95%B0.md">0009.回文数</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0014.%E6%9C%80%E9%95%BF%E5%85%AC%E5%85%B1%E5%89%8D%E7%BC%80.md">0014.最长公共前缀</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0028.%E5%AE%9E%E7%8E%B0strStr().md">0028.实现strStr()</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0058.%E6%9C%80%E5%90%8E%E4%B8%80%E4%B8%AA%E5%8D%95%E8%AF%8D%E7%9A%84%E9%95%BF%E5%BA%A6.md">0058.最后一个单词的长度</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0125.%E9%AA%8C%E8%AF%81%E5%9B%9E%E6%96%87%E4%B8%B2.md">0125.验证回文串</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0344.%E5%8F%8D%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2.md">0344.反转字符串</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0409.%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E4%B8%B2.md">0409.最长回文串</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0520.%E6%A3%80%E6%B5%8B%E5%A4%A7%E5%86%99%E5%AD%97%E6%AF%8D.md">0520.检测大写字母</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0541.%E5%8F%8D%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2II.md">0541.反转字符串II</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0557.%E5%8F%8D%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%AD%E7%9A%84%E5%8D%95%E8%AF%8DIII.md">0557.反转字符串中的单词III</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0767.%E9%87%8D%E6%9E%84%E5%AD%97%E7%AC%A6%E4%B8%B2.cpp">0767.重构字符串</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.1071.%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E6%9C%80%E5%A4%A7%E5%85%AC%E5%9B%A0%E5%AD%90.md">1071.字符串的最大公因子</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.1456.%E5%AE%9A%E9%95%BF%E5%AD%90%E4%B8%B2%E4%B8%AD%E5%85%83%E9%9F%B3%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E7%9B%AE.md">1456.定长子串中元音的最大数目</a></li>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.%E5%89%91%E6%8C%87Offer46.%E6%8A%8A%E6%95%B0%E5%AD%97%E7%BF%BB%E8%AF%91%E6%88%90%E5%AD%97%E7%AC%A6%E4%B8%B2.cpp">剑指Offer46.把数字翻译成字符串</a></li>
+</ul>
+</li>
+<li><h2 id="树★★★★★-0101-对称二叉树-0102-二叉树的层序遍历-0108-将有序数组转换为二叉搜索树-0112-路径总和-0297-二叉树的序列化与反序列化-1028-从先序遍历还原二叉树-面试题07-重建二叉树-面试题32-I-从上到下打印二叉树"><a href="#树★★★★★-0101-对称二叉树-0102-二叉树的层序遍历-0108-将有序数组转换为二叉搜索树-0112-路径总和-0297-二叉树的序列化与反序列化-1028-从先序遍历还原二叉树-面试题07-重建二叉树-面试题32-I-从上到下打印二叉树" class="headerlink" title="树★★★★★- 0101.对称二叉树- 0102.二叉树的层序遍历- 0108.将有序数组转换为二叉搜索树- 0112.路径总和- 0297.二叉树的序列化与反序列化- 1028.从先序遍历还原二叉树- 面试题07.重建二叉树- 面试题32-I.从上到下打印二叉树"></a>树★★★★★<br>- <a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0101.%E5%AF%B9%E7%A7%B0%E4%BA%8C%E5%8F%89%E6%A0%91.md">0101.对称二叉树</a><br>- <a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0102.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%B1%82%E5%BA%8F%E9%81%8D%E5%8E%86.md">0102.二叉树的层序遍历</a><br>- <a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0108.%E5%B0%86%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E8%BD%AC%E6%8D%A2%E4%B8%BA%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91.cpp">0108.将有序数组转换为二叉搜索树</a><br>- <a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0112.%E8%B7%AF%E5%BE%84%E6%80%BB%E5%92%8C.md">0112.路径总和</a><br>- <a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0297.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96.cpp">0297.二叉树的序列化与反序列化</a><br>- <a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.1028.%E4%BB%8E%E5%85%88%E5%BA%8F%E9%81%8D%E5%8E%86%E8%BF%98%E5%8E%9F%E4%BA%8C%E5%8F%89%E6%A0%91.cpp">1028.从先序遍历还原二叉树</a><br>- <a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.%E9%9D%A2%E8%AF%95%E9%A2%9807.%E9%87%8D%E5%BB%BA%E4%BA%8C%E5%8F%89%E6%A0%91.md">面试题07.重建二叉树</a><br>- <a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.%E9%9D%A2%E8%AF%95%E9%A2%9832-I.%E4%BB%8E%E4%B8%8A%E5%88%B0%E4%B8%8B%E6%89%93%E5%8D%B0%E4%BA%8C%E5%8F%89%E6%A0%91.md">面试题32-I.从上到下打印二叉树</a></h2></li>
+<li><p>并查集★★★</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0990.%E7%AD%89%E5%BC%8F%E6%96%B9%E7%A8%8B%E7%9A%84%E5%8F%AF%E6%BB%A1%E8%B6%B3%E6%80%A7.cpp">0990.等式方程的可满足性</a></li>
+</ul>
+</li>
+<li><p>自动机</p>
+<ul>
+<li><a href="https://github.com/Jianliang-Shen/C-Cpp/blob/master/sjlWork/other/NO.0008.%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E6%8D%A2%E6%95%B4%E6%95%B0(atoi).cpp">0008.字符串转换整数(atoi)</a></li>
+</ul>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Algorithm/" class="category-chain-item">Algorithm</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Algorithm/" class="print-no-link">#Algorithm</a>
+      
+        <a href="/tags/C-C/" class="print-no-link">#C/C++</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/09/02/SW/OS/RTOS/" title="实时操作系统分类、特点及实现原理">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">实时操作系统分类、特点及实现原理</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/06/25/SW/Interview/Interview-Technology-IOT/" title="嵌入式软件基础知识-C/C++">
+                        <span class="hidden-mobile">嵌入式软件基础知识-C/C++</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

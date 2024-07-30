@@ -1,0 +1,812 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="使用的平台：秉火STM32 Cortex-M3内核开发板，RT-Thread v3.1.3。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STM32 RT-Thread OS实战">
+<meta property="og:url" content="http://yoursite.com/2020/09/05/SW/OS/STM32-RT-Thread-O/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="使用的平台：秉火STM32 Cortex-M3内核开发板，RT-Thread v3.1.3。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/post_pics/index_img/rtthread.png">
+<meta property="article:published_time" content="2020-09-05T15:54:45.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.415Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="RTOS">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/post_pics/index_img/rtthread.png">
+  
+  
+  
+  <title>STM32 RT-Thread OS实战 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="STM32 RT-Thread OS实战"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2020-09-05 15:54" pubdate>
+          2020年9月5日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          767 words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          7 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">STM32 RT-Thread OS实战</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>使用的平台：秉火STM32 Cortex-M3内核开发板，RT-Thread v3.1.3。</p>
+<span id="more"></span>
+<h3 id="RT-Thread移植"><a href="#RT-Thread移植" class="headerlink" title="RT-Thread移植"></a>RT-Thread移植</h3><p>以秉火-指南者STM32F103VE6为例。参考<a href="https://www.rt-thread.org/document/site/">官方文档</a>，<a href="https://github.com/RT-Thread/rt-thread">Git仓库</a>，在keil5中添加RT-Thread内核，并下载源码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> git@github.com:RT-Thread/rt-thread.git<br></code></pre></td></tr></table></figure>
+<p>用keil5打开rt-thread\bsp\stm32\stm32f103-fire-arbitrary\project.uvprojx，修改下载器配置，选择芯片STM32F103VE6，并修改main.c中的LED管脚，因为此例程使用的是STM32F103ZET6芯片版本。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/* defined the LED0 pin: PF7 */</span><br><span class="hljs-comment">//#define LED0_PIN    GET_PIN(F, 7)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> LED0_PIN    GET_PIN(B, 0) <span class="hljs-comment">//LED_G</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> LED1_PIN    GET_PIN(B, 1) <span class="hljs-comment">//LED_B</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> LED2_PIN    GET_PIN(B, 5) <span class="hljs-comment">//LED_R</span></span><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    <span class="hljs-type">int</span> count = <span class="hljs-number">1</span>;<br>    <span class="hljs-comment">/* set LED0 pin mode to output */</span><br>    rt_pin_mode(LED0_PIN, PIN_MODE_OUTPUT);<br>    rt_pin_mode(LED1_PIN, PIN_MODE_OUTPUT);<br>    rt_pin_mode(LED2_PIN, PIN_MODE_OUTPUT);<br>	<br>    rt_pin_write(LED0_PIN, PIN_LOW);<br>    rt_pin_write(LED1_PIN, PIN_LOW);<br>    rt_pin_write(LED2_PIN, PIN_LOW);<br><br>    <span class="hljs-keyword">while</span> (count++)<br>    &#123;<br>        rt_pin_write(LED0_PIN, PIN_LOW);<br>        <span class="hljs-comment">//rt_kprintf(&quot;SET LOW\n&quot;);</span><br>        rt_thread_mdelay(<span class="hljs-number">100</span>);<br>        rt_pin_write(LED0_PIN, PIN_HIGH);  <span class="hljs-comment">//OFF ???!</span><br>        <span class="hljs-comment">//rt_kprintf(&quot;SET HIGH\n&quot;);</span><br>        rt_thread_mdelay(<span class="hljs-number">100</span>);<br>			<br>        rt_pin_write(LED1_PIN, PIN_LOW);<br>        rt_thread_mdelay(<span class="hljs-number">100</span>);<br>        rt_pin_write(LED1_PIN, PIN_HIGH);<br>        rt_thread_mdelay(<span class="hljs-number">100</span>);<br>			<br>        rt_pin_write(LED2_PIN, PIN_LOW);<br>        rt_thread_mdelay(<span class="hljs-number">100</span>);<br>        rt_pin_write(LED2_PIN, PIN_HIGH);<br>        rt_thread_mdelay(<span class="hljs-number">100</span>);<br>    &#125;<br>    <span class="hljs-keyword">return</span> RT_EOK;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<p>值得注意的是，PIN_HIGH会使灯关闭，PIN_LOW会使灯关闭，这一点还没有搞清楚。在控制台输出使用rt_kprintf()函数，输出在UART串口，连接电脑即可显示。</p>
+<h3 id="RT-Thread-Qemu仿真"><a href="#RT-Thread-Qemu仿真" class="headerlink" title="RT-Thread Qemu仿真"></a>RT-Thread Qemu仿真</h3><p>参考<a href="https://github.com/RT-Thread/rtthread-manual-doc/blob/master/documentation/quick_start_qemu/quick_start_qemu_linux.md">QEMU-Ubuntu</a>，图片访问有问题，建议下载仓库查看readme。</p>
+<h3 id="UART读取北斗数据"><a href="#UART读取北斗数据" class="headerlink" title="UART读取北斗数据"></a>UART读取北斗数据</h3><p>在STM32F103指南者上引脚如下，其中UART1为console串口，输出信息。</p>
+<style>
+table th:nth-of-type(1) {
+    width: 300px;
+}
+table th:nth-of-type(2) {
+    width: 300px;
+}
+</style>
+<table>
+<thead>
+<tr>
+<th>PIN NAME</th>
+<th>PIN ADDR</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>UART1_RX</td>
+<td>PIN A9</td>
+</tr>
+<tr>
+<td>UART1_TX</td>
+<td>PIN A10</td>
+</tr>
+<tr>
+<td>UART3_RX</td>
+<td>PIN B10</td>
+</tr>
+<tr>
+<td>UART3_TX</td>
+<td>PIN B11</td>
+</tr>
+</tbody></table>
+<p>连接北斗单元至UART3，在固件库版本中将UART1输出重定向为printf，将UART3输入重定向为scanf，这样就很轻松的读取到北斗的数据。同样的，在RT Thread版本中，在使用UART3之前首先需要定义设备和管脚，并打开：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">//board.c</span><br><span class="hljs-comment">/*------------------------ UART3 CONFIG BEGIN -------------------------*/</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> BSP_USING_UART3</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UART3_TX_PORT GPIOB</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UART3_RX_PORT GPIOB</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UART3_TX_PIN GPIO_PIN_10</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> UART3_RX_PIN GPIO_PIN_11</span><br><span class="hljs-comment">/*------------------------  UART3 CONFIG END  -------------------------*/</span>	<br></code></pre></td></tr></table></figure>
+<p>在main.c的路径下创建uart3.c文件，添加如下内容：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;rtthread.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;rtdevice.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> SAMPLE_UART_NAME <span class="hljs-string">&quot;uart3&quot;</span></span><br><span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rt_semaphore</span> <span class="hljs-title">rx_sem</span>;</span><br><span class="hljs-type">static</span> <span class="hljs-type">rt_device_t</span> serial;<br><br><span class="hljs-type">static</span> <span class="hljs-type">rt_err_t</span> <span class="hljs-title function_">uart_input</span><span class="hljs-params">(<span class="hljs-type">rt_device_t</span> dev, <span class="hljs-type">rt_size_t</span> size)</span><br>&#123;<br>    rt_sem_release(&amp;rx_sem);<br><br>    <span class="hljs-keyword">return</span> RT_EOK;<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">serial_thread_entry</span><span class="hljs-params">(<span class="hljs-type">void</span> *parameter)</span><br>&#123;<br>    <span class="hljs-type">char</span> ch;<br><br>    <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>)<br>    &#123;<br>        <span class="hljs-keyword">while</span> (rt_device_read(serial, <span class="hljs-number">-1</span>, &amp;ch, <span class="hljs-number">1</span>) != <span class="hljs-number">1</span>)<br>        &#123;<br>            rt_sem_take(&amp;rx_sem, RT_WAITING_FOREVER);<br>        &#125;<br>        rt_kprintf(<span class="hljs-string">&quot;%c&quot;</span>, ch);<br>        ch = ch + <span class="hljs-number">1</span>;<br><br>        <span class="hljs-comment">//rt_device_write(serial, 0, &amp;ch, 1);</span><br>    &#125;<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title function_">uart_sample</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span><br>&#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">serial_configure</span> <span class="hljs-title">config</span> =</span> RT_SERIAL_CONFIG_DEFAULT;<br><br>    config.baud_rate = BAUD_RATE_38400;<br>    config.data_bits = DATA_BITS_8;<br>    config.stop_bits = STOP_BITS_1;<br>    config.bufsz = <span class="hljs-number">128</span>;<br>    config.parity = PARITY_NONE;<br><br>    <span class="hljs-type">rt_err_t</span> ret = RT_EOK;<br><br>    <span class="hljs-type">char</span> uart_name[RT_NAME_MAX];<br>    <span class="hljs-type">char</span> str[] = <span class="hljs-string">&quot;hello RT-Thread!\r\n&quot;</span>;<br><br>    <span class="hljs-keyword">if</span> (argc == <span class="hljs-number">2</span>)<br>    &#123;<br>        rt_strncpy(uart_name, argv[<span class="hljs-number">1</span>], RT_NAME_MAX);<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>    &#123;<br>        rt_strncpy(uart_name, SAMPLE_UART_NAME, RT_NAME_MAX);<br>    &#125;<br><br>    serial = rt_device_find(uart_name);<br>    <span class="hljs-keyword">if</span> (!serial)<br>    &#123;<br>        rt_kprintf(<span class="hljs-string">&quot;find %s failed!\n&quot;</span>, uart_name);<br>        <span class="hljs-keyword">return</span> RT_ERROR;<br>    &#125;<br><br>    rt_sem_init(&amp;rx_sem, <span class="hljs-string">&quot;rx_sem&quot;</span>, <span class="hljs-number">0</span>, RT_IPC_FLAG_FIFO);<br>    rt_device_control(serial, RT_DEVICE_CTRL_CONFIG, &amp;config);<br>    rt_device_open(serial, RT_DEVICE_FLAG_INT_RX);<br>    rt_device_set_rx_indicate(serial, uart_input);<br>    rt_device_write(serial, <span class="hljs-number">0</span>, str, (<span class="hljs-keyword">sizeof</span>(str) - <span class="hljs-number">1</span>));<br>    <span class="hljs-type">rt_thread_t</span> thread = rt_thread_create(<span class="hljs-string">&quot;serial&quot;</span>, serial_thread_entry, RT_NULL, <span class="hljs-number">1024</span>, <span class="hljs-number">25</span>, <span class="hljs-number">10</span>);<br><br>    <span class="hljs-keyword">if</span> (thread != RT_NULL)<br>    &#123;<br>        rt_thread_startup(thread);<br>    &#125;<br>    <span class="hljs-keyword">else</span><br>    &#123;<br>        ret = RT_ERROR;<br>    &#125;<br><br>    <span class="hljs-keyword">return</span> ret;<br>&#125;<br><br>MSH_CMD_EXPORT(uart_sample, uart device sample);<br></code></pre></td></tr></table></figure>
+<p>该文件中，最后一句完成看自定义命令的添加。完成以上配置后，下载后打开串口输入命令查看结果：<br><img src="/img/post_pics/os/gps.PNG" srcset="/img/loading.gif" lazyload></p>
+<h3 id="管脚中断"><a href="#管脚中断" class="headerlink" title="管脚中断"></a>管脚中断</h3><p>通过按键1和2改变灯的亮灭。这里主要使用了管脚输入输出和中断输入。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;rtthread.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;rtdevice.h&gt;</span></span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> LED0_PIN_NUM 16  <span class="hljs-comment">/* PB0  */</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> KEY0_PIN_NUM 0   <span class="hljs-comment">/* PA0  */</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> KEY1_PIN_NUM 45  <span class="hljs-comment">/* PC13 */</span></span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">led_on</span><span class="hljs-params">(<span class="hljs-type">void</span> *args)</span><br>&#123;<br>    rt_kprintf(<span class="hljs-string">&quot;turn on led!\n&quot;</span>);<br>    rt_pin_write(LED0_PIN_NUM, PIN_LOW);<br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">led_off</span><span class="hljs-params">(<span class="hljs-type">void</span> *args)</span><br>&#123;<br>    rt_kprintf(<span class="hljs-string">&quot;turn off led!\n&quot;</span>);<br>    rt_pin_write(LED0_PIN_NUM, PIN_HIGH);<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">key_led_sample</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    rt_pin_mode(LED0_PIN_NUM, PIN_MODE_OUTPUT); <br>    rt_pin_write(LED0_PIN_NUM, PIN_LOW);<br> <br>    rt_pin_mode(KEY0_PIN_NUM, PIN_MODE_INPUT_PULLUP); <br>    <span class="hljs-comment">/* 绑定中断，下降沿模式，回调函数名为led_off */</span><br>    rt_pin_attach_irq(KEY0_PIN_NUM, PIN_IRQ_MODE_FALLING, led_on, RT_NULL);<br>    <span class="hljs-comment">/* 使能中断 */</span><br>    rt_pin_irq_enable(KEY0_PIN_NUM, PIN_IRQ_ENABLE);<br><br>    rt_pin_mode(KEY1_PIN_NUM, PIN_MODE_INPUT_PULLUP);<br>    rt_pin_attach_irq(KEY1_PIN_NUM, PIN_IRQ_MODE_FALLING, led_off, RT_NULL);<br>    rt_pin_irq_enable(KEY1_PIN_NUM, PIN_IRQ_ENABLE);<br>&#125;<br><br>MSH_CMD_EXPORT(key_led_sample, key led sample);<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/OS/" class="category-chain-item">OS</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/RTOS/" class="print-no-link">#RTOS</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/01/24/SW/Language/DV/" title="芯片验证">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">芯片验证</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/09/03/SW/OS/STM32-Free-RTOS/" title="STM32 Free RTOS实战">
+                        <span class="hidden-mobile">STM32 Free RTOS实战</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

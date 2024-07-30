@@ -1,0 +1,867 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="仓库地址: llm.c模型镜像: HF-Mirror">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Karpathy llm.c测试与代码分析">
+<meta property="og:url" content="http://yoursite.com/2024/04/28/GPU/CUDA/llm.c/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="仓库地址: llm.c模型镜像: HF-Mirror">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/post_pics/gpu/gpt2.png">
+<meta property="article:published_time" content="2024-04-28T10:07:29.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.407Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="LLM">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/post_pics/gpu/gpt2.png">
+  
+  
+  
+  <title>Karpathy llm.c测试与代码分析 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Karpathy llm.c测试与代码分析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-28 10:07" pubdate>
+          2024年4月28日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Karpathy llm.c测试与代码分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>仓库地址: <a href="https://github.com/karpathy/llm.c">llm.c</a><br>模型镜像: <a href="https://hf-mirror.com/">HF-Mirror</a></p>
+<span id="more"></span>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.zhihu.com/question/63219175">如何理解Nvidia英伟达的Multi-GPU多卡通信框架NCCL？</a><br><a href="https://zhuanlan.zhihu.com/p/637782385">GPT（三）GPT2原理和代码详解</a><br><a href="https://zhuanlan.zhihu.com/p/632880248">GPT （一）transformer原理和代码详解</a><br><a href="https://www.cnblogs.com/zhongzhaoxie/p/13064404.html">GPT-2通俗详解</a><br><a href="https://blog.csdn.net/suiyingy/article/details/130937792">详细理解GPT2模型结构及其训练过程—GPT系列训练与部署</a><br><a href="https://developer.nvidia.com/tools-overview">NVIDIA Developer Tools</a><br><a href="https://zhuanlan.zhihu.com/p/692116370">llm.c代码详细解读（一）</a><br><a href="https://blog.csdn.net/eidolon_foot/article/details/138474675">C语言写的LLM训练</a></p>
+<h2 id="安装NCCL"><a href="#安装NCCL" class="headerlink" title="安装NCCL"></a>安装NCCL</h2><p><a href="https://developer.nvidia.com/nccl/nccl-download">nccl-download</a><br><a href="https://developer.nvidia.com/downloads/compute/machine-learning/nccl/secure/2.21.5/agnostic/ppc64le/nccl_2.21.5-1+cuda12.2_ppc64le.txz">Source Download</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Network Installer for Ubuntu20.04</span><br>$ wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb<br>$ <span class="hljs-built_in">sudo</span> dpkg -i cuda-keyring_1.0-1_all.deb<br>$ <span class="hljs-built_in">sudo</span> apt-get update<br></code></pre></td></tr></table></figure>
+
+<h2 id="测试对比"><a href="#测试对比" class="headerlink" title="测试对比"></a>测试对比</h2><table>
+<thead>
+<tr>
+<th><span style="display:inline-block;width:300px">Platform</span></th>
+<th><span style="display:inline-block;width:250px">Time</span></th>
+<th><span style="display:inline-block;width:250px">Loss</span></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>4070S</strong></td>
+<td>198.34 ms</td>
+<td>3.48</td>
+</tr>
+<tr>
+<td><strong>H100</strong></td>
+<td>36.90 ms</td>
+<td>3.52</td>
+</tr>
+<tr>
+<td><strong>2 H100</strong></td>
+<td>30.94 ms</td>
+<td>3.70</td>
+</tr>
+<tr>
+<td><strong>Intel CPU</strong></td>
+<td>2635.72 ms</td>
+<td>4.02</td>
+</tr>
+<tr>
+<td><strong>Arm CPU</strong></td>
+<td>12103.80 ms</td>
+<td>4.02</td>
+</tr>
+<tr>
+<td><strong>M1 CPU</strong></td>
+<td>8128.85 ms</td>
+<td>4.02</td>
+</tr>
+</tbody></table>
+<h2 id="使用GPU训练"><a href="#使用GPU训练" class="headerlink" title="使用GPU训练"></a>使用GPU训练</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install -r requirements.txt<br><span class="hljs-built_in">sudo</span> apt install openmpi-bin openmpi-doc libopenmpi-dev<br><br>python prepro_tinyshakespeare.py<br>python train_gpt2.py<br>make train_gpt2fp32cu<br>./train_gpt2fp32cu<br></code></pre></td></tr></table></figure>
+
+<details>
+<summary>RTX4070S LOG</summary>
+
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br></pre></td><td class="code"><pre><code class="hljs txt">+-----------------------+----------------------------------------------------+<br>| Parameter             | Value                                              |<br>+-----------------------+----------------------------------------------------+<br>| train data pattern    | dev/data/tinyshakespeare/tiny_shakespeare_train.bin |<br>| val data pattern      | dev/data/tinyshakespeare/tiny_shakespeare_val.bin  |<br>| output log file       | NULL                                               |<br>| batch size B          | 4                                                  |<br>| sequence length T     | 1024                                               |<br>| learning rate         | 0.000300                                           |<br>| val_loss_every        | 20                                                 |<br>| val_max_steps         | 20                                                 |<br>| sample_every          | 20                                                 |<br>| genT                  | 64                                                 |<br>+-----------------------+----------------------------------------------------+<br>| device                | NVIDIA GeForce RTX 4070 SUPER                      |<br>| TF32                  | enabled                                            |<br>+-----------------------+----------------------------------------------------+<br>| max_sequence_length T | 1024                                               |<br>| vocab_size V          | 50257                                              |<br>| padded_vocab_size Vp  | 50304                                              |<br>| num_layers L          | 12                                                 |<br>| num_heads NH          | 12                                                 |<br>| channels C            | 768                                                |<br>| num_parameters        | 124475904                                          |<br>+-----------------------+----------------------------------------------------+<br>| train_num_batches     | 74                                                 |<br>| val_num_batches       | 8                                                  |<br>+-----------------------+----------------------------------------------------+<br>allocated 474 MiB for model parameters<br>allocated 5706 MiB for activations<br>val loss 4.508645<br>allocated 474 MiB for parameter gradients<br>allocated 252 MiB for activation gradients<br>allocated 474 MiB for AdamW optimizer state m<br>allocated 474 MiB for AdamW optimizer state v<br>step    1/74: train loss 4.287312 (216.329368 ms, 18934 tok/s)<br>step    2/74: train loss 4.725657 (196.385098 ms, 20856 tok/s)<br>step    3/74: train loss 4.393068 (195.683672 ms, 20931 tok/s)<br>step    4/74: train loss 3.628445 (196.121049 ms, 20885 tok/s)<br>step    5/74: train loss 3.717055 (194.049300 ms, 21108 tok/s)<br>step    6/74: train loss 4.013161 (197.751605 ms, 20712 tok/s)<br>step    7/74: train loss 4.111417 (195.673638 ms, 20932 tok/s)<br>step    8/74: train loss 3.623600 (199.146686 ms, 20567 tok/s)<br>step    9/74: train loss 3.965506 (196.338315 ms, 20861 tok/s)<br>step   10/74: train loss 3.581475 (195.944831 ms, 20903 tok/s)<br>step   11/74: train loss 4.028997 (197.172886 ms, 20773 tok/s)<br>step   12/74: train loss 3.813888 (195.415474 ms, 20960 tok/s)<br>step   13/74: train loss 4.029539 (195.721443 ms, 20927 tok/s)<br>step   14/74: train loss 3.885392 (196.801713 ms, 20812 tok/s)<br>step   15/74: train loss 3.711839 (196.184539 ms, 20878 tok/s)<br>step   16/74: train loss 3.553492 (195.104225 ms, 20993 tok/s)<br>step   17/74: train loss 3.988450 (196.938082 ms, 20798 tok/s)<br>step   18/74: train loss 3.809328 (195.232320 ms, 20980 tok/s)<br>step   19/74: train loss 3.534165 (196.839770 ms, 20808 tok/s)<br>step   20/74: train loss 3.678106 (196.428516 ms, 20852 tok/s)<br>val loss 3.705425<br>generating:<br>---<br>O, but Vanlin, you no less light the cell of our men,<br>Look to thy light! How much an eye will kiss the seat, save<br>staying and:<br>That way unsayers<br><br>&lt;|endoftext|&gt;IETERABETH:<br>Your good shrewescy and<br>to thy fingers tailorate<br>---<br>step   21/74: train loss 3.608904 (198.159644 ms, 20670 tok/s)<br>step   22/74: train loss 3.611267 (197.791646 ms, 20708 tok/s)<br>step   23/74: train loss 3.146728 (197.174480 ms, 20773 tok/s)<br>step   24/74: train loss 3.344270 (196.746858 ms, 20818 tok/s)<br>step   25/74: train loss 3.707907 (198.275599 ms, 20658 tok/s)<br>step   26/74: train loss 3.539583 (203.417195 ms, 20135 tok/s)<br>step   27/74: train loss 3.844320 (200.666546 ms, 20411 tok/s)<br>step   28/74: train loss 3.445682 (197.969591 ms, 20690 tok/s)<br>step   29/74: train loss 3.318048 (196.887630 ms, 20803 tok/s)<br>step   30/74: train loss 3.279650 (197.256815 ms, 20764 tok/s)<br>step   31/74: train loss 3.154556 (198.877454 ms, 20595 tok/s)<br>step   32/74: train loss 3.444809 (200.677574 ms, 20410 tok/s)<br>step   33/74: train loss 3.566215 (199.827710 ms, 20497 tok/s)<br>step   34/74: train loss 3.487424 (197.150262 ms, 20776 tok/s)<br>step   35/74: train loss 3.722091 (199.232841 ms, 20558 tok/s)<br>step   36/74: train loss 3.380269 (198.515393 ms, 20633 tok/s)<br>step   37/74: train loss 3.199764 (198.736697 ms, 20610 tok/s)<br>step   38/74: train loss 3.179839 (198.228997 ms, 20662 tok/s)<br>step   39/74: train loss 3.601362 (199.353707 ms, 20546 tok/s)<br>step   40/74: train loss 3.083126 (202.057997 ms, 20271 tok/s)<br>val loss 3.582962<br>generating:<br>---<br>Lightaxe hunt,<br>USA, sir!<br>I come to make a brief knightle<br>The fool his sorceries<br>In wounding the good and that of this fellowship.<br>Intence remains unwholesome to be run,<br>Like the one that is ere the countenance is waked.<br>---<br>step   41/74: train loss 3.830101 (199.004444 ms, 20582 tok/s)<br>step   42/74: train loss 3.362655 (199.871726 ms, 20493 tok/s)<br>step   43/74: train loss 3.355859 (198.784472 ms, 20605 tok/s)<br>step   44/74: train loss 3.418773 (198.443265 ms, 20640 tok/s)<br>step   45/74: train loss 3.608499 (198.736102 ms, 20610 tok/s)<br>step   46/74: train loss 3.128481 (199.459168 ms, 20535 tok/s)<br>step   47/74: train loss 3.464015 (196.227803 ms, 20873 tok/s)<br>step   48/74: train loss 3.975485 (197.719352 ms, 20716 tok/s)<br>step   49/74: train loss 3.224785 (197.451708 ms, 20744 tok/s)<br>step   50/74: train loss 3.417883 (195.725265 ms, 20927 tok/s)<br>step   51/74: train loss 3.761238 (197.567030 ms, 20732 tok/s)<br>step   52/74: train loss 3.769763 (197.559271 ms, 20733 tok/s)<br>step   53/74: train loss 3.410849 (197.411474 ms, 20748 tok/s)<br>step   54/74: train loss 3.389037 (197.022081 ms, 20789 tok/s)<br>step   55/74: train loss 3.274219 (196.771373 ms, 20816 tok/s)<br>step   56/74: train loss 3.260659 (197.592729 ms, 20729 tok/s)<br>step   57/74: train loss 3.028346 (197.423359 ms, 20747 tok/s)<br>step   58/74: train loss 3.479192 (196.417625 ms, 20853 tok/s)<br>step   59/74: train loss 3.271112 (198.220795 ms, 20663 tok/s)<br>step   60/74: train loss 3.496041 (196.792773 ms, 20813 tok/s)<br>val loss 3.490089<br>generating:<br>---<br><br>Ladies and gentlemen,<br>I with these ancient deaths,<br><br>&lt;|endoftext|&gt;LEONTES:<br>Now I am a saint.<br>Hear: Prevento,<br>Verona Oremo! Thy love center is<br>Would take her.<br>More than that one fellow who descends from heaven at capone<br>---<br>step   61/74: train loss 3.211886 (200.864481 ms, 20391 tok/s)<br>step   62/74: train loss 3.451102 (202.447595 ms, 20232 tok/s)<br>step   63/74: train loss 3.371627 (202.120002 ms, 20265 tok/s)<br>step   64/74: train loss 3.408307 (203.412583 ms, 20136 tok/s)<br>step   65/74: train loss 3.579690 (197.981410 ms, 20688 tok/s)<br>step   66/74: train loss 3.029516 (201.803798 ms, 20296 tok/s)<br>step   67/74: train loss 3.296247 (198.256757 ms, 20660 tok/s)<br>step   68/74: train loss 3.676572 (197.812296 ms, 20706 tok/s)<br>step   69/74: train loss 3.297943 (197.705935 ms, 20717 tok/s)<br>step   70/74: train loss 3.647188 (199.209822 ms, 20561 tok/s)<br>step   71/74: train loss 3.566411 (198.794319 ms, 20604 tok/s)<br>step   72/74: train loss 3.731066 (199.354373 ms, 20546 tok/s)<br>step   73/74: train loss 3.825200 (199.243927 ms, 20557 tok/s)<br>step   74/74: train loss 3.380793 (201.802198 ms, 20297 tok/s)<br>val loss 3.475538<br>generating:<br>---<br>BUCKINGHAM:<br>But in my heart his fiendy rascal,<br>By silky hand, shouted more satisfied,<br>Than to my breath with long informal desperate quips<br>Your brother alike sir.<br>And brace me not that with his woes:<br>Never to sit or play this<br>---<br>total average iteration time: 198.341601 ms<br><br></code></pre></td></tr></table></figure>
+</details>
+
+<details>
+<summary>H100 LOG</summary>
+
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br></pre></td><td class="code"><pre><code class="hljs txt">+-----------------------+----------------------------------------------------+<br>| Parameter             | Value                                              |<br>+-----------------------+----------------------------------------------------+<br>| input dataset prefix  | data/tiny_shakespeare                              |<br>| output log file       | NULL                                               |<br>| batch size B          | 4                                                  |<br>| sequence length T     | 1024                                               |<br>| learning rate         | 0.000300                                           |<br>| val_loss_every        | 20                                                 |<br>| val_max_batches       | 20                                                 |<br>| sample_every          | 20                                                 |<br>| genT                  | 64                                                 |<br>+-----------------------+----------------------------------------------------+<br>| device                | NVIDIA H800                                        |<br>| TF32                  | enabled                                            |<br>+-----------------------+----------------------------------------------------+<br>| max_sequence_length T | 1024                                               |<br>| vocab_size V          | 50257                                              |<br>| num_layers L          | 12                                                 |<br>| num_heads NH          | 12                                                 |<br>| channels C            | 768                                                |<br>| num_parameters        | 124439808                                          |<br>+-----------------------+----------------------------------------------------+<br>| train_num_batches     | 74                                                 |<br>| val_num_batches       | 20                                                 |<br>+-----------------------+----------------------------------------------------+<br>allocated 474 MiB for model parameters<br>allocated 5706 MiB for activations<br>val loss 4.506288<br>allocated 474 MiB for parameter gradients<br>allocated 252 MiB for activation gradients<br>allocated 474 MiB for AdamW optimizer state m<br>allocated 474 MiB for AdamW optimizer state v<br>step    1/74: train loss 4.367558 (42.291931 ms, 96850 tok/s)<br>step    2/74: train loss 4.435496 (36.873423 ms, 111082 tok/s)<br>step    3/74: train loss 4.346745 (36.917661 ms, 110949 tok/s)<br>step    4/74: train loss 3.916155 (36.930912 ms, 110909 tok/s)<br>step    5/74: train loss 3.576688 (36.882907 ms, 111054 tok/s)<br>step    6/74: train loss 3.752822 (36.804162 ms, 111291 tok/s)<br>step    7/74: train loss 3.543940 (36.823446 ms, 111233 tok/s)<br>step    8/74: train loss 3.691794 (36.872353 ms, 111085 tok/s)<br>step    9/74: train loss 3.292197 (36.917963 ms, 110948 tok/s)<br>step   10/74: train loss 3.420270 (36.912048 ms, 110966 tok/s)<br>step   11/74: train loss 3.839151 (36.832944 ms, 111204 tok/s)<br>step   12/74: train loss 3.459940 (36.855074 ms, 111138 tok/s)<br>step   13/74: train loss 3.617168 (36.834898 ms, 111198 tok/s)<br>step   14/74: train loss 3.230776 (36.871742 ms, 111087 tok/s)<br>step   15/74: train loss 3.669937 (36.886197 ms, 111044 tok/s)<br>step   16/74: train loss 3.859764 (36.910485 ms, 110971 tok/s)<br>step   17/74: train loss 3.851466 (36.913714 ms, 110961 tok/s)<br>step   18/74: train loss 3.920131 (36.908567 ms, 110976 tok/s)<br>step   19/74: train loss 3.639019 (36.922885 ms, 110933 tok/s)<br>step   20/74: train loss 3.733764 (36.988406 ms, 110737 tok/s)<br>val loss 3.687801<br>generating:<br>---<br>O, my cousin: that is so.<br><br>&lt;|endoftext|&gt;O&lt;|endoftext|&gt;Trussell, thy father&#x27;s son, son of the Roman king Hardsley, heir&lt;|endoftext|&gt;LUTHER, for whom shall Scotland draw her throne, except for England?<br>In England, consulate marcius:<br>And bind together Egbert<br>---<br>step   21/74: train loss 3.719804 (36.868217 ms, 111098 tok/s)<br>step   22/74: train loss 3.586144 (36.921155 ms, 110939 tok/s)<br>step   23/74: train loss 3.551655 (36.905093 ms, 110987 tok/s)<br>step   24/74: train loss 3.351520 (36.939467 ms, 110884 tok/s)<br>step   25/74: train loss 3.454527 (36.997209 ms, 110711 tok/s)<br>step   26/74: train loss 3.761025 (36.983948 ms, 110750 tok/s)<br>step   27/74: train loss 3.779032 (36.952961 ms, 110843 tok/s)<br>step   28/74: train loss 3.636410 (36.875919 ms, 111075 tok/s)<br>step   29/74: train loss 3.448576 (36.891939 ms, 111026 tok/s)<br>step   30/74: train loss 3.574333 (36.936213 ms, 110893 tok/s)<br>step   31/74: train loss 3.509148 (36.920664 ms, 110940 tok/s)<br>step   32/74: train loss 3.362097 (36.908129 ms, 110978 tok/s)<br>step   33/74: train loss 3.421195 (36.975713 ms, 110775 tok/s)<br>step   34/74: train loss 3.684764 (36.974622 ms, 110778 tok/s)<br>step   35/74: train loss 3.381419 (36.919138 ms, 110945 tok/s)<br>step   36/74: train loss 3.401418 (36.891895 ms, 111027 tok/s)<br>step   37/74: train loss 3.812751 (36.899238 ms, 111005 tok/s)<br>step   38/74: train loss 3.623131 (36.911724 ms, 110967 tok/s)<br>step   39/74: train loss 3.489853 (36.926676 ms, 110922 tok/s)<br>step   40/74: train loss 3.137516 (36.902834 ms, 110994 tok/s)<br>val loss 3.635424<br>generating:<br>---<br>Diademorns,<br>God, thou wilt be king:<br>It&#x27;s busy with summer, like day before.<br>Is it sorrows, is it stories, Waters, and naked lamentations?<br>Were they such a office, for marriage?<br>Who wilt party the day chronicling,<br>And<br>---<br>step   41/74: train loss 3.476893 (36.845553 ms, 111166 tok/s)<br>step   42/74: train loss 3.330724 (36.863462 ms, 111112 tok/s)<br>step   43/74: train loss 3.477123 (36.838678 ms, 111187 tok/s)<br>step   44/74: train loss 3.366669 (36.889697 ms, 111033 tok/s)<br>step   45/74: train loss 3.979407 (36.901669 ms, 110997 tok/s)<br>step   46/74: train loss 3.866721 (36.905043 ms, 110987 tok/s)<br>step   47/74: train loss 3.774495 (36.912187 ms, 110966 tok/s)<br>step   48/74: train loss 3.962839 (36.842677 ms, 111175 tok/s)<br>step   49/74: train loss 4.036259 (36.851610 ms, 111148 tok/s)<br>step   50/74: train loss 3.857388 (36.853193 ms, 111143 tok/s)<br>step   51/74: train loss 3.604754 (36.845790 ms, 111166 tok/s)<br>step   52/74: train loss 3.579455 (36.831378 ms, 111209 tok/s)<br>step   53/74: train loss 3.824139 (36.857464 ms, 111130 tok/s)<br>step   54/74: train loss 3.766292 (36.894130 ms, 111020 tok/s)<br>step   55/74: train loss 3.487747 (36.934630 ms, 110898 tok/s)<br>step   56/74: train loss 3.151821 (36.968007 ms, 110798 tok/s)<br>step   57/74: train loss 3.344814 (36.882516 ms, 111055 tok/s)<br>step   58/74: train loss 3.522471 (36.902438 ms, 110995 tok/s)<br>step   59/74: train loss 3.373972 (37.128153 ms, 110320 tok/s)<br>step   60/74: train loss 3.433309 (36.883408 ms, 111052 tok/s)<br>val loss 3.529820<br>generating:<br>---<br>01:&lt;|endoftext|&gt;Look, I am an o&#x27;erthompson by blood, I can live with my blood, saying to the ford, thou liest! That doeth think, in Wynldota&#x27;s my noble soul;<br>I&#x27;ll do it here for York: and though thy lordship do<br>---<br>step   61/74: train loss 3.323022 (36.834574 ms, 111199 tok/s)<br>step   62/74: train loss 3.263776 (36.836349 ms, 111194 tok/s)<br>step   63/74: train loss 3.288344 (36.908309 ms, 110977 tok/s)<br>step   64/74: train loss 3.792862 (36.868552 ms, 111097 tok/s)<br>step   65/74: train loss 3.561376 (36.875281 ms, 111077 tok/s)<br>step   66/74: train loss 3.339633 (36.894187 ms, 111020 tok/s)<br>step   67/74: train loss 3.232719 (36.929932 ms, 110912 tok/s)<br>step   68/74: train loss 3.424346 (36.951805 ms, 110847 tok/s)<br>step   69/74: train loss 3.259733 (36.961079 ms, 110819 tok/s)<br>step   70/74: train loss 3.071201 (36.967520 ms, 110799 tok/s)<br>step   71/74: train loss 3.048391 (36.890885 ms, 111030 tok/s)<br>step   72/74: train loss 3.058076 (36.883778 ms, 111051 tok/s)<br>step   73/74: train loss 3.697609 (36.878680 ms, 111066 tok/s)<br>step   74/74: train loss 3.497812 (36.910939 ms, 110969 tok/s)<br>val loss 3.515306<br>generating:<br>---<br>A faint noise was heard in the air. Gentlemen, I have fairly said, than should be the report he shall hear, and you&#x27;ll that have only no prison made for you.<br><br>&lt;|endoftext|&gt;RICHARD VINCENTIO:<br>Why, how you sounded.<br><br>&lt;|endoftext|&gt;CAM&lt;|endoftext|&gt;K AS<br>---<br>total average iteration time: 36.974027 ms<br></code></pre></td></tr></table></figure>
+
+</details>
+
+<p>两张卡，注意要配置nccl</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt install openmpi-bin openmpi-doc libopenmpi-dev<br>pip install -r requirements.txt<br>python prepro_tinyshakespeare.py<br>python train_gpt2.py<br>make train_gpt2cu<br>mpirun -np &lt;number of GPUs on your machine&gt; ./train_gpt2cu<br></code></pre></td></tr></table></figure>
+
+<details>
+<summary>2 H100 LOG</summary>
+
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><code class="hljs txt">mpirun -np 2 ./train_gpt2cu<br>+-----------------------+----------------------------------------------------+<br>| Parameter             | Value                                              |<br>+-----------------------+----------------------------------------------------+<br>| input dataset prefix  | data/tiny_shakespeare                              |<br>| output log file       | NULL                                               |<br>| batch size B          | 4                                                  |<br>| sequence length T     | 1024                                               |<br>| learning rate         | 0.000300                                           |<br>| val_loss_every        | 20                                                 |<br>| val_max_batches       | 20                                                 |<br>| sample_every          | 20                                                 |<br>| genT                  | 64                                                 |<br>+-----------------------+----------------------------------------------------+<br>| device                | NVIDIA H800                                        |<br>| TF32                  | enabled                                            |<br>+-----------------------+----------------------------------------------------+<br>| max_sequence_length T | 1024                                               |<br>| vocab_size V          | 50257                                              |<br>| num_layers L          | 12                                                 |<br>| num_heads NH          | 12                                                 |<br>| channels C            | 768                                                |<br>| num_parameters        | 124439808                                          |<br>+-----------------------+----------------------------------------------------+<br>| train_num_batches     | 37                                                 |<br>| val_num_batches       | 20                                                 |<br>+-----------------------+----------------------------------------------------+<br>| num_processes         | 2                                                  |<br>+-----------------------+----------------------------------------------------+<br>num_parameters: 124439808 ==&gt; bytes: 248956416<br>allocated 237 MiB for model parameters<br>allocated 2853 MiB for activations<br>val loss -inf<br>val loss -inf<br>allocated 237 MiB for parameter gradients<br>allocated 126 MiB for activation gradients<br>allocated 474 MiB for AdamW optimizer state m<br>allocated 474 MiB for AdamW optimizer state v<br>step    1/37: train loss -inf (acc -inf) (34.738357 ms, 235820 tok/s)<br>step    2/37: train loss 4.705958 (acc 4.676888) (31.091222 ms, 263482 tok/s)<br>step    3/37: train loss 3.801152 (acc -inf) (30.325266 ms, 270137 tok/s)<br>step    4/37: train loss 3.712616 (acc 3.812249) (30.541328 ms, 268226 tok/s)<br>step    5/37: train loss 3.442210 (acc 3.527371) (30.376322 ms, 269683 tok/s)<br>step    6/37: train loss 3.959154 (acc 3.777182) (30.439979 ms, 269119 tok/s)<br>step    7/37: train loss 3.730492 (acc 3.543638) (30.784793 ms, 266105 tok/s)<br>step    8/37: train loss 3.780181 (acc 3.866994) (30.837841 ms, 265647 tok/s)<br>step    9/37: train loss 3.943718 (acc 4.001076) (30.502230 ms, 268570 tok/s)<br>step   10/37: train loss 3.712828 (acc 3.797800) (30.952566 ms, 264663 tok/s)<br>step   11/37: train loss 3.848890 (acc 3.785396) (31.113195 ms, 263296 tok/s)<br>step   12/37: train loss 3.666040 (acc 3.574438) (30.766566 ms, 266263 tok/s)<br>step   13/37: train loss 3.543876 (acc 3.707925) (30.671046 ms, 267092 tok/s)<br>step   14/37: train loss 3.869239 (acc 3.814487) (30.945898 ms, 264720 tok/s)<br>step   15/37: train loss 3.563170 (acc 3.632645) (30.741986 ms, 266475 tok/s)<br>step   16/37: train loss 3.596956 (acc 3.518488) (31.099593 ms, 263411 tok/s)<br>step   17/37: train loss 3.525343 (acc 3.662786) (31.034419 ms, 263964 tok/s)<br>step   18/37: train loss 3.423222 (acc 3.451016) (30.746931 ms, 266433 tok/s)<br>step   19/37: train loss 3.886096 (acc 3.810491) (31.060373 ms, 263744 tok/s)<br>step   20/37: train loss 3.584194 (acc 3.401700) (31.060387 ms, 263744 tok/s)<br>val loss 3.702823<br>val loss 3.702823<br>generating:<br>---<br>O, which mighty holy body and armow day with love in good time:<br>Are you wise to the garden of the Cyprian?<br>O&lt;|endoftext|&gt;Farewell,<br>O fighters, brothers: the dragons<br>Join by fallen lightning,<br>FIelwine unmindful, and grieflike weeping:<br>---<br>step   21/37: train loss 3.541171 (acc 3.480718) (30.991152 ms, 264333 tok/s)<br>step   22/37: train loss 3.572929 (acc 3.517702) (30.916142 ms, 264974 tok/s)<br>step   23/37: train loss 4.025887 (acc 3.984698) (31.284707 ms, 261853 tok/s)<br>step   24/37: train loss 3.851679 (acc 3.963296) (31.397653 ms, 260911 tok/s)<br>step   25/37: train loss 4.115643 (acc 4.023971) (30.779578 ms, 266150 tok/s)<br>step   26/37: train loss 3.674400 (acc 3.667000) (30.940606 ms, 264765 tok/s)<br>step   27/37: train loss 3.915539 (acc 3.891176) (31.033721 ms, 263970 tok/s)<br>step   28/37: train loss 3.526467 (acc 3.364087) (30.914958 ms, 264984 tok/s)<br>step   29/37: train loss 3.406913 (acc 3.516932) (31.026487 ms, 264032 tok/s)<br>step   30/37: train loss 3.427009 (acc 3.471455) (30.607531 ms, 267646 tok/s)<br>step   31/37: train loss 3.387648 (acc 3.368385) (30.865644 ms, 265408 tok/s)<br>step   32/37: train loss 3.399536 (acc 3.620977) (30.517480 ms, 268436 tok/s)<br>step   33/37: train loss 3.621998 (acc 3.517930) (30.633715 ms, 267417 tok/s)<br>step   34/37: train loss 3.306428 (acc 3.412587) (30.562156 ms, 268043 tok/s)<br>step   35/37: train loss 3.304569 (acc 3.233234) (30.509134 ms, 268509 tok/s)<br>step   36/37: train loss 3.127993 (acc 3.148825) (30.534061 ms, 268290 tok/s)<br>step   37/37: train loss 3.707109 (acc 3.523119) (31.372644 ms, 261119 tok/s)<br>val loss inf<br>generating:<br>---<br>val loss inf<br>Come elephantaman!<br>Come a competed-fire, my lord,<br>So jungle it does;<br><br>&lt;|endoftext|&gt;CLEARINGEN<br>Ay, thine not to this owl, to such climbing beast<br>As tame me and as white-robed;<br>And in an ancient and impotent manner, to any<br>---<br><br>total average iteration time: 30.938315 ms<br><br></code></pre></td></tr></table></figure>
+
+</details> 
+
+<h2 id="使用CPU训练"><a href="#使用CPU训练" class="headerlink" title="使用CPU训练"></a>使用CPU训练</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install -r requirements.txt<br>python prepro_tinyshakespeare.py<br>python train_gpt2.py<br>make train_gpt2<br>OMP_NUM_THREADS=8 ./train_gpt2<br></code></pre></td></tr></table></figure>
+
+<details>
+<summary>Intel CPU log</summary>
+
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><code class="hljs txt">OMP_NUM_THREADS=8 ./train_gpt2<br>[GPT-2]<br>max_seq_len: 1024<br>vocab_size: 50257<br>num_layers: 12<br>num_heads: 12<br>channels: 768<br>num_parameters: 124439808<br>train dataset num_batches: 1192<br>val dataset num_batches: 128<br>num_activations: 73323776<br>val loss 5.325522<br>step 0: train loss 5.356185 (took 3682.965439 ms)<br>step 1: train loss 4.301033 (took 3351.367950 ms)<br>step 2: train loss 4.623316 (took 2785.125469 ms)<br>step 3: train loss 4.600415 (took 2972.771599 ms)<br>step 4: train loss 4.616777 (took 2991.414681 ms)<br>step 5: train loss 4.231482 (took 3310.190622 ms)<br>step 6: train loss 3.754166 (took 2839.633690 ms)<br>step 7: train loss 3.652230 (took 3017.137520 ms)<br>step 8: train loss 4.183515 (took 2826.837910 ms)<br>step 9: train loss 4.199315 (took 2691.491697 ms)<br>val loss 4.323445<br>step 10: train loss 4.288396 (took 2605.089097 ms)<br>step 11: train loss 3.558984 (took 2799.268435 ms)<br>step 12: train loss 3.730804 (took 2951.344529 ms)<br>step 13: train loss 4.159164 (took 2675.097650 ms)<br>step 14: train loss 3.886458 (took 2578.160226 ms)<br>step 15: train loss 3.764933 (took 2580.616568 ms)<br>step 16: train loss 4.143034 (took 2726.701810 ms)<br>step 17: train loss 3.962718 (took 2708.172316 ms)<br>step 18: train loss 3.796120 (took 2617.401951 ms)<br>step 19: train loss 3.371638 (took 2590.776841 ms)<br>val loss 4.186637<br>generating:<br>---<br>I was so exceptionally drunk:<br>You would spake for seen&#x27;st<br>Threaten beyond you, &#x27;twas so far too?<br><br>&lt;|endoftext|&gt;STRUCTINIUS:<br>Scheduled since 1539 is<br>Welcome to Rome:<br>We meet the indignation of lesser nations&#x27; countenance? thank me<br>---<br>step 20: train loss 3.880942 (took 3111.667706 ms)<br>step 21: train loss 4.198619 (took 2580.162790 ms)<br>step 22: train loss 4.426098 (took 2578.943997 ms)<br>step 23: train loss 3.685762 (took 2580.436384 ms)<br>step 24: train loss 3.642307 (took 2623.821726 ms)<br>step 25: train loss 3.729648 (took 2580.534433 ms)<br>step 26: train loss 3.549645 (took 2630.321238 ms)<br>step 27: train loss 3.339360 (took 2578.629251 ms)<br>step 28: train loss 4.338965 (took 2627.450328 ms)<br>step 29: train loss 3.812843 (took 2579.089464 ms)<br>val loss 4.020430<br>step 30: train loss 4.028022 (took 2632.939240 ms)<br>step 31: train loss 4.114379 (took 2594.114480 ms)<br>step 32: train loss 3.575101 (took 2635.722184 ms)<br>step 33: train loss 4.366093 (took 2576.848847 ms)<br>step 34: train loss 4.516504 (took 2587.968289 ms)<br>step 35: train loss 4.434158 (took 2576.720293 ms)<br>step 36: train loss 4.097423 (took 2609.961644 ms)<br>step 37: train loss 3.739693 (took 2579.032073 ms)<br>step 38: train loss 4.612139 (took 2578.933900 ms)<br>step 39: train loss 3.970823 (took 2619.630001 ms)<br>val loss 4.016672<br>generating:<br>---<br>Come Kurultan,<br>Among the geopolitical<br>Coers and My scullers take one word.<br><br>&lt;|endoftext|&gt;Shutth out of the yacht,<br>Sone of dejected glories<br>draw&#x27;d like an everlasting flame;<br>But: prying out, as a look in a good canopy<br>Fairs with<br>---<br>step 40: train loss 4.377796 (took 2961.353965 ms)<br></code></pre></td></tr></table></figure>
+
+</details>
+
+<details>
+<summary>Arm CPU log</summary>
+
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><code class="hljs txt">[GPT-2]<br>max_seq_len: 1024<br>vocab_size: 50257<br>num_layers: 12<br>num_heads: 12<br>channels: 768<br>num_parameters: 124439808<br>train dataset num_batches: 1192<br>val dataset num_batches: 128<br>num_activations: 73323776<br>val loss 5.325415<br>step 0: train loss 5.356085 (took 12606.966341 ms)<br>step 1: train loss 4.300643 (took 12219.476918 ms)<br>step 2: train loss 4.623083 (took 12207.496260 ms)<br>step 3: train loss 4.599365 (took 12148.045433 ms)<br>step 4: train loss 4.616661 (took 12401.153808 ms)<br>step 5: train loss 4.231428 (took 12116.966958 ms)<br>step 6: train loss 3.753162 (took 12224.808617 ms)<br>step 7: train loss 3.650456 (took 12192.318357 ms)<br>step 8: train loss 4.182243 (took 12269.556216 ms)<br>step 9: train loss 4.199580 (took 12101.010577 ms)<br>val loss 4.323766<br>step 10: train loss 4.288661 (took 12230.598978 ms)<br>step 11: train loss 3.560643 (took 12231.405416 ms)<br>step 12: train loss 3.731442 (took 12093.194701 ms)<br>step 13: train loss 4.158509 (took 12191.899776 ms)<br>step 14: train loss 3.885638 (took 12142.622528 ms)<br>step 15: train loss 3.766486 (took 12458.911155 ms)<br>step 16: train loss 4.144007 (took 12300.180748 ms)<br>step 17: train loss 3.961168 (took 12232.756950 ms)<br>step 18: train loss 3.796045 (took 12046.576110 ms)<br>step 19: train loss 3.371045 (took 12077.808580 ms)<br>val loss 4.187855<br>generating:<br>---<br>I was so frightened with your face: to come and though they would not do it any more than as<br>Let us; but who ever can turn<br>Against a world so full,<br>That there&#x27;ll have been none of our fightmen but<br>Weaver-bats and tearing men, and stir them utterly;<br>---<br>step 20: train loss 3.882792 (took 12222.624648 ms)<br>step 21: train loss 4.199980 (took 12317.641401 ms)<br>step 22: train loss 4.428427 (took 12266.228655 ms)<br>step 23: train loss 3.685924 (took 12392.576155 ms)<br>step 24: train loss 3.643298 (took 12075.278688 ms)<br>step 25: train loss 3.729694 (took 12030.850856 ms)<br>step 26: train loss 3.550648 (took 12212.194214 ms)<br>step 27: train loss 3.338631 (took 12221.727207 ms)<br>step 28: train loss 4.342020 (took 12070.876624 ms)<br>step 29: train loss 3.814729 (took 12146.005022 ms)<br>val loss 4.022702<br>step 30: train loss 4.032417 (took 12264.562893 ms)<br>step 31: train loss 4.118070 (took 12183.779377 ms)<br>step 32: train loss 3.577005 (took 12179.788109 ms)<br>step 33: train loss 4.369797 (took 12296.633846 ms)<br>step 34: train loss 4.524115 (took 12094.045750 ms)<br>step 35: train loss 4.438815 (took 12103.800767 ms)<br>step 36: train loss 4.101098 (took 12304.076168 ms)<br>step 37: train loss 3.740980 (took 12288.887784 ms)<br>step 38: train loss 4.618742 (took 12264.409146 ms)<br>step 39: train loss 3.972258 (took 12218.437701 ms)<br>val loss 4.017348<br>generating:<br>---<br>CLAUSE:<br>I cannot, sir, can; as I would<br>do @scended<br>da drawn breath<br>to love<br>Ferrante, the fourth Receiver: the king must leave this<br>matter for our own use,<br>who will<br>roll the first wine-tureen and<br>press the<br>---<br>step 40: train loss 4.378431 (took 12246.907331 ms)<br></code></pre></td></tr></table></figure>
+
+</details>
+
+<details>
+<summary>M1 CPU log</summary>
+
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><code class="hljs txt">[GPT-2]<br>max_seq_len: 1024<br>vocab_size: 50257<br>num_layers: 12<br>num_heads: 12<br>channels: 768<br>num_parameters: 124439808<br>train dataset num_batches: 1192<br>val dataset num_batches: 128<br>num_activations: 73323776<br>val loss 5.325529<br>step 0: train loss 5.356189 (took 8810.320000 ms)<br>step 1: train loss 4.301069 (took 10129.255000 ms)<br>step 2: train loss 4.623322 (took 9316.635000 ms)<br>step 3: train loss 4.600470 (took 9327.144000 ms)<br>step 4: train loss 4.616786 (took 9088.823000 ms)<br>step 5: train loss 4.231483 (took 8100.120000 ms)<br>step 6: train loss 3.754234 (took 7593.923000 ms)<br>step 7: train loss 3.652349 (took 7673.950000 ms)<br>step 8: train loss 4.183590 (took 7672.052000 ms)<br>step 9: train loss 4.199314 (took 7741.869000 ms)<br>val loss 4.323434<br>step 10: train loss 4.288389 (took 7588.665000 ms)<br>step 11: train loss 3.558898 (took 7701.314000 ms)<br>step 12: train loss 3.730761 (took 7512.813000 ms)<br>step 13: train loss 4.159196 (took 7499.602000 ms)<br>step 14: train loss 3.886509 (took 7493.241000 ms)<br>step 15: train loss 3.764848 (took 7683.579000 ms)<br>step 16: train loss 4.142992 (took 7532.287000 ms)<br>step 17: train loss 3.962821 (took 7699.390000 ms)<br>step 18: train loss 3.796132 (took 7782.585000 ms)<br>step 19: train loss 3.371673 (took 7662.459000 ms)<br>val loss 4.186563<br>generating:<br>---<br>I was so upright that I would have never heard you had any talk. I have heard you sometimes datts you, Eats could or should be choked, crows and<br>Fearsome snakes say it right.<br><br>&lt;|endoftext|&gt;Second Servingman:<br>I flagged him down in a half dozen ships AND don<br>---<br>step 20: train loss 3.880836 (took 10487.761000 ms)<br>step 21: train loss 4.198525 (took 8940.160000 ms)<br>step 22: train loss 4.425973 (took 8598.007000 ms)<br>step 23: train loss 3.685762 (took 8337.916000 ms)<br>step 24: train loss 3.642260 (took 8356.999000 ms)<br>step 25: train loss 3.729658 (took 8146.168000 ms)<br>step 26: train loss 3.549591 (took 8178.455000 ms)<br>step 27: train loss 3.339406 (took 8098.217000 ms)<br>step 28: train loss 4.338812 (took 8378.764000 ms)<br>step 29: train loss 3.812741 (took 8280.067000 ms)<br>val loss 4.020304<br>step 30: train loss 4.027764 (took 8294.253000 ms)<br>step 31: train loss 4.114197 (took 8132.258000 ms)<br>step 32: train loss 3.574986 (took 8328.408000 ms)<br>step 33: train loss 4.365894 (took 8154.654000 ms)<br>step 34: train loss 4.516072 (took 8327.388000 ms)<br>step 35: train loss 4.433900 (took 8041.963000 ms)<br>step 36: train loss 4.097214 (took 8346.843000 ms)<br>step 37: train loss 3.739647 (took 8232.633000 ms)<br>step 38: train loss 4.611735 (took 8103.667000 ms)<br>step 39: train loss 3.970751 (took 8065.254000 ms)<br>val loss 4.016658<br>generating:<br>---<br>Come Running Away,<br>Greater conquer<br>With the Imperial blood<br>the heaviest host of the gods<br>into this wondrous world beyond.<br>I will not back thee, for how sweet after birth<br>Netflix against repounder,<br>will not<br>flourish against the earlocks of<br>Allay<br>---<br>step 40: train loss 4.377756 (took 8128.859000 ms)<br></code></pre></td></tr></table></figure>
+
+</details>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/GPU/" class="category-chain-item">GPU</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/GPU/" class="print-no-link">#GPU</a>
+      
+        <a href="/tags/Algorithm/" class="print-no-link">#Algorithm</a>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/05/17/GPU/SDMA-3D-copy/" title="SDMA 3D 拷贝底层机理">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SDMA 3D 拷贝底层机理</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/26/GPU/Texture-Cache/" title="纹理缓存">
+                        <span class="hidden-mobile">纹理缓存</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

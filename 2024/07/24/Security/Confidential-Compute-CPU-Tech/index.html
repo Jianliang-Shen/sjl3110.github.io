@@ -1,0 +1,993 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="可信根、可信链以及国密算法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机密计算: 可信与国密算法">
+<meta property="og:url" content="http://yoursite.com/2024/07/24/Security/Confidential-Compute-CPU-Tech/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="可信根、可信链以及国密算法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/post_pics/cc/hy-cc-index.png">
+<meta property="article:published_time" content="2024-07-24T14:48:35.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.419Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="TEE">
+<meta property="article:tag" content="Confidential Compute">
+<meta property="article:tag" content="Security">
+<meta property="article:tag" content="Cryptography">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/post_pics/cc/hy-cc-index.png">
+  
+  
+  
+  <title>机密计算: 可信与国密算法 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="机密计算: 可信与国密算法"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-24 14:48" pubdate>
+          2024年7月24日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">机密计算: 可信与国密算法</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>可信根、可信链以及国密算法。</p>
+<span id="more"></span>
+
+<h1 id="机密计算"><a href="#机密计算" class="headerlink" title="机密计算"></a>机密计算</h1><ul>
+<li><a href="https://www.secrss.com/articles/34593">多家巨头入局，机密计算能否成为数据安全的终结者？</a></li>
+<li><a href="https://www.kubernetes.org.cn/8323.html">当 Kubernetes 遇到机密计算，阿里巴巴如何保护容器内数据的安全？</a></li>
+<li><a href="https://openanolis.cn/assets/static/confidentialComputing.pdf">龙蜥社区：2023云原生机密计算最佳实践白皮书</a></li>
+<li><a href="https://www.sohu.com/a/670027466_121394207">好书相赠！《机密计算：AI数据安全和隐私保护》</a></li>
+<li><a href="https://ai.zhiding.cn/2024/0529/3158121.shtml">鲲鹏芯片及通用机密计算平台技术</a></li>
+<li><a href="https://architect.pub/book/export/html/1290">【机密计算】关于机密计算的五大须知</a></li>
+<li><a href="https://cloud.google.com/security/products/confidential-computing?hl=zh-CN">google 机密计算</a></li>
+</ul>
+<h1 id="可信认证"><a href="#可信认证" class="headerlink" title="可信认证"></a>可信认证</h1><p>如何拿到合法的公钥：</p>
+<ul>
+<li><strong>公钥证书</strong>：里面含有名字、组织、邮箱地址等基本信息，以及属于此人的公钥，由认证机构 (Certification Authority, Certifying Authority, CA) 施加数字签名</li>
+<li><strong>认证机构</strong>：由国际性组织和政府所设立的组织，也有通过提供认证服务来盈利的一般企业，此外个人也可以成立认证机构</li>
+</ul>
+<p><img src="/img/post_pics/cc/hy-cc-1.png" srcset="/img/loading.gif" lazyload alt="获取合法的公钥"></p>
+<h1 id="可信根"><a href="#可信根" class="headerlink" title="可信根"></a>可信根</h1><ul>
+<li><strong>可信根的定义</strong>：如果信息系统中的可信机制是完整的，则沿着这个支撑关系回溯，最终会得到一个既具备安全功能又具备可信功能，而且不需要其他机制提供安全支撑的底层机制，这就是系统的可信根。</li>
+<li><strong>可信根的基本属性</strong>：具备密码服务功能、具备对系统启动的度量能力、可以控制系统启动过程、先于系统其它部分启动</li>
+<li><strong>可信根的基本组成</strong>：由具备密码服务功能的可信平台模块、以及系统中的度量代码段组成；可信平台模块拥有权限保护机制，需要更高的权限才可以访问到其片内的资源，例如只有安全处理器才可以访问到芯片的密钥；度量代码放在ROM中，固化在可信平台模块内部，无法被攻击。</li>
+</ul>
+<h1 id="可信链的建立"><a href="#可信链的建立" class="headerlink" title="可信链的建立"></a>可信链的建立</h1><p>如何由可信根出发建立信任链：</p>
+<ul>
+<li><strong>信任建立的基础</strong>：身份信息的确认，代码完整性的度量</li>
+<li><strong>身份信息的确认</strong>：基于安全处理芯片中的公钥密码模块，通过签名和验签来实现</li>
+<li><strong>代码完整性的度量</strong>：基于安全处理芯片中的单向散列函数模块，生成固定长度的散列值；与预期的散列值进行比较，实现完整性度量</li>
+</ul>
+<p>任何一步验签失败，都会使得系统无法启动。</p>
+<p><img src="/img/post_pics/cc/hy-cc-2.png" srcset="/img/loading.gif" lazyload alt="系统安全启动验签流程"></p>
+<h2 id="片外固件结构"><a href="#片外固件结构" class="headerlink" title="片外固件结构"></a>片外固件结构</h2><p>加密+签名（安全服务器中完成）：</p>
+<ol>
+<li>在 Header 中填入加密参数（随机数），用于对固件 Body 进行加密；<strong>随机数会作为对称加密的初始化向量</strong></li>
+<li>对 Header + Body 计算摘要得到哈希值，然后进行签名操作</li>
+<li>使用加密参数加密 Body</li>
+<li>拼接 Header + Enc_Body + Signature</li>
+</ol>
+<p><img src="/img/post_pics/cc/hy-cc-3.png" srcset="/img/loading.gif" lazyload alt="片外固件结构"></p>
+<p>解密+验签（Boot阶段由安全管理芯片完成）：</p>
+<ol>
+<li>获得 Header 中的解密参数（随机数）</li>
+<li>使用对称密码对 Body 进行解密；</li>
+<li>对 Header + Dec_Body 计算摘要得到哈希值</li>
+<li>对得到的哈希值进行验签</li>
+</ol>
+<h2 id="可信度量"><a href="#可信度量" class="headerlink" title="可信度量"></a>可信度量</h2><p><img src="/img/post_pics/cc/hy-cc-4.png" srcset="/img/loading.gif" lazyload alt="静态度量"></p>
+<ul>
+<li>逐级检查代码的完整性，度量的结果放在PCR(Platform Configurate Register)寄存器中；</li>
+<li>核心度量根 CRTM，就是 ROM 代码；</li>
+<li>服务器的 BIOS 都是 UEFI 模式；</li>
+<li>将预期值和 PCR 寄存器的值进行比对，确认代码的完整性。</li>
+</ul>
+<p>动态度量：</p>
+<ul>
+<li><code>TPCM</code> 特性：TPM 只支持静态度量，国内 TPCM 标准可以支持动态度量</li>
+<li><strong>动态度量</strong>：安全处理器对运行中的关键程序和数据进行度量监控，包括：<ul>
+<li>中断向量表</li>
+<li>系统调用表</li>
+<li>内核模块</li>
+</ul>
+</li>
+<li><strong>度量报告</strong>：包含当前计算机的可信状态，同时对度量报告进行签名，无法伪造</li>
+<li>Hy独有：TDM 轻量级动态度量，满足不同用户需求</li>
+</ul>
+<p>Windows 运行 certmgr 命令可以查看证书：</p>
+<p><img src="/img/post_pics/cc/hy-cc-5.png" srcset="/img/loading.gif" lazyload alt="查看证书"></p>
+<h1 id="可信存储"><a href="#可信存储" class="headerlink" title="可信存储"></a>可信存储</h1><ul>
+<li><strong>集成密码模块</strong>：在服务器的内存控制器中，集成了对称加解密引擎；</li>
+<li><strong>对性能的影响</strong>：由于对称加解密的特点，对访存性能几乎没有影响；</li>
+<li><strong>加密开关</strong>：在内存物理地址增加 C 位，作为加解密的开关，同时加解密以页为单位（4K页和2M页）；通过ASID来对应不同的虚拟机，实现应用层加密管理</li>
+<li><strong>密钥管理</strong>：密钥由安全处理器管理、用户和操作承统均无法获得密钢：每个虚拟机对应一个不同的 ASID，内存加加解密的密钥由UMC内部逻辑产生.根据不同的ASID 和地址生成不同的密钥。</li>
+</ul>
+<p>如何实现安全存储：</p>
+<ul>
+<li><strong>数据加密</strong>：将数据进行加密后，放入磁盘</li>
+<li><strong>访问授权</strong>：用户访问服务器需要提供授权码，授权正确才可以访问</li>
+<li><strong>可信绑定</strong>：授权码和可信状态绑定，授权码正确且系统状态是可信的，才可以拿到密钥，解密磁盘里的数据；其他任何人想访问设备，不能获得密钥，保证存储数据安全</li>
+</ul>
+<p>常用技术：Bitlocker（比特锁）</p>
+<h1 id="可信软件基"><a href="#可信软件基" class="headerlink" title="可信软件基"></a>可信软件基</h1><p><code>TSB(Trusted Software Base)</code>:</p>
+<ul>
+<li>可信软件基由可信管理中心统一管理和调度；</li>
+<li>硬件设备公司与可信商业软件公司合作，由其提供可信软件基；</li>
+<li>可信设备在TPCM只负责实现硬件支持，主要是在安全处理器中实现TPCM模块</li>
+</ul>
+<p>TSB由基<strong>本信任基、主动监控机制（控制机制，度量机制，判定机制）、可信基础库，支撑机制</strong>组成</p>
+<ul>
+<li><strong>基本信任基</strong>：具有基本的量度能力，对TSB的启动做验证</li>
+<li><strong>主动监控机</strong>：制监控系统调用，在ERT的支撑下实现对系统调用软件环境的主动量度和控制（ERT: Entity of Root of Trust， 可信根实体）</li>
+<li><strong>支撑机制</strong>：通过ERT接口调用，为应用提供完整性量度，加解密，可信认证等服务</li>
+<li><strong>协作机制</strong>：接收可信策略管理中心的策略下发，上次审计结果，与其他计算平合进行可信协作</li>
+<li><strong>可信基准库</strong>：存储可信基准值，包括驻留基准值（硬盘）和即时基准值（内存）</li>
+</ul>
+<h1 id="Mbedtls"><a href="#Mbedtls" class="headerlink" title="Mbedtls"></a>Mbedtls</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ git <span class="hljs-built_in">clone</span> git@github.com:Mbed-TLS/mbedtls.git<br>$ <span class="hljs-built_in">cd</span> mbedtls<br>$ git checkout main<br><br>$ git submodule update --init<br><span class="hljs-comment"># Or</span><br>$ <span class="hljs-built_in">rm</span> -rf framework<br>$ git <span class="hljs-built_in">clone</span> git@github.com:Mbed-TLS/mbedtls-framework.git<br>$ <span class="hljs-built_in">mv</span> mbedtls-framework framework<br>$ <span class="hljs-built_in">cd</span> framework<br>$ git checkout 750634d<br><br><span class="hljs-comment"># 编译</span><br>$ <span class="hljs-built_in">mkdir</span> build &amp;&amp; <span class="hljs-built_in">cd</span> build<br>$ cmake ..<br>$ cmake --build . -j32<br>$ <span class="hljs-built_in">sudo</span> make install<br><br><span class="hljs-comment"># 测试</span><br>$ <span class="hljs-built_in">cd</span> tests<br>$ ./test_suite_aes.cbc<br>AES-128-CBC Encrypt NIST KAT <span class="hljs-comment">#1 ................................... PASS</span><br>AES-128-CBC Encrypt NIST KAT <span class="hljs-comment">#2 ................................... PASS</span><br>AES-128-CBC Encrypt NIST KAT <span class="hljs-comment">#3 ................................... PASS</span><br>AES-128-CBC Encrypt NIST KAT <span class="hljs-comment">#4 ................................... PASS</span><br>...<br>AES-256-CBC Decrypt NIST KAT <span class="hljs-comment">#12 .................................. PASS</span><br><br>----------------------------------------------------------------------------<br><br>PASSED (72 / 72 tests (0 skipped))<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="https://mbed-tls.readthedocs.io/en/latest/kb/development/sample_applications/"><strong>Mbedtls programe examples</strong></a></li>
+</ul>
+<h2 id="AES"><a href="#AES" class="headerlink" title="AES"></a>AES</h2>
+    <div class="fold">
+      <div class="fold-title fold-info collapsed" data-toggle="collapse" href="#collapse-28ab9646" role="button" aria-expanded="false" aria-controls="collapse-28ab9646">
+        <div class="fold-arrow">▶</div>AES
+      </div>
+      <div class="fold-collapse collapse" id="collapse-28ab9646">
+        <div class="fold-content">
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs bash">crypt_and_hash &lt;mode&gt; &lt;input filename&gt; &lt;output filename&gt; &lt;cipher&gt; &lt;mbedtls_md&gt; &lt;key&gt;<br><br>   &lt;mode&gt;: 0 = encrypt, 1 = decrypt<br><br>  example: crypt_and_hash 0 file file.aes AES-128-CBC SHA1 hex:E76B2413958B00E193<br><br>Available ciphers:<br>  AES-128-ECB<br>  AES-192-ECB<br>  ...<br>  AES-256-XTS<br>  AES-128-GCM<br>  AES-192-GCM<br>  AES-256-GCM<br>  ...<br>  AES-256-KWP<br><br>Available message digests:<br>  SHA512<br>  SHA384<br>  SHA256<br>  SHA224<br>  SHA1<br>  RIPEMD160<br>  MD5<br>  SHA3-224<br>  SHA3-256<br>  SHA3-384<br>  SHA3-512<br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<ul>
+<li>准备一个txt文本，内容为’Hello World’</li>
+<li>使用 AES-256-GCM 加密，SHA256 验证完整性，密钥为 hex:7a30d862c42e74</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ <span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;Hello World&#x27;</span> &gt;&gt; plain.txt<br>$ crypt_and_hash 0 plain.txt     plain.txt.enc AES-256-GCM SHA256 hex:7a30d862c42e74<br>$ crypt_and_hash 1 plain.txt.enc plain.txt.dec AES-256-GCM SHA256 hex:7a30d862c42e74<br>$ <span class="hljs-built_in">cat</span> plain.txt.dec<br>Hello World<br></code></pre></td></tr></table></figure>
+
+<h2 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ generic_sum SHA256 plain.txt<br>d2a84f4b8b650937ec8f73cd8be2c74add5a911ba64df27458ed8229da804a26  plain.txt<br><br>$ <span class="hljs-built_in">sha256sum</span> plain.txt<br>d2a84f4b8b650937ec8f73cd8be2c74add5a911ba64df27458ed8229da804a26  plain.txt<br></code></pre></td></tr></table></figure>
+
+<h2 id="PKey"><a href="#PKey" class="headerlink" title="PKey"></a>PKey</h2><ul>
+<li>rsa_genkey - 演示如何生成 RSA 密钥对的应用程序</li>
+<li>rsa_encrypt - 使用 rsa API 的 RSA 加密参考程序</li>
+<li>rsa_decrypt - 使用 rsa API 的 RSA 解密参考程序</li>
+<li>ecdsa - <a href="https://tools.ietf.org/html/rfc6979">ECDSA</a> 程序示例</li>
+<li>gen_key - 如何生成私钥的示例</li>
+</ul>
+
+    <div class="fold">
+      <div class="fold-title fold-info collapsed" data-toggle="collapse" href="#collapse-9d3fcfc2" role="button" aria-expanded="false" aria-controls="collapse-9d3fcfc2">
+        <div class="fold-arrow">▶</div>RSA加解密
+      </div>
+      <div class="fold-collapse collapse" id="collapse-9d3fcfc2">
+        <div class="fold-content">
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ rsa_genkey<br><br>  . Seeding the random number generator... ok<br>  . Generating the RSA key [ 2048-bit ]... ok<br>  . Exporting the public  key <span class="hljs-keyword">in</span> rsa_pub.txt.... ok<br>  . Exporting the private key <span class="hljs-keyword">in</span> rsa_priv.txt... ok<br><br>$ rsa_encrypt <span class="hljs-string">&quot;Hello World&quot;</span><br><br>  . Seeding the random number generator...<br>  . Reading public key from rsa_pub.txt<br>  . Generating the RSA encrypted value<br>  . Done (created <span class="hljs-string">&quot;result-enc.txt&quot;</span>)<br><br>$ rsa_decrypt<br><br>  . Seeding the random number generator...<br>  . Reading private key from rsa_priv.txt<br>  . Decrypting the encrypted data<br>  . OK<br><br>The decrypted result is: <span class="hljs-string">&#x27;Hello World&#x27;</span><br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<h2 id="ECDH"><a href="#ECDH" class="headerlink" title="ECDH"></a>ECDH</h2><ul>
+<li><a href="https://www.ietf.org/rfc/rfc2631.txt">Diffie-Hellman Key Agreement Method</a></li>
+<li><a href="https://blog.csdn.net/davidsguo008/article/details/129500395">ECDH算法与mbedTLS</a></li>
+<li><a href="https://blog.csdn.net/weixin_41572450/article/details/103173687">mbedtls学习（7）DH密钥协商</a></li>
+</ul>
+<p>密钥交换算法简介：RSA算法再一定程度熵解决了密钥配送问题，但也可以用DH密钥协商算法来解决密钥配送问题。DH密钥协商算法时基于离散对数问题。DH（Diffie-Hellman）密钥协商是由 Whitfield Diffie 和 Martin Hellman 提出，该算法允许通讯双方再不安全的信道交换数据，从而协商出一个会话密钥。</p>
+<ul>
+<li>Diffie-Hellman 密钥交换：基于有限域的离散对数难以计算所实现</li>
+<li>Alic 给 Bob 一个大质数 P 和生成元 G</li>
+<li>Alice 和 Bob 各在 1 ~ P-2 的区间内生成一个随机数并保密</li>
+<li>Alic发送 $G^A mod P$ 给Bob</li>
+<li>Bob发送 $G^B mod P$ 给Alice</li>
+<li>Alice 计算 $(G^B mod P)^A mod P$ 作为密钥</li>
+<li>Bob 计算 $(G^A mod P)^B mod P$ 作为密钥，与 Alice 相同</li>
+<li>生成元的计算方法：<ul>
+<li>设 13 为 P，则任取 G 在 0 - P-1 内，A 在 1 ~ P - 1 的范围内，生成元 $G^A mod P$ 应当与 A 一一对应的关系</li>
+<li>例如 2 的 1 次方到 12 次方取 13 的模与 1 - 12 一一对应因此 2 是 13 的生成元</li>
+</ul>
+</li>
+</ul>
+<p><code>mbedtls\programs\pkey</code> 目录下：</p>
+<ul>
+<li><code>dh_client.c</code> ，DH客户端</li>
+<li><code>dh_server.c</code>，DH服务器</li>
+<li><code>dh_genprime.c</code>，产生DH共享参数，保存在dh_prime.txt</li>
+<li><code>rsa_genkey.c</code>，产生RSA密钥对，保存在rsa_priv.txt、rsa_pub.txt</li>
+</ul>
+<p><img src="/img/post_pics/cc/hy-cc-6.png" srcset="/img/loading.gif" lazyload alt="服务器和客户端通过DH密钥协商获得共享密钥"></p>
+
+    <div class="fold">
+      <div class="fold-title fold-info collapsed" data-toggle="collapse" href="#collapse-5b5bd572" role="button" aria-expanded="false" aria-controls="collapse-5b5bd572">
+        <div class="fold-arrow">▶</div>DH密钥交换
+      </div>
+      <div class="fold-collapse collapse" id="collapse-5b5bd572">
+        <div class="fold-content">
+          <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ rsa_genkey<br><br>  . Seeding the random number generator... ok<br>  . Generating the RSA key [ 2048-bit ]... ok<br>  . Exporting the public  key <span class="hljs-keyword">in</span> rsa_pub.txt.... ok<br>  . Exporting the private key <span class="hljs-keyword">in</span> rsa_priv.txt... ok<br><br>$ dh_genprime bits=2048<br>  ! Generating large primes may take minutes!<br><br>  . Seeding the random number generator... ok<br>  . Generating the modulus, please <span class="hljs-built_in">wait</span>... ok<br>  . Verifying that Q = (P-1)/2 is prime... ok<br>  . Exporting the value <span class="hljs-keyword">in</span> dh_prime.txt... ok<br><br>$ <span class="hljs-built_in">cat</span> dh_prime.txt<br>P = E9D1910FAD096EA00EDB6A6FCADF53DC51D49E775CBC333F04F530343CBB37048804A11925DE5F320F5208D35FC25F076ADBB26730CEC6FCF5F91E325821B098F5F901ABFA51BBD2B8CA4C412820D9AD75BC3668CF71B71CE3643A05D82AC7182657831774DCF1893DB218BE7893332EF4EEAF7DDA353C88CFB6E735B71A83DC0C4182E65082062BFFE70E5C8791EEF8E081BA0187D06F2C67FFE931C5BF6765ECC9A647CA5F36BFA554B1C6589CE84C5F48E610CD96DD4D7AD594D63B0E49984AA22C4EB38655AB0112751C3A49C87D8CD6710BB444C04642394CAB863C78D8CFA50C5494F74BC601D08051FE74313CE986BB3520B34F48986DABF9CF8D9B77<br>G = 04<br><br>$ ./dh_server<br><br>  . Seeding the random number generator<br>  . Reading private key from rsa_priv.txt<br>  . Reading DH parameters from dh_prime.txt<br>  . Waiting <span class="hljs-keyword">for</span> a remote connection<br>  <span class="hljs-comment"># Once client starts</span><br>  . Sending the server<span class="hljs-string">&#x27;s DH parameters                   # 发送服务器的交换参数，这里签了名</span><br><span class="hljs-string">  . Receiving the client&#x27;</span>s public value<br>  . Shared secret: 7517f59890db14837d888c258d65969c...   <span class="hljs-comment"># 计算交换共享密钥</span><br>  . Encrypting and sending the ciphertext<br><br>$ ./dh_client<br><br>  . Seeding the random number generator<br>  . Reading public key from rsa_pub.txt<br>  . Connecting to tcp/localhost/11999<br>  . Receiving the server<span class="hljs-string">&#x27;s DH parameters</span><br><span class="hljs-string">  . Verifying the server&#x27;</span>s RSA signature                 <span class="hljs-comment"># 接收时先验签</span><br>  . Sending own public value to server<br>  . Shared secret: 7517f59890db14837d888c258d65969c...   <span class="hljs-comment"># 计算交换共享密钥</span><br>  . Receiving and decrypting the ciphertext<br>  . Plaintext is <span class="hljs-string">&quot;==Hello there!==&quot;</span><br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<h2 id="SM4-国密算法"><a href="#SM4-国密算法" class="headerlink" title="SM4 国密算法"></a>SM4 国密算法</h2><p>参考：</p>
+<ul>
+<li><a href="/pdf/sm/SM4%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%E7%AE%97%E6%B3%95.pdf">SM4分组密码算法国家标准</a><ul>
+<li><a href="https://github.com/guanzhi/GM-Standards">更多标准</a></li>
+<li><a href="http://www.gmbz.org.cn/main/bzlb.html">密码行业标准化技术委员会</a></li>
+</ul>
+</li>
+<li><a href="https://n0va-scy.github.io/2022/02/14/sm4%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/">国密加密算法sm4</a></li>
+<li><a href="https://openatomworkshop.csdn.net/66470534b12a9d168eb6ef1b.html?dp_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTk3ODc0LCJleHAiOjE3MjI0NzkwMzgsImlhdCI6MTcyMTg3NDIzOCwidXNlcm5hbWUiOiJKYWNrU3BhcnJvd19zamwifQ._S0s4nn3Vog9cyUKQNwcUjfq53jDgyQXjeu8pDV-evA">SM4分组密码算法介绍</a></li>
+<li><a href="https://blog.csdn.net/weixin_45859485/article/details/118515873">SM4算法介绍</a></li>
+<li><a href="https://forums.mbed.com/t/support-for-sm4-chinese-national-standard/4119">Support for SM4 (Chinese National Standard)</a></li>
+<li><a href="https://github.com/Mbed-TLS/mbedtls/pull/1165">Mbedtls SM4 issue</a></li>
+<li><a href="https://github.com/Low-power/mbedtls/tree/mbedtls-2.7-sm4">mbedtls-2.7-sm4 代码</a></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ git <span class="hljs-built_in">clone</span> git@github.com:Low-power/mbedtls.git<br>$ <span class="hljs-built_in">cd</span> mbedtls<br>$ git checkout mbedtls-2.7-sm4<br>$ <span class="hljs-built_in">mkdir</span> build &amp;&amp; <span class="hljs-built_in">cd</span> build<br>$ cmake ..<br>$ cmake --build . -j32<br>$ <span class="hljs-built_in">cd</span> tests<br>$ ./test_suite_sm4<br>SM4 Encrypt_ECB <span class="hljs-comment">#1 ................................................ PASS</span><br>...<br>SM4 Decrypt_CTR <span class="hljs-comment">#2 ................................................ PASS</span><br><br>----------------------------------------------------------------------------<br></code></pre></td></tr></table></figure>
+
+<p>代码：</p>
+<ul>
+<li>源码：<code>library/sm4.c</code></li>
+<li>头文件：<code>build/include/mbedtls/sm4.h</code></li>
+<li>测试代码：<code>tests/suites/test_suite_sm4.function</code></li>
+<li>测试数据：<code>tests/suites/test_suite_sm4.data</code></li>
+</ul>
+
+    <div class="fold">
+      <div class="fold-title fold-info collapsed" data-toggle="collapse" href="#collapse-d7c7f3a4" role="button" aria-expanded="false" aria-controls="collapse-d7c7f3a4">
+        <div class="fold-arrow">▶</div>sm4.h
+      </div>
+      <div class="fold-collapse collapse" id="collapse-d7c7f3a4">
+        <div class="fold-content">
+          <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * \brief SM4 context structure</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-type">uint32_t</span> rk[<span class="hljs-number">32</span>];        <span class="hljs-comment">/*!&lt;  SM4 round keys    */</span><br>&#125;<br>mbedtls_sm4_context;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * \brief          Initialize SM4 context</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * \param ctx      SM4 context to be initialized</span><br><span class="hljs-comment"> */</span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">mbedtls_sm4_init</span><span class="hljs-params">( mbedtls_sm4_context *ctx )</span>;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * \brief          Clear SM4 context</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * \param ctx      SM4 context to be cleared</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">mbedtls_sm4_free</span><span class="hljs-params">( mbedtls_sm4_context *ctx )</span>;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * \brief          SM4 key schedule (encryption)</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * \param ctx      SM4 context to be initialized</span><br><span class="hljs-comment"> * \param key      encryption key</span><br><span class="hljs-comment"> * \param keybits  must be 128, 192 or 256</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * \return         0 if successful, or MBEDTLS_ERR_SM4_INVALID_KEY_LENGTH</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_sm4_setkey_enc</span><span class="hljs-params">( mbedtls_sm4_context *ctx,</span><br><span class="hljs-params">                                <span class="hljs-type">const</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *key,</span><br><span class="hljs-params">                                <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> keybits )</span>;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * \brief          SM4 key schedule (decryption)</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * \param ctx      SM4 context to be initialized</span><br><span class="hljs-comment"> * \param key      decryption key</span><br><span class="hljs-comment"> * \param keybits  must be 128, 192 or 256</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * \return         0 if successful, or MBEDTLS_ERR_SM4_INVALID_KEY_LENGTH</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_sm4_setkey_dec</span><span class="hljs-params">( mbedtls_sm4_context *ctx,</span><br><span class="hljs-params">                                <span class="hljs-type">const</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *key,</span><br><span class="hljs-params">                                <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> keybits )</span>;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * \brief          SM4-ECB block encryption/decryption</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * \param ctx      SM4 context</span><br><span class="hljs-comment"> * \param mode     MBEDTLS_SM4_ENCRYPT or MBEDTLS_SM4_DECRYPT</span><br><span class="hljs-comment"> * \param input    16-byte input block</span><br><span class="hljs-comment"> * \param output   16-byte output block</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * \return         0 if successful</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_sm4_crypt_ecb</span><span class="hljs-params">( mbedtls_sm4_context *ctx,</span><br><span class="hljs-params">                    <span class="hljs-type">int</span> mode,</span><br><span class="hljs-params">                    <span class="hljs-type">const</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> input[<span class="hljs-number">16</span>],</span><br><span class="hljs-params">                    <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> output[<span class="hljs-number">16</span>] )</span>;<br><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> defined(MBEDTLS_CIPHER_MODE_CBC)</span><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * \brief          SM4-CBC buffer encryption/decryption</span><br><span class="hljs-comment"> *                 Length should be a multiple of the block</span><br><span class="hljs-comment"> *                 size (16 bytes)</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * \note           Upon exit, the content of the IV is updated so that you can</span><br><span class="hljs-comment"> *                 call the function same function again on the following</span><br><span class="hljs-comment"> *                 block(s) of data and get the same result as if it was</span><br><span class="hljs-comment"> *                 encrypted in one call. This allows a &quot;streaming&quot; usage.</span><br><span class="hljs-comment"> *                 If on the other hand you need to retain the contents of the</span><br><span class="hljs-comment"> *                 IV, you should either save it manually or use the cipher</span><br><span class="hljs-comment"> *                 module instead.</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * \param ctx      SM4 context</span><br><span class="hljs-comment"> * \param mode     MBEDTLS_SM4_ENCRYPT or MBEDTLS_SM4_DECRYPT</span><br><span class="hljs-comment"> * \param length   length of the input data</span><br><span class="hljs-comment"> * \param iv       initialization vector (updated after use)</span><br><span class="hljs-comment"> * \param input    buffer holding the input data</span><br><span class="hljs-comment"> * \param output   buffer holding the output data</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * \return         0 if successful, or</span><br><span class="hljs-comment"> *                 MBEDTLS_ERR_SM4_INVALID_INPUT_LENGTH</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_sm4_crypt_cbc</span><span class="hljs-params">( mbedtls_sm4_context *ctx,</span><br><span class="hljs-params">                    <span class="hljs-type">int</span> mode,</span><br><span class="hljs-params">                    <span class="hljs-type">size_t</span> length,</span><br><span class="hljs-params">                    <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> iv[<span class="hljs-number">16</span>],</span><br><span class="hljs-params">                    <span class="hljs-type">const</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *input,</span><br><span class="hljs-params">                    <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *output )</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* MBEDTLS_CIPHER_MODE_CBC */</span></span><br><br><br><span class="hljs-meta">#<span class="hljs-keyword">if</span> defined(MBEDTLS_CIPHER_MODE_CTR)</span><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * \brief               SM4-CTR buffer encryption/decryption</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * Warning: You have to keep the maximum use of your counter in mind!</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * Note: Due to the nature of CTR you should use the same key schedule for</span><br><span class="hljs-comment"> * both encryption and decryption. So a context initialized with</span><br><span class="hljs-comment"> * mbedtls_sm4_setkey_enc() for both MBEDTLS_SM4_ENCRYPT and MBEDTLS_SM4_DECRYPT.</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * \param ctx           SM4 context</span><br><span class="hljs-comment"> * \param length        The length of the data</span><br><span class="hljs-comment"> * \param nc_off        The offset in the current stream_block (for resuming</span><br><span class="hljs-comment"> *                      within current cipher stream). The offset pointer to</span><br><span class="hljs-comment"> *                      should be 0 at the start of a stream.</span><br><span class="hljs-comment"> * \param nonce_counter The 128-bit nonce and counter.</span><br><span class="hljs-comment"> * \param stream_block  The saved stream-block for resuming. Is overwritten</span><br><span class="hljs-comment"> *                      by the function.</span><br><span class="hljs-comment"> * \param input         The input data stream</span><br><span class="hljs-comment"> * \param output        The output data stream</span><br><span class="hljs-comment"> *</span><br><span class="hljs-comment"> * \return         0 if successful</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">mbedtls_sm4_crypt_ctr</span><span class="hljs-params">( mbedtls_sm4_context *ctx,</span><br><span class="hljs-params">                       <span class="hljs-type">size_t</span> length,</span><br><span class="hljs-params">                       <span class="hljs-type">size_t</span> *nc_off,</span><br><span class="hljs-params">                       <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> nonce_counter[<span class="hljs-number">16</span>],</span><br><span class="hljs-params">                       <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> stream_block[<span class="hljs-number">16</span>],</span><br><span class="hljs-params">                       <span class="hljs-type">const</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *input,</span><br><span class="hljs-params">                       <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *output )</span>;<br><span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* MBEDTLS_CIPHER_MODE_CTR */</span></span><br></code></pre></td></tr></table></figure>
+        </div>
+      </div>
+    </div>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ <span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;Hello World&#x27;</span> &gt;&gt; plain.txt<br>$ crypt_and_hash 0 plain.txt     plain.txt.enc SM4-128-CBC SHA256 hex:0123456789abcdeffedcba9876543210<br>$ crypt_and_hash 1 plain.txt.enc plain.txt.dec SM4-128-CBC SHA256 hex:0123456789abcdeffedcba9876543210<br>$ <span class="hljs-built_in">cat</span> plain.txt.dec<br>Hello World<br></code></pre></td></tr></table></figure>
+
+<h2 id="SM2-密钥交换协议"><a href="#SM2-密钥交换协议" class="headerlink" title="SM2 密钥交换协议"></a>SM2 密钥交换协议</h2><ul>
+<li><a href="/pdf/sm/SM2%E5%AF%86%E9%92%A5%E4%BA%A4%E6%8D%A2%E5%8D%8F%E8%AE%AE.pdf">SM2密钥交换协议</a></li>
+<li><a href="https://www.gmssl.cn/gmssl/index.jsp?go=down">GMSSL 国密SSL实验室</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Security/" class="category-chain-item">Security</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/TEE/" class="print-no-link">#TEE</a>
+      
+        <a href="/tags/Confidential-Compute/" class="print-no-link">#Confidential Compute</a>
+      
+        <a href="/tags/Security/" class="print-no-link">#Security</a>
+      
+        <a href="/tags/Cryptography/" class="print-no-link">#Cryptography</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/25/SW/hexo-vercel/" title="使用 Vercel 部署博客">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">使用 Vercel 部署博客</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/23/GPU/Local-LLAMA-Deployment/" title="Llama 本地化部署">
+                        <span class="hidden-mobile">Llama 本地化部署</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>

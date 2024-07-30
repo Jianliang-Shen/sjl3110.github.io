@@ -1,0 +1,912 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/world.png">
+  <link rel="icon" href="/img/world.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#3e424a">
+  <meta name="author" content="Jianliang·Shen">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="随着大模型技术的高速发展，大模型在各个领域的应用日益广泛，从科研到商业，再到日常生活、办公等方方面面。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机密计算: 大模型安全解决方案">
+<meta property="og:url" content="http://yoursite.com/2024/07/29/Security/LLM-Security-Solution-WhitePaper/index.html">
+<meta property="og:site_name" content="TechOdyssey">
+<meta property="og:description" content="随着大模型技术的高速发展，大模型在各个领域的应用日益广泛，从科研到商业，再到日常生活、办公等方方面面。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yoursite.com/img/post_pics/cc/llm-sec-1.jpg">
+<meta property="article:published_time" content="2024-07-29T19:14:35.000Z">
+<meta property="article:modified_time" content="2024-07-30T16:39:00.419Z">
+<meta property="article:author" content="Jianliang·Shen">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="TEE">
+<meta property="article:tag" content="Confidential Compute">
+<meta property="article:tag" content="Security">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://yoursite.com/img/post_pics/cc/llm-sec-1.jpg">
+  
+  
+  
+  <title>机密计算: 大模型安全解决方案 - TechOdyssey</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/icon.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":15,"cursorChar":"|","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Tech Odyssey</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-bookmark-fill"></i>
+                <span>Favor</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://vercel.com/jianliang-shens-projects" target="_self">
+                    <i class="iconfont icon-vercel"></i>
+                    <span>Vercel</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/pdf/" target="_self">
+                    <i class="iconfont icon-pdf-new"></i>
+                    <span>PDF</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.google.com/" target="_self">
+                    <i class="iconfont icon-google-new"></i>
+                    <span>Google</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.baidu.com/" target="_self">
+                    <i class="iconfont icon-baidu-new"></i>
+                    <span>Baidu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://github.com/Jianliang-Shen" target="_self">
+                    <i class="iconfont icon-github-new"></i>
+                    <span>Github</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.zhihu.com" target="_self">
+                    <i class="iconfont icon-zhihu-new"></i>
+                    <span>Zhihu</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.bilibili.com/" target="_self">
+                    <i class="iconfont icon-bilibili-new"></i>
+                    <span>Bilibili</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://chat.openai.com/" target="_self">
+                    <i class="iconfont icon-chatGPT"></i>
+                    <span>Chatgpt</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://msdn.itellyou.cn/" target="_self">
+                    <i class="iconfont icon-microsoft"></i>
+                    <span>MSDN</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="https://www.iconfont.cn/" target="_self">
+                    <i class="iconfont icon-iconfont"></i>
+                    <span>Ali Icon</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/back_1.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="机密计算: 大模型安全解决方案"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-29 19:14" pubdate>
+          2024年7月29日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          51 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">机密计算: 大模型安全解决方案</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>随着大模型技术的高速发展，大模型在各个领域的应用日益广泛，从科研到商业，再到日常生活、办公等方方面面。</p>
+<span id="more"></span>
+
+<ul>
+<li><a href="https://anquan.baidu.com/product/llmsec"><strong>百度：大模型安全解决方案</strong></a></li>
+<li><a href="/pdf/llm-cc/%E7%99%BE%E5%BA%A6%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%AE%89%E5%85%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf"><strong>2023年百度: 大模型安全解决方案白皮书</strong></a></li>
+</ul>
+<h1 id="大模型安全的重要性"><a href="#大模型安全的重要性" class="headerlink" title="大模型安全的重要性"></a>大模型安全的重要性</h1><p>首先，大模型在许多应用场景中处理大量敏感数据和个人信息，如用户的搜索记录、社交媒体互动和金融交易等。这使得数据泄露和隐私侵犯的风险不容忽视。一旦这些敏感信息遭受泄露，个人隐私权益可能会受到严重损害，甚至被用于恶意行为，如身份盗窃、诈骗和社会工程攻击。这不仅会对受害者造成经济损失，还可能导致社会的恐慌和不信任。</p>
+<p>其次，大模型的强大能力也可能被用于进行各种形式的恶意攻击。模型的对抗性样本攻击，即针对模型的输入进行微小改动，从而欺骗模型产生错误预测，已成为一种常见的威胁。恶意使用者可以通过这种方式制造虚假信息，影响决策结果，如将误导性的信息传播到社交媒体平台，从而扰乱社会秩序。此外，大模型的生成能力也可能被用于生成虚假的内容，威胁到媒体的可信度和新闻的真实性。</p>
+<p>另外，模型本身也可能成为攻击者的目标。<strong>模型参数和权重的泄露可能导致知识产权的损失，甚至使恶意使用者能够复制或修改模型，进一步恶化风险。</strong>对模型的针对性攻击，如投毒攻击，可能使模型的输出产生不良影响，从而影响到正常的业务运行。这些威胁可能在不经意间对企业和社会造成巨大的损失。此外，大模型的使用往往涉及到社会伦理和法律问题。例如，算法的歧视性问题，即模型在处理数据时产生的不公平或偏见，可能引发社会的不满和争议。</p>
+<p>此外，大模型可能会被用于传播虚假信息、仇恨言论或不当内容，从而引发社会不安定和文化冲突。</p>
+<p>最后，国家网信办联合国家发展改革委、教育部、科技部、工业和信息化部、公安部、广电总局公布《生成式人工智能服务管理暂行办法》，自2023年8月15日起施行，旨在促进生成式人工智能健康发展和规范应用，维护国家安全和社会公共利益，保护公民、法人和其他组织的合法权益。这既是促进生成式人工智能健康发展的重要要求，也是防范生成式人工智能服务风险的现实需要。</p>
+<p>因此，确保大模型的安全性和可信度是一个紧迫的任务。需要综合运用技术手段、政策法规以及社会共识，建立起一套全面的大模型安全风险管理体系。通过逐一应对数据隐私保护、模型防御、内容合规、恶意行为检测等方面的挑战，我们能够更好地应对现实中的安全风险，保障个人权益和社会稳定。这也是本白皮书所要探讨的核心议题之一。</p>
+<h1 id="安全挑战与潜在威胁"><a href="#安全挑战与潜在威胁" class="headerlink" title="安全挑战与潜在威胁"></a>安全挑战与潜在威胁</h1><ul>
+<li>数据安全与隐私问题<ul>
+<li>传输截获风险</li>
+<li>运营方窥探风险</li>
+<li>模型记忆风险</li>
+</ul>
+</li>
+<li>模型流转&#x2F;部署过程中的安全问题<ul>
+<li>模型知识泄漏: 在将模型部署到生产环境中，模型的输出可能会暴露训练数据的一些信息。攻击者可以通过分析模型的输出，推断出训练数据的特征和分布，进而构建类似的数据集，甚至还原部分原始数据。</li>
+<li>模型逆向工程: 攻击者可能尝试通过逆向工程技术还原部署模型的架构、权重和训练数据。这可能导致知识产权盗窃、模型盗用和安全漏洞的暴露。逆向工程可能通过模型推理结果、输入输出分析以及梯度攻击等方式进行。</li>
+<li>输入数据的合法性和安全性：在模型部署阶段，恶意用户可能试图通过提供恶意输入来攻击系统。例如，输入中可能包含恶意代码、命令执行、注入语句或文件包含路径，从而导致安全漏洞。</li>
+<li>模型更新和演化：模型需要定期更新以保持性能和适应新的数据分布。然而，模型更新可能引入新的漏洞和问题。安全地更新模型需要考虑版本控制、验证新模型的安全性和稳定性，以及备份机制以防产生不良影响。</li>
+</ul>
+</li>
+<li>AIGC 的内容合规问题<ul>
+<li>个人隐私问题<ul>
+<li>Smart Compose 隐私问题</li>
+<li>语音助手隐私问题</li>
+<li>个性化内容生成隐私问题</li>
+</ul>
+</li>
+<li>虚假信息和误导性内容<ul>
+<li>Deepfake 虚假视频</li>
+<li>虚假新闻和评论</li>
+<li>制造虚假证据</li>
+</ul>
+</li>
+<li>民族仇恨言论和不当内容</li>
+<li>偏见和歧视问题</li>
+<li>淫秽色情内容</li>
+<li>政治&#x2F;军事敏感内容</li>
+<li>恐怖&#x2F;暴力内容</li>
+<li>版权和知识产权问题</li>
+<li>滥用和恶意使用</li>
+<li>责任和透明度<ul>
+<li>责任归属</li>
+<li>透明度和解释性</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>大模型运营的业务安全问题<ul>
+<li>前置业务环节</li>
+<li>大模型交互环节: 在大模型交互环节，本节将分别从用户的“提问行为“和”提问内容“两个维度展开”。首先是提问行为，在针对大模型发起提问时，黑产等不发分子围绕提问接口发起AIGC盗爬&#x2F;垃圾提问&#x2F;接口攻击&#x2F;频控突破&#x2F;资源侵占等攻击行为；针对大模型输出结果，黑灰产可以发起投毒反馈、恶意反馈等攻击行为。如下图所示，今年北京某公司起诉其多年的合作的伙伴某知名网校品牌，指其近期推出的数学大模型MathGPT和在某品牌学习机上线的AI助手，在未经其授权和许可情况下，爬取了海量数据，要求其公开道歉、删除数据资源，求偿1元，打响了AIGC盗爬的第一案。</li>
+<li>大模精调&#x2F;推理环节</li>
+</ul>
+</li>
+</ul>
+<h1 id="大模型安全解决方案"><a href="#大模型安全解决方案" class="headerlink" title="大模型安全解决方案"></a>大模型安全解决方案</h1><p><img src="/img/post_pics/cc/llm-sec-2.png" srcset="/img/loading.gif" lazyload alt="解决方案"></p>
+<h2 id="数据安全与隐私保护"><a href="#数据安全与隐私保护" class="headerlink" title="数据安全与隐私保护"></a>数据安全与隐私保护</h2><h3 id="联邦学习"><a href="#联邦学习" class="headerlink" title="联邦学习"></a>联邦学习</h3><p><img src="/img/post_pics/cc/llm-sec-3.png" srcset="/img/loading.gif" lazyload alt="联邦学习"></p>
+<p>横向联邦大模型解决方案: 采用中心化的CS架构，中心节点为汇聚服务器，用于将不同参与方的结果数据进行汇聚，平衡各参与方的计算节奏，保持和管理最终的合并后的模型。每个参与方，采取弱侵入式的接入方式，部署参与方插件，用于和现有的算力平台进行结合，收集和管理本方的计算集群。</p>
+<h3 id="差分隐私"><a href="#差分隐私" class="headerlink" title="差分隐私"></a>差分隐私</h3><p><img src="/img/post_pics/cc/llm-sec-4.png" srcset="/img/loading.gif" lazyload alt="差分隐私"></p>
+<p>基于差分隐私的软件精调&#x2F;推理方案: 差分隐私（differentialprivacy）是一个数据保护手段，通过使用随机噪声来确保请求信息的可见结果时，不会因为个体的变化而变化，实现仅分享可以描述数据库的一些统计特征、而不公开具体到个人的信息。这一特性可以被用来保护大模型在精调和推理时与云端服务端交互的用户数据隐私。</p>
+<h3 id="同态密码学"><a href="#同态密码学" class="headerlink" title="同态密码学"></a>同态密码学</h3><p><img src="/img/post_pics/cc/llm-sec-5.png" srcset="/img/loading.gif" lazyload alt="同态密码"></p>
+<p>基于同态密码学的软件精调&#x2F;推理方案: <strong>同态密码学是一项联邦学习的关键技术，提供了在加密状态下对数据进行计算和处理的能力，从而保护数据的隐私和安全。对于大模型的数据保护思路，是通过同态密码学来实现大模型的计算逻辑，从而大模型可以接受密态化的数据输入，整体精调和推理过程完全是密态化的进行，最终的结果也是以密态的形式返回给客户端，</strong>整个过程完全是密态化的，所以将此过程完全部署到在云上的服务端。而客户仅需要将本地的隐私数据密态化后上传给服务端，所有计算过程由云端外包完成，但是云端服务，不能获取到计算的内容。对于同态密码学方案，核心是如何通过同态密码学实现大模型的核心计算逻辑，其中主要包括，<strong>Embedding，Transformer（Attention）和Header等大模型基础组件结构</strong>。由于同态密码学计算复杂性和支持的计算有限，如何合理的利用同态密码学算法能达到可用性和精度的要求，实现精调和推理阶段隐私保护的方案。目前基于同态密码学方面的大模型研究，公开研究主要集中在推理阶段，也有少量的精调方面。根据所采用的同态密码学算法的实现不同，大致可以分成基于<strong>全同态密码学FHE实现和基于MPC（Secure Share）</strong>实现两大方向。</p>
+<ul>
+<li>在 FHE 方向，有基于 CKKS 的 THE-X<sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span class="hint--top hint--rounded" aria-label="[**pdf**](/pdf/papers/THE-X-Privacy-Preserving-Transformer-Inference-with-Homomorphic-Encryption.pdf), [Chen, Tianyu, et al THE-X: Privacy-Preserving Transformer Inference with Homomorphic Encryption. arXiv preprint arXiv:2206.00216(2022)](https://arxiv.org/abs/2206.00216)">[1]</span></a></sup>，以及基于 BGV 的 Liu, Xuanqi<sup id="fnref:2" class="footnote-ref"><a href="#fn:2" rel="footnote"><span class="hint--top hint--rounded" aria-label="[**pdf**](/pdf/papers/LLMs-Can-Understand-Encrypted-Prompt-Towards-Privacy-Computing-Friendly-Transformers.pdf), [Liu, Xuanqi, et al LLMs Can Understand Encrypted Prompt: Towards Privacy-Computing Friendly Transformers. arXiv preprint arXiv:2305.18396(2023)](https://arxiv.org/abs/2305.18396)">[2]</span></a></sup>, 基于 HGS 的 Primer<sup id="fnref:3" class="footnote-ref"><a href="#fn:3" rel="footnote"><span class="hint--top hint--rounded" aria-label="[**pdf**](/pdf/papers/Primer-Fast-Private-Transformer-Inference-on-Encrypted-Data.pdf), [Mengxin, Zheng, et al Primer: Fast Private Transformer Inference on Encrypted Data. Design Automation Conference. 2023](https://arxiv.org/abs/2303.13679)">[3]</span></a></sup>；</li>
+<li>在 MPC 方向有基于 2PC 的 MPC Former<sup id="fnref:4" class="footnote-ref"><a href="#fn:4" rel="footnote"><span class="hint--top hint--rounded" aria-label="[**pdf**](/pdf/papers/MPCFormer-fast-performant-and-private-Transformer-inference-with-MPC.pdf), [Li, Dacheng, et al MPCFormer: fast, performant and private Transformer inference with MPC. arXiv preprint arXiv:2211.01452(2022)](https://arxiv.org/abs/2211.01452)">[4]</span></a></sup> 和 Iron<sup id="fnref:5" class="footnote-ref"><a href="#fn:5" rel="footnote"><span class="hint--top hint--rounded" aria-label="[**github**](https://github.com/xingpz2008/Iron), [Hao, Meng, et al Iron: Private Inference on Transformers. Advances in Neural Information Processing Systems. 2022](/pdf/papers/Iron-Private-Inference-on-Transformers.pdf)">[5]</span></a></sup>, 基于 3PC 的 Puma<sup id="fnref:6" class="footnote-ref"><a href="#fn:6" rel="footnote"><span class="hint--top hint--rounded" aria-label="[**pdf**](/pdf/papers/PUMA-Secure-Inference-of-LLaMA-7B-in-Five-Minutes.pdf), [PUMA: Secure Inference of LLaMA-7B in Five Minutes](https://arxiv.org/abs/2307.12533)">[6]</span></a></sup>。</li>
+</ul>
+<p>除了底层实现方法的不同之外，对于如何通过同态密码学中有限的计算方式去实现和逼近大模型的基础算子也是目前研究的热点。在降低计算量的同时，如何平衡计算量和网络传输量之间的关系，以达到在实际应用中能最大化的降低耗时，将算法可用性能进一步接近可用，也是研究所追求的目标。我们的同态密码学方案是结合同态密码学和差分隐私等技术，构建的一个对用户数据进行密态计算的方案，并将此技术运用在大模型的精调和推理阶段。在用户客户端，会安装一个客户端插件，此插件主要用于加密用户的隐私数据，形成可以用于密态计算的语料，通过网络连接将加密后的数据发送给服务端。在服务端，将加密的语料直接加载后，通过同态的特性直接用于模型计算。最终的结果也将以密文的形式，返回给客户端。客户端，通过插件将数据解密后得到最终的结果。由于数据全程都是密态形态，所以任何第三方都不可窃取到用户在使用大模型中交互的数据，从而保护了用户数据的隐私。</p>
+<h3 id="可信执行缓解"><a href="#可信执行缓解" class="headerlink" title="可信执行缓解"></a>可信执行缓解</h3><p>可信执行环境解决方案: TEE能够作为云计算的信任根，保管根密钥，确保TEE外实体无法获取，还可以通过远程证明和负载度量值的结合，使公有云达到私有云的安全等级。对于私有化的场景，TEE可以充分发挥“飞地”的作用，将隐私敏感资产部署在其他实体。</p>
+<ul>
+<li>在如下大模型使用场景中保护敏感数据资产：<ul>
+<li>在使用第三方大模型服务提供的精调和预测功能时，保护用户输入数据和精调产出模型的隐私</li>
+<li>在第三方部署大模型服务时，保护模型的隐私</li>
+<li>通过安全的设计与配置，可以运行复杂的分布式系统</li>
+<li>处于机密计算状态的处理器操作明文数据，不需要使用差分和同态等密码学算法，具备高性能处理海量数据的能力</li>
+<li>支持通用的 NLP 算法，模型和计算精度无损失</li>
+</ul>
+</li>
+<li>解决方案:<ul>
+<li>TDX（TrustedDomianExtension）是英特尔新提出的能够部署硬件隔离的虚拟机（可信域，trusteddomain，TD）的技术框架</li>
+<li>SEV（Secure Encrypted Virtualization）是 AMD 提出的机密虚拟机方案， 其推出时间较 TDX 早，因此软件生态较好，upstream linux kernel， openstack，kubevirt 和 libvirt 等虚拟化相关生态支持较好；</li>
+<li>CSV（ChineseSecureVirtualization）是海光根据AMDSEV国产化的解决方案，使用国密算法，信任根全部国产化。</li>
+</ul>
+</li>
+</ul>
+<p>百度提供的<strong>可信执行环境解决方案（ Mesa TEE ）</strong>是基于硬件TEE的大模型机密计算方案，支持在 Intel SGX，Intel TDX，AMD SEV-SNP 和海光 CSV 等多种硬件TEE内进行大模型训练和推理。通过以 PCIe 穿透（pass through）的方式访问 <strong>Nvidia H 系列 GPU 和海光集成 DCU</strong> 等具备机密计算能力的外部加速设备，Mesa TEE 能够获得与非机密计算相当的大模型计算性能，拥有良好的模型效率和用户体验。 Mesa TEE 将传统虚拟机安全与TEE相结合，将可信启动过程记录到远程认证的度量值中，保证启动过程的安全，提高远程认证的真实性。机密虚拟机中运行的容器启动前，其数字签名会被校验，确保程序来源的合法性。隐私数据以透明加解密的方式落盘，保护数据隐私和安全的同时，提高应用的兼容性；非秘密的程序，通过建立哈希树（Hash tree）的方式，保证其完整性的同时，兼顾访问性能。机密虚拟机之间使用基于远程认证的透明加解密技术，确保通信过程中的数据隐私安全。 Mesa TEE 深耕大模型使用场景，支持分布式训练、精调和推理，通过基于身份的访问控制，具备多租户数据及模型隔离管理和保护，多方数据训练和推理等数据融合功能。可信执行环境是云计算中不可或缺的一部分，它从硬件层面解决了软件根本的信任问题，是云计算的“根”。机密计算是大趋势，英特尔、AMD 和英伟达等硬件提供商均提供了机密计算硬件解决方案。微软、亚马逊云、谷歌云和阿里云等均提供机密计算的设备和解决方案。百度、蚂蚁金服和字节跳动等均在使用机密计算为业务提供隐私及安全能力。</p>
+<h3 id="安全沙箱"><a href="#安全沙箱" class="headerlink" title="安全沙箱"></a>安全沙箱</h3><p>基于安全沙箱的解决方案: 安全沙箱技术是一种通过构建隔离的可供调试、运行的安全环境，来分离模型、数据使用权和所有权的技术，同时提供模型精调计算所需的算力管理和通信等功能，保证模型拥有方的预训练模型在不出其定义的私有边界的前提下，数据拥有方可以完成模型精调任务。安全沙箱通过<strong>界面隔离、环境隔离、网络隔离、执行隔离、数据隔离</strong>五大隔离技术达到模型和数据的可用不可见。</p>
+<p><img src="/img/post_pics/cc/llm-sec-6.png" srcset="/img/loading.gif" lazyload alt="安全沙箱"></p>
+<p>结合KMS作为密钥管理服务，对进入到沙箱的预训练模型和精调数据集进行加密，在沙箱的隔离环境内进行模型精调时，对其使用对应的KMS进行解密，完成精调时产出密文精调模型，数据拥有方使用自己的KMS对其解密为明文精调模型。</p>
+<p><img src="/img/post_pics/cc/llm-sec-7.png" srcset="/img/loading.gif" lazyload alt="KMS"></p>
+<p>在大模型推理领域，安全沙箱可提供在线推理服务用于一键部署精调后的大模型，对外提供在线API推理服务。在线推理服务提供精调模型部署、API网关、负载均衡、安全访问认证、动态脱敏等功能。模型支持多实例部署方式和实例动态扩缩容，提供API网关能力，对后端的实例进行负载均衡，以保证在线推理服务的高可用性；对请求进行安全访问认证，确保请求来源的合法性；对推理服务返回的内容实时动态脱敏，确保推理结果不包含敏感数据。</p>
+<p><img src="/img/post_pics/cc/llm-sec-8.png" srcset="/img/loading.gif" lazyload alt="在线推理服务"></p>
+<h2 id="模型保护方案"><a href="#模型保护方案" class="headerlink" title="模型保护方案"></a>模型保护方案</h2><ul>
+<li>语料数据管理：面对多渠道收集珍贵语料数据，如何实现高效的数据管理，防范模型原始语料数据泄漏，提高语料数据加工效率</li>
+<li>模型资产保护：大模型文件是企业核心数字资产，如何防范大模型文件在训练、推理、微调等环节的模型文件泄漏风险</li>
+</ul>
+<p>大模型语料数据安全管理与大模型资产全流程保护：</p>
+<p><img src="/img/post_pics/cc/llm-sec-9.png" srcset="/img/loading.gif" lazyload alt="模型保护"></p>
+<h3 id="大模型语料数据安全管理"><a href="#大模型语料数据安全管理" class="headerlink" title="大模型语料数据安全管理"></a>大模型语料数据安全管理</h3><p>元数据管理、分类分级、流转审批、数据鉴权、加密保护、行为审计、数据脱敏、访问控制、数据备份与恢复、敏感信息检测：引入敏感信息检测技术</p>
+<h3 id="大模型资产全流程保护"><a href="#大模型资产全流程保护" class="headerlink" title="大模型资产全流程保护"></a>大模型资产全流程保护</h3><ul>
+<li>模型训练安全：在模型训练过程中，采用隔离环境，确保模型训练的数据和代码不受未授权访问。引入训练数据的加密和隐私保护措施，防止敏感信息泄露。</li>
+<li>模型流转安全：设计模型流转的安全机制，确保模型在传递过程中不被篡改或恶意替换。可以使用数字签名等方式验证模型的完整性。</li>
+<li>模型推理安全：在模型推理阶段，引入安全沙箱和权限控制，确保模型运行在受控环境中，避免恶意代码注入和攻击。</li>
+<li>模型微调安全：在模型微调过程中，采用差分隐私等技术，确保微调数据的隐私性和保密性。</li>
+<li>私有化部署安全：对于私有化部署，强调数据在企业内部的隔离和安全性。建立私有化部署的权限控制和监控机制。</li>
+<li>模型演化与更新：引入安全审查流程，确保模型的更新和演化过程中不引入漏洞或不安全的元素。</li>
+<li>模型审计与跟踪：对模型的运行情况进行审计和跟踪，及时发现异常行为和风险。</li>
+<li>安全修复与更新：在发现模型存在漏洞或安全问题时，能够及时进行修复和更新，防止潜在的威胁扩散。</li>
+</ul>
+<h2 id="AIGC-内容合规"><a href="#AIGC-内容合规" class="headerlink" title="AIGC 内容合规"></a>AIGC 内容合规</h2><p>复杂多样的内容、监管法规不断变化、技术与人工判定的平衡、多语言与文化差异、隐蔽性的风险、合规规则的标准化、时间敏感性、平衡安全与隐私、技术局限性</p>
+<p>安全防线：</p>
+<ul>
+<li>预训练数据过滤方案：百度使用安全内容业务中积累的海量有标注数据，基于ERNIE模型的领先内容理解能力，构建了通用的内容安全召回模型，能够高效检出训练语料中的有害内容；同时通过业务风控富集的敏感词词库过滤数据中的脏话和不适出现词汇，提供召回模型之外的快速更新能力。除了过滤有害内容，预训练数据过滤方案也能够删除可能包含个人身份信息、隐私敏感信息的内容，用以严格保护用户的隐私。</li>
+<li>内容干预系统：大模型的内容干预是指通过人工审核、过滤技术或其他方式，干预模型输入的内容，以确保其符合特定的标准、规范和价值观。这种干预可以帮助减少有害、不准确或不恰当的内容，并提高生成内容的质量和安全性。百度可提供完整的实时内容干预系统，内置红线必答和Query干预功能。红线必答能够很好回答常见的红线问题，确保回复内容高度安全合规，维护社会主义核心价值观；Query干预支持用户配置相应规则，通过对包含特定敏感词的快速匹配，将不安全Query引导至更加合适的处理流程中（例如标准回复模版），减少大模型在该Query输入下产生有害内容或者不正确数据。</li>
+<li>安全分类算子：大模型输入的安全分类是指将用户输入内容进行分类，以判断其安全性和合适性。这种分类能够帮助防止不良内容的生成，保护用户免受有害、不准确或不适当的内容影响。通过有效的输入内容安全过滤，能够极大程度地减少大模型生成不安全或者负面的回复内容，同时结合高精准的分类标签，通过改写技术可以构造出更适于大模型输出合规回复的提示词模版</li>
+<li>大模型微调安全策略：在大模型预训练完成后，为了提高其生成内容的安全性，可以进行安全微调。基于已经通过安全审核的、符合安全标准的指令数据对大模型进行微调，以指导其生成更合适、不含有害内容的回复内容。微调后的大模型可以进一步通过RLHF方式提升大模型对安全回复内容的偏好程度，引导鼓励大模型生成更加高质量的安全内容。</li>
+<li>输出内容安全过滤大模型输出内容安全过滤是指对大模型生成的文本内容进行检测和筛选，以识别并过滤掉有害、不准确、不适当或不合规的回复内容，这有助于确保大模型生成内容的质量和安全性。百度使用业务风控中积累的高危词典对输出内容进行安全过滤，在滤除有害敏感词后通过语义改写将安全回复内容作为最终的大模型输出，确保输出环节安全合规。</li>
+</ul>
+<p>其他：</p>
+<ul>
+<li>Prompt 审核与改写</li>
+<li>红线知识库</li>
+<li>AIGC 多模态内容审核</li>
+</ul>
+<p><img src="/img/post_pics/cc/llm-sec-10.png" srcset="/img/loading.gif" lazyload alt="AIGC 内容合规"></p>
+<h3 id="大模型业务运营与安全风控"><a href="#大模型业务运营与安全风控" class="headerlink" title="大模型业务运营与安全风控"></a>大模型业务运营与安全风控</h3><p>在大模型业务运营的环节，依托百度安全智能风控能力，可以建立大模型业务运营的安全风控防护体系，可以在大模型前置云运营阶段（如：用户注册、登录、权益申请等环节）、以及大模型交互环节（如：用户提问环节、回答内容反馈等环节），结合用户行为、终端环境、网络特征等信息建立有效的安全防护体系，针对异常请求做实时风险检测，保障大模型处于一个安全、可靠的运营状态。大模型在交互场景中的业务运营中，面临着多重安全威胁和风险，本方案结合当前场景，依托百度安全昊天镜智能风控服务，构建了包含<strong>账号安全、接口防刷、人机识别、AIGC盗爬识别、设备风控以及风险情报</strong>等方面的能力</p>
+<p><img src="/img/post_pics/cc/llm-sec-11.png" srcset="/img/loading.gif" lazyload alt="安全运营"></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span><a href="/pdf/papers/THE-X-Privacy-Preserving-Transformer-Inference-with-Homomorphic-Encryption.pdf"><strong>pdf</strong></a>, <a href="https://arxiv.org/abs/2206.00216">Chen, Tianyu, et al THE-X: Privacy-Preserving Transformer Inference with Homomorphic Encryption. arXiv preprint arXiv:2206.00216(2022)</a>
+<a href="#fnref:1" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:2" class="footnote-text"><span><a href="/pdf/papers/LLMs-Can-Understand-Encrypted-Prompt-Towards-Privacy-Computing-Friendly-Transformers.pdf"><strong>pdf</strong></a>, <a href="https://arxiv.org/abs/2305.18396">Liu, Xuanqi, et al LLMs Can Understand Encrypted Prompt: Towards Privacy-Computing Friendly Transformers. arXiv preprint arXiv:2305.18396(2023)</a>
+<a href="#fnref:2" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:3" class="footnote-text"><span><a href="/pdf/papers/Primer-Fast-Private-Transformer-Inference-on-Encrypted-Data.pdf"><strong>pdf</strong></a>, <a href="https://arxiv.org/abs/2303.13679">Mengxin, Zheng, et al Primer: Fast Private Transformer Inference on Encrypted Data. Design Automation Conference. 2023</a>
+<a href="#fnref:3" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:4" class="footnote-text"><span><a href="/pdf/papers/MPCFormer-fast-performant-and-private-Transformer-inference-with-MPC.pdf"><strong>pdf</strong></a>, <a href="https://arxiv.org/abs/2211.01452">Li, Dacheng, et al MPCFormer: fast, performant and private Transformer inference with MPC. arXiv preprint arXiv:2211.01452(2022)</a>
+<a href="#fnref:4" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:5" class="footnote-text"><span><a href="https://github.com/xingpz2008/Iron"><strong>github</strong></a>, <a href="/pdf/papers/Iron-Private-Inference-on-Transformers.pdf">Hao, Meng, et al Iron: Private Inference on Transformers. Advances in Neural Information Processing Systems. 2022</a>
+<a href="#fnref:5" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:6" class="footnote-text"><span><a href="/pdf/papers/PUMA-Secure-Inference-of-LLaMA-7B-in-Five-Minutes.pdf"><strong>pdf</strong></a>, <a href="https://arxiv.org/abs/2307.12533">PUMA: Secure Inference of LLaMA-7B in Five Minutes</a>
+<a href="#fnref:6" rev="footnote" class="footnote-backref"> ↩</a></span></span></li></ol></div></section>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Security/" class="category-chain-item">Security</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/LLM/" class="print-no-link">#LLM</a>
+      
+        <a href="/tags/TEE/" class="print-no-link">#TEE</a>
+      
+        <a href="/tags/Confidential-Compute/" class="print-no-link">#Confidential Compute</a>
+      
+        <a href="/tags/Security/" class="print-no-link">#Security</a>
+      
+    </div>
+  
+</div>
+
+
+              
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/30/Security/Privacy-compute/" title="机密计算: 10 大隐私计算技术">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">机密计算: 10 大隐私计算技术</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/29/Security/LLM-CC/" title="机密计算: 大模型安全">
+                        <span class="hidden-mobile">机密计算: 大模型安全</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Tech Odyssey</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>2024</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+<!-- hexo injector body_end start --><script data-pjax src="https://unpkg.com/oh-my-live2d"></script><script>const oml2d = OML2D.loadOml2d({dockedPosition:"left",mobileDisplay:false,models:[{"path":"/live2d-models/models/umaru/model.json","position":[100,30],"scale":0.25,"stageStyle":{"width":400,"height":470}},{"path":"/live2d-models/models/kobayaxi/model.json","position":[30,0],"scale":0.3,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-22/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}},{"path":"/live2d-models/models/bilibili-33/index.json","position":[0,30],"scale":0.35,"stageStyle":{"width":400}}],parentElement:document.body,primaryColor:"#7f6f6c",tips:{style: {"left":"calc(50%)","top":"-50px"},idleTips:{interval:150}}});</script><!-- hexo injector body_end end --></body>
+</html>
